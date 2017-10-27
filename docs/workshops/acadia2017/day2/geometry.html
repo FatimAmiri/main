@@ -513,6 +513,128 @@ blblblbl bldlbl
             <span class="n">rs</span><span class="o">.</span><span class="n">AddLine</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span><span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
 </code></pre></div>
 
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">convex_hull</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">orient_points</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">subtract_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">normalize_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">scale_vector</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh</span> <span class="kn">import</span> <span class="n">mesh_subdivide_catmullclark</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures.network</span> <span class="kn">import</span> <span class="n">Network</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino</span> <span class="kn">import</span> <span class="n">mesh_draw_faces</span>
+
+<span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+
+<span class="k">def</span> <span class="nf">generate_section</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">target_plane</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+    <span class="n">num_p</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># discretization of the circle</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">num_p</span>  <span class="c1"># angle step size</span>
+    <span class="c1"># create cross section points around the origin</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[(</span><span class="n">radius</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="n">i</span><span class="p">),</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="n">i</span><span class="p">),</span> <span class="mf">0.</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_p</span><span class="p">)]</span>
+    <span class="c1"># align cross section points with the edge</span>
+    <span class="k">if</span> <span class="n">flag</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">target_plane</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">target_plane</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">orient_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">target_plane</span><span class="o">=</span><span class="n">target_plane</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">generate_node</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">fac</span><span class="p">):</span>
+    <span class="c1"># initialize mesh object</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="p">()</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'mesh'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="c1"># coordinates of the node</span>
+    <span class="n">pt_cent</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="c1"># u's and v's of all connected edges</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_connected_edges</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="c1"># loop over all edges</span>
+    <span class="n">section_keys</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="c1"># create edge vector</span>
+        <span class="c1"># check if edges point towards or away from the node</span>
+        <span class="k">if</span> <span class="n">u</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
+            <span class="n">vec_nbr</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">vec_nbr</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+        <span class="c1"># create point to locate the inner section</span>
+        <span class="n">pt_1</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">pt_cent</span><span class="p">,</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">vec_nbr</span><span class="p">,</span> <span class="n">fac</span><span class="p">))</span>
+        <span class="c1"># create point to locate the outer section</span>
+        <span class="n">pt_2</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">pt_cent</span><span class="p">,</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">vec_nbr</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="c1"># create inner cross section points</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">generate_section</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="p">[</span><span class="n">pt_1</span><span class="p">,</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">vec_nbr</span><span class="p">)],</span><span class="n">flag</span><span class="p">)</span>
+
+        <span class="n">inner_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+        <span class="c1"># create outer cross section points</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">generate_section</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="p">[</span><span class="n">pt_2</span><span class="p">,</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">vec_nbr</span><span class="p">)],</span><span class="n">flag</span><span class="p">)</span>
+        <span class="n">outer_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+
+        <span class="c1"># create faces between inner and outer cross section</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inner_keys</span><span class="p">)):</span>
+            <span class="n">face</span> <span class="o">=</span> <span class="p">[</span><span class="n">inner_keys</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">inner_keys</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">outer_keys</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">outer_keys</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+
+        <span class="n">section_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_keys</span><span class="p">)</span>
+
+    <span class="c1"># vertices coordinates of all inner cross sections</span>
+    <span class="n">section_keys_all</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">section_keys</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">section_keys_all</span><span class="p">]</span>
+    <span class="c1"># key index list for mapping</span>
+    <span class="n">key_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">section_keys_all</span><span class="p">)]</span>
+    <span class="c1"># compute convex hull for all inner cross section points</span>
+    <span class="n">faces_index</span> <span class="o">=</span> <span class="n">convex_hull</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="c1"># add convex hull faces to the mesh</span>
+    <span class="k">for</span> <span class="n">face_index</span> <span class="ow">in</span> <span class="n">faces_index</span><span class="p">:</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="p">[</span><span class="n">key_index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">face_index</span><span class="p">]</span>
+        <span class="n">add_face</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">section_key</span> <span class="ow">in</span> <span class="n">section_keys</span><span class="p">:</span>
+            <span class="c1"># don't add faces for the cross section caps</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">section_key</span><span class="p">))</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">add_face</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">break</span>
+        <span class="c1">#add face to mesh</span>
+        <span class="k">if</span> <span class="n">add_face</span><span class="p">:</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mesh</span>
+
+
+<span class="c1"># This code computes a solidified smooth mesh from a spatial network of lines.</span>
+<span class="c1"># The shown method yields similar results as the exoskeleton plugin for Grasshopper</span>
+<span class="c1"># to create meshes for 3D pinting.</span>
+
+<span class="c1"># select a network of lines</span>
+<span class="n">objs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="s2">"lines"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="n">radius</span> <span class="o">=</span> <span class="mf">0.3</span>    <span class="c1"># global radius for pipes</span>
+<span class="n">fac</span> <span class="o">=</span> <span class="mf">0.15</span>     <span class="c1"># global scale for smooth corners (&lt;0.5)</span>
+<span class="n">sub_level</span> <span class="o">=</span> <span class="mi">2</span>   <span class="c1"># steps of subdivisions (&lt;3 gets very slow quickly)</span>
+
+<span class="c1"># create network from lines in Rhino</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">rs</span><span class="o">.</span><span class="n">CurveStartPoint</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">CurveEndPoint</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">]</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
+    <span class="c1"># skip if node is not connected to any neighbour (leaf)</span>
+    <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">is_vertex_leaf</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+        <span class="k">continue</span>
+    <span class="c1"># generate mesh per node</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">generate_node</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">fac</span><span class="p">)</span>
+    <span class="c1"># subdivide mesh</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh_subdivide_catmullclark</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">sub_level</span><span class="p">)</span>
+    <span class="c1"># draw mesh</span>
+    <span class="n">mesh_draw_faces</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">redraw</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">join_faces</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div>
+
 </div>
 </div>
 <nav class="compas-sideways">
