@@ -42,6 +42,17 @@
 <span id="acadia2017-day1-python"></span><h1>Python</h1>
 <p>The compas framework is based on Python.
 Python 3 is fully supported and the code is backwards compatible with Python +2.6.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://docs.python.org/3/library/index.html">https://docs.python.org/3/library/index.html</a></li>
+<li><a class="reference external" href="https://docs.python.org/3/howto/index.html">https://docs.python.org/3/howto/index.html</a></li>
+<li><a class="reference external" href="http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html">http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html</a></li>
+<li><a class="reference external" href="https://jeffknupp.com/blog/2012/10/04/writing-idiomatic-python/">https://jeffknupp.com/blog/2012/10/04/writing-idiomatic-python/</a></li>
+<li><a class="reference external" href="https://gist.github.com/JeffPaine/6213790">https://gist.github.com/JeffPaine/6213790</a></li>
+<li><a class="reference external" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/">https://python-3-patterns-idioms-test.readthedocs.io/en/latest/</a></li>
+<li><a class="reference external" href="http://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html">http://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html</a></li>
+<li><a class="reference external" href="https://docs.python.org/3.0/whatsnew/3.0.html">https://docs.python.org/3.0/whatsnew/3.0.html</a></li>
+<li><a class="reference external" href="https://wiki.python.org/moin/Python2orPython3">https://wiki.python.org/moin/Python2orPython3</a></li>
+</ul>
 <div class="section">
 <h2>Built-in types and functions</h2>
 <ul class="simple">
@@ -208,63 +219,6 @@ Python 3 is fully supported and the code is backwards compatible with Python +2.
 </div>
 <div class="section">
 <h3>Examples</h3>
-<p>Compare lookup speeds</p>
-<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="c1"># membership testing</span>
-<span class="c1"># removing duplicates</span>
-<span class="c1"># set operations</span>
-
-<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">sample</span>
-<span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">timeit</span>
-
-<span class="n">n</span> <span class="o">=</span> <span class="mi">100000</span>
-<span class="n">m</span> <span class="o">=</span> <span class="mi">10000</span>
-
-<span class="n">items</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">m</span><span class="p">)</span>
-<span class="n">exclude</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">m</span><span class="p">)</span>
-
-<span class="n">exclude_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">e</span><span class="p">:</span> <span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">}</span>
-
-<span class="n">result</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span>
-<span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">]</span>
-<span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude_dict</span><span class="p">]</span>
-
-<span class="c1"># timeit("result = set(items) - set(exclude)", "from __main__ import items, exclude", number=10)</span>
-<span class="c1"># timeit("result = [i for i in items if i not in exclude]", "from __main__ import items, exclude", number=10)</span>
-<span class="c1"># timeit("result = [i for i in items if i not in exclude]", "from __main__ import items, exclude", number=10)</span>
-
-<span class="c1"># 0.02</span>
-<span class="c1"># 12.58</span>
-</code></pre></div>
-
-<p>Geometric maps</p>
-<p>Given a set of lines, defined by start and end point coordinates,
-determine the connectivity of the lines.</p>
-<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">compas</span>
-<span class="kn">from</span> <span class="nn">compas.files</span> <span class="kn">import</span> <span class="n">OBJReader</span>
-
-<span class="n">obj</span> <span class="o">=</span> <span class="n">OBJReader</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'lines.obj'</span><span class="p">))</span>
-
-<span class="n">index_key</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">vertex</span> <span class="o">=</span> <span class="p">{}</span>
-
-<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">vertices</span><span class="p">)):</span>
-    <span class="n">key</span> <span class="o">=</span> <span class="s1">'{0[0]:.3f},{0[1]:.3f},{0[2]:.3f}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
-    <span class="n">index_key</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
-    <span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span>
-
-<span class="c1"># for index in index_key:</span>
-<span class="c1">#     print index, index_key[index], vertex[index_key[index]]</span>
-
-<span class="n">key_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vertex</span><span class="o">.</span><span class="n">keys</span><span class="p">())}</span>
-<span class="n">index_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">index</span><span class="p">:</span> <span class="n">key_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">index_key</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
-
-<span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="n">xyz</span> <span class="k">for</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">vertex</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span>
-<span class="n">lines</span>    <span class="o">=</span> <span class="p">[[</span><span class="n">index_index</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">line</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">lines</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]</span>
-
-<span class="c1"># print vertices</span>
-<span class="c1"># print lines</span>
-</code></pre></div>
-
 </div>
 </div>
 <div class="section">
@@ -300,6 +254,9 @@ determine the connectivity of the lines.</p>
     <span class="k">pass</span>
 </code></pre></div>
 
+<div class="section">
+<h3>Example</h3>
+</div>
 </div>
 <div class="section">
 <h2>Classes</h2>
@@ -324,7 +281,6 @@ determine the connectivity of the lines.</p>
 </code></pre></div>
 
 <div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="c1"># script vs. module</span>
-<span class="c1"># http://stackoverflow.com/questions/419163/what-does-if-name-main-do</span>
 
 <span class="k">def</span> <span class="nf">f1</span><span class="p">():</span>
     <span class="o">...</span>
@@ -341,16 +297,6 @@ determine the connectivity of the lines.</p>
     <span class="n">f2</span><span class="p">()</span>
 </code></pre></div>
 
-</div>
-<div class="section">
-<h2>Resources</h2>
-<ul class="simple">
-<li><a class="reference external" href="http://python-packaging-user-guide.readthedocs.org/en/latest/installing/">Python Packaging User Guide</a></li>
-<li><a class="reference external" href="http://stackoverflow.com/questions/3220404/why-use-pip-over-easy-install">StackOverflow: Why use pip over easy_install?</a></li>
-<li><a class="reference external" href="http://www.lfd.uci.edu/~gohlke/pythonlibs/">Unofficial Windows Binaries for Python Extension Packages</a></li>
-<li><a class="reference external" href="http://docs.continuum.io/anaconda/index">Anaconda Python distribution</a></li>
-<li><a class="reference external" href="https://www.macports.org/">MacPorts</a></li>
-</ul>
 </div>
 </div>
 <nav class="compas-sideways">
@@ -404,10 +350,12 @@ determine the connectivity of the lines.</p>
 <li class="nav-item"><a class="nav-link reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="#functions">Functions</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#functions">Functions</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#example">Example</a></li>
+</ul>
+</li>
 <li class="nav-item"><a class="nav-link reference internal" href="#classes">Classes</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#script-module-package">Script, Module, Package</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#resources">Resources</a></li>
 </ul>
 </li>
 </ul>

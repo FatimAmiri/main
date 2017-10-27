@@ -25,6 +25,7 @@ FaceNetworkPlotter
       ~FaceNetworkPlotter.draw_points
       ~FaceNetworkPlotter.draw_polygons
       ~FaceNetworkPlotter.draw_vertices
+      ~FaceNetworkPlotter.register_listener
       ~FaceNetworkPlotter.save
       ~FaceNetworkPlotter.show
       ~FaceNetworkPlotter.update
@@ -44,6 +45,7 @@ FaceNetworkPlotter
    
       ~FaceNetworkPlotter.axes
       ~FaceNetworkPlotter.bgcolor
+      ~FaceNetworkPlotter.canvas
       ~FaceNetworkPlotter.figure
       ~FaceNetworkPlotter.interactive
       ~FaceNetworkPlotter.title

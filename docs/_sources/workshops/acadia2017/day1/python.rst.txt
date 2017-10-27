@@ -8,6 +8,21 @@ The compas framework is based on Python.
 Python 3 is fully supported and the code is backwards compatible with Python +2.6.
 
 
+* https://docs.python.org/3/library/index.html
+* https://docs.python.org/3/howto/index.html
+
+
+* http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html
+* https://jeffknupp.com/blog/2012/10/04/writing-idiomatic-python/
+* https://gist.github.com/JeffPaine/6213790
+
+
+* https://python-3-patterns-idioms-test.readthedocs.io/en/latest/
+* http://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html
+* https://docs.python.org/3.0/whatsnew/3.0.html
+* https://wiki.python.org/moin/Python2orPython3
+
+
 Built-in types and functions
 ============================
 
@@ -200,68 +215,6 @@ Dict comprehensions
 Examples
 --------
 
-Compare lookup speeds
-
-.. code-block:: python
-    
-    # membership testing
-    # removing duplicates
-    # set operations
-
-    from random import sample
-    from timeit import timeit
-
-    n = 100000
-    m = 10000
-
-    items = sample(range(n), m)
-    exclude = sample(range(n), m)
-
-    exclude_dict = {e: e for e in exclude}
-
-    result = set(items) - set(exclude)
-    result = [i for i in items if i not in exclude]
-    result = [i for i in items if i not in exclude_dict]
-
-    # timeit("result = set(items) - set(exclude)", "from __main__ import items, exclude", number=10)
-    # timeit("result = [i for i in items if i not in exclude]", "from __main__ import items, exclude", number=10)
-    # timeit("result = [i for i in items if i not in exclude]", "from __main__ import items, exclude", number=10)
-
-    # 0.02
-    # 12.58
-
-Geometric maps
-
-Given a set of lines, defined by start and end point coordinates,
-determine the connectivity of the lines.
-
-.. code-block:: python
-
-    import compas
-    from compas.files import OBJReader
-
-    obj = OBJReader(compas.get('lines.obj'))
-
-    index_key = {}
-    vertex = {}
-
-    for index, xyz in enumerate(iter(obj.vertices)):
-        key = '{0[0]:.3f},{0[1]:.3f},{0[2]:.3f}'.format(xyz)
-        index_key[index] = key
-        vertex[key] = xyz
-
-    # for index in index_key:
-    #     print index, index_key[index], vertex[index_key[index]]
-
-    key_index = {key: index for index, key in enumerate(vertex.keys())}
-    index_index = {index: key_index[key] for index, key in iter(index_key.items())}
-
-    vertices = [xyz for xyz in iter(vertex.values())]
-    lines    = [[index_index[index] for index in line] for line in obj.lines if len(line) == 2]
-
-    # print vertices
-    # print lines
-
 
 Functions
 =========
@@ -298,6 +251,9 @@ Functions
     def f(a, b, *args, **kwargs):
         pass
 
+Example
+-------
+
 
 Classes
 =======
@@ -329,7 +285,6 @@ Script, Module, Package
 .. code-block:: python
 
     # script vs. module
-    # http://stackoverflow.com/questions/419163/what-does-if-name-main-do
 
     def f1():
         ...
@@ -344,13 +299,3 @@ Script, Module, Package
 
         f1()
         f2()
-
-
-Resources
-=========
-
-* `Python Packaging User Guide <http://python-packaging-user-guide.readthedocs.org/en/latest/installing/>`_
-* `StackOverflow: Why use pip over easy_install? <http://stackoverflow.com/questions/3220404/why-use-pip-over-easy-install>`_
-* `Unofficial Windows Binaries for Python Extension Packages <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_
-* `Anaconda Python distribution <http://docs.continuum.io/anaconda/index>`_
-* `MacPorts <https://www.macports.org/>`_

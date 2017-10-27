@@ -99,7 +99,7 @@
 <span class="sd">      Available at: http://ieeexplore.ieee.org/document/4160265/citations</span>
 
 <span class="sd">    """</span>
-<div class="viewcode-block" id="Plotter.__init__"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.visualization.Plotter.__init__.html#compas.visualization.Plotter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">16.0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mf">100.0</span><span class="p">):</span>
+<div class="viewcode-block" id="Plotter.__init__"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.visualization.Plotter.__init__.html#compas.visualization.Plotter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">16.0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">"""Initialises a plotter object"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_interactive</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="kc">None</span>
@@ -135,7 +135,8 @@
             <span class="s1">'polygon.textcolor'</span> <span class="p">:</span> <span class="s1">'#000000'</span><span class="p">,</span>
             <span class="s1">'polygon.fontsize'</span>  <span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tight</span> <span class="o">=</span> <span class="kc">False</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interactive</span> <span class="o">=</span> <span class="n">interactive</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tight</span> <span class="o">=</span> <span class="n">tight</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">interactive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -200,6 +201,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bgcolor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">"""Returns the background color.</span>
 
@@ -249,6 +254,10 @@
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">set_window_title</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Plotter.register_listener"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.visualization.Plotter.register_listener.html#compas.visualization.Plotter.register_listener">[docs]</a>    <span class="k">def</span> <span class="nf">register_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">):</span>
+        <span class="sd">""""""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span><span class="s1">'pick_event'</span><span class="p">,</span> <span class="n">listener</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Plotter.clear_collection"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.visualization.Plotter.clear_collection.html#compas.visualization.Plotter.clear_collection">[docs]</a>    <span class="k">def</span> <span class="nf">clear_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
         <span class="sd">"""Clears a matplotlib collection object.</span>
 
@@ -279,6 +288,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">autoscale</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
+    <span class="c1"># def init_gif(self, filepath, **kwargs):</span>
+    <span class="c1">#     """Saves the plot on a file.</span>
+
+    <span class="c1">#     Parameters</span>
+    <span class="c1">#     ----------</span>
+    <span class="c1">#     filepath : str</span>
+    <span class="c1">#         Full path of the file.</span>
+
+    <span class="c1">#     """</span>
+    <span class="c1">#     self.axes.autoscale()</span>
+    <span class="c1">#     plt.savefig(filepath, **kwargs)</span>
+
+    <span class="c1"># def save_gifimage(self):</span>
+    <span class="c1">#     pass</span>
+
 <div class="viewcode-block" id="Plotter.update"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.visualization.Plotter.update.html#compas.visualization.Plotter.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pause</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">):</span>
         <span class="sd">"""Updates and pauses the plot.</span>
 
@@ -288,7 +312,7 @@
 <span class="sd">            Ammount of time to pause the plot in seconds.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">autoscale</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span>
+        <span class="c1"># self.figure.canvas.draw_idle()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">pause</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Plotter.update_pointcollection"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.visualization.Plotter.update_pointcollection.html#compas.visualization.Plotter.update_pointcollection">[docs]</a>    <span class="k">def</span> <span class="nf">update_pointcollection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>

@@ -24,6 +24,7 @@ NetworkPlotter
       ~NetworkPlotter.draw_points
       ~NetworkPlotter.draw_polygons
       ~NetworkPlotter.draw_vertices
+      ~NetworkPlotter.register_listener
       ~NetworkPlotter.save
       ~NetworkPlotter.show
       ~NetworkPlotter.update
@@ -43,6 +44,7 @@ NetworkPlotter
    
       ~NetworkPlotter.axes
       ~NetworkPlotter.bgcolor
+      ~NetworkPlotter.canvas
       ~NetworkPlotter.figure
       ~NetworkPlotter.interactive
       ~NetworkPlotter.title

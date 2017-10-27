@@ -26,6 +26,7 @@ MeshPlotter
       ~MeshPlotter.draw_points
       ~MeshPlotter.draw_polygons
       ~MeshPlotter.draw_vertices
+      ~MeshPlotter.register_listener
       ~MeshPlotter.save
       ~MeshPlotter.show
       ~MeshPlotter.update
@@ -46,6 +47,7 @@ MeshPlotter
    
       ~MeshPlotter.axes
       ~MeshPlotter.bgcolor
+      ~MeshPlotter.canvas
       ~MeshPlotter.figure
       ~MeshPlotter.interactive
       ~MeshPlotter.title
