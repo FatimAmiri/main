@@ -6,9 +6,6 @@ The main library of compas
 
 .. rst-class:: lead
 
-The main library of the ``compas`` framework defines all core functionality
-and provides integration with well-known CAD software.
-
 
 Table of Contents
 =================
