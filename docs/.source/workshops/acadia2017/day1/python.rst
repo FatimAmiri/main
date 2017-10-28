@@ -4,8 +4,10 @@
 Python
 ********************************************************************************
 
-The compas framework is based on Python.
-Python 3 is fully supported and the code is backwards compatible with Python +2.6.
+.. note::
+
+    The compas framework is based on Python.
+    Python 3 is fully supported and the code is backwards compatible with Python +2.6.
 
 
 Resources
@@ -28,6 +30,10 @@ Resources
 * `The key differences between Python 2.7.x and Python 3.x with examples <http://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html>`_
 * `Should I use Python 2 or Python 3 for my development activity? <https://wiki.python.org/moin/Python2orPython3>`_
 
+**Other**
+
+* `Python Reference (The Right Way) <http://python-reference.readthedocs.io/en/latest/index.html>`_
+
 
 Built-in types and functions
 ============================
@@ -35,74 +41,103 @@ Built-in types and functions
 **Types**
 
 * https://docs.python.org/3/library/stdtypes.html
-* https://docs.python.org/3.6/library/collections.html
-* https://docs.python.org/3.6/library/collections.abc.html
 
-================== ========================================
-numeric types      :obj:`int`, :obj:`float`, :obj:`complex`
-sequence types     :obj:`list`, :obj:`tuple`, :obj:`range`
-text sequence type :obj:`str`
-set types          :obj:`set`, :obj:`frozenset`
-mapping types      :obj:`dict`
-================== ========================================
+================== ======================================== ====================
+numeric types      :obj:`int`, :obj:`float`, :obj:`complex` int(1), float(1), complex(1)
+sequence types     :obj:`list`, :obj:`tuple`, :obj:`range`  [0, 1], (0, 1), range(1)
+text sequence type :obj:`str`                               'hello'
+set types          :obj:`set`, :obj:`frozenset`             set([0, 1, 2]), frozenset([0, 1, 2])
+mapping types      :obj:`dict`                              dict(zero=0, one=1)
+================== ======================================== ====================
 
 **Functions**
 
-https://docs.python.org/3/library/functions.html
+* https://docs.python.org/3/library/functions.html
 
-* enumerate::
+.. code-block:: python
+
+    # enumerate
     
     for i, item in enumerate(items):
         print(i, item)
 
-* format
-* iter
-* len: ``if len(items) == 2: print('not a valid face')``
-* next
-* open
-* range ``for i in range(len(items)): print(i, items[i])``
-* sorted
+    # format
+    
+    format(3.14159, '.3f')
+
+    # len
+
+    if len(vertices) == 2:
+        print('not a valid face')
+
+    # open
+
+    f = open('faces.obj', 'r')
+
+    # range
+
+    numbers = range(10)
+
+    # sorted
+
+    sorted([str(i) for i in range(10)], key=int)
+
+    # zip
+    
+    zip(* [[1, 2, 3], [1, 2, 3], [1, 2, 3]])
 
 
 Containers
 ==========
+
+* https://docs.python.org/3.6/tutorial/datastructures.html
+* https://docs.python.org/3.6/library/collections.html
+* https://docs.python.org/3.6/library/collections.abc.html
+
+====== ============================ ============================================
+type   example                      notes
+====== ============================ ============================================
+list   [1, 2, 3, 4]                 Contains ordered arbitrary objects.
+tuple  (1, 2, 3, 4)                 Contains ordered arbitrary objects. Immutable.
+set    set([1, 2, 3, 4])            Contains unordered, distinct, hashable objects. Supports set operations.
+dict   dict(one=1, two=2, three=3)  Maps unordered distinct hashable values (*keys*) to arbitrary objects.
+====== ============================ ============================================
+
 
 List
 ----
 
 https://docs.python.org/3/library/stdtypes.html#lists
 
-* Ordered items of any type.
-* **Mutable**
-
 .. code-block:: python
 
-    items = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    items = [0, 1, 2, 3]
 
-.. code-block:: python
+    # iterate
 
-    # indexing & slicing
+    for item in items:
+        print(item)
+
+    # index
 
     items[0]     # 0  
-    items[-1]    # 9
+    items[-1]    # 3
 
-    items[:5]    # [0, 1, 2, 3, 4]
-    items[5:]    # [5, 6, 7, 8, 9]
+    # slice
 
-    items[::-1]  # [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
-    items[::2]   # [0, 2, 4, 6, 8]
+    items[:2]    # [0, 1]
+    items[2:]    # [2, 3]
 
-.. code-block:: python
+    items[::-1]  # [3, 2, 1, 0]
+    items[::2]   # [0, 2]
 
-    # methods
+    # modify
 
-    items = [0, 1, 2, 3, 4, 5]
-
-    items.append(6)                  # [1, 2, 3, 4, 5, 6]
-    items.insert(0, 0)               # [0, 1, 2, 3, 4, 5, 6]
-    items.extend([7, 8, 9, 10, 11])  # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-    items.pop()                      # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    items.remove(-1)                 # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    items.append(4)          # [0, 1, 2, 3, 4]
+    items.insert(0, -1)      # [-1, 0, 1, 2, 3, 4]
+    items.extend([5, 6, 7])  # [-1, 0, 1, 2, 3, 4, 5, 6, 7]
+    items.pop()              # 7
+    items.remove(-1)         # [0, 1, 2, 3, 4, 5, 6]
 
 
 List comprehensions
@@ -115,37 +150,24 @@ Generate lists with an expression in brackets.
     # list construction
 
     numbers = [n for n in range(10)]
-    odd     = [n for n in range(10) if n % 2 == 1]
-    even    = [n for n in range(10) if n % 2 == 0]
-    squares = [n ** 2 for n in range(10)]
-    even    = [n if n % 2 == 0 else None for n in range(10)]
 
-.. code-block:: python
+    # filtering
+
+    even = [n for n in numbers if n % 2 == 0]
+
+    # function mapping
+
+    squares = [pow(n, 2) for n in numbers]
 
     # flattening
 
+    nested = [[1, 2, 3], [1, 2, 3], [1, 2, 3]]
+    flat   = [n for numbers in nested for n in numbers]
 
-
-.. code-block:: python
-
-    # vector length
-
-    vector = [1.0, 0.0]
-    length = sum([x ** 2 for x in vector]) ** 0.5
-
-.. code-block:: python
-
-    # dot product
-
-    vectors = [[1.0, 0.0], [0.0, 1.0]]
-    dot = sum([a * b for a, b in zip(* vectors)])
-
-.. code-block:: python
-
-    # centroid
+    # geometry
 
     points = [[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]]
-    centroid = [sum(axis) / len(vertices) for axis in zip(* vertices)]
+    centroid = [sum(axis) / len(points) for axis in zip(* points)]
 
 
 Tuple
@@ -153,21 +175,20 @@ Tuple
 
 https://docs.python.org/3/library/stdtypes.html#tuples
 
-* Ordered items of any type.
-* **Immutable**
-
 .. code-block:: python
 
     rgb = 255, 0, 0
 
-    r = rgb[0]  # 255
-    g = rgb[1]  # 0
-    b = rgb[2]  # 0
+    # iterate
 
-.. code-block:: python
+    for color in rgb:
+        print(color)
 
-    rgb[0] = 0
-    rgb[1] = 255
+    r, g, b = rgb
+
+    rgb[0]  # 255
+    rgb[1]  # 0
+    rgb[2]  # 0
 
 
 Set
@@ -175,21 +196,27 @@ Set
 
 https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset
 
-* Unordered, distinct, hashable objects.
-* **Mutable**
-
 .. code-block:: python
 
-    items = set([1, 2, 3, 4])
+    items = set([1, 1, 2, 3, 3, 4])
+
+    for item in items:
+        print(item)
+
+    items.add(5)
+    items.add(5)
+    items.remove(2)
+
+    numbers = range(10)
+    even = range(10, 2)
+
+    odd = set(numbers) - set(even)
 
 
 Dictionary
 ----------
 
 https://docs.python.org/3/library/stdtypes.html#mapping-types-dict
-
-* Maps unordered, distinct, hashable values (*keys*) to arbitrary objects
-* **Mutable**
 
 .. code-block:: python
 
