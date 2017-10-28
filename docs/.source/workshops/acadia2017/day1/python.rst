@@ -8,38 +8,53 @@ The compas framework is based on Python.
 Python 3 is fully supported and the code is backwards compatible with Python +2.6.
 
 
-* https://docs.python.org/3/library/index.html
-* https://docs.python.org/3/howto/index.html
+Resources
+=========
 
+**Python**
 
-* http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html
-* https://jeffknupp.com/blog/2012/10/04/writing-idiomatic-python/
-* https://gist.github.com/JeffPaine/6213790
+* `Python 3: standard library <https://docs.python.org/3/library/index.html>`_
+* `Python 3: how-to guides <https://docs.python.org/3/howto/index.html>`_
 
+**Idiomatic Python**
 
-* https://python-3-patterns-idioms-test.readthedocs.io/en/latest/
-* http://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html
-* https://docs.python.org/3.0/whatsnew/3.0.html
-* https://wiki.python.org/moin/Python2orPython3
+* `Code Like a Pythonista: Idiomatic Python <http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html>`_
+* `Transforming Code into Beautiful, Idiomatic Python <https://gist.github.com/JeffPaine/6213790>`_
+* `Python 3 Patterns, Recipes and Idioms <https://python-3-patterns-idioms-test.readthedocs.io/en/latest/>`_
+
+**Python 2 vs 3**
+
+* `What's New in Python 3 <https://docs.python.org/3.0/whatsnew/3.0.html>`_
+* `The key differences between Python 2.7.x and Python 3.x with examples <http://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html>`_
+* `Should I use Python 2 or Python 3 for my development activity? <https://wiki.python.org/moin/Python2orPython3>`_
 
 
 Built-in types and functions
 ============================
 
-* https://docs.python.org/3/library/stdtypes.html
-* https://docs.python.org/3/library/functions.html
-
 **Types**
 
-* numeric types: :obj:`int`, :obj:`float`, :obj:`complex`
-* sequence types: :obj:`list`, :obj:`tuple`, :obj:`range`
-* text sequence type: :obj:`str`
-* set types: :obj:`set`, :obj:`frozenset`
-* mapping types: :obj:`dict`
+* https://docs.python.org/3/library/stdtypes.html
+* https://docs.python.org/3.6/library/collections.html
+* https://docs.python.org/3.6/library/collections.abc.html
+
+================== ========================================
+numeric types      :obj:`int`, :obj:`float`, :obj:`complex`
+sequence types     :obj:`list`, :obj:`tuple`, :obj:`range`
+text sequence type :obj:`str`
+set types          :obj:`set`, :obj:`frozenset`
+mapping types      :obj:`dict`
+================== ========================================
 
 **Functions**
 
-* enumerate: ``for i, item in enumerate(items): print(i, item)``
+https://docs.python.org/3/library/functions.html
+
+* enumerate::
+    
+    for i, item in enumerate(items):
+        print(i, item)
+
 * format
 * iter
 * len: ``if len(items) == 2: print('not a valid face')``
