@@ -3,7 +3,7 @@
 import compas
 
 from compas.datastructures import Mesh
-from compas.visualization.viewers.meshviewer import MeshViewer
+from compas.visualization.viewers import MeshViewer
 
 from compas.numerical import fd
 
@@ -44,11 +44,13 @@ for u, v in mesh.edges_on_boundary():
 
 # extract the structural data required for form finding
 
-xyz = mesh.get_vertices_attributes('xyz')
+key_index = mesh.key_index()
+
+xyz   = mesh.get_vertices_attributes('xyz')
 loads = mesh.get_vertices_attributes(('px', 'py', 'pz'))
-fixed = mesh.vertices_where({'is_anchor': True})
+fixed = [key_index[key] for key in mesh.vertices_where({'is_anchor': True})]
 edges = mesh.indexed_edges()
-q = mesh.get_edges_attribute('q')
+q     = mesh.get_edges_attribute('q')
 
 # run the force density method
 # extract the updated coordinates from the result
@@ -67,4 +69,5 @@ for index, (key, attr) in enumerate(mesh.vertices(True)):
 
 viewer = MeshViewer(mesh, 800, 600)
 viewer.setup()
+viewer.camera.zoom_in(5)
 viewer.show()

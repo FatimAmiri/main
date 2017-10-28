@@ -3,7 +3,7 @@
 import compas_rhino
 
 from compas.datastructures import Mesh
-from compas.datastructures import delaunay_from_points
+from compas.datastructures import mesh_delaunay_from_points
 
 
 __author__    = ['Tom Van Mele', 'Matthias Rippmann']
@@ -15,7 +15,7 @@ __email__     = 'van.mele@arch.ethz.ch'
 guids = compas_rhino.select_points()
 vertices = compas_rhino.get_point_coordinates(guids)
 
-faces = delaunay_from_points(vertices)
+faces = mesh_delaunay_from_points(vertices)
 
 mesh = Mesh.from_vertices_and_faces(vertices, faces)
 

@@ -7,6 +7,11 @@ For more info see:
 """
 from __future__ import print_function
 
+import os
+
+import urllib
+import tarfile
+
 import compas
 
 from numpy import zeros
@@ -28,8 +33,15 @@ __email__     = 'van.mele@arch.ethz.ch'
 
 # make a *stanford bunny* mesh
 
-file = compas.get('stanford_bunny.ply')
-mesh = Mesh.from_ply(file)
+bunny = 'bunny/reconstruction/bun_zipper.ply'
+
+if not os.path.exists(bunny):
+    urllib.urlretrieve('http://graphics.stanford.edu/pub/3Dscanrep/bunny.tar.gz', 'bunny.tar.gz')
+    tar = tarfile.open("bunny.tar.gz")
+    tar.extractall()
+    tar.close()
+
+mesh = Mesh.from_ply(bunny)
 
 # there seem to be one or more disconnected vertices
 
@@ -132,7 +144,7 @@ for u, v in mesh.wireframe():
 
 # visualise the result
 
-plotter = MeshPlotter(mesh)
+plotter = MeshPlotter(mesh, figsize=(10, 6))
 
-plotter.draw_xlines(lines)
+plotter.draw_lines(lines)
 plotter.show()

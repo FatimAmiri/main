@@ -1,6 +1,8 @@
 from __future__ import print_function
 from __future__ import division
 
+from System.Drawing.Color import FromArgb
+
 from copy import deepcopy
 
 import compas_rhino
@@ -20,18 +22,6 @@ __author__    = ['Tom Van Mele', ]
 __copyright__ = 'Copyright 2016 - Block Research Group, ETH Zurich'
 __license__   = 'MIT License'
 __email__     = 'vanmelet@ethz.ch'
-
-
-# define a callback to visualise the planarisation process
-
-def callback(vertices, faces, k, args):
-    conduit, surf, fixed = args
-
-    for key in vertices:
-        if key in fixed:
-            vertices[key][2] = 0
-
-    conduit.redraw(k)
 
 
 # select an input surface and convert it to a mesh
@@ -54,21 +44,30 @@ faces = [mesh.face_vertices(fkey) for fkey in mesh.faces()]
 
 # planarize with a conduit for visualization
 
-conduit = FacesConduit(vertices_1, faces, refreshrate=5)
+conduit = FacesConduit(vertices_1, faces,  refreshrate=5)
+
+# define a callback to visualise the planarisation process
+
+def callback(vertices, faces, k, args):
+    for key in vertices_1:
+        if key in fixed:
+            vertices_1[key][2] = 0
+    if k % 5 == 0:
+        dev = flatness(vertices, faces, 0.02)
+        conduit.colors = [FromArgb(* i_to_rgb(dev[i])) for i in range(len(faces))]
+        conduit.redraw()
 
 with conduit.enabled():
     planarize_faces(
         vertices_1,
         faces,
         kmax=500,
-        callback=callback,
-        callback_args=(conduit, surf, fixed)
-    )
+        callback=callback)
 
 # compute the *flatness*
 
-dev0 = flatness(vertices_0, faces)
-dev1 = flatness(vertices_1, faces)
+dev0 = flatness(vertices_0, faces, 0.02)
+dev1 = flatness(vertices_1, faces, 0.02)
 
 # draw the original
 
@@ -80,8 +79,6 @@ compas_rhino.mesh_draw_faces(
 )
 
 # draw the result
-
-mesh.name = 'Flat'
 
 for key, attr in mesh.vertices(True):
     attr['x'] = vertices_1[key][0]
