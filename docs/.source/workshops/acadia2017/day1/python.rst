@@ -50,6 +50,7 @@ set types          :obj:`set`, :obj:`frozenset`             ``set([0, 1, 2])``, 
 mapping types      :obj:`dict`                              ``dict(zero=0, one=1)``
 ================== ======================================== ====================
 
+
 **Functions**
 
 * https://docs.python.org/3/library/functions.html
@@ -263,13 +264,15 @@ Exercise
 
 Compute the connectivity of a set of lines defined by pairs of point coordinates.
 
+
 **Lines**
 
 * :download:`lines.json </../../examples/workshops/acadia2017/lines.json>`
 * :download:`lines_big.json </../../examples/workshops/acadia2017/lines_big.json>`
 * :download:`lines_bigger.json </../../examples/workshops/acadia2017/lines_bigger.json>`
 
-**Approach 1** Compare the dsitance between points
+
+**Approach 1.** Compare the distances between points
 
 * :download:`python_comparison.py </../../examples/workshops/acadia2017/python_comparison.py>`
 
@@ -298,9 +301,9 @@ Compute the connectivity of a set of lines defined by pairs of point coordinates
     print(len(edges)) == len(set(edges))
 
 
-**Approach 2**
+**Approach 2.** Map points to locations
 
-* :download:`pytthon_geomap.py </../../examples/workshops/acadia2017/python_geomap.py>`
+* :download:`python_geomap.py </../../examples/workshops/acadia2017/python_geomap.py>`
 
 .. code-block:: python
 
@@ -362,6 +365,7 @@ Functions
     def f(a, b, *args, **kwargs):
         pass
 
+
 Exercise
 --------
 
@@ -389,7 +393,7 @@ Classes
 
 .. code-block:: python
 
-    class Vector():
+    class Vector(object):
 
         def __init__(self, x, y, z):
             self.x = x
