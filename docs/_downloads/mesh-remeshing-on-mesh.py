@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-from compas.utilities import geometric_key
 from compas.geometry import centroid_points
 from compas.datastructures import Mesh
 from compas.datastructures import trimesh_remesh
@@ -20,15 +19,55 @@ __license__   = 'MIT'
 __email__     = 'van.mele@arch.ethz.ch'
 
 
+# set the remeshing parameters
+
+length = 0.25
+kmax = 300
+
+
+# select the original mesh
+# select the border
+# select the fixed points
+
+guid_target = compas_rhino.select_mesh()
+guid_border = compas_rhino.select_polyline()
+guid_points = compas_rhino.select_points()
+
+
+# wrap the Rhino mesh object for convenience
+# wrap the Rhino curve object for convenience
+# get the point coordinates
+
+target = RhinoMesh(guid_target)
+border = RhinoCurve(guid_border)
+points = compas_rhino.get_point_coordinates(guid_points)
+
+
+# make a mesh datastructure from the Rhino mesh
+# triangulate the mesh
+
+mesh = compas_rhino.mesh_from_guid(Mesh, guid_target)
+mesh_quads_to_triangles(mesh)
+
+
+# identify the fixed vertices
+# by matching the coordinates of the selected points
+# up to a precision
+
+keys  = compas_rhino.mesh_identify_vertices(mesh, points, '1f')
+fixed = set(keys)
+
+
+# create a conduit for visualisation
+# define a callback
+# for updating the conduit
+# and for pulling the mesh back to the original during remeshing
+# and for keeping the boundary on the boundary curve
+
+conduit = MeshConduit(mesh, refreshrate=2)
+
 def callback(mesh, k, args):
-    conduit, fixed, target, border = args
-
-    # prevent the dreaded Rhino spinning wheel
-    compas_rhino.wait()
-
     boundary = set(mesh.vertices_on_boundary())
-
-    # pull the mesh vertices back to the target and border
     for key, attr in mesh.vertices(data=True):
         if key in fixed:
             continue
@@ -42,76 +81,25 @@ def callback(mesh, k, args):
             attr['x'] = x
             attr['y'] = y
             attr['z'] = z
-
-    # update the conduit at the specified rate
     conduit.redraw(k)
 
 
-# get the target mesh
-# and its border
+# run the remeshing algorithm
+# draw the result
 
-guid_target = compas_rhino.select_mesh()
-guid_border = compas_rhino.select_polyline()
-
-# get fixed points
-
-points = compas_rhino.get_point_coordinates(compas_rhino.select_points())
-
-# make a remeshing mesh
-
-mesh = compas_rhino.mesh_from_guid(Mesh, guid_target)
-
-mesh_quads_to_triangles(mesh)
-
-# update its attributes
-
-mesh.update_default_vertex_attributes({'is_fixed': False})
-
-# make the target and border objects
-
-target = RhinoMesh(guid_target)
-border = RhinoCurve(guid_border)
-
-# make a map of vertex coorindates
-# with 1 float precision
-
-gkey_key = {geometric_key(mesh.vertex_coordinates(key), '1f'): key for key in mesh.vertices()}
-
-# identify fixed points
-
-for xyz in points:
-    gkey = geometric_key(xyz, '1f')
-    if gkey in gkey_key:
-        key = gkey_key[gkey]
-        mesh.vertex[key]['is_fixed'] = True
-
-# find the fixed vertices
-
-fixed = set(mesh.vertices_where({'is_fixed': True}))
-
-# create a conduit for visualisation
-
-conduit = MeshConduit(mesh, refreshrate=2)
-
-# set the target length
-
-length = 0.25
-
-# visualise the process with a conduit
 with conduit.enabled():
     trimesh_remesh(
         mesh,
         target=length,
+        kmax=kmax,
         tol=0.1,
         divergence=0.01,
-        kmax=500,
         allow_boundary_split=True,
         allow_boundary_swap=True,
         allow_boundary_collapse=False,
         smooth=True,
         fixed=fixed,
-        callback=callback,
-        callback_args=(conduit, fixed, target, border)
-    )
+        callback=callback)
+
 
 compas_rhino.mesh_draw(mesh, layer='remeshed', clear_layer=True)

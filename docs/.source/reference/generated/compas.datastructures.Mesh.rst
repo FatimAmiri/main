@@ -63,6 +63,7 @@ Mesh
       ~Mesh.from_lines
       ~Mesh.from_obj
       ~Mesh.from_ply
+      ~Mesh.from_points
       ~Mesh.from_polyhedron
       ~Mesh.from_vertices_and_faces
       ~Mesh.get_any_edge

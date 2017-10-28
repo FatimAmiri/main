@@ -8,42 +8,6 @@ datastructures
 .. module:: compas.datastructures
 
 
-Network
-=======
-
-.. autosummary::
-    :toctree: generated/
-
-    Network
-    FaceNetwork
-
-
-network.operations
-------------------
-
-.. autosummary::
-    :toctree: generated/
-
-    network_split_edge
-
-
-network.algorithms
-------------------
-
-.. autosummary::
-    :toctree: generated/
-
-    network_count_crossings
-    network_dual
-    network_embed_in_plane
-    network_find_faces
-    network_find_crossings
-    network_is_xy
-    network_is_crossed
-    network_is_planar
-    network_is_planar_embedding
-
-
 Mesh
 ====
 
@@ -83,7 +47,6 @@ mesh.algorithms
 .. autosummary::
     :toctree: generated/
 
-    mesh_delaunay_from_points
     mesh_dual
     mesh_flip_cycles
     mesh_subdivide
@@ -91,8 +54,13 @@ mesh.algorithms
     mesh_subdivide_catmullclark
     mesh_subdivide_doosabin
     mesh_unify_cycles
-    mesh_voronoi_from_points
     mesh_cull_duplicate_vertices
+
+.. autosummary::
+    :toctree: generated/
+
+    delaunay_from_points
+    voronoi_from_delaunay
 
 
 **The following operations are designed for triangle meshes.**
@@ -102,6 +70,42 @@ mesh.algorithms
 
     trimesh_remesh
     trimesh_subdivide_loop
+
+
+Network
+=======
+
+.. autosummary::
+    :toctree: generated/
+
+    Network
+    FaceNetwork
+
+
+network.operations
+------------------
+
+.. autosummary::
+    :toctree: generated/
+
+    network_split_edge
+
+
+network.algorithms
+------------------
+
+.. autosummary::
+    :toctree: generated/
+
+    network_count_crossings
+    network_dual
+    network_embed_in_plane
+    network_find_faces
+    network_find_crossings
+    network_is_xy
+    network_is_crossed
+    network_is_planar
+    network_is_planar_embedding
 
 
 VolMesh

@@ -18,7 +18,7 @@ __email__     = 'van.mele@arch.ethz.ch'
 
 mesh = Mesh.from_obj(compas.get_data('faces.obj'))
 
-plotter = MeshPlotter(mesh)
+plotter = MeshPlotter(mesh, figsize=(10, 7))
 
 plotter.defaults['face.facecolor'] = '#eeeeee'
 plotter.defaults['face.edgecolor'] = '#cccccc'

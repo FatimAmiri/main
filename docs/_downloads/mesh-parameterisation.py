@@ -28,10 +28,7 @@ __email__     = 'van.mele@arch.ethz.ch'
 
 # make a *stanford bunny* mesh
 
-file = compas.get('stanford_bunny.ply')
-mesh = Mesh.from_ply(file)
-
-# there seem to be one or more disconnected vertices
+mesh = Mesh.from_ply(compas.get_bunny())
 
 mesh.cull_vertices()
 
@@ -132,7 +129,7 @@ for u, v in mesh.wireframe():
 
 # visualise the result
 
-plotter = MeshPlotter(mesh)
+plotter = MeshPlotter(mesh, figsize=(10, 6))
 
-plotter.draw_xlines(lines)
+plotter.draw_lines(lines)
 plotter.show()
