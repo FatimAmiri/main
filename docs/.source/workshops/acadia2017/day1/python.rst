@@ -265,17 +265,66 @@ Compute the connectivity of a set of lines defined by pairs of point coordinates
 
 **Lines**
 
-* :download:`goldenratio.py </../../examples/workshops/acadia2017/lines.json>`
-* :download:`goldenratio.py </../../examples/workshops/acadia2017/lines_big.json>`
-* :download:`goldenratio.py </../../examples/workshops/acadia2017/lines_bigger.json>`
+* :download:`lines.json </../../examples/workshops/acadia2017/lines.json>`
+* :download:`lines_big.json </../../examples/workshops/acadia2017/lines_big.json>`
+* :download:`lines_bigger.json </../../examples/workshops/acadia2017/lines_bigger.json>`
 
-**Approach 1**
+**Approach 1** Compare the dsitance between points
 
-* :download:`goldenratio.py </../../examples/workshops/acadia2017/python_lines.py>`
+* :download:`python_comparison.py </../../examples/workshops/acadia2017/python_comparison.py>`
+
+.. code-block:: python
+
+    import json
+
+    with open('lines.json', 'r') as f:
+        lines = json.load(f)
+
+    print(len(lines))
+
+    tol = 0.001
+
+    vertices = []
+    edges = []
+
+    for sp, ep in lines:
+
+        # do something magical here
+
+
+    # verify the result
+
+    print(len(lines) == len(edges))
+    print(len(edges)) == len(set(edges))
+
 
 **Approach 2**
 
-* :download:`goldenratio.py </../../examples/workshops/acadia2017/python_geomap.py>`
+* :download:`pytthon_geomap.py </../../examples/workshops/acadia2017/python_geomap.py>`
+
+.. code-block:: python
+
+    import json
+
+    with open('lines.json', 'r') as f:
+        lines = json.load(f)
+
+    print(len(lines))
+
+    tol = '3f'
+
+    vertexdict = {}
+    edges = []
+
+    for sp, ep in lines:
+
+        # do something magical here
+
+
+    # verify the result
+
+    print(len(lines) == len(edges))
+    print(len(edges)) == len(set(edges))
 
 
 Functions
@@ -330,6 +379,9 @@ Compute an approximation of the golden ratio using a reecursive fobonacci functi
         if n == 2:
             return 1
         return fib(n - 1) + fib(n - 2)
+
+    numbers = [fib(i) for i in range(10)]
+    ratio = numbers[-2] / numbers[-1]
 
 
 Classes
