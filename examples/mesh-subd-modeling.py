@@ -9,10 +9,11 @@ to create meshes for 3D printing.
 from __future__ import print_function
 from __future__ import division
 
+from functools import partial
+
 import compas_rhino
 
 from compas.datastructures import Mesh
-from compas.geometry import Polyhedron
 from compas.datastructures import mesh_subdivide
 
 
@@ -24,8 +25,8 @@ __email__     = 'van.mele@arch.ethz.ch'
 
 # make a control mesh
 
-cube = Polyhedron.generate(6)
-mesh = Mesh.from_vertices_and_faces(cube.vertices, cube.faces)
+mesh = Mesh.from_polyhedron(6)
+
 
 # give it a name
 # and set default vertex attributes
@@ -33,17 +34,26 @@ mesh = Mesh.from_vertices_and_faces(cube.vertices, cube.faces)
 mesh.attributes['name'] = 'Control'
 mesh.update_default_vertex_attributes({'is_fixed': False})
 
-# draw the control mesh
-# with showing the faces
 
-compas_rhino.mesh_draw(
-    mesh,
+# make a partial function out of compas_rhino.mesh_draw
+# (a function with some of the parameters already filled in)
+# that can be used more easily to redraw the mesh
+# with the same settings in the update loop
+
+draw = partial(
+    compas_rhino.mesh_draw,
     layer='SubdModeling::Control',
     clear_layer=True,
     show_faces=False,
     show_vertices=True,
-    show_edges=True
-)
+    show_edges=True)
+
+
+# draw the control mesh
+# with showing the faces
+
+draw(mesh)
+
 
 # allow the user to change the attributes of the vertices
 # note: the interaction loop exits
@@ -54,18 +64,8 @@ while True:
     if not keys:
         break
     compas_rhino.mesh_update_vertex_attributes(mesh, keys)
+    draw(mesh, vertexcolor={key: '#ff0000' for key in mesh.vertices_where({'is_fixed': True})})
 
-# redraw the mesh to reflect the changes by the user
-
-compas_rhino.mesh_draw(
-    mesh,
-    layer='SubdModeling::Control',
-    clear_layer=True,
-    show_faces=False,
-    show_vertices=True,
-    show_edges=True,
-    vertexcolor={key: '#ff0000' for key in mesh.vertices_where({'is_fixed': True})}
-)
 
 # make a subd mesh (using catmullclark)
 # keep the vertices fixed
@@ -74,17 +74,17 @@ compas_rhino.mesh_draw(
 fixed = mesh.vertices_where({'is_fixed': True})
 subd = mesh_subdivide(mesh, scheme='catmullclark', k=5, fixed=fixed)
 
+
 # give the mesh a (different) name
 
 subd.attributes['name'] = 'Mesh'
 
+
 # draw the result
 
-compas_rhino.mesh_draw(
+compas_rhino.mesh_draw_faces(
     subd,
     layer='SubdModeling::Mesh',
     clear_layer=True,
-    show_faces=True,
-    show_vertices=False,
-    show_edges=False
+    join_faces=True
 )

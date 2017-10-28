@@ -7,11 +7,6 @@ For more info see:
 """
 from __future__ import print_function
 
-import os
-
-import urllib
-import tarfile
-
 import compas
 
 from numpy import zeros
@@ -33,17 +28,7 @@ __email__     = 'van.mele@arch.ethz.ch'
 
 # make a *stanford bunny* mesh
 
-bunny = 'bunny/reconstruction/bun_zipper.ply'
-
-if not os.path.exists(bunny):
-    urllib.urlretrieve('http://graphics.stanford.edu/pub/3Dscanrep/bunny.tar.gz', 'bunny.tar.gz')
-    tar = tarfile.open("bunny.tar.gz")
-    tar.extractall()
-    tar.close()
-
-mesh = Mesh.from_ply(bunny)
-
-# there seem to be one or more disconnected vertices
+mesh = Mesh.from_ply(compas.get_bunny())
 
 mesh.cull_vertices()
 

@@ -22,29 +22,49 @@ __license__   = 'MIT'
 __email__     = 'van.mele@arch.ethz.ch'
 
 
-def callback(vertices, k, args):
-    conduit, edges = args
-    conduit.lines = [[vertices[u], vertices[v]] for u, v in iter(edges)]
-    conduit.redraw(k)
+dz = 10
 
+# select a Rhino mesh
+# and make it into a mesh datastructure
 
 guid = compas_rhino.select_mesh()
 mesh = compas_rhino.mesh_from_guid(Mesh, guid)
 
-fixed = set(mesh.vertices_on_boundary())
 
-for key in [161, 256]:
-    mesh.vertex[key]['z'] -= 15
-    fixed.add(key)
+# extract the data needed by the smoothing algorithm
+# identify the boundary as fixed
 
 vertices  = {key: mesh.vertex_coordinates(key) for key in mesh.vertices()}
 faces     = {key: mesh.face_vertices(key) for key in mesh.faces()}
 adjacency = {key: mesh.vertex_faces(key) for key in mesh.vertices()}
+fixed     = set(mesh.vertices_on_boundary())
+
+
+# add two additional fixed vertices
+# on the inside of the mesh
+# and set their z coordinates to a low point
+
+for key in (161, 256):
+    vertices[key][2] -= dz
+    fixed.add(key)
+
+
+# make a conduit for visualisation
+# and a callback for updating the conduit
 
 edges = list(mesh.edges())
 lines = [[vertices[u], vertices[v]] for u, v in edges]
 
 conduit = LinesConduit(lines, refreshrate=5)
+
+def callback(vertices, k, args):
+    conduit.lines = [[vertices[u], vertices[v]] for u, v in iter(edges)]
+    conduit.redraw(k)
+
+
+# run the smoothing algorithm
+# update the mesh
+# and display the results
 
 with conduit.enabled():
     smooth_area(
@@ -53,9 +73,7 @@ with conduit.enabled():
         adjacency,
         fixed=fixed,
         kmax=100,
-        callback=callback,
-        callback_args=(conduit, edges)
-    )
+        callback=callback)
 
 for key, attr in mesh.vertices(True):
     attr['x'] = vertices[key][0]

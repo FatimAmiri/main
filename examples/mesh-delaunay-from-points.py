@@ -3,7 +3,6 @@
 import compas_rhino
 
 from compas.datastructures import Mesh
-from compas.datastructures import mesh_delaunay_from_points
 
 
 __author__    = ['Tom Van Mele', 'Matthias Rippmann']
@@ -12,11 +11,18 @@ __license__   = 'MIT'
 __email__     = 'van.mele@arch.ethz.ch'
 
 
+# select the points
+# and get their coordinates
+
 guids = compas_rhino.select_points()
-vertices = compas_rhino.get_point_coordinates(guids)
+points = compas_rhino.get_point_coordinates(guids)
 
-faces = mesh_delaunay_from_points(vertices)
 
-mesh = Mesh.from_vertices_and_faces(vertices, faces)
+# make a mesh from the delaunay triangulation of the points
+
+mesh = Mesh.from_points(points)
+
+
+# draw in Rhino
 
 compas_rhino.mesh_draw(mesh)
