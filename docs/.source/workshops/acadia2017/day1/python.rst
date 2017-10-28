@@ -43,11 +43,11 @@ Built-in types and functions
 * https://docs.python.org/3/library/stdtypes.html
 
 ================== ======================================== ====================
-numeric types      :obj:`int`, :obj:`float`, :obj:`complex` int(1), float(1), complex(1)
-sequence types     :obj:`list`, :obj:`tuple`, :obj:`range`  [0, 1], (0, 1), range(1)
-text sequence type :obj:`str`                               'hello'
-set types          :obj:`set`, :obj:`frozenset`             set([0, 1, 2]), frozenset([0, 1, 2])
-mapping types      :obj:`dict`                              dict(zero=0, one=1)
+numeric types      :obj:`int`, :obj:`float`, :obj:`complex` ``int(1)``, ``float(1)``, ``complex(1)``
+sequence types     :obj:`list`, :obj:`tuple`, :obj:`range`  ``[0, 1]``, ``(0, 1)``, ``range(1)``
+text sequence type :obj:`str`                               ``'hello'``
+set types          :obj:`set`, :obj:`frozenset`             ``set([0, 1, 2])``, ``frozenset([0, 1, 2])``
+mapping types      :obj:`dict`                              ``dict(zero=0, one=1)``
 ================== ======================================== ====================
 
 **Functions**
@@ -94,14 +94,14 @@ Containers
 * https://docs.python.org/3.6/library/collections.html
 * https://docs.python.org/3.6/library/collections.abc.html
 
-====== ============================ ============================================
-type   example                      notes
-====== ============================ ============================================
-list   [1, 2, 3, 4]                 Contains ordered arbitrary objects.
-tuple  (1, 2, 3, 4)                 Contains ordered arbitrary objects. Immutable.
-set    set([1, 2, 3, 4])            Contains unordered, distinct, hashable objects. Supports set operations.
-dict   dict(one=1, two=2, three=3)  Maps unordered distinct hashable values (*keys*) to arbitrary objects.
-====== ============================ ============================================
+====== ============================ =============================================================== ==============
+type   example                      description                                                     operations
+====== ============================ =============================================================== ==============
+list   [1, 2, 3, 4]                 Contains ordered arbitrary objects.                             iterate, index, slice, modify
+tuple  (1, 2, 3, 4)                 Contains ordered arbitrary objects.                             iterate, index, slice
+set    set([1, 2, 3, 4])            Contains unordered, distinct, hashable objects.                 iterate, modify
+dict   dict(one=1, two=2, three=3)  Maps unordered distinct hashable objects to arbitrary objects.  iterate, modify 
+====== ============================ =============================================================== ==============
 
 
 List
@@ -184,11 +184,16 @@ https://docs.python.org/3/library/stdtypes.html#tuples
     for color in rgb:
         print(color)
 
-    r, g, b = rgb
+    # index
 
     rgb[0]  # 255
     rgb[1]  # 0
     rgb[2]  # 0
+
+    # slice
+
+    rgb[1:]   # (0, 0)
+    rgb[:-1]  # (255, 0)
 
 
 Set
@@ -200,17 +205,16 @@ https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset
 
     items = set([1, 1, 2, 3, 3, 4])
 
+    # iterate
+
     for item in items:
         print(item)
+
+    # modify
 
     items.add(5)
     items.add(5)
     items.remove(2)
-
-    numbers = range(10)
-    even = range(10, 2)
-
-    odd = set(numbers) - set(even)
 
 
 Dictionary
@@ -220,30 +224,30 @@ https://docs.python.org/3/library/stdtypes.html#mapping-types-dict
 
 .. code-block:: python
 
-    items = {'1': 1, '2': 2, '3': 3, '4': 4}
+    items = dict(one=1, two=2, three=3)
+
+    # iterate
 
     for key in items:
-        print key, items[key]
+        print(key, items[key])
 
     for key in items.keys():
-        print key, items[key]
+        print(key, items[key])
 
     for key, value in items.items():
-        print key, value
+        print(key, value)
 
     for value in items.values():
-        print value
+        print(value)
 
-.. code-block:: python
+    # modify
 
-    # pop
-    # popitem
-    # setdefault
-    # get
+    items['zero'] = 0
+    items.pop('zero')
+    items.popitem()
+    items.setdefault('four', 4)
 
-.. code-block:: python
-
-    # sort dictionary based on values
+    items.get('five', 5)
 
 
 Dict comprehensions
@@ -254,8 +258,24 @@ Dict comprehensions
     items = {index: value for index, value in enumerate(range(10))}
 
 
-Examples
+Exercise
 --------
+
+Compute the connectivity of a set of lines defined by pairs of point coordinates.
+
+**Lines**
+
+* :download:`goldenratio.py </../../examples/workshops/acadia2017/lines.json>`
+* :download:`goldenratio.py </../../examples/workshops/acadia2017/lines_big.json>`
+* :download:`goldenratio.py </../../examples/workshops/acadia2017/lines_bigger.json>`
+
+**Approach 1**
+
+* :download:`goldenratio.py </../../examples/workshops/acadia2017/python_lines.py>`
+
+**Approach 2**
+
+* :download:`goldenratio.py </../../examples/workshops/acadia2017/python_geomap.py>`
 
 
 Functions
@@ -293,8 +313,23 @@ Functions
     def f(a, b, *args, **kwargs):
         pass
 
-Example
--------
+Exercise
+--------
+
+Compute an approximation of the golden ratio using a reecursive fobonacci function.
+
+* :download:`goldenratio.py </../../examples/workshops/acadia2017/python_goldenratio.py>`
+
+.. code-block:: python
+
+    def fib(n):
+        if n == 0:
+            return 0
+        if n == 1:
+            return 1
+        if n == 2:
+            return 1
+        return fib(n - 1) + fib(n - 2)
 
 
 Classes
