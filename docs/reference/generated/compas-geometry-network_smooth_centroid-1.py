@@ -5,7 +5,7 @@ from compas.visualization import NetworkPlotter
 from compas.geometry import network_smooth_centroid
 
 network = Network.from_obj(compas.get('lines.obj'))
-fixed = [key for key in network.vertices() if network.vertex_degree(key) == 2]
+fixed = [key for key in network.vertices() if network.vertex_degree(key) == 1]
 
 network_smooth_centroid(network, fixed=fixed)
 

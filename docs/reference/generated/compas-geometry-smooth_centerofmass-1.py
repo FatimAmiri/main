@@ -18,7 +18,7 @@ for u, v in mesh.edges():
         'width': 1.0,
     })
 
-vertices = smooth_centerofmass(vertices, adjacency, fixed=fixed, kmax=100)
+smooth_centerofmass(vertices, adjacency, fixed=fixed, kmax=100)
 
 for key, attr in mesh.vertices(True):
     attr['x'] = vertices[key][0]

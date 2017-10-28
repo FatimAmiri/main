@@ -15,10 +15,10 @@ for u, v in mesh.edges():
         'start': mesh.vertex_coordinates(u, 'xy'),
         'end'  : mesh.vertex_coordinates(v, 'xy'),
         'color': '#cccccc',
-        'width': 1.0,
+        'width': 0.5,
     })
 
-vertices = smooth_resultant(vertices, adjacency, fixed=fixed, kmax=100)
+smooth_resultant(vertices, adjacency, fixed=fixed, kmax=100)
 
 for key, attr in mesh.vertices(True):
     attr['x'] = vertices[key][0]
