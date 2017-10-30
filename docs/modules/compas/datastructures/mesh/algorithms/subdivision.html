@@ -490,13 +490,10 @@
 <span class="sd">        .. code-block:: python</span>
 
 <span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.geometry import Polyhedron</span>
 <span class="sd">            from compas.datastructures import mesh_flip_cycle_directions</span>
 <span class="sd">            from compas.visualization import SubdMeshViewer</span>
 
-<span class="sd">            tet = Polyhedron.generate(4)</span>
-
-<span class="sd">            mesh = Mesh.from_vertices_and_faces(tet.vertices, tet.faces)</span>
+<span class="sd">            mesh = Mesh.from_polyhedron(4)</span>
 <span class="sd">            mesh_flip_cycle_directions(mesh)</span>
 
 <span class="sd">            viewer = SubdMeshViewer(mesh, subdfunc=loop_subdivision, width=600, height=600)</span>
@@ -661,38 +658,22 @@
 
     <span class="kn">import</span> <span class="nn">compas</span>
 
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Polyhedron</span>
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">mesh_subdivide</span>
 
     <span class="kn">from</span> <span class="nn">compas.visualization</span> <span class="k">import</span> <span class="n">MeshPlotter</span>
-    <span class="kn">from</span> <span class="nn">compas.visualization.viewers.meshviewer</span> <span class="k">import</span> <span class="n">MeshViewer</span>
+    <span class="kn">from</span> <span class="nn">compas.visualization.viewers</span> <span class="k">import</span> <span class="n">SubdMeshViewer</span>
 
-    <span class="n">cube</span> <span class="o">=</span> <span class="n">Polyhedron</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">cube</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
-    <span class="c1"># mesh = Mesh.from_obj(compas.get_data('faces.obj'))</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_polyhedron</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
 
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh_subdivide</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s1">'doosabin'</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">number_of_faces</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">number_of_halfedges</span><span class="p">())</span>
-
-    <span class="c1"># plotter = MeshPlotter(mesh)</span>
-
-    <span class="c1"># plotter.draw_vertices()</span>
-    <span class="c1"># plotter.draw_faces()</span>
-
-    <span class="c1"># plotter.show()</span>
-
-    <span class="n">viewer</span> <span class="o">=</span> <span class="n">MeshViewer</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1440</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">900</span><span class="p">)</span>
+    <span class="n">viewer</span> <span class="o">=</span> <span class="n">MeshViewer</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
 
     <span class="n">viewer</span><span class="o">.</span><span class="n">axes_on</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">viewer</span><span class="o">.</span><span class="n">grid_on</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-        <span class="n">viewer</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">zoom_in</span><span class="p">()</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">zoom_in</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
     <span class="n">viewer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
     <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -736,7 +717,7 @@
             
 
             
-                Last updated on Oct 28, 2017.
+                Last updated on Oct 29, 2017.
             
 
             

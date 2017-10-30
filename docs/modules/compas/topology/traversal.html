@@ -623,35 +623,32 @@
     <span class="kn">import</span> <span class="nn">compas</span>
 
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
-    <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">dijkstra_path</span>
     <span class="kn">from</span> <span class="nn">compas.visualization</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
 
-    <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">'grid_irregular.obj'</span><span class="p">))</span>
+    <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">dijkstra_path</span>
+
+    <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grid_irregular.obj'</span><span class="p">))</span>
 
     <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_neighbours</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
 
     <span class="n">weight</span> <span class="o">=</span> <span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="n">network</span><span class="o">.</span><span class="n">edge_length</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()}</span>
     <span class="n">weight</span><span class="o">.</span><span class="n">update</span><span class="p">({(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span> <span class="n">weight</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()})</span>
 
-    <span class="n">weight</span><span class="p">[(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">17</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1000.0</span>
-    <span class="n">weight</span><span class="p">[(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">7</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1000.0</span>
-    <span class="n">weight</span><span class="p">[(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">19</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1000.0</span>
-    <span class="n">weight</span><span class="p">[(</span><span class="mi">19</span><span class="p">,</span> <span class="mi">9</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1000.0</span>
+    <span class="n">heavy</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">19</span><span class="p">)]</span>
+
+    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">heavy</span><span class="p">:</span>
+        <span class="n">weight</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1000.0</span>
+        <span class="n">weight</span><span class="p">[(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1000.0</span>
 
     <span class="n">start</span> <span class="o">=</span> <span class="mi">21</span>
     <span class="n">via</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">end</span> <span class="o">=</span> <span class="mi">22</span>
 
     <span class="n">index_key</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">index_key</span><span class="p">()</span>
-    <span class="n">key_index</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
 
     <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 
-
     <span class="k">def</span> <span class="nf">via_via</span><span class="p">(</span><span class="n">via</span><span class="p">):</span>
-        <span class="k">global</span> <span class="n">start</span>
-        <span class="k">global</span> <span class="n">end</span>
-
         <span class="n">path1</span> <span class="o">=</span> <span class="n">dijkstra_path</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">via</span><span class="p">)</span>
         <span class="n">path2</span> <span class="o">=</span> <span class="n">dijkstra_path</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">via</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">path1</span> <span class="o">+</span> <span class="n">path2</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
@@ -683,13 +680,11 @@
                            <span class="n">text</span><span class="o">=</span><span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="s1">'</span><span class="si">{:.1f}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">weight</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)])</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()},</span>
                            <span class="n">fontsize</span><span class="o">=</span><span class="mf">4.0</span><span class="p">)</span>
 
-
     <span class="k">def</span> <span class="nf">onpick</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">via</span> <span class="o">=</span> <span class="n">index_key</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
         <span class="n">via_via</span><span class="p">(</span><span class="n">via</span><span class="p">)</span>
         <span class="n">plotter</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-
 
     <span class="n">via_via</span><span class="p">(</span><span class="n">via</span><span class="p">)</span>
 
@@ -735,7 +730,7 @@
             
 
             
-                Last updated on Oct 28, 2017.
+                Last updated on Oct 29, 2017.
             
 
             
