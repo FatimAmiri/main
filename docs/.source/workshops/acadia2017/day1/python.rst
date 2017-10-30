@@ -74,7 +74,7 @@ Containers
 type   example                      description                                                     operations
 ====== ============================ =============================================================== ==============
 list   [1, 2, 3, 4]                 Contains ordered arbitrary objects.                             iterate, index, slice, modify
-tuple  (1, 2, 3, 4)                 Contains ordered arbitrary objects.                             iterate, index, slice
+tuple  (1, 2, 3, 4)                 Contains ordered arbitrary objects. Immutable.                  iterate, index, slice
 set    set([1, 2, 3, 4])            Contains unordered, distinct, hashable objects.                 iterate, modify
 dict   dict(one=1, two=2, three=3)  Maps unordered distinct hashable objects to arbitrary objects.  iterate, modify 
 ====== ============================ =============================================================== ==============
@@ -86,6 +86,8 @@ List
 https://docs.python.org/3/library/stdtypes.html#lists
 
 .. code-block:: python
+
+    # construct
 
     items = [0, 1, 2, 3]
 
@@ -116,8 +118,7 @@ https://docs.python.org/3/library/stdtypes.html#lists
     items.remove(-1)         # [0, 1, 2, 3, 4, 5, 6]
 
 
-List comprehensions
--------------------
+**List comprehensions**
 
 Generate lists with an expression in brackets.
 
@@ -153,6 +154,8 @@ https://docs.python.org/3/library/stdtypes.html#tuples
 
 .. code-block:: python
 
+    # construct
+
     rgb = 255, 0, 0
 
     # iterate
@@ -171,6 +174,10 @@ https://docs.python.org/3/library/stdtypes.html#tuples
     rgb[1:]   # (0, 0)
     rgb[:-1]  # (255, 0)
 
+    # modify
+
+    # immutable => no can do
+
 
 Set
 ---
@@ -179,12 +186,22 @@ https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset
 
 .. code-block:: python
 
+    # construct
+
     items = set([1, 1, 2, 3, 3, 4])
 
     # iterate
 
     for item in items:
         print(item)
+
+    # index
+
+    # not ordered => no can do
+
+    # slice
+
+    # not ordered => no can do
 
     # modify
 
@@ -199,6 +216,8 @@ Dictionary
 https://docs.python.org/3/library/stdtypes.html#mapping-types-dict
 
 .. code-block:: python
+
+    # construct
 
     items = dict(one=1, two=2, three=3)
 
@@ -216,6 +235,14 @@ https://docs.python.org/3/library/stdtypes.html#mapping-types-dict
     for value in items.values():
         print(value)
 
+    # index
+
+    # not ordered => no can do
+
+    # slice
+
+    # not ordered => no can do
+
     # modify
 
     items['zero'] = 0
@@ -226,8 +253,7 @@ https://docs.python.org/3/library/stdtypes.html#mapping-types-dict
     items.get('five', 5)
 
 
-Dict comprehensions
--------------------
+**Dict comprehensions**
 
 .. code-block:: python
 
@@ -303,6 +329,9 @@ Compute the connectivity of a set of lines defined by pairs of point coordinates
 
     print(len(lines) == len(edges))
     print(len(edges)) == len(set(edges))
+
+
+------------------
 
 
 Functions

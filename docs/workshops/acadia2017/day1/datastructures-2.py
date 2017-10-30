@@ -12,12 +12,13 @@ nbrs = mesh.vertex_neighbours(root, ordered=True)
 text = {nbr: str(i) for i, nbr in enumerate(nbrs)}
 text[root] = root
 
-fcolor = {nbr: '#cccccc' for nbr in nbrs}
-fcolor[root] = '#ff0000'
+facecolor = {nbr: '#cccccc' for nbr in nbrs}
+facecolor[root] = '#ff0000'
 
 plotter.draw_vertices(
     text=text,
-    facecolor=fcolor
+    facecolor=facecolor,
+    radius=0.15
 )
 plotter.draw_faces()
 plotter.draw_edges()

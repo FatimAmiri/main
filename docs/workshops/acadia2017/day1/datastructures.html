@@ -63,11 +63,10 @@
 
 <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
     <span class="n">text</span><span class="o">=</span><span class="s1">'key'</span><span class="p">,</span>
-    <span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">),</span>
+    <span class="n">radius</span><span class="o">=</span><span class="mf">0.15</span>
 <span class="p">)</span>
 <span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span>
     <span class="n">text</span><span class="o">=</span><span class="s1">'key'</span><span class="p">,</span>
-    <span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span>
     <span class="n">text</span><span class="o">=</span><span class="s1">'key'</span>
@@ -201,12 +200,13 @@ Lists of data have to be constructed explicitly.</p>
 <span class="n">text</span> <span class="o">=</span> <span class="p">{</span><span class="n">nbr</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nbrs</span><span class="p">)}</span>
 <span class="n">text</span><span class="p">[</span><span class="n">root</span><span class="p">]</span> <span class="o">=</span> <span class="n">root</span>
 
-<span class="n">fcolor</span> <span class="o">=</span> <span class="p">{</span><span class="n">nbr</span><span class="p">:</span> <span class="s1">'#cccccc'</span> <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">nbrs</span><span class="p">}</span>
-<span class="n">fcolor</span><span class="p">[</span><span class="n">root</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'#ff0000'</span>
+<span class="n">facecolor</span> <span class="o">=</span> <span class="p">{</span><span class="n">nbr</span><span class="p">:</span> <span class="s1">'#cccccc'</span> <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">nbrs</span><span class="p">}</span>
+<span class="n">facecolor</span><span class="p">[</span><span class="n">root</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'#ff0000'</span>
 
 <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
     <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
-    <span class="n">facecolor</span><span class="o">=</span><span class="n">fcolor</span>
+    <span class="n">facecolor</span><span class="o">=</span><span class="n">facecolor</span><span class="p">,</span>
+    <span class="n">radius</span><span class="o">=</span><span class="mf">0.15</span>
 <span class="p">)</span>
 <span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
 <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
@@ -216,24 +216,6 @@ Lists of data have to be constructed explicitly.</p>
 
 <figure class="figure">
 <img alt="../../../images/datastructures-2.png" class="figure-img img-fluid" src="../../../images/datastructures-2.png"/>
-</figure>
-<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">compas</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
-<span class="kn">from</span> <span class="nn">compas.visualization</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
-
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'faces.obj'</span><span class="p">))</span>
-
-<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_degree</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()})</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-
-<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div>
-
-<figure class="figure">
-<img alt="../../../images/datastructures-3.png" class="figure-img img-fluid" src="../../../images/datastructures-3.png"/>
 </figure>
 </div>
 <div class="section">
@@ -247,8 +229,6 @@ Lists of data have to be constructed explicitly.</p>
 <li>mesh.face_area()</li>
 <li>mesh.face_centroid()</li>
 <li>mesh.face_center()</li>
-<li>mesh.face_frame()</li>
-<li>mesh.face_circle()</li>
 <li>mesh.face_normal()</li>
 <li>mesh.face_flatness()</li>
 <li>mesh.edge_coordinates()</li>
@@ -273,25 +253,7 @@ Lists of data have to be constructed explicitly.</p>
 </code></pre></div>
 
 <figure class="figure">
-<img alt="../../../images/datastructures-4.png" class="figure-img img-fluid" src="../../../images/datastructures-4.png"/>
-</figure>
-<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">compas</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
-<span class="kn">from</span> <span class="nn">compas.visualization</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
-
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'faces.obj'</span><span class="p">))</span>
-
-<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'</span><span class="si">%.1f</span><span class="s1">'</span> <span class="o">%</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_area</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()})</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-
-<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div>
-
-<figure class="figure">
-<img alt="../../../images/datastructures-5.png" class="figure-img img-fluid" src="../../../images/datastructures-5.png"/>
+<img alt="../../../images/datastructures-3.png" class="figure-img img-fluid" src="../../../images/datastructures-3.png"/>
 </figure>
 </div>
 <div class="section">
@@ -410,7 +372,8 @@ Lists of data have to be constructed explicitly.</p>
 
 <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
     <span class="n">radius</span><span class="o">=</span><span class="mf">0.075</span><span class="p">,</span>
-    <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#0092d2'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">delaunay</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">delaunay</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">()})</span>
+    <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#0092d2'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">delaunay</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">delaunay</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">()}</span>
+<span class="p">)</span>
 
 <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">'#cccccc'</span><span class="p">)</span>
 
@@ -433,7 +396,6 @@ Lists of data have to be constructed explicitly.</p>
 <span class="c1"># make a network from an irregular grid of lines</span>
 <span class="c1"># extract an adjacency dictionary</span>
 <span class="c1"># set the weight of each edge equal to its length</span>
-<span class="c1"># make a few edges heavier</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grid_irregular.obj'</span><span class="p">))</span>
 
@@ -442,13 +404,14 @@ Lists of data have to be constructed explicitly.</p>
 <span class="n">weight</span> <span class="o">=</span> <span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="n">network</span><span class="o">.</span><span class="n">edge_length</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()}</span>
 <span class="n">weight</span><span class="o">.</span><span class="n">update</span><span class="p">({(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span> <span class="n">weight</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()})</span>
 
-<span class="n">heavy</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">19</span><span class="p">)]</span>
+<span class="c1"># make a few edges heavier</span>
+<span class="c1"># for example to simulate traffic problems</span>
 
-<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">heavy</span><span class="p">:</span>
-    <span class="n">weight</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1000.0</span>
-    <span class="n">weight</span><span class="p">[(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1000.0</span>
+<span class="c1"># heavy = [(7, 17), (9, 19)]</span>
 
-<span class="n">index_key</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">index_key</span><span class="p">()</span>
+<span class="c1"># for u, v in heavy:</span>
+<span class="c1">#     weight[(u, v)] = 1000.0</span>
+<span class="c1">#     weight[(v, u)] = 1000.0</span>
 
 
 <span class="c1"># make an interactive plotter</span>
@@ -514,6 +477,8 @@ Lists of data have to be constructed explicitly.</p>
 <span class="c1"># whenever a new point is picked</span>
 <span class="c1"># it will call the via_via function</span>
 <span class="c1"># with the picked point as via point</span>
+
+<span class="n">index_key</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">index_key</span><span class="p">()</span>
 
 <span class="k">def</span> <span class="nf">on_pick</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -804,7 +769,7 @@ Lists of data have to be constructed explicitly.</p>
             
 
             
-                Last updated on Oct 29, 2017.
+                Last updated on Oct 30, 2017.
             
 
             

@@ -33,11 +33,10 @@ For this tutorial, we will focus on the mesh data structure.
 
     plotter.draw_vertices(
         text='key',
-        facecolor=(0.9, 0.9, 0.9),
+        radius=0.15
     )
     plotter.draw_faces(
         text='key',
-        facecolor=(0.7, 0.7, 0.7),
     )
     plotter.draw_edges(
         text='key'
@@ -183,30 +182,14 @@ Topology
     text = {nbr: str(i) for i, nbr in enumerate(nbrs)}
     text[root] = root 
 
-    fcolor = {nbr: '#cccccc' for nbr in nbrs}
-    fcolor[root] = '#ff0000'
+    facecolor = {nbr: '#cccccc' for nbr in nbrs}
+    facecolor[root] = '#ff0000'
 
     plotter.draw_vertices(
         text=text,
-        facecolor=fcolor
+        facecolor=facecolor,
+        radius=0.15
     )
-    plotter.draw_faces()
-    plotter.draw_edges()
-
-    plotter.show()
-
-.. plot::
-    :include-source:
-
-    import compas
-    from compas.datastructures import Mesh
-    from compas.visualization import MeshPlotter
-
-    mesh = Mesh.from_obj(compas.get('faces.obj'))
-
-    plotter = MeshPlotter(mesh)
-
-    plotter.draw_vertices(text={key: mesh.vertex_degree(key) for key in mesh.vertices()})
     plotter.draw_faces()
     plotter.draw_edges()
 
@@ -225,8 +208,6 @@ Geometry
 * mesh.face_area()
 * mesh.face_centroid()
 * mesh.face_center()
-* mesh.face_frame()
-* mesh.face_circle()
 * mesh.face_normal()
 * mesh.face_flatness()
 
@@ -250,23 +231,6 @@ Geometry
 
     plotter.draw_vertices()
     plotter.draw_faces(text={fkey: '%.1f' % mesh.face_area(fkey) for fkey in mesh.faces()})
-    plotter.draw_edges()
-
-    plotter.show()
-
-.. plot::
-    :include-source:
-
-    import compas
-    from compas.datastructures import Mesh
-    from compas.visualization import MeshPlotter
-
-    mesh = Mesh.from_obj(compas.get('faces.obj'))
-
-    plotter = MeshPlotter(mesh)
-
-    plotter.draw_vertices(text={key: '%.1f' % mesh.vertex_area(key) for key in mesh.vertices()})
-    plotter.draw_faces()
     plotter.draw_edges()
 
     plotter.show()
@@ -391,7 +355,8 @@ Algorithms
 
     plotter.draw_vertices(
         radius=0.075,
-        facecolor={key: '#0092d2' for key in delaunay.vertices() if key not in delaunay.vertices_on_boundary()})
+        facecolor={key: '#0092d2' for key in delaunay.vertices() if key not in delaunay.vertices_on_boundary()}
+    )
 
     plotter.draw_edges(color='#cccccc')
 
@@ -415,7 +380,6 @@ Algorithms
     # make a network from an irregular grid of lines
     # extract an adjacency dictionary
     # set the weight of each edge equal to its length
-    # make a few edges heavier
 
     network = Network.from_obj(compas.get('grid_irregular.obj'))
 
@@ -424,13 +388,14 @@ Algorithms
     weight = {(u, v): network.edge_length(u, v) for u, v in network.edges()}
     weight.update({(v, u): weight[(u, v)] for u, v in network.edges()})
 
-    heavy = [(7, 17), (9, 19)]
+    # make a few edges heavier
+    # for example to simulate traffic problems
 
-    for u, v in heavy:
-        weight[(u, v)] = 1000.0
-        weight[(v, u)] = 1000.0
+    # heavy = [(7, 17), (9, 19)]
 
-    index_key = network.index_key()
+    # for u, v in heavy:
+    #     weight[(u, v)] = 1000.0
+    #     weight[(v, u)] = 1000.0
 
 
     # make an interactive plotter
@@ -496,6 +461,8 @@ Algorithms
     # whenever a new point is picked
     # it will call the via_via function
     # with the picked point as via point
+
+    index_key = network.index_key()
 
     def on_pick(e):
         index = e.ind[0]
