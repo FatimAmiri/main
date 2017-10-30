@@ -13,8 +13,6 @@ The *compas* framework contains three types of data structures and related opera
 * :class:`compas.datastructures.Mesh`
 * :class:`compas.datastructures.VolMesh`
 
-.. images
-.. overview
 
 For this tutorial, we will focus on the mesh data structure.
 
@@ -98,8 +96,7 @@ the number of vertices, edges and faces and information about vertex and face de
 Access
 ======
 
-Every datastructure exposes several functions to access its data.
-All of those *accessors* are iterators; they are meant to be iterated over.
+All data *accessors* are iterators; they are meant to be iterated over.
 Lists of data have to be constructed explicitly.
 
 * mesh.vertices()
@@ -126,11 +123,6 @@ Lists of data have to be constructed explicitly.
     print(mesh.number_of_vertices())
 
 
-The same applies to the faces.
-The accessor is an iterator; it is meant for iterating over the faces.
-To count the faces or to get a list of faces, the iterator needs to be converted
-explicitly.
-
 .. code-block:: python
     
     from __future__ import print_function
@@ -153,9 +145,6 @@ explicitly.
 Topology
 ========
 
-The available functions for accessing the topological data depend on the type of
-datastructure, although they obviously have a few of them in common.
-
 * mesh.is_valid()
 * mesh.is_regular()
 * mesh.is_connected()
@@ -164,12 +153,10 @@ datastructure, although they obviously have a few of them in common.
 * mesh.is_trimesh()
 * mesh.is_quadmesh()
 
-
 * mesh.vertex_neighbours()
 * mesh.vertex_degree()
 * mesh.vertex_faces()
 * mesh.vertex_neighbourhood()
-
 
 * mesh.face_vertices()
 * mesh.face_halfedges()
@@ -232,8 +219,9 @@ Geometry
 * mesh.vertex_coordinates()
 * mesh.vertex_area()
 * mesh.vertex_centroid()
+* mesh.vertex_normal()
 
-
+* mesh.face_coordinates()
 * mesh.face_area()
 * mesh.face_centroid()
 * mesh.face_center()
@@ -241,7 +229,6 @@ Geometry
 * mesh.face_circle()
 * mesh.face_normal()
 * mesh.face_flatness()
-
 
 * mesh.edge_coordinates()
 * mesh.edge_vector()
@@ -285,50 +272,458 @@ Geometry
     plotter.show()
 
 
-Operations
-==========
-
-.. code-block:: python
-    
-    mesh.delete_vertex
-    mesh.insert_vertex
-    mesh.delete_face
-
-    compas.datastructures.mesh_collapse_edge
-    compas.datastructures.mesh_swap_edge
-    compas.datastructures.mesh_split_edge
-
-    compas.datastructures.trimesh_collapse_edge
-    compas.datastructures.trimesh_swap_edge
-    compas.datastructures.trimesh_split_edge
-
-
 Algorithms
 ==========
 
-.. code-block:: python
-    
-    compas.datastructures.mesh_subdivide
-    compas.datastructures.mesh_dual
-    compas.datastructures.mesh_delaunay_from_points
-    compas.datastructures.mesh_voronoi_from_points
-
-    compas.datastructures.trimesh_remesh
+* :func:`compas.datastructures.trimesh_remesh`
 
 .. code-block:: python
+
+    # mesh remeshing
     
-    compas.geometry.smooth_centroid
-    compas.geometry.smooth_centerofmass
-    compas.geometry.smooth_area
+    from compas.datastructures import Mesh
+    from compas.visualization import MeshPlotter
+
+    from compas.datastructures import trimesh_remesh
+
+
+    # make a square
+    # and insert a vertex in the middle
+    # to create a triangle mesh
+
+    vertices = [(0.0, 0.0, 0.0), (10.0, 0.0, 0.0), (10.0, 10.0, 0.0), (0.0, 10.0, 0.0)]
+    faces = [[0, 1, 2, 3]]
+
+    mesh = Mesh.from_vertices_and_faces(vertices, faces)
+
+    mesh.insert_vertex(0)
+
+
+    # create a plotter for visualization
+    # draw the initial mesh as edges
+    # define a callback to update the edges during the algorithm
+
+    plotter = MeshPlotter(mesh)
+
+    plotter.draw_edges()
+
+    def callback(mesh, k, args):
+        plotter.update_edges()
+        plotter.update(pause=0.001)
+
+
+    # run the remeshing algorithm
+    # visualize the end result
+    # with faces and edges
+
+    trimesh_remesh(
+        mesh,
+        0.5,
+        tol=0.02,
+        kmax=500,
+        allow_boundary_split=True,
+        allow_boundary_swap=True,
+        allow_boundary_collapse=False,
+        fixed=mesh.vertices_on_boundary(),
+        callback=callback)
+
+    plotter.clear_edges()
+    plotter.update()
+
+    plotter.draw_faces()
+    plotter.draw_edges()
+    plotter.update()
+
+    plotter.show()
+
+
+* :func:`compas.datastructures.trimesh_remesh`
+* :func:`compas.datastructures.delaunay_from_points`
+* :func:`compas.datastructures.voronoi_from_delaunay`
 
 .. code-block:: python
-    
-    compas.geometry.shortest_path
-    compas.geometry.dijkstra_path
+
+    # delaunay and voronoi
+
+    from compas.datastructures import Mesh
+    from compas.visualization import MeshPlotter
+
+    from compas.datastructures import trimesh_remesh
+    from compas.datastructures import delaunay_from_points
+    from compas.datastructures import voronoi_from_delaunay
+
+    from compas.geometry import pointcloud_xy
+
+
+    # create a 2D pointcloud
+    # and generate a delaunay triangulation from it
+    # remesh the triagulation
+    # to give it a more even distribution of edges
+    # extract the points
+    # and generate the delaunay again
+    # generate a voronoi from that delaunay
+
+    points   = pointcloud_xy(10, (0, 10))
+    delaunay = delaunay_from_points(Mesh, points)
+
+    trimesh_remesh(delaunay, 1.0, kmax=300, allow_boundary_split=True)
+
+    points   = [delaunay.vertex_coordinates(key) for key in delaunay.vertices()]
+    delaunay = delaunay_from_points(Mesh, points)
+    voronoi  = voronoi_from_delaunay(delaunay)
+
+
+    # make a plotter for visualization
+    # draw the voronoi as lines
+    # on top of the delaunay
+
+    plotter = MeshPlotter(delaunay, figsize=(10, 6))
+
+    lines = []
+    for u, v in voronoi.edges():
+        lines.append({
+            'start': voronoi.vertex_coordinates(u, 'xy'),
+            'end'  : voronoi.vertex_coordinates(v, 'xy'),
+            'width': 1.0
+        })
+
+    plotter.draw_lines(lines)
+
+    plotter.draw_vertices(
+        radius=0.075,
+        facecolor={key: '#0092d2' for key in delaunay.vertices() if key not in delaunay.vertices_on_boundary()})
+
+    plotter.draw_edges(color='#cccccc')
+
+    plotter.show()
+
+
+* :func:`compas.topology.dijkstra_path`
+
+.. code-block:: python
+
+    # shortest path
+
+    import compas
+
+    from compas.datastructures import Network
+    from compas.visualization import NetworkPlotter
+
+    from compas.topology import dijkstra_path
+
+
+    # make a network from an irregular grid of lines
+    # extract an adjacency dictionary
+    # set the weight of each edge equal to its length
+    # make a few edges heavier
+
+    network = Network.from_obj(compas.get('grid_irregular.obj'))
+
+    adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}
+
+    weight = {(u, v): network.edge_length(u, v) for u, v in network.edges()}
+    weight.update({(v, u): weight[(u, v)] for u, v in network.edges()})
+
+    heavy = [(7, 17), (9, 19)]
+
+    for u, v in heavy:
+        weight[(u, v)] = 1000.0
+        weight[(v, u)] = 1000.0
+
+    index_key = network.index_key()
+
+
+    # make an interactive plotter
+    # for finding shortest paths from a given start to a given end
+    # and through an additional user-selected point
+
+    plotter = NetworkPlotter(network, figsize=(10, 8), fontsize=6)
+
+
+    # choose start and end
+    # and set an initial value for the via point
+
+    start = 21
+    via = 0
+    end = 22
+
+
+    # define the function that computes the shortest path
+    # based on the current via
+
+    def via_via(via):
+
+        # compute the shortest path from start to via
+        # and from via to end
+        # combine the paths
+
+        path1 = dijkstra_path(adjacency, weight, start, via)
+        path2 = dijkstra_path(adjacency, weight, via, end)
+        path = path1 + path2[1:]
+
+        edges = []
+        for i in range(len(path) - 1):
+            u = path[i]
+            v = path[i + 1]
+            if v not in network.edge[u]:
+                u, v = v, u
+            edges.append([u, v])
+
+
+        # update the plot
+
+        vertexcolor = {}
+        vertexcolor[start] = '#00ff00'
+        vertexcolor[end] = '#00ff00'
+        vertexcolor[via] = '#0000ff'
+
+        plotter.clear_vertices()
+        plotter.clear_edges()
+
+        plotter.draw_vertices(text={key: key for key in (start, via, end)},
+                              textcolor={key: '#ffffff' for key in path[1:-1]},
+                              facecolor=vertexcolor,
+                              radius=0.15,
+                              picker=10)
+
+        plotter.draw_edges(color={(u, v): '#ff0000' for u, v in edges},
+                           width={(u, v): 4.0 for u, v in edges},
+                           text={(u, v): '{:.1f}'.format(weight[(u, v)]) for u, v in network.edges()},
+                           fontsize=4.0)
+
+
+    # define a listener for picking points
+    # whenever a new point is picked
+    # it will call the via_via function
+    # with the picked point as via point
+
+    def on_pick(e):
+        index = e.ind[0]
+        via = index_key[index]
+        via_via(via)
+        plotter.update()
+
+
+    # initialize
+    # and start
+
+    via_via(via)
+
+    plotter.register_listener(on_pick)
+    plotter.show()
+
+
+Numerical
+=========
+
+* :func:`compas.numerical.fd`
+
+.. code-block:: python
+
+    # form finding
+
+    import compas
+
+    from compas.datastructures import Mesh
+    from compas.visualization import MeshPlotter
+    from compas.utilities import i_to_rgb
+
+
+    # make a mesh from sample data
+    # set the default attributes of edges and vertices
+    # mark the corners as fixed
+    # store the original line geometry for plotting later
+
+    mesh = Mesh.from_obj(compas.get('faces.obj'))
+
+    mesh.update_default_vertex_attributes({'is_anchor': False, 'px': 0.0, 'py': 0.0, 'pz': 0.0})
+    mesh.update_default_edge_attributes({'q': 1.0})
+
+    for key, attr in mesh.vertices(True):
+        attr['is_anchor'] = mesh.vertex_degree(key) == 2
+
+    lines = []
+    for u, v in mesh.edges():
+        lines.append({
+            'start' : mesh.vertex_coordinates(u, 'xy'),
+            'end'   : mesh.vertex_coordinates(v, 'xy'),
+            'color' : '#cccccc',
+            'width' : 1.0
+        })
+
+
+    # process the mesh data
+    # into a computation-friendly format
+    # i.e. convert everything to lists
+    # such that the force density method can convert it into fast Numpy arrays
+
+    k_i   = mesh.key_index()
+    xyz   = mesh.get_vertices_attributes(('x', 'y', 'z'))
+    loads = mesh.get_vertices_attributes(('px', 'py', 'pz'))
+    q     = mesh.get_edges_attribute('q')
+    fixed = mesh.vertices_where({'is_anchor': True})
+    fixed = [k_i[k] for k in fixed]
+    edges = [(k_i[u], k_i[v]) for u, v in mesh.edges()]
+
+
+    # run the force density method
+    # update the mesh with the result
+
+    xyz, q, f, l, r = fd(xyz, edges, fixed, q, loads, rtype='list')
+
+    for key, attr in mesh.vertices(True):
+        index = k_i[key]
+        attr['x'] = xyz[index][0]
+        attr['y'] = xyz[index][1]
+        attr['z'] = xyz[index][2]
+
+    for index, (u, v, attr) in enumerate(mesh.edges(True)):
+        attr['f'] = f[index]
+
+
+    # make a plotter
+    # visualize the original geometry
+    # and the equilibrium shape
+    # and set the thickness and color of edges
+    # proportional to the axial force
+
+    plotter = MeshPlotter(mesh)
+
+    zmax = max(mesh.get_vertices_attribute('z'))
+    fmax = max(mesh.get_edges_attribute('f'))
+
+    plotter.draw_lines(lines)
+
+    plotter.draw_vertices()
+    plotter.draw_faces()
+    plotter.draw_edges(
+        width={(u, v): 10 * attr['f'] / fmax for u, v, attr in mesh.edges(True)},
+        color={(u, v): i_to_rgb(attr['f'] / fmax) for u, v, attr in mesh.edges(True)},
+    )
+
+    plotter.show()
 
 
 CAD integration
 ===============
 
+* :func:`compas.datastructures.mesh_subdivide`
+* :func:`compas.datastructures.mesh_subdivide_doosabin`
+* :func:`compas.datastructures.mesh_subdivide_catmullclark`
+
+* :mod:`compas_rhino`
+
+.. code-block:: python
+
+    from compas.datastructures import Mesh
+    from compas.datastructures import mesh_subdivide_doosabin
+    from compas.visualization.viewers import SubdMeshViewer
+
+    mesh = Mesh.from_polyhedron(6)
+
+    viewer = SubdMeshViewer(mesh, subdfunc=mesh_subdivide_doosabin, width=600, height=600)
+
+    viewer.axes_on = False
+    viewer.grid_on = False
+
+    for i in range(10):
+        viewer.camera.zoom_in()
+
+    viewer.setup()
+    viewer.show()
 
 
+.. code-block:: python
+
+    from compas.datastructures import Mesh
+    from compas.datastructures import mesh_subdivide_catmullclark
+
+    import compas_rhino
+
+    mesh = Mesh.from_polyhedron(6)
+    subd = mesh_subdivide_catmullclark(mesh, k=4)
+
+    compas_rhino.mesh_draw_faces(
+        subd,
+        join_faces=True
+    )
+
+
+.. code-block:: python
+
+    from __future__ import print_function
+    from __future__ import division
+
+    from functools import partial
+
+    import compas_rhino
+
+    from compas.datastructures import Mesh
+    from compas.datastructures import mesh_subdivide
+
+
+    # make a control mesh
+
+    mesh = Mesh.from_polyhedron(6)
+
+
+    # give it a name
+    # and set default vertex attributes
+
+    mesh.attributes['name'] = 'Control'
+    mesh.update_default_vertex_attributes({'is_fixed': False})
+
+
+    # make a partial function out of compas_rhino.mesh_draw
+    # (a function with some of the parameters already filled in)
+    # that can be used more easily to redraw the mesh
+    # with the same settings in the update loop
+
+    draw = partial(
+        compas_rhino.mesh_draw,
+        layer='SubdModeling::Control',
+        clear_layer=True,
+        show_faces=False,
+        show_vertices=True,
+        show_edges=True)
+
+
+    # draw the control mesh
+    # with showing the faces
+
+    draw(mesh)
+
+
+    # allow the user to change the attributes of the vertices
+    # note: the interaction loop exits
+    #       when the user cancels the selection of mesh vertices
+
+    while True:
+        keys = compas_rhino.mesh_select_vertices(mesh)
+        if not keys:
+            break
+        compas_rhino.mesh_update_vertex_attributes(mesh, keys)
+        draw(mesh, vertexcolor={key: '#ff0000' for key in mesh.vertices_where({'is_fixed': True})})
+
+
+    # make a subd mesh (using catmullclark)
+    # keep the vertices fixed
+    # as indicated by the user
+
+    fixed = mesh.vertices_where({'is_fixed': True})
+    subd = mesh_subdivide(mesh, scheme='catmullclark', k=5, fixed=fixed)
+
+
+    # give the mesh a (different) name
+
+    subd.attributes['name'] = 'Mesh'
+
+
+    # draw the result
+
+    compas_rhino.mesh_draw_faces(
+        subd,
+        layer='SubdModeling::Mesh',
+        clear_layer=True,
+        join_faces=True
+    )

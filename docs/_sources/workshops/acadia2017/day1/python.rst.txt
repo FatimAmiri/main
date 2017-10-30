@@ -10,31 +10,6 @@ Python
     Python 3 is fully supported and the code is backwards compatible with Python +2.6.
 
 
-Resources
-=========
-
-**Python**
-
-* `Python 3: standard library <https://docs.python.org/3/library/index.html>`_
-* `Python 3: how-to guides <https://docs.python.org/3/howto/index.html>`_
-
-**Idiomatic Python**
-
-* `Code Like a Pythonista: Idiomatic Python <http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html>`_
-* `Transforming Code into Beautiful, Idiomatic Python <https://gist.github.com/JeffPaine/6213790>`_
-* `Python 3 Patterns, Recipes and Idioms <https://python-3-patterns-idioms-test.readthedocs.io/en/latest/>`_
-
-**Python 2 vs 3**
-
-* `What's New in Python 3 <https://docs.python.org/3.0/whatsnew/3.0.html>`_
-* `The key differences between Python 2.7.x and Python 3.x with examples <http://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html>`_
-* `Should I use Python 2 or Python 3 for my development activity? <https://wiki.python.org/moin/Python2orPython3>`_
-
-**Other**
-
-* `Python Reference (The Right Way) <http://python-reference.readthedocs.io/en/latest/index.html>`_
-
-
 Built-in types and functions
 ============================
 
@@ -369,7 +344,7 @@ Functions
 Exercise
 --------
 
-Compute an approximation of the golden ratio using a reecursive fobonacci function.
+Compute an approximation of the golden ratio using a recursive fibonacci function.
 
 * :download:`goldenratio.py </../../examples/workshops/acadia2017/python_goldenratio.py>`
 
@@ -378,14 +353,12 @@ Compute an approximation of the golden ratio using a reecursive fobonacci functi
     def fib(n):
         if n == 0:
             return 0
-        if n == 1:
-            return 1
-        if n == 2:
+        if n == 1 or n == 2:
             return 1
         return fib(n - 1) + fib(n - 2)
 
     numbers = [fib(i) for i in range(10)]
-    ratio = numbers[-2] / numbers[-1]
+    ratio = fib(99) / fib(100)
 
 
 Classes
@@ -400,6 +373,99 @@ Classes
             self.y = y
             self.z = z
 
+        def length(self):
+            return (self.x ** 2 + self.y ** 2 + self.z ** 2) ** 0.5
+
+        def add(self, other):
+            self.x += other.x
+            self.y += other.y
+            self.z += other.z
+
+
+.. code-block:: python
+
+    u = Vector(1, 0, 0)
+    v = Vector(0, 1, 0)
+
+    u.add(v)
+
+    print(u)  # <__main__.Vector object at 0x10b5a9710>
+
+
+.. code-block:: python
+
+    class Vector(object):
+
+        def __init__(self, x, y, z):
+            self._x = 0
+            self._y = 0
+            self._z = 0
+            self.x = x
+            self.y = y
+            self.z = z
+
+        def __getitem__(self, key):
+            key = key % 3
+            if key == 0:
+                return self.x
+            if key == 1:
+                return self.x
+            if key == 2:
+                return self.x
+            raise KeyError
+
+        def __str__(self):
+            return 'Vector({:.1f}, {:.1f}, {:.1f})'.format(self.x, self.y, self.z)
+
+        @property
+        def x(self):
+            return self._x
+
+        @x.setter
+        def x(self, x):
+            self._x = float(x)
+
+        @property
+        def y(self):
+            return self._y
+
+        @y.setter
+        def y(self, y):
+            self._y = float(y)
+
+        @property
+        def z(self):
+            return self._z
+
+        @z.setter
+        def z(self, z):
+            self._z = float(z)
+
+        def length(self):
+            return (self.x ** 2 + self.y ** 2 + self.z ** 2) ** 0.5
+
+        def add(self, other):
+            self.x += other[0]
+            self.y += other[1]
+            self.z += other[2]
+
+
+.. code-block:: python
+
+    u = Vector(1, 0, 0)
+    v = [0, 1, 0]
+    w = Vector(*v)
+
+    u.add(v)
+    u.add(w)
+
+    print(u)  # Vector(1.0, 2.0, 0.0)
+
+
+.. seealso::
+
+    * :class:`compas.geometry.Vector`
+
 
 Script, Module, Package
 =======================
@@ -412,7 +478,7 @@ Script, Module, Package
     b = 2
     c = a + b
 
-    print c
+    print(c)
 
 
 .. code-block:: python
@@ -432,3 +498,33 @@ Script, Module, Package
 
         f1()
         f2()
+
+.. seealso::
+
+    * :class:`compas.datastructures.Mesh`
+
+
+Resources
+=========
+
+**Python**
+
+* `Python 3: standard library <https://docs.python.org/3/library/index.html>`_
+* `Python 3: how-to guides <https://docs.python.org/3/howto/index.html>`_
+
+**Idiomatic Python**
+
+* `Code Like a Pythonista: Idiomatic Python <http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html>`_
+* `Transforming Code into Beautiful, Idiomatic Python <https://gist.github.com/JeffPaine/6213790>`_
+* `Python 3 Patterns, Recipes and Idioms <https://python-3-patterns-idioms-test.readthedocs.io/en/latest/>`_
+
+**Python 2 vs 3**
+
+* `What's New in Python 3 <https://docs.python.org/3.0/whatsnew/3.0.html>`_
+* `The key differences between Python 2.7.x and Python 3.x with examples <http://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html>`_
+* `Should I use Python 2 or Python 3 for my development activity? <https://wiki.python.org/moin/Python2orPython3>`_
+
+**Other**
+
+* `Python Reference (The Right Way) <http://python-reference.readthedocs.io/en/latest/index.html>`_
+

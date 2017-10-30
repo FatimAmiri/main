@@ -15,7 +15,6 @@ Windows forms for ...
     :toctree: generated/
 
     AttributesForm
-    BrowserForm
     ChartForm
     ImageForm
     MultiPageForm
