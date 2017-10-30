@@ -504,8 +504,8 @@ Script, Module, Package
     * :class:`compas.datastructures.Mesh`
 
 
-Resources
-=========
+Further reading
+===============
 
 **Python**
 
