@@ -75,8 +75,8 @@ lists (or tuples) as vectors:
     print(length_vector(r))
 
 
-Exercise: 
----------
+Adding Multiple Vectors 
+-----------------------
 
 Create a set of 10.000 random vectors with the origin (1. ,2. ,3.) and compute their
 resultant. Compare the preformance of an object-based and function-based method.  
@@ -114,47 +114,36 @@ Solution:
 
 
     # Object-based method
-    tic = time.time()
-    #-------------------------
     vecs = [Vector.from_start_end(origin, pt) for pt in points]
     res = Vector(0., 0., 0.)
     for v in vecs:
         res += v
-    #-------------------------
-    toc = time.time()
-    print('{0} seconds to compute for object-based method'.format(toc - tic))
-    print(res)
-    print('------------------')
+    print('{0} computed with object-based method'.format(res))
 
 
     # Function-based method A
-    tic = time.time()
-    #-------------------------
     vecs = [vector_from_points(origin, pt) for pt in points]
     res = [0., 0., 0.]
     for v in vecs:
         res = add_vectors(res, v)
-    #-------------------------
-    toc = time.time()
-    print('{0} seconds to compute for function-based method A'.format(toc - tic))
-    print(res)
-    print('------------------')
+    print('{0} computed with function-based method A'.format(res))
 
 
     # Function-based method B
-    tic = time.time()
-    #-------------------------
     vecs = [vector_from_points(origin, pt) for pt in points]
     res = sum_vectors(vecs)
-    #-------------------------
-    toc = time.time()
-    print('{0} seconds to compute for function-based method B'.format(toc - tic))
-    print(res)
-    print('------------------')
+    print('{0} computed with function-based method B'.format(res))
 
 
-Translational Surfaces for Gridshells
-======================================
+
+Creating Geometric Algorithms from Simple Functions
+===================================================
+
+Introduction text... Algorithms can ....
+
+
+Simple Translational Surfaces for Gridshelss
+--------------------------------------------
 
 Using translational surfaces for the design of gridshells allows to explore freeform
 spaces that can be built from planar (glass) panels. Jörg Schlaich together with Hans 
@@ -494,6 +483,15 @@ Torsion-free Elements for Gridshells
 - constrain fins to a specific height
 
 
+
+Smoothen on surface
+===================
+
+
+
+
+
+
 Tessellation of a freeform barrel vault
 =======================================
 
@@ -520,6 +518,18 @@ Generate uv staggered pattern:
                 rs.AddLine(pts_uv[u][v],pts_uv[u + 1][v])
             else:
                 rs.AddLine(pts_uv[u][v + 1],pts_uv[u + 1][v + 1])
+
+
+
+
+
+subdivision stuff
+=================
+
+
+subdivision stuff
+=================
+
 
 
 .. code-block:: python
