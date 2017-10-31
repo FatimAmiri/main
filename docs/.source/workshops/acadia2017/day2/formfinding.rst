@@ -267,7 +267,7 @@ Use Rhino as interface
 
     compas_rhino.network_draw(
         network,
-        layer='FoFin',
+        layer='FormFinder::Network',
         clear_layer=True,
         vertexcolor={key: '#ff0000' for key in network.vertices_where({'is_fixed': True})}
     )
@@ -276,7 +276,7 @@ Use Rhino as interface
 
     compas_rhino.network_draw(
         network,
-        layer='FoFin',
+        layer='FormFinder::Network',
         clear_layer=True,
         vertexcolor={key: '#ff0000' for key in network.vertices_where({'is_fixed': True})}
     )
@@ -308,17 +308,17 @@ Use Rhino as interface
     compas_rhino.network_draw_reaction_forces(
         network,
         0.5,
-        layer='FoFin'
+        layer='FormFinder::Network'
     )
     compas_rhino.network_draw_loads(
         network,
         1.0,
-        layer='FoFin'
+        layer='FormFinder::Network'
     )
     compas_rhino.network_draw_axial_forces(
         network,
         0.01,
-        layer='FoFin'
+        layer='FormFinder::Network'
     )
 
 
@@ -338,7 +338,7 @@ Add user interaction
         compas_rhino.network_update_vertex_attributes(network, keys)
         compas_rhino.network_draw(
             network,
-            layer='FoFin',
+            layer='FormFinder::Network',
             clear_layer=True,
             vertexcolor={key: '#ff0000' for key in network.vertices_where({'is_fixed': True})}
         )
@@ -373,7 +373,7 @@ Start from Rhino geometry
     guids = compas_rhino.get_lines()
     lines = compas_rhino.get_line_coordinates(guids)
 
-    network = Network.from_lines(lines)
+    network = Cablenet.from_lines(lines)
 
 
 Use a toolbar to make a form finding tool
@@ -407,6 +407,9 @@ Use a toolbar to make a form finding tool
                 'px': 0.0,
                 'py': 0.0,
                 'pz': 0.0,
+                'rx': 0.0,
+                'ry': 0.0,
+                'rz': 0.0,
             })
             self.default_edge_attributes.update({
                 'q': 1.0,
