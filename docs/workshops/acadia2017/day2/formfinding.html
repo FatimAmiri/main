@@ -162,11 +162,12 @@
 <span class="n">plotter</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
+
 </div>
 <div class="section">
 <h2>Use Rhino as interface</h2>
 <figure class="figure">
-<img alt="images/fofin-rhino.*" class="figure-img img-fluid" src="images/fofin-rhino.*"/>
+<img alt="../../../images/fofin-rhino.jpg" class="figure-img img-fluid" src="../../../images/fofin-rhino.jpg"/>
 </figure>
 <div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">compas</span>
 <span class="kn">import</span> <span class="nn">compas_rhino</span>
@@ -215,6 +216,7 @@
     <span class="n">vertexcolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#ff0000'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">'is_fixed'</span><span class="p">:</span> <span class="bp">True</span><span class="p">})}</span>
 <span class="p">)</span>
 </code></pre></div>
+
 <p><strong>Next Steps</strong></p>
 <ul class="simple">
 <li>Use a conduit and a callback to visualize the relaxation process.</li>
@@ -233,6 +235,7 @@ fixed options already filled in.</li>
 <span class="k">with</span> <span class="n">conduit</span><span class="o">.</span><span class="n">enabled</span><span class="p">():</span>
     <span class="n">network_relax</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">kmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">)</span>
 </code></pre></div>
+
 <div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">compas_rhino</span><span class="o">.</span><span class="n">network_draw_reaction_forces</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
     <span class="mf">0.5</span><span class="p">,</span>
@@ -249,12 +252,110 @@ fixed options already filled in.</li>
     <span class="n">layer</span><span class="o">=</span><span class="s1">'FoFin'</span>
 <span class="p">)</span>
 </code></pre></div>
+
 </div>
 <div class="section">
 <h2>Add user interaction</h2>
+<ul class="simple">
+<li>Update vertex attributes to add loads and change geometry.</li>
+<li>Update edge attributes to change force densities and control the equilibrium shape.</li>
+</ul>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="k">pass</span>
+</code></pre></div>
+
 </div>
 <div class="section">
 <h2>Start from Rhino geometry</h2>
+<ul class="simple">
+<li>Draw/Generate a set of lines representing the topology of the network.</li>
+<li>Initialise vertex and edge attributes based on geometry object names.</li>
+</ul>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="k">pass</span>
+</code></pre></div>
+
+</div>
+<div class="section">
+<h2>Use a toolbar to make a form finding tool</h2>
+<ul class="simple">
+<li>Understand variable scope in toolbars.</li>
+<li>Link functionality to toolbar buttons by using a controller.</li>
+<li>Generate a RUI file from the controller.</li>
+</ul>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">import</span> <span class="nn">compas_rhino</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino.ui</span> <span class="kn">import</span> <span class="n">MacroController</span>
+
+
+<span class="k">class</span> <span class="nc">FormFinder</span><span class="p">(</span><span class="n">MacroController</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FormFinder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FormFinder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+
+    <span class="c1"># add methods correspondig to the buttons</span>
+    <span class="c1"># of the toolbar</span>
+</code></pre></div>
+
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">import</span> <span class="nn">compas_rhino</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino.ui</span> <span class="kn">import</span> <span class="n">MacroController</span>
+
+
+<span class="k">class</span> <span class="nc">FormFinder</span><span class="p">(</span><span class="n">MacroController</span><span class="p">):</span>
+
+    <span class="n">instancename</span> <span class="o">=</span> <span class="s1">'formfinder'</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">'FormFinder'</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Debugging</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+
+    <span class="kn">from</span> <span class="nn">compas_rhino.ui.rui</span> <span class="kn">import</span> <span class="n">compile_rui</span>
+
+    <span class="n">compile_rui</span><span class="p">(</span><span class="n">FormFinder</span><span class="p">,</span> <span class="s1">'rui_config.json'</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="p">{</span>
+    <span class="nt">"menus"</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="nt">"toolbars"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">"name"</span>  <span class="p">:</span> <span class="s2">"FormFinder"</span><span class="p">,</span>
+            <span class="nt">"items"</span> <span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="nt">"type"</span>        <span class="p">:</span> <span class="s2">"normal"</span><span class="p">,</span>
+                    <span class="nt">"left_macro"</span>  <span class="p">:</span> <span class="s2">"formfinder.init"</span><span class="p">,</span>
+                    <span class="nt">"right_macro"</span> <span class="p">:</span> <span class="kc">null</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="nt">"type"</span> <span class="p">:</span> <span class="s2">"separator"</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">"toolbargroups"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">"name"</span>     <span class="p">:</span> <span class="s2">"FormFinder"</span><span class="p">,</span>
+            <span class="nt">"toolbars"</span> <span class="p">:</span> <span class="p">[</span>
+                <span class="s2">"FormFinder"</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
 </div>
 </div>
 <nav class="compas-sideways">
@@ -301,6 +402,7 @@ fixed options already filled in.</li>
 <li class="nav-item"><a class="nav-link reference internal" href="#use-rhino-as-interface">Use Rhino as interface</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#add-user-interaction">Add user interaction</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#start-from-rhino-geometry">Start from Rhino geometry</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#use-a-toolbar-to-make-a-form-finding-tool">Use a toolbar to make a form finding tool</a></li>
 </ul>
 </li>
 </ul>
@@ -337,12 +439,15 @@ var DOCUMENTATION_OPTIONS = {
 <script crossorigin="anonymous" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 <script src="/static/underscore.js"></script>
 <script src="/static/doctools.js"></script>
 <script src="https://compas-dev.github.io/compas/static/searchtools_.js"></script>
 <script>
                 hljs.initHighlightingOnLoad();
                 anchors.add();
+
+                var clipboard = new Clipboard('.language-python');
             </script>
 </body>
 </html>

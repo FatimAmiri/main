@@ -300,8 +300,112 @@ Use Rhino as interface
 Add user interaction
 ====================
 
+* Update vertex attributes to add loads and change geometry.
+* Update edge attributes to change force densities and control the equilibrium shape.
+
+
+.. code-block:: python
+
+    pass
+
 
 Start from Rhino geometry
 =========================
 
+* Draw/Generate a set of lines representing the topology of the network.
+* Initialise vertex and edge attributes based on geometry object names.
+
+
+.. code-block:: python
+
+    pass
+
+
+Use a toolbar to make a form finding tool
+=========================================
+
+* Understand variable scope in toolbars.
+* Link functionality to toolbar buttons by using a controller.
+* Generate a RUI file from the controller.
+
+
+.. code-block:: python
+
+    from __future__ import print_function
+
+    import compas
+    import compas_rhino
+
+    from compas_rhino.ui import MacroController
+
+
+    class FormFinder(MacroController):
+
+        def __init__(self):
+            super(FormFinder, self).__init__()
+            self.layers = {}
+            self.settings = {}
+
+        def init(self):
+            super(FormFinder, self).init()
+
+        # add methods correspondig to the buttons
+        # of the toolbar
+
+
+.. code-block:: python
+
+    from __future__ import print_function
+
+    import compas
+    import compas_rhino
+
+    from compas_rhino.ui import MacroController
+
+
+    class FormFinder(MacroController):
+
+        instancename = 'formfinder'
+        name = 'FormFinder'
+
+
+    # ==============================================================================
+    # Debugging
+    # ==============================================================================
+
+    if __name__ == "__main__":
+
+        from compas_rhino.ui.rui import compile_rui
+
+        compile_rui(FormFinder, 'rui_config.json')
+
+
+.. code-block:: json
+    
+        {
+            "menus": [],
+            "toolbars": [
+                {
+                    "name"  : "FormFinder", 
+                    "items" : [
+                        {
+                            "type"        : "normal",
+                            "left_macro"  : "formfinder.init",
+                            "right_macro" : null
+                        },
+                        {
+                            "type" : "separator"
+                        }
+                    ]
+                }
+            ],
+            "toolbargroups": [
+                {
+                    "name"     : "FormFinder",
+                    "toolbars" : [
+                        "FormFinder"
+                    ]
+                }
+            ]
+        }
 
