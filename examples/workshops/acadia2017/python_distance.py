@@ -9,26 +9,28 @@ time: 15min
 
 """
 
+from __future__ import print_function
+
 import json
 import time
 
 
 # ==============================================================================
-# get the input 
+# get the input
 # ==============================================================================
 
 
-with open('./workshop_lines_big.json', 'r') as f:
+with open('lines.json', 'r') as f:
     lines = json.load(f)
 
 
-print 'number of lines'
-print '---------------'
-print len(lines)
+print('number of lines')
+print('---------------')
+print(len(lines))
 
 
 # ==============================================================================
-# post-process the input 
+# post-process the input
 # ==============================================================================
 
 
@@ -121,10 +123,10 @@ for a, b in lines[1:]:
     edges.append((u, v))
 
 
-print
-print 'processing time'
-print '---------------'
-print time.time() - t0
+print()
+print('processing time')
+print('---------------')
+print(time.time() - t0)
 
 
 # ==============================================================================
@@ -132,11 +134,11 @@ print time.time() - t0
 # ==============================================================================
 
 
-print
-print 'raw result'
-print '----------'
-print 'len(edges) == len(lines):', len(edges) == len(lines)
-print 'len(edges) == len(set(edges)):', len(edges) == len(set(edges))
+print()
+print('raw result')
+print('----------')
+print('len(edges) == len(lines):', len(edges) == len(lines))
+print('len(edges) == len(set(edges)):', len(edges) == len(set(edges)))
 
 
 # ==============================================================================

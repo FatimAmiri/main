@@ -9,24 +9,26 @@ time: 15min
 
 """
 
+from __future__ import print_function
+
 import time
 import json
 
 
 # ==============================================================================
-# get the input 
+# get the input
 # ==============================================================================
 
 
-with open('./workshop_lines_big.json', 'r') as f:
+with open('lines.json', 'r') as f:
     lines = json.load(f)
 
 
-print 'number of lines', len(lines)
+print('number of lines', len(lines))
 
 
 # ==============================================================================
-# post-process the input 
+# post-process the input
 # ==============================================================================
 
 
@@ -71,10 +73,10 @@ vertices = vertexdict.values()
 edges[:] = [(key_index[a], key_index[b]) for a, b in edges]
 
 
-print
-print 'processing time'
-print '---------------'
-print time.time() - t0
+print()
+print('processing time')
+print('---------------')
+print(time.time() - t0)
 
 
 # ==============================================================================
@@ -82,22 +84,22 @@ print time.time() - t0
 # ==============================================================================
 
 
-print
-print 'raw result'
-print '----------'
-print 'len(edges) == len(lines):', len(edges) == len(lines)
-print 'len(edges) == len(set(edges)):', len(edges) == len(set(edges))
+print()
+print('raw result')
+print('----------')
+print('len(edges) == len(lines):', len(edges) == len(lines))
+print('len(edges) == len(set(edges)):', len(edges) == len(set(edges)))
 
 
 # remove duplicates
 
 edges = list(set(edges))
 
-print
-print 'remove duplicates'
-print '-----------------'
-print 'len(edges) == len(lines):', len(edges) == len(lines)
-print 'len(edges) == len(set(edges)):', len(edges) == len(set(edges))
+print()
+print('remove duplicates')
+print('-----------------')
+print('len(edges) == len(lines):', len(edges) == len(lines))
+print('len(edges) == len(set(edges)):', len(edges) == len(set(edges)))
 
 
 # remove opposites
@@ -108,9 +110,8 @@ for u, v in edges:
     if (v, u) in edgeset:
         edges.remove((v, u))
 
-print
-print 'remove opposites'
-print '----------------'
-print 'len(edges) == len(lines):', len(edges) == len(lines)
-print 'len(edges) == len(set(edges)):', len(edges) == len(set(edges))
-
+print()
+print('remove opposites')
+print('----------------')
+print('len(edges) == len(lines):', len(edges) == len(lines))
+print('len(edges) == len(set(edges)):', len(edges) == len(set(edges)))
