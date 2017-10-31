@@ -47,6 +47,34 @@
 <span class="n">__email__</span>      <span class="o">=</span> <span class="s1">'mtomas@ethz.ch'</span>
 
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">'moga'</span>
+<span class="p">]</span>
+
+
+<span class="n">TPL</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">================================================================================</span>
+<span class="s2">MOGA summary</span>
+<span class="s2">================================================================================</span>
+
+<span class="s2">- fitness function names: </span><span class="si">{}</span><span class="s2"></span>
+
+<span class="s2">- fitnes function types : </span><span class="si">{}</span><span class="s2"></span>
+
+<span class="s2">- number of generations : </span><span class="si">{}</span><span class="s2"></span>
+
+<span class="s2">- number of individuals : </span><span class="si">{}</span><span class="s2"></span>
+
+<span class="s2">- number of variables : </span><span class="si">{}</span><span class="s2"></span>
+
+<span class="s2">- optimal individuals : </span><span class="si">{}</span><span class="s2"></span>
+
+<span class="s2">- optimal fitness values : </span><span class="si">{}</span><span class="s2"></span>
+
+<span class="s2">================================================================================</span>
+<span class="s2">"""</span>
+
+
 <div class="viewcode-block" id="moga"><a class="viewcode-back" href="../../../../reference/generated/compas.numerical.moga.html#compas.numerical.moga">[docs]</a><span class="k">def</span> <span class="nf">moga</span><span class="p">(</span><span class="n">fit_functions</span><span class="p">,</span>
          <span class="n">fit_types</span><span class="p">,</span>
          <span class="n">num_var</span><span class="p">,</span>
@@ -56,11 +84,123 @@
          <span class="n">mutation_probability</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
          <span class="n">num_bin_dig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
          <span class="n">start_from_gen</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-         <span class="n">min_fit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
          <span class="n">fit_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
          <span class="n">fargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
          <span class="n">fkwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
          <span class="n">output_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="sd">"""Genetic Algorithm optimisation [deb2001]_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    fit_functions : list</span>
+<span class="sd">        List of functions to be used by the :class'MOGA' to determine the fitness values.</span>
+<span class="sd">        The function must have as a first argument a list of variables that determine the</span>
+<span class="sd">        fitness value. Other arguments and keyword arguments can be used to feed</span>
+<span class="sd">        the function relevant data.</span>
+<span class="sd">    fit_types : list</span>
+<span class="sd">        List of strings that indicate if the fitness functions are to be minimized</span>
+<span class="sd">        or maximized, "min" for minimization and "max" for maximization.</span>
+<span class="sd">    num_var :  int</span>
+<span class="sd">        The number of variables used by the fitness function.</span>
+<span class="sd">    boundaries : list</span>
+<span class="sd">        The minimum and vaximum values each variable is allowed to have. Must be</span>
+<span class="sd">        a ``num_var`` long list of tuples in the form [(min, max),...].</span>
+<span class="sd">    num_gen : int, optional [100]</span>
+<span class="sd">        The maximum number of generations.</span>
+<span class="sd">    num_pop : int, optional [100]</span>
+<span class="sd">        The number of individuals in the population. Must be an even number.</span>
+<span class="sd">    mutation_probability : float, optional [0.001]</span>
+<span class="sd">        Float from 0 to 1. If 0 is used, none of the genes in each individuals</span>
+<span class="sd">        chromosome will be mutated. If 1 is used, all of them will mutate.</span>
+<span class="sd">    num_bin_dig : list, optional [None]</span>
+<span class="sd">        Number of genes used to codify each variable. Must be a ``num_var`` long</span>
+<span class="sd">        list of intergers. If None is given, each variable will be coded with a</span>
+<span class="sd">        8 digit binary number, corresponding to 256 steps.</span>
+<span class="sd">    start_from_gen : int, optional [None]</span>
+<span class="sd">        The generation number to restart a previous optimization process.</span>
+<span class="sd">    fit_names : list, optional [None]</span>
+<span class="sd">        The names of the fitness functions. If None is given, the name of the fitness</span>
+<span class="sd">        functions are used.</span>
+<span class="sd">    fargs : list, optional [None]</span>
+<span class="sd">        Arguments fo be fed to the fitness function.</span>
+<span class="sd">    fkwargs : dict, optional [None]</span>
+<span class="sd">        Keyword arguments to be fed to the fitness function.</span>
+<span class="sd">    output_path : str, optional [None]</span>
+<span class="sd">        Path for the optimization result files.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    moga : object</span>
+<span class="sd">        The resulting :class'MOGA' instance.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    Zitzler-Deb-Thiele Test problem 3</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import os</span>
+<span class="sd">        import compas</span>
+<span class="sd">        import math</span>
+
+<span class="sd">        def zdt3_f1(X, a):</span>
+<span class="sd">            fit = X[0]</span>
+<span class="sd">            return fit</span>
+
+<span class="sd">        def zdt3_f2(X, a):</span>
+<span class="sd">            n = len(X)</span>
+<span class="sd">            totX = 0</span>
+<span class="sd">            for i in range(1, n):</span>
+<span class="sd">                totX  = totX + X[i]</span>
+<span class="sd">            G = 1 + (9 / (n - 1)) * totX</span>
+<span class="sd">            H = 1 - math.sqrt(X[0] / G) - ((X[0] / G) * math.sin(10 * math.pi * X[0]))</span>
+<span class="sd">            fit = G * H</span>
+<span class="sd">            return fit</span>
+
+<span class="sd">        fit_functions = [zdt3_f1, zdt3_f2]</span>
+<span class="sd">        fit_types = ['min', 'min']</span>
+<span class="sd">        num_var = 30</span>
+<span class="sd">        boundaries = [(0, 1)] * num_var</span>
+<span class="sd">        num_bin_dig  = [8] * num_var</span>
+<span class="sd">        output_path = os.path.join(compas.TEMP, 'moga_out/')</span>
+
+<span class="sd">        if not os.path.exists(output_path):</span>
+<span class="sd">            os.makedirs(output_path)</span>
+
+<span class="sd">        moga = moga(fit_functions,</span>
+<span class="sd">                    fit_types,</span>
+<span class="sd">                    num_var,</span>
+<span class="sd">                    boundaries,</span>
+<span class="sd">                    num_gen=100,</span>
+<span class="sd">                    num_pop=50,</span>
+<span class="sd">                    num_bin_dig=num_bin_dig,</span>
+<span class="sd">                    output_path=output_path)</span>
+
+<span class="sd">    .. code-block:: none</span>
+
+<span class="sd">        ================================================================================</span>
+<span class="sd">        MOGA summary</span>
+<span class="sd">        ================================================================================</span>
+
+<span class="sd">        - fitness function name: ['zdt3_f1', 'zdt3_f2']</span>
+
+<span class="sd">        - fitnes function type : ['min', 'min']</span>
+
+<span class="sd">        - number of generations : 100</span>
+
+<span class="sd">        - number of individuals : 50</span>
+
+<span class="sd">        - number of variables : 30</span>
+
+<span class="sd">        - optimal individuals : [0, 1]</span>
+
+<span class="sd">        - optimal fitness values : [0.0, -0.7730627737349554]</span>
+
+<span class="sd">        ================================================================================</span>
+
+<span class="sd">    """</span>
 
     <span class="n">moga</span> <span class="o">=</span> <span class="n">MOGA</span><span class="p">()</span>
 
@@ -71,7 +211,6 @@
     <span class="n">moga</span><span class="o">.</span><span class="n">num_var</span>              <span class="o">=</span> <span class="n">num_var</span>
     <span class="n">moga</span><span class="o">.</span><span class="n">mutation_probability</span> <span class="o">=</span> <span class="n">mutation_probability</span>
     <span class="n">moga</span><span class="o">.</span><span class="n">start_from_gen</span>       <span class="o">=</span> <span class="n">start_from_gen</span>
-    <span class="n">moga</span><span class="o">.</span><span class="n">min_fit</span>              <span class="o">=</span> <span class="n">min_fit</span>
     <span class="n">moga</span><span class="o">.</span><span class="n">boundaries</span>           <span class="o">=</span> <span class="n">boundaries</span>
     <span class="n">moga</span><span class="o">.</span><span class="n">num_bin_dig</span>          <span class="o">=</span> <span class="n">num_bin_dig</span> <span class="ow">or</span> <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_var</span>
     <span class="n">moga</span><span class="o">.</span><span class="n">max_bin_dig</span>          <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">moga</span><span class="o">.</span><span class="n">num_bin_dig</span><span class="p">)</span>
@@ -81,17 +220,82 @@
     <span class="n">moga</span><span class="o">.</span><span class="n">fit_functions</span>        <span class="o">=</span> <span class="n">fit_functions</span>
     <span class="n">moga</span><span class="o">.</span><span class="n">output_path</span>          <span class="o">=</span> <span class="n">output_path</span> <span class="ow">or</span> <span class="s1">''</span>
     <span class="n">moga</span><span class="o">.</span><span class="n">num_fit_func</span>         <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fit_functions</span><span class="p">)</span>
-    <span class="n">moga</span><span class="o">.</span><span class="n">moga</span><span class="p">()</span>
+    <span class="n">moga</span><span class="o">.</span><span class="n">moga_optimise</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">moga</span></div>
 
 
 <span class="k">class</span> <span class="nc">MOGA</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">"""This class contains a binary coded, multiple objective genetic algorithm called</span>
-<span class="sd">    NSGA-II (ref to K. Deb). NSGA-II uses the concept of non-domination, or Pareto-domination to</span>
+<span class="sd">    NSGA-II (K. Deb). NSGA-II uses the concept of non-domination (Pareto-domination) to</span>
 <span class="sd">    classify solutions and optimize as a genetic algorith. NSGA-II also employs a crowding distance</span>
-<span class="sd">    operator especially designed to distribute individuals in the population allong the Pareto</span>
-<span class="sd">    front, and this avoid crowding in small areas. The main function is ``MOGA.moga``, calling</span>
-<span class="sd">    this starts the multi objective optimization process.</span>
+<span class="sd">    operator designed to distribute individuals in the population allong the Pareto</span>
+<span class="sd">    front, avoid crowding in small areas.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    fit_functions : list</span>
+<span class="sd">        List of functions to be used by the :class'MOGA' to determine the fitness values.</span>
+<span class="sd">        The function must have as a first argument a list of variables that determine the</span>
+<span class="sd">        fitness value. Other arguments and keyword arguments can be used to feed</span>
+<span class="sd">        the function relevant data.</span>
+<span class="sd">    fit_types : list</span>
+<span class="sd">        List of strings that indicate if the fitness functions are to be minimized</span>
+<span class="sd">        or maximized, "min" for minimization and "max" for maximization.</span>
+<span class="sd">    boundaries : list</span>
+<span class="sd">        The minimum and vaximum values each variable is allowed to have. Must be</span>
+<span class="sd">        a ``num_var`` long list of tuples in the form [(min, max),...].</span>
+<span class="sd">    num_var :  int</span>
+<span class="sd">        The number of variables used by the fitness function.</span>
+<span class="sd">    num_pop : int, optional [100]</span>
+<span class="sd">        The number of individuals in the population. Must be an even number.</span>
+<span class="sd">    num_gen : int, optional [100]</span>
+<span class="sd">        The maximum number of generations.</span>
+<span class="sd">    num_bin_dig : list, optional [None]</span>
+<span class="sd">        Number of genes used to codify each variable. Must be a ``num_var`` long</span>
+<span class="sd">        list of intergers. If None is given, each variable will be coded with a</span>
+<span class="sd">        8 digit binary number, corresponding to 256 steps.</span>
+<span class="sd">    mutation_probability : float, optional [0.001]</span>
+<span class="sd">        Float from 0 to 1. If 0 is used, none of the genes in each individuals</span>
+<span class="sd">        chromosome will be mutated. If 1 is used, all of them will mutate.</span>
+<span class="sd">    fit_names : list, optional [None]</span>
+<span class="sd">        The names of the fitness functions. If None is given, the name of the fitness</span>
+<span class="sd">        functions are used.</span>
+<span class="sd">    start_from_gen : int, optional [None]</span>
+<span class="sd">        The generation number to restart a previous optimization process.</span>
+<span class="sd">    max_bin_digit : int</span>
+<span class="sd">        The maximum number of binary digits that are used to code a variable values.</span>
+<span class="sd">        The number of binary digits assigned to code a variable determine the number</span>
+<span class="sd">        of discrete steps inside the variable bounds. For example, an 8 digit binary</span>
+<span class="sd">        number will produce 256 steps.</span>
+<span class="sd">    total_bin_dig : int</span>
+<span class="sd">        The total number of binary digits.</span>
+<span class="sd">    num_fit_func : int</span>
+<span class="sd">        The number of fitness functions.</span>
+<span class="sd">    output_path : str, optional [None]</span>
+<span class="sd">        Path for the optimization result files.</span>
+<span class="sd">    parent_combined_dict : dict</span>
+<span class="sd">        The combined parent population dictionary.</span>
+<span class="sd">    parent_pop : dict</span>
+<span class="sd">        The parent population dictionary.</span>
+<span class="sd">    current_pop : dict</span>
+<span class="sd">        The current population dictionary.</span>
+<span class="sd">    combined_pop : dict</span>
+<span class="sd">        The combined population dictionary.</span>
+<span class="sd">    new_pop_cd : list</span>
+<span class="sd">        The crowding distance list for the newly created population.</span>
+<span class="sd">    fixed_start_pop : dict</span>
+<span class="sd">        The user-selected population dictionary for MOGA restarting.</span>
+<span class="sd">    fargs : list, optional [None]</span>
+<span class="sd">        Arguments fo be fed to the fitness function.</span>
+<span class="sd">    fkwargs : dict, optional [None]</span>
+<span class="sd">        Keyword arguments to be fed to the fitness function.</span>
+
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    * Deb, K. (2001), Multi-Objective Optimization using Evolutionary Algorithms,</span>
+<span class="sd">    John Wiley &amp; Sons, Chichester.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -106,28 +310,49 @@
 <span class="sd">        # pf_dict         = {individual index: pf number}</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_functions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_types</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span>   <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_var</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_pop</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_gen</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span>   <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_bin_dig</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mutation_probability</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_names</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fit_types</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_from_gen</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_bin_dig</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">total_bin_dig</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_fit_func</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">additional_data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_combined_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_pop</span>   <span class="o">=</span> <span class="p">{</span><span class="s1">'binary'</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">'decoded'</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">'scaled'</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">'fit_values'</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">'pf'</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_pop</span>  <span class="o">=</span> <span class="p">{</span><span class="s1">'binary'</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">'decoded'</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">'scaled'</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">'fit_values'</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">combined_pop</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'binary'</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">'decoded'</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">'scaled'</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">'fit_values'</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">new_pop_cd</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed_start_pop</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># {'binary':{},'decoded':{},'scaled':{}}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fkwargs</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">moga</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Compile a summary of the MOGA."""</span>
+        <span class="n">fit_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_names</span>
+        <span class="n">fit_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_types</span>
+        <span class="n">num_gen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_gen</span>
+        <span class="n">num_pop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_pop</span>
+        <span class="n">num_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_var</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fitl</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_pop</span><span class="p">[</span><span class="s1">'fit_values'</span><span class="p">])]</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_sorting_indices</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'min'</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sorting_indices</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fitl</span><span class="p">)]</span>
+            <span class="n">fit</span> <span class="o">=</span> <span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'min'</span> <span class="k">else</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fitl</span><span class="p">)]</span>
+        <span class="k">except</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">fit</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">TPL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fit_names</span><span class="p">,</span> <span class="n">fit_types</span><span class="p">,</span> <span class="n">num_gen</span><span class="p">,</span> <span class="n">num_pop</span><span class="p">,</span> <span class="n">num_var</span><span class="p">,</span> <span class="n">best</span><span class="p">,</span> <span class="n">fit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Print a summary of the MOGA."""</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">moga_optimise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">"""This is the main optimization function, this function permorms the multi objective</span>
 <span class="sd">        GA optimization, performing all genetic operators.</span>
 <span class="sd">        """</span>
@@ -155,7 +380,7 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_pop</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_fit_func</span><span class="p">):</span>
                     <span class="n">fit_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_functions</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">parent_pop</span><span class="p">[</span><span class="s1">'fit_values'</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_pop</span><span class="p">[</span><span class="s1">'scaled'</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">additional_data</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">parent_pop</span><span class="p">[</span><span class="s1">'fit_values'</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_pop</span><span class="p">[</span><span class="s1">'scaled'</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">fkwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">current_pop</span><span class="p">[</span><span class="s1">'binary'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_random_bin_pop</span><span class="p">()</span>
 
@@ -168,7 +393,7 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_pop</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_fit_func</span><span class="p">):</span>
                     <span class="n">fit_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_functions</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pop</span><span class="p">[</span><span class="s1">'fit_values'</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pop</span><span class="p">[</span><span class="s1">'scaled'</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">additional_data</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pop</span><span class="p">[</span><span class="s1">'fit_values'</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pop</span><span class="p">[</span><span class="s1">'scaled'</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">fkwargs</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">combine_populations</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">non_dom_sort</span><span class="p">()</span>
@@ -187,7 +412,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">simple_crossover</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">random_mutation</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">'end of MOGA'</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">write_out_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">generation</span><span class="p">):</span>
         <span class="sd">"""This function writes a file containing all of the population data for</span>
@@ -414,7 +639,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">pf_values</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">combined_pop</span><span class="p">[</span><span class="s1">'fit_values'</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">i_pareto_front</span><span class="p">[</span><span class="n">k</span><span class="p">]][</span><span class="n">i</span><span class="p">])</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'max'</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sorted_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sorting_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pf_values</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sorted_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sorting_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pf_values</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">sorted_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sorting_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pf_values</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -860,7 +1085,52 @@
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">compas</span>
+    <span class="kn">import</span> <span class="nn">math</span>
+    <span class="kn">from</span> <span class="nn">compas.visualization.plotters.mogaplotter</span> <span class="k">import</span> <span class="n">MogaPlotter</span>
+
+    <span class="k">def</span> <span class="nf">zdt3_f1</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="n">fit</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">fit</span>
+
+    <span class="k">def</span> <span class="nf">zdt3_f2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">totX</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="n">totX</span>  <span class="o">=</span> <span class="n">totX</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">9</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">totX</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">G</span><span class="p">)</span> <span class="o">-</span> <span class="p">((</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">G</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">fit</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="n">H</span>
+        <span class="k">return</span> <span class="n">fit</span>
+
+    <span class="n">fit_functions</span> <span class="o">=</span> <span class="p">[</span><span class="n">zdt3_f1</span><span class="p">,</span> <span class="n">zdt3_f2</span><span class="p">]</span>
+    <span class="n">fit_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'min'</span><span class="p">,</span> <span class="s1">'min'</span><span class="p">]</span>
+    <span class="n">num_var</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">boundaries</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">*</span> <span class="n">num_var</span>
+    <span class="n">num_bin_dig</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_var</span>
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">TEMP</span><span class="p">,</span> <span class="s1">'moga_out/'</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+
+    <span class="n">moga_</span> <span class="o">=</span> <span class="n">moga</span><span class="p">(</span><span class="n">fit_functions</span><span class="p">,</span>
+                 <span class="n">fit_types</span><span class="p">,</span>
+                 <span class="n">num_var</span><span class="p">,</span>
+                 <span class="n">boundaries</span><span class="p">,</span>
+                 <span class="n">num_gen</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">num_pop</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                 <span class="n">num_bin_dig</span><span class="o">=</span><span class="n">num_bin_dig</span><span class="p">,</span>
+                 <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span>
+
+    <span class="n">vis</span> <span class="o">=</span> <span class="n">MogaPlotter</span><span class="p">()</span>
+    <span class="n">vis</span><span class="o">.</span><span class="n">input_path</span> <span class="o">=</span> <span class="n">moga_</span><span class="o">.</span><span class="n">output_path</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s1">''</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">moga_</span><span class="o">.</span><span class="n">fit_names</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">+=</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">'-'</span>
+    <span class="n">filename</span> <span class="o">+=</span> <span class="s1">'.json'</span>
+    <span class="n">vis</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">input_path</span>
+    <span class="n">vis</span><span class="o">.</span><span class="n">draw_objective_spaces</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <nav class="compas-sideways">
 </nav>
@@ -901,7 +1171,7 @@
             
 
             
-                Last updated on Oct 27, 2017.
+                Last updated on Oct 30, 2017.
             
 
             

@@ -3,6 +3,7 @@
 ********************************************************************************
 Geometry
 ********************************************************************************
+<<<<<<< HEAD
 
 Introduction
 ======================================
@@ -654,3 +655,5 @@ subdivision stuff
         mesh = mesh_subdivide_catmullclark(mesh, sub_level)
         # draw mesh
         mesh_draw_faces(mesh, redraw=False, join_faces=True)
+=======
+>>>>>>> d1144cc015660b52049211e6e09dc011cbebf3a6

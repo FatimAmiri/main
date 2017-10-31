@@ -19,6 +19,7 @@ Plotter
       ~Plotter.draw_lines
       ~Plotter.draw_points
       ~Plotter.draw_polygons
+      ~Plotter.register_listener
       ~Plotter.save
       ~Plotter.show
       ~Plotter.update
@@ -36,6 +37,7 @@ Plotter
    
       ~Plotter.axes
       ~Plotter.bgcolor
+      ~Plotter.canvas
       ~Plotter.figure
       ~Plotter.interactive
       ~Plotter.title

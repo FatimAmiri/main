@@ -4,79 +4,121 @@
 Python
 ********************************************************************************
 
-The compas framework is based on Python.
-Python 3 is fully supported and the code is backwards compatible with Python +2.6.
+.. note::
+
+    The compas framework is based on Python.
+    Python 3 is fully supported and the code is backwards compatible with Python +2.6.
 
 
 Built-in types and functions
 ============================
 
-* https://docs.python.org/3/library/stdtypes.html
-* https://docs.python.org/3/library/functions.html
-
 **Types**
 
-* numeric types: :obj:`int`, :obj:`float`, :obj:`complex`
-* sequence types: :obj:`list`, :obj:`tuple`, :obj:`range`
-* text sequence type: :obj:`str`
-* set types: :obj:`set`, :obj:`frozenset`
-* mapping types: :obj:`dict`
+* https://docs.python.org/3/library/stdtypes.html
+
+================== ======================================== ====================
+numeric types      :obj:`int`, :obj:`float`, :obj:`complex` ``int(1)``, ``float(1)``, ``complex(1)``
+sequence types     :obj:`list`, :obj:`tuple`, :obj:`range`  ``[0, 1]``, ``(0, 1)``, ``range(1)``
+text sequence type :obj:`str`                               ``'hello'``
+set types          :obj:`set`, :obj:`frozenset`             ``set([0, 1, 2])``, ``frozenset([0, 1, 2])``
+mapping types      :obj:`dict`                              ``dict(zero=0, one=1)``
+================== ======================================== ====================
+
 
 **Functions**
 
-* enumerate: ``for i, item in enumerate(items): print(i, item)``
-* format
-* iter
-* len: ``if len(items) == 2: print('not a valid face')``
-* next
-* open
-* range ``for i in range(len(items)): print(i, items[i])``
-* sorted
+* https://docs.python.org/3/library/functions.html
+
+.. code-block:: python
+
+    # enumerate
+    
+    for i, item in enumerate(items):
+        print(i, item)
+
+    # format
+    
+    format(3.14159, '.3f')
+
+    # len
+
+    if len(vertices) == 2:
+        print('not a valid face')
+
+    # open
+
+    f = open('faces.obj', 'r')
+
+    # range
+
+    numbers = range(10)
+
+    # sorted
+
+    sorted([str(i) for i in range(10)], key=int)
+
+    # zip
+    
+    zip(* [[1, 2, 3], [1, 2, 3], [1, 2, 3]])
 
 
 Containers
 ==========
+
+* https://docs.python.org/3.6/tutorial/datastructures.html
+* https://docs.python.org/3.6/library/collections.html
+* https://docs.python.org/3.6/library/collections.abc.html
+
+====== ============================ =============================================================== ==============
+type   example                      description                                                     operations
+====== ============================ =============================================================== ==============
+list   [1, 2, 3, 4]                 Contains ordered arbitrary objects.                             iterate, index, slice, modify
+tuple  (1, 2, 3, 4)                 Contains ordered arbitrary objects. Immutable.                  iterate, index, slice
+set    set([1, 2, 3, 4])            Contains unordered, distinct, hashable objects.                 iterate, modify
+dict   dict(one=1, two=2, three=3)  Maps unordered distinct hashable objects to arbitrary objects.  iterate, modify 
+====== ============================ =============================================================== ==============
+
 
 List
 ----
 
 https://docs.python.org/3/library/stdtypes.html#lists
 
-* Ordered items of any type.
-* **Mutable**
-
 .. code-block:: python
 
-    items = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    # construct
 
-.. code-block:: python
+    items = [0, 1, 2, 3]
 
-    # indexing & slicing
+    # iterate
+
+    for item in items:
+        print(item)
+
+    # index
 
     items[0]     # 0  
-    items[-1]    # 9
+    items[-1]    # 3
 
-    items[:5]    # [0, 1, 2, 3, 4]
-    items[5:]    # [5, 6, 7, 8, 9]
+    # slice
 
-    items[::-1]  # [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
-    items[::2]   # [0, 2, 4, 6, 8]
+    items[:2]    # [0, 1]
+    items[2:]    # [2, 3]
 
-.. code-block:: python
+    items[::-1]  # [3, 2, 1, 0]
+    items[::2]   # [0, 2]
 
-    # methods
+    # modify
 
-    items = [0, 1, 2, 3, 4, 5]
-
-    items.append(6)                  # [1, 2, 3, 4, 5, 6]
-    items.insert(0, 0)               # [0, 1, 2, 3, 4, 5, 6]
-    items.extend([7, 8, 9, 10, 11])  # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-    items.pop()                      # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    items.remove(-1)                 # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    items.append(4)          # [0, 1, 2, 3, 4]
+    items.insert(0, -1)      # [-1, 0, 1, 2, 3, 4]
+    items.extend([5, 6, 7])  # [-1, 0, 1, 2, 3, 4, 5, 6, 7]
+    items.pop()              # 7
+    items.remove(-1)         # [0, 1, 2, 3, 4, 5, 6]
 
 
-List comprehensions
--------------------
+**List comprehensions**
 
 Generate lists with an expression in brackets.
 
@@ -85,37 +127,24 @@ Generate lists with an expression in brackets.
     # list construction
 
     numbers = [n for n in range(10)]
-    odd     = [n for n in range(10) if n % 2 == 1]
-    even    = [n for n in range(10) if n % 2 == 0]
-    squares = [n ** 2 for n in range(10)]
-    even    = [n if n % 2 == 0 else None for n in range(10)]
 
-.. code-block:: python
+    # filtering
+
+    even = [n for n in numbers if n % 2 == 0]
+
+    # function mapping
+
+    squares = [pow(n, 2) for n in numbers]
 
     # flattening
 
+    nested = [[1, 2, 3], [1, 2, 3], [1, 2, 3]]
+    flat   = [n for numbers in nested for n in numbers]
 
-
-.. code-block:: python
-
-    # vector length
-
-    vector = [1.0, 0.0]
-    length = sum([x ** 2 for x in vector]) ** 0.5
-
-.. code-block:: python
-
-    # dot product
-
-    vectors = [[1.0, 0.0], [0.0, 1.0]]
-    dot = sum([a * b for a, b in zip(* vectors)])
-
-.. code-block:: python
-
-    # centroid
+    # geometry
 
     points = [[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]]
-    centroid = [sum(axis) / len(vertices) for axis in zip(* vertices)]
+    centroid = [sum(axis) / len(points) for axis in zip(* points)]
 
 
 Tuple
@@ -123,21 +152,31 @@ Tuple
 
 https://docs.python.org/3/library/stdtypes.html#tuples
 
-* Ordered items of any type.
-* **Immutable**
-
 .. code-block:: python
+
+    # construct
 
     rgb = 255, 0, 0
 
-    r = rgb[0]  # 255
-    g = rgb[1]  # 0
-    b = rgb[2]  # 0
+    # iterate
 
-.. code-block:: python
+    for color in rgb:
+        print(color)
 
-    rgb[0] = 0
-    rgb[1] = 255
+    # index
+
+    rgb[0]  # 255
+    rgb[1]  # 0
+    rgb[2]  # 0
+
+    # slice
+
+    rgb[1:]   # (0, 0)
+    rgb[:-1]  # (255, 0)
+
+    # modify
+
+    # immutable => no can do
 
 
 Set
@@ -145,12 +184,30 @@ Set
 
 https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset
 
-* Unordered, distinct, hashable objects.
-* **Mutable**
-
 .. code-block:: python
 
-    items = set([1, 2, 3, 4])
+    # construct
+
+    items = set([1, 1, 2, 3, 3, 4])
+
+    # iterate
+
+    for item in items:
+        print(item)
+
+    # index
+
+    # not ordered => no can do
+
+    # slice
+
+    # not ordered => no can do
+
+    # modify
+
+    items.add(5)
+    items.add(5)
+    items.remove(2)
 
 
 Dictionary
@@ -158,109 +215,123 @@ Dictionary
 
 https://docs.python.org/3/library/stdtypes.html#mapping-types-dict
 
-* Maps unordered, distinct, hashable values (*keys*) to arbitrary objects
-* **Mutable**
-
 .. code-block:: python
 
-    items = {'1': 1, '2': 2, '3': 3, '4': 4}
+    # construct
+
+    items = dict(one=1, two=2, three=3)
+
+    # iterate
 
     for key in items:
-        print key, items[key]
+        print(key, items[key])
 
     for key in items.keys():
-        print key, items[key]
+        print(key, items[key])
 
     for key, value in items.items():
-        print key, value
+        print(key, value)
 
     for value in items.values():
-        print value
+        print(value)
 
-.. code-block:: python
+    # index
 
-    # pop
-    # popitem
-    # setdefault
-    # get
+    # not ordered => no can do
 
-.. code-block:: python
+    # slice
 
-    # sort dictionary based on values
+    # not ordered => no can do
+
+    # modify
+
+    items['zero'] = 0
+    items.pop('zero')
+    items.popitem()
+    items.setdefault('four', 4)
+
+    items.get('five', 5)
 
 
-Dict comprehensions
--------------------
+**Dict comprehensions**
 
 .. code-block:: python
 
     items = {index: value for index, value in enumerate(range(10))}
 
 
-Examples
+Exercise
 --------
 
-Compare lookup speeds
+Compute the connectivity of a set of lines defined by pairs of point coordinates.
 
-.. code-block:: python
-    
-    # membership testing
-    # removing duplicates
-    # set operations
 
-    from random import sample
-    from timeit import timeit
+**Lines**
 
-    n = 100000
-    m = 10000
+* :download:`lines.json </../../examples/workshops/acadia2017/lines.json>`
+* :download:`lines_big.json </../../examples/workshops/acadia2017/lines_big.json>`
+* :download:`lines_bigger.json </../../examples/workshops/acadia2017/lines_bigger.json>`
 
-    items = sample(range(n), m)
-    exclude = sample(range(n), m)
 
-    exclude_dict = {e: e for e in exclude}
+**Approach 1.** Compare the distances between points
 
-    result = set(items) - set(exclude)
-    result = [i for i in items if i not in exclude]
-    result = [i for i in items if i not in exclude_dict]
-
-    # timeit("result = set(items) - set(exclude)", "from __main__ import items, exclude", number=10)
-    # timeit("result = [i for i in items if i not in exclude]", "from __main__ import items, exclude", number=10)
-    # timeit("result = [i for i in items if i not in exclude]", "from __main__ import items, exclude", number=10)
-
-    # 0.02
-    # 12.58
-
-Geometric maps
-
-Given a set of lines, defined by start and end point coordinates,
-determine the connectivity of the lines.
+* :download:`python_comparison.py </../../examples/workshops/acadia2017/python_comparison.py>`
 
 .. code-block:: python
 
-    import compas
-    from compas.files import OBJReader
+    import json
 
-    obj = OBJReader(compas.get('lines.obj'))
+    with open('lines.json', 'r') as f:
+        lines = json.load(f)
 
-    index_key = {}
-    vertex = {}
+    print(len(lines))
 
-    for index, xyz in enumerate(iter(obj.vertices)):
-        key = '{0[0]:.3f},{0[1]:.3f},{0[2]:.3f}'.format(xyz)
-        index_key[index] = key
-        vertex[key] = xyz
+    tol = 0.001
 
-    # for index in index_key:
-    #     print index, index_key[index], vertex[index_key[index]]
+    vertices = []
+    edges = []
 
-    key_index = {key: index for index, key in enumerate(vertex.keys())}
-    index_index = {index: key_index[key] for index, key in iter(index_key.items())}
+    for sp, ep in lines:
 
-    vertices = [xyz for xyz in iter(vertex.values())]
-    lines    = [[index_index[index] for index in line] for line in obj.lines if len(line) == 2]
+        # do something magical here
 
-    # print vertices
-    # print lines
+
+    # verify the result
+
+    print(len(lines) == len(edges))
+    print(len(edges)) == len(set(edges))
+
+
+**Approach 2.** Map points to locations
+
+* :download:`python_geomap.py </../../examples/workshops/acadia2017/python_geomap.py>`
+
+.. code-block:: python
+
+    import json
+
+    with open('lines.json', 'r') as f:
+        lines = json.load(f)
+
+    print(len(lines))
+
+    tol = '3f'
+
+    vertexdict = {}
+    edges = []
+
+    for sp, ep in lines:
+
+        # do something magical here
+
+
+    # verify the result
+
+    print(len(lines) == len(edges))
+    print(len(edges)) == len(set(edges))
+
+
+------------------
 
 
 Functions
@@ -299,17 +370,130 @@ Functions
         pass
 
 
+Exercise
+--------
+
+Compute an approximation of the golden ratio using a recursive fibonacci function.
+
+* :download:`goldenratio.py </../../examples/workshops/acadia2017/python_goldenratio.py>`
+
+.. code-block:: python
+
+    def fib(n):
+        if n == 0:
+            return 0
+        if n == 1 or n == 2:
+            return 1
+        return fib(n - 1) + fib(n - 2)
+
+    numbers = [fib(i) for i in range(10)]
+    ratio = fib(99) / fib(100)
+
+
 Classes
 =======
 
 .. code-block:: python
 
-    class Vector():
+    class Vector(object):
 
         def __init__(self, x, y, z):
             self.x = x
             self.y = y
             self.z = z
+
+        def length(self):
+            return (self.x ** 2 + self.y ** 2 + self.z ** 2) ** 0.5
+
+        def add(self, other):
+            self.x += other.x
+            self.y += other.y
+            self.z += other.z
+
+
+.. code-block:: python
+
+    u = Vector(1, 0, 0)
+    v = Vector(0, 1, 0)
+
+    u.add(v)
+
+    print(u)  # <__main__.Vector object at 0x10b5a9710>
+
+
+.. code-block:: python
+
+    class Vector(object):
+
+        def __init__(self, x, y, z):
+            self._x = 0
+            self._y = 0
+            self._z = 0
+            self.x = x
+            self.y = y
+            self.z = z
+
+        def __getitem__(self, key):
+            key = key % 3
+            if key == 0:
+                return self.x
+            if key == 1:
+                return self.x
+            if key == 2:
+                return self.x
+            raise KeyError
+
+        def __str__(self):
+            return 'Vector({:.1f}, {:.1f}, {:.1f})'.format(self.x, self.y, self.z)
+
+        @property
+        def x(self):
+            return self._x
+
+        @x.setter
+        def x(self, x):
+            self._x = float(x)
+
+        @property
+        def y(self):
+            return self._y
+
+        @y.setter
+        def y(self, y):
+            self._y = float(y)
+
+        @property
+        def z(self):
+            return self._z
+
+        @z.setter
+        def z(self, z):
+            self._z = float(z)
+
+        def length(self):
+            return (self.x ** 2 + self.y ** 2 + self.z ** 2) ** 0.5
+
+        def add(self, other):
+            self.x += other[0]
+            self.y += other[1]
+            self.z += other[2]
+
+
+.. code-block:: python
+
+    u = Vector(1, 0, 0)
+    v = [0, 1, 0]
+    w = Vector(*v)
+
+    u.add(v)
+    u.add(w)
+
+    print(u)  # Vector(1.0, 2.0, 0.0)
+
+
+.. seealso::
+
+    * :class:`compas.geometry.Vector`
 
 
 Script, Module, Package
@@ -323,13 +507,12 @@ Script, Module, Package
     b = 2
     c = a + b
 
-    print c
+    print(c)
 
 
 .. code-block:: python
 
     # script vs. module
-    # http://stackoverflow.com/questions/419163/what-does-if-name-main-do
 
     def f1():
         ...
@@ -345,12 +528,32 @@ Script, Module, Package
         f1()
         f2()
 
+.. seealso::
 
-Resources
-=========
+    * :class:`compas.datastructures.Mesh`
 
-* `Python Packaging User Guide <http://python-packaging-user-guide.readthedocs.org/en/latest/installing/>`_
-* `StackOverflow: Why use pip over easy_install? <http://stackoverflow.com/questions/3220404/why-use-pip-over-easy-install>`_
-* `Unofficial Windows Binaries for Python Extension Packages <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_
-* `Anaconda Python distribution <http://docs.continuum.io/anaconda/index>`_
-* `MacPorts <https://www.macports.org/>`_
+
+Further reading
+===============
+
+**Python**
+
+* `Python 3: standard library <https://docs.python.org/3/library/index.html>`_
+* `Python 3: how-to guides <https://docs.python.org/3/howto/index.html>`_
+
+**Idiomatic Python**
+
+* `Code Like a Pythonista: Idiomatic Python <http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html>`_
+* `Transforming Code into Beautiful, Idiomatic Python <https://gist.github.com/JeffPaine/6213790>`_
+* `Python 3 Patterns, Recipes and Idioms <https://python-3-patterns-idioms-test.readthedocs.io/en/latest/>`_
+
+**Python 2 vs 3**
+
+* `What's New in Python 3 <https://docs.python.org/3.0/whatsnew/3.0.html>`_
+* `The key differences between Python 2.7.x and Python 3.x with examples <http://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html>`_
+* `Should I use Python 2 or Python 3 for my development activity? <https://wiki.python.org/moin/Python2orPython3>`_
+
+**Other**
+
+* `Python Reference (The Right Way) <http://python-reference.readthedocs.io/en/latest/index.html>`_
+

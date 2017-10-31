@@ -35,6 +35,7 @@ Algorithms
     smooth_centroid
     smooth_centerofmass
     smooth_area
+    smooth_resultant
     discrete_coons_patch
 
 .. autosummary::
@@ -50,6 +51,7 @@ Algorithms
     :toctree: generated/
 
     network_smooth_centroid
+    network_smooth_resultant
     network_relax
 
 

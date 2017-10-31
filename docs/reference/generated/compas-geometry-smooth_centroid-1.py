@@ -3,7 +3,7 @@ from compas.datastructures import Mesh
 from compas.geometry import smooth_centroid
 from compas.visualization import MeshPlotter
 
-mesh = Mesh.from_obj(compas.get_data('faces.obj'))
+mesh = Mesh.from_obj(compas.get('faces.obj'))
 
 vertices  = {key: mesh.vertex_coordinates(key) for key in mesh.vertices()}
 adjacency = {key: mesh.vertex_neighbours(key) for key in mesh.vertices()}

@@ -59,7 +59,6 @@ input can be 3d points resulting in a 2.5d heightfield mesh.</p>
 <span class="kn">import</span> <span class="nn">compas_rhino</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">delaunay_from_points</span>
 
 
 <span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">'Tom Van Mele'</span><span class="p">,</span> <span class="s1">'Matthias Rippmann'</span><span class="p">]</span>
@@ -68,12 +67,19 @@ input can be 3d points resulting in a 2.5d heightfield mesh.</p>
 <span class="n">__email__</span>     <span class="o">=</span> <span class="s1">'van.mele@arch.ethz.ch'</span>
 
 
+<span class="c1"># select the points</span>
+<span class="c1"># and get their coordinates</span>
+
 <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">select_points</span><span class="p">()</span>
-<span class="n">vertices</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_point_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_point_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
 
-<span class="n">faces</span> <span class="o">=</span> <span class="n">delaunay_from_points</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
 
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+<span class="c1"># make a mesh from the delaunay triangulation of the points</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+
+<span class="c1"># draw in Rhino</span>
 
 <span class="n">compas_rhino</span><span class="o">.</span><span class="n">mesh_draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </code></pre></div>
@@ -112,6 +118,8 @@ input can be 3d points resulting in a 2.5d heightfield mesh.</p>
 <li class="nav-item"><a class="nav-link reference internal" href="06-remeshing-on-mesh.html">Remeshing 3D</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="07-subd-modeling.html">Subd mesh modeling</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="08-skeleton-modeling.html">Skeleton mesh modeling</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="10-stanford-bunny.html">The Stanford Bunny</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="13-parameterisation.html">Mesh parametrisation</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../networktopology.html">Network Topology</a></li>
@@ -142,7 +150,7 @@ input can be 3d points resulting in a 2.5d heightfield mesh.</p>
             
 
             
-                Last updated on Oct 27, 2017.
+                Last updated on Oct 30, 2017.
             
 
             

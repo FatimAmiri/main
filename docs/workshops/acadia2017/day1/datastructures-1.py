@@ -12,11 +12,10 @@ plotter.draw_edges()
 
 plotter.draw_vertices(
     text='key',
-    facecolor=(0.9, 0.9, 0.9),
+    radius=0.15
 )
 plotter.draw_faces(
     text='key',
-    facecolor=(0.7, 0.7, 0.7),
 )
 plotter.draw_edges(
     text='key'

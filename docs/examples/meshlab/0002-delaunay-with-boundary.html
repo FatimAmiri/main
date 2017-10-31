@@ -54,7 +54,6 @@ The following code shows how to include specific boundaries.</figcaption>
 </div><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="sd">"""Delaunay triangulation with boundary"""</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">delaunay_from_points</span>
 
 <span class="kn">import</span> <span class="nn">compas_rhino</span>
 
@@ -65,8 +64,12 @@ The following code shows how to include specific boundaries.</figcaption>
 <span class="n">__email__</span>     <span class="o">=</span> <span class="s1">'van.mele@arch.ethz.ch'</span>
 
 
-<span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">select_points</span><span class="p">()</span>
-<span class="n">vertices</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_point_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
+<span class="c1"># select the points</span>
+<span class="c1"># select the boundary</span>
+<span class="c1"># select the hole(s)</span>
+
+<span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">select_points</span><span class="p">(</span><span class="s2">"Select points."</span><span class="p">)</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_point_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
 
 <span class="n">guid</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">select_polyline</span><span class="p">(</span><span class="s2">"Select boundary."</span><span class="p">)</span>
 <span class="n">boundary</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_polyline_coordinates</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
@@ -74,9 +77,15 @@ The following code shows how to include specific boundaries.</figcaption>
 <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">select_polylines</span><span class="p">(</span><span class="s2">"Select holes."</span><span class="p">)</span>
 <span class="n">holes</span> <span class="o">=</span> <span class="p">[</span><span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_polyline_coordinates</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="k">for</span> <span class="n">guid</span> <span class="ow">in</span> <span class="n">guids</span><span class="p">]</span>
 
-<span class="n">faces</span> <span class="o">=</span> <span class="n">delaunay_from_points</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">boundary</span><span class="p">,</span> <span class="n">holes</span><span class="p">)</span>
 
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+<span class="c1"># make a delaunay triangulation</span>
+<span class="c1"># within the boundary</span>
+<span class="c1"># and around the holes</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="n">boundary</span><span class="p">,</span> <span class="n">holes</span><span class="o">=</span><span class="n">holes</span><span class="p">)</span>
+
+
+<span class="c1"># draw the result</span>
 
 <span class="n">compas_rhino</span><span class="o">.</span><span class="n">mesh_draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </code></pre></div>
@@ -115,6 +124,8 @@ The following code shows how to include specific boundaries.</figcaption>
 <li class="nav-item"><a class="nav-link reference internal" href="06-remeshing-on-mesh.html">Remeshing 3D</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="07-subd-modeling.html">Subd mesh modeling</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="08-skeleton-modeling.html">Skeleton mesh modeling</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="10-stanford-bunny.html">The Stanford Bunny</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="13-parameterisation.html">Mesh parametrisation</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../networktopology.html">Network Topology</a></li>
@@ -145,7 +156,7 @@ The following code shows how to include specific boundaries.</figcaption>
             
 
             
-                Last updated on Oct 27, 2017.
+                Last updated on Oct 30, 2017.
             
 
             

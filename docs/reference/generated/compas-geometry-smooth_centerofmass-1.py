@@ -3,7 +3,7 @@ from compas.datastructures import Mesh
 from compas.geometry import smooth_centerofmass
 from compas.visualization import MeshPlotter
 
-mesh = Mesh.from_obj(compas.get_data('faces.obj'))
+mesh = Mesh.from_obj(compas.get('faces.obj'))
 
 vertices  = {key: mesh.vertex_coordinates(key) for key in mesh.vertices()}
 adjacency = {key: mesh.vertex_neighbours(key, ordered=True) for key in mesh.vertices()}
@@ -18,7 +18,7 @@ for u, v in mesh.edges():
         'width': 1.0,
     })
 
-vertices = smooth_centerofmass(vertices, adjacency, fixed=fixed, kmax=100)
+smooth_centerofmass(vertices, adjacency, fixed=fixed, kmax=100)
 
 for key, attr in mesh.vertices(True):
     attr['x'] = vertices[key][0]

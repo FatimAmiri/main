@@ -59,12 +59,18 @@
 <span class="sd">- update the network</span>
 <span class="sd">- make a viewer and display the result</span>
 
+
+<span class="sd">Note</span>
+<span class="sd">----</span>
+<span class="sd">This examples requires PyOpenGL for visualization.</span>
+
+
 <span class="sd">"""</span>
 
 <span class="kn">import</span> <span class="nn">compas</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
-<span class="kn">from</span> <span class="nn">compas.visualization.viewers.networkviewer</span> <span class="k">import</span> <span class="n">NetworkViewer</span>
+<span class="kn">from</span> <span class="nn">compas.visualization.viewers</span> <span class="k">import</span> <span class="n">NetworkViewer</span>
 
 <span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="k">import</span> <span class="n">fd</span>
 
@@ -76,10 +82,9 @@
 
 
 <span class="c1"># make a network from sample data</span>
-
-<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">'saddle.obj'</span><span class="p">))</span>
-
 <span class="c1"># set default vertex and edge attributes</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'saddle.obj'</span><span class="p">))</span>
 
 <span class="n">dva</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'is_anchor'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'px'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">'py'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">'pz'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
 <span class="n">dea</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'q'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
@@ -87,32 +92,32 @@
 <span class="n">network</span><span class="o">.</span><span class="n">update_default_vertex_attributes</span><span class="p">(</span><span class="n">dva</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">update_default_edge_attributes</span><span class="p">(</span><span class="n">dea</span><span class="p">)</span>
 
+
 <span class="c1"># identify *anchored* vertices</span>
 
 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
     <span class="n">network</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">'is_anchor'</span><span class="p">]</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">is_vertex_leaf</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
-<span class="c1"># convert network data to numerical data</span>
+
+<span class="c1"># extract the structural data required for form finding</span>
+<span class="c1"># run the force density method</span>
+<span class="c1"># extract the updated coordinates from the result</span>
+
+<span class="n">key_index</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
 
 <span class="n">xyz</span>   <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">((</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">))</span>
 <span class="n">loads</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">((</span><span class="s1">'px'</span><span class="p">,</span> <span class="s1">'py'</span><span class="p">,</span> <span class="s1">'pz'</span><span class="p">))</span>
 <span class="n">q</span>     <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges_attribute</span><span class="p">(</span><span class="s1">'q'</span><span class="p">)</span>
-
-<span class="c1"># use a key-index map to reference items in the numerical data</span>
-
-<span class="n">key_index</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
-
 <span class="n">fixed</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">'is_anchor'</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
 <span class="n">fixed</span> <span class="o">=</span> <span class="p">[</span><span class="n">key_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">fixed</span><span class="p">]</span>
-
 <span class="n">edges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">key_index</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">key_index</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()]</span>
-
-<span class="c1"># run the force density method</span>
 
 <span class="n">res</span> <span class="o">=</span> <span class="n">fd</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">loads</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 <span class="n">xyz</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
+
 <span class="c1"># update the network</span>
+<span class="c1"># and visualize the result</span>
 
 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">key_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -120,10 +125,7 @@
     <span class="n">attr</span><span class="p">[</span><span class="s1">'y'</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">attr</span><span class="p">[</span><span class="s1">'z'</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
 
-<span class="c1"># make a viewer and display the result</span>
-
 <span class="n">viewer</span> <span class="o">=</span> <span class="n">NetworkViewer</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-
 <span class="n">viewer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
@@ -183,7 +185,7 @@
             
 
             
-                Last updated on Oct 27, 2017.
+                Last updated on Oct 30, 2017.
             
 
             
