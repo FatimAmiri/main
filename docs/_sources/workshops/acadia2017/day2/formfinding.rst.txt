@@ -4,26 +4,8 @@
 Form Finding
 ********************************************************************************
 
-.. start with relax
-.. example in editor
-.. do the same in Rhino
-.. add structural visualization
-.. add user interaction
-.. process input geometry (lines)
-.. limitations of script
-.. hence toolbar
-.. start from basic controller
-.. end with full form finding tool
-
 Compute equilibrium geometry of a network (cablenet) with DR
 ============================================================
-
-.. seealso::
-
-    * :class:`compas.datastructures.Network`
-    * :class:`compas.geometry.network_relax`
-    * :class:`compas.visualization.NetworkPlotter`
-    * :class:`compas.numerical.dr`
 
 .. plot::
 
@@ -85,6 +67,14 @@ Compute equilibrium geometry of a network (cablenet) with DR
     )
 
     plotter.show()
+
+
+.. seealso::
+
+    * :class:`compas.datastructures.Network`
+    * :class:`compas.geometry.network_relax`
+    * :class:`compas.visualization.NetworkPlotter`
+    * :class:`compas.numerical.dr`
 
 
 .. code-block:: python
@@ -198,6 +188,40 @@ Compute equilibrium geometry of a network (cablenet) with DR
     plotter.show()
 
 
+Make a custom class
+===================
+
+.. code-block:: python
+
+    class Cablenet(Network):
+
+        def __init__(self):
+            super(Cablenet, self).__init__()
+            self.default_vertex_attributes.update({
+                'is_fixed': False,
+                'px': 0.0,
+                'py': 0.0,
+                'pz': 0.0,
+                'rx': 0.0,
+                'ry': 0.0,
+                'rz': 0.0,
+            })
+            self.default_edge_attributes.update({
+                'q': 1.0,
+                'f': 0.0,
+                'l': 0.0
+            })
+
+        def fix_leaves(self):
+            for key, attr in self.vertices(True):
+                attr['is_fixed'] = self.vertex_degree(key) == 1
+
+
+    network = Cablenet.from_obj(compas.get('lines.obj'))
+
+    network.fix_leaves()
+
+
 Use Rhino as interface
 ======================
 
@@ -214,29 +238,32 @@ Use Rhino as interface
     from compas.geometry import network_relax
     from compas_rhino.conduits import LinesConduit
 
+    class Cablenet(Network):
 
-    dva = {
-        'is_fixed': False,
-        'px': 0.0,
-        'py': 0.0,
-        'pz': 0.0,
-        'rx': 0.0,
-        'ry': 0.0,
-        'rz': 0.0,
-    }
-    dea = {
-        'q': 1.0,
-        'f': 0.0,
-        'l': 0.0
-    }
+        def __init__(self):
+            super(Cablenet, self).__init__()
+            self.default_vertex_attributes.update({
+                'is_fixed': False,
+                'px': 0.0,
+                'py': 0.0,
+                'pz': 0.0,
+                'rx': 0.0,
+                'ry': 0.0,
+                'rz': 0.0,
+            })
+            self.default_edge_attributes.update({
+                'q': 1.0,
+                'f': 0.0,
+                'l': 0.0
+            })
 
-    network = Network.from_obj(compas.get('saddle.obj'))
+        def fix_leaves(self):
+            for key, attr in self.vertices(True):
+                attr['is_fixed'] = self.vertex_degree(key) == 1
 
-    network.update_default_vertex_attributes(dva)
-    network.update_default_edge_attributes(dea)
 
-    for key, attr in network.vertices(True):
-        attr['is_fixed'] = network.is_vertex_leaf(key)
+    network = Cablenet.from_obj(compas.get('saddle.obj'))
+    network.fix_leaves()
 
     compas_rhino.network_draw(
         network,
@@ -245,7 +272,7 @@ Use Rhino as interface
         vertexcolor={key: '#ff0000' for key in network.vertices_where({'is_fixed': True})}
     )
 
-    network_relax(network, kmax=100, callback=callback)
+    network_relax(network, kmax=100)
 
     compas_rhino.network_draw(
         network,
@@ -259,8 +286,6 @@ Use Rhino as interface
 
 
 * Use a conduit and a callback to visualize the relaxation process.
-* Visualize the reaction forces, loads, and axial forces in the network.
-
 
 .. code-block:: python
 
@@ -275,6 +300,8 @@ Use Rhino as interface
     with conduit.enabled():
         network_relax(network, kmax=100, callback=callback)
 
+
+* Visualize the reaction forces, loads, and axial forces in the network.
 
 .. code-block:: python
 
@@ -299,8 +326,6 @@ Add user interaction
 ====================
 
 * Update vertex attributes to add loads and change geometry.
-* Update edge attributes to change force densities and control the equilibrium shape.
-
 
 .. code-block:: python
     
@@ -318,11 +343,22 @@ Add user interaction
             vertexcolor={key: '#ff0000' for key in network.vertices_where({'is_fixed': True})}
         )
 
+* Update edge attributes to change force densities and control the equilibrium shape.
+
+    # update the edge attributes
+
+    while True:
+        pass
+
 
 **Optional**
 
 * Use a :obj:`functools.partial` to create a shortcut to the draw function with
   fixed options already filled in.
+
+.. code-block:: python
+
+    from functools import partial
 
 
 Start from Rhino geometry
@@ -340,21 +376,13 @@ Start from Rhino geometry
     network = Network.from_lines(lines)
 
 
-.. code-block:: python
-
-    names = compas_rhino.get_object_names(guids)
-
-    for name, (sp, ep) in zip(names, lines):
-        pass
-
-
-
 Use a toolbar to make a form finding tool
 =========================================
 
 * Understand variable scope in toolbars.
 * Link functionality to toolbar buttons by using a controller.
 * Generate a RUI file from the controller.
+* Let Rhino know where your code is.
 
 
 .. code-block:: python
@@ -364,37 +392,79 @@ Use a toolbar to make a form finding tool
     import compas
     import compas_rhino
 
+    from compas.datastructures import Network
     from compas_rhino.ui import MacroController
+    from compas.geometry import network_relax
+    from compas_rhino.conduits import LinesConduit
 
 
-    class FormFinder(MacroController):
+    class Cablenet(Network):
 
         def __init__(self):
-            super(FormFinder, self).__init__()
-            self.layers = {}
-            self.settings = {}
+            super(Cablenet, self).__init__()
+            self.default_vertex_attributes.update({
+                'is_fixed': False,
+                'px': 0.0,
+                'py': 0.0,
+                'pz': 0.0,
+            })
+            self.default_edge_attributes.update({
+                'q': 1.0,
+                'f': 0.0,
+                'l': 0.0
+            })
 
-        def init(self):
-            super(FormFinder, self).init()
-
-        # add methods correspondig to the buttons
-        # of the toolbar
-
-
-.. code-block:: python
-
-    from __future__ import print_function
-
-    import compas
-    import compas_rhino
-
-    from compas_rhino.ui import MacroController
+        def fix_leaves(self):
+            for key, attr in self.vertices(True):
+                attr['is_fixed'] = self.vertex_degree(key) == 1
 
 
     class FormFinder(MacroController):
 
         instancename = 'formfinder'
         name = 'FormFinder'
+
+        def __init__(self):
+            super(FormFinder, self).__init__()
+            self.layers = [
+                'FormFinder::Network',
+            ]
+            self.settings = {
+                'kmax': 100,
+            }
+            self.network = None
+            self._conduit = LinesConduit([])
+
+        def _draw(self):
+            compas_rhino.network_draw(
+                self.network,
+                layer='FormFinder::Network',
+                clear_layer=True,
+                vertexcolor={key: (255, 0, 0) for key in self.network.vertices_where({'is_fixed': True})})
+
+        def _callback(self, k, args):
+            self._conduit.lines = [self.network.edge_coordinates(u, v) for u, v in self.network.edges()]
+            self._conduit.redraw(k)
+
+        def init(self):
+            compas_rhino.create_layers_from_paths(self.layers)
+            compas_rhino.clear_layers(self.layers)
+
+        def update_settings(self):
+            if compas_rhino.update_settings(self.settings):
+                pass
+
+        def from_obj(self):
+            file = compas_rhino.browse_for_file(folder=HERE, filter='OBJ files (*.obj)|*.obj')
+            if file:
+                self.network = Cablenet.from_obj(file)
+                self.network.fix_leaves()
+                self._draw()
+
+        def relax(self):
+            with self._conduit.enabled():
+                network_relax(self.network, kmax=self.settings['kmax'], callback=self._callback)
+            self._draw()
 
 
     # ==============================================================================
@@ -405,35 +475,76 @@ Use a toolbar to make a form finding tool
 
         from compas_rhino.ui.rui import compile_rui
 
-        compile_rui(FormFinder, 'rui_config.json')
+        compile_rui(FormFinder, 'fofin_controller', 'fofin_config.json')
 
 
-.. code-block:: json
+.. code-block:: none
+
+    # fofin_config.json
     
-        {
-            "menus": [],
-            "toolbars": [
-                {
-                    "name"  : "FormFinder", 
-                    "items" : [
-                        {
-                            "type"        : "normal",
-                            "left_macro"  : "formfinder.init",
-                            "right_macro" : null
-                        },
-                        {
-                            "type" : "separator"
-                        }
-                    ]
-                }
-            ],
-            "toolbargroups": [
-                {
-                    "name"     : "FormFinder",
-                    "toolbars" : [
-                        "FormFinder"
-                    ]
-                }
-            ]
-        }
+    {
+        "menus": [],
+        "toolbars": [
+            {
+                "name"  : "FormFinder", 
+                "items" : [
+                    {
+                        "type"        : "normal",
+                        "left_macro"  : "formfinder.init",
+                        "right_macro" : null
+                    },
+                    {
+                        "type" : "separator"
+                    },
+                    {
+                        "type"        : "normal",
+                        "left_macro"  : "formfinder.update_settings",
+                        "right_macro" : null
+                    }
+                ]
+            },
+            {
+                "name"  : "FormFinder.Network", 
+                "items" : [
+                    {
+                        "type"        : "normal",
+                        "left_macro"  : "formfinder.from_obj",
+                        "right_macro" : null
+                    }
+                ]
+            },
+            {
+                "name"  : "FormFinder.Solvers", 
+                "items" : [
+                    {
+                        "type"        : "normal",
+                        "left_macro"  : "formfinder.relax",
+                        "right_macro" : null
+                    }
+                ]
+            }
+        ],
+        "toolbargroups": [
+            {
+                "name"     : "FormFinder",
+                "toolbars" : [
+                    "FormFinder",
+                    "FormFinder.Network",
+                    "FormFinder.Solvers"
+                ]
+            }
+        ]
+    }
 
+
+**Next steps**
+
+* Add ``from_lines`` method.
+* Add ``update_vertex_attributes`` method.
+* Add ``update_edge_attributes`` method.
+
+
+.. note::
+
+    * :download:`fofin_controller.py </../../examples/workshops/acadia2017/fofin_controller.py>`
+    * :download:`fofin_config.json </../../examples/workshops/acadia2017/fofin_config.json>`
