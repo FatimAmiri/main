@@ -221,8 +221,6 @@
 <ul class="simple">
 <li>Use a conduit and a callback to visualize the relaxation process.</li>
 <li>Visualize the reaction forces, loads, and axial forces in the network.</li>
-<li>Use a <a class="reference external" href="https://docs.python.org/2/library/functools.html#functools.partial" title="(in Python v2.7)"><code class="xref py py-obj docutils literal">functools.partial</code></a> to create a shortcut to the draw function with
-fixed options already filled in.</li>
 </ul>
 <div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">network</span><span class="o">.</span><span class="n">edge_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()]</span>
 <span class="n">conduit</span> <span class="o">=</span> <span class="n">LinesConduit</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
@@ -260,9 +258,26 @@ fixed options already filled in.</li>
 <li>Update vertex attributes to add loads and change geometry.</li>
 <li>Update edge attributes to change force densities and control the equilibrium shape.</li>
 </ul>
-<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="k">pass</span>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="c1"># update the vertex attributes</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">network_select_vertices</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">compas_rhino</span><span class="o">.</span><span class="n">network_update_vertex_attributes</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span>
+    <span class="n">compas_rhino</span><span class="o">.</span><span class="n">network_draw</span><span class="p">(</span>
+        <span class="n">network</span><span class="p">,</span>
+        <span class="n">layer</span><span class="o">=</span><span class="s1">'FoFin'</span><span class="p">,</span>
+        <span class="n">clear_layer</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">vertexcolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#ff0000'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">'is_fixed'</span><span class="p">:</span> <span class="bp">True</span><span class="p">})}</span>
+    <span class="p">)</span>
 </code></pre></div>
 
+<p><strong>Optional</strong></p>
+<ul class="simple">
+<li>Use a <a class="reference external" href="https://docs.python.org/2/library/functools.html#functools.partial" title="(in Python v2.7)"><code class="xref py py-obj docutils literal">functools.partial</code></a> to create a shortcut to the draw function with
+fixed options already filled in.</li>
+</ul>
 </div>
 <div class="section">
 <h2>Start from Rhino geometry</h2>
@@ -270,7 +285,16 @@ fixed options already filled in.</li>
 <li>Draw/Generate a set of lines representing the topology of the network.</li>
 <li>Initialise vertex and edge attributes based on geometry object names.</li>
 </ul>
-<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="k">pass</span>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_line_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">names</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_object_names</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="n">ep</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">lines</span><span class="p">):</span>
+    <span class="k">pass</span>
 </code></pre></div>
 
 </div>

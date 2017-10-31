@@ -260,8 +260,6 @@ Use Rhino as interface
 
 * Use a conduit and a callback to visualize the relaxation process.
 * Visualize the reaction forces, loads, and axial forces in the network.
-* Use a :obj:`functools.partial` to create a shortcut to the draw function with
-  fixed options already filled in.
 
 
 .. code-block:: python
@@ -305,8 +303,26 @@ Add user interaction
 
 
 .. code-block:: python
+    
+    # update the vertex attributes
 
-    pass
+    while True:
+        keys = compas_rhino.network_select_vertices(network)
+        if not keys:
+            break
+        compas_rhino.network_update_vertex_attributes(network, keys)
+        compas_rhino.network_draw(
+            network,
+            layer='FoFin',
+            clear_layer=True,
+            vertexcolor={key: '#ff0000' for key in network.vertices_where({'is_fixed': True})}
+        )
+
+
+**Optional**
+
+* Use a :obj:`functools.partial` to create a shortcut to the draw function with
+  fixed options already filled in.
 
 
 Start from Rhino geometry
@@ -318,7 +334,19 @@ Start from Rhino geometry
 
 .. code-block:: python
 
-    pass
+    guids = compas_rhino.get_lines()
+    lines = compas_rhino.get_line_coordinates(guids)
+
+    network = Network.from_lines(lines)
+
+
+.. code-block:: python
+
+    names = compas_rhino.get_object_names(guids)
+
+    for name, (sp, ep) in zip(names, lines):
+        pass
+
 
 
 Use a toolbar to make a form finding tool
