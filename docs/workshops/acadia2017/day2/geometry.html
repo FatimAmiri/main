@@ -40,6 +40,1034 @@
 </nav>
 <div class="section">
 <span id="acadia2017-day2-geometry"></span><h1>Geometry</h1>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
+<div class="section">
+<h2>Introduction</h2>
+<p>The <em>compas</em> framework contains an extensive set of python geometry functions
+and algorithms without any external dependencies. Code using the geometry
+package can run in any Python or IronPython environment. Hence, any algorithm
+or program using the geometry package can easily be integrated in different
+applications (e.g.: Rhino, Blender, Maya, ...)</p>
+<p>The full geometry reference can be found here:</p>
+<ul class="simple">
+<li><code class="xref py py-mod docutils literal">compas.geometry</code></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Besides many basic geometry functions such as:</p>
+<ul class="simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.add_vectors.html#compas.geometry.add_vectors" title="compas.geometry.add_vectors"><code class="xref py py-mod docutils literal">compas.geometry.add_vectors</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.subtract_vectors.html#compas.geometry.subtract_vectors" title="compas.geometry.subtract_vectors"><code class="xref py py-mod docutils literal">compas.geometry.subtract_vectors</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.intersection_line_plane.html#compas.geometry.intersection_line_plane" title="compas.geometry.intersection_line_plane"><code class="xref py py-mod docutils literal">compas.geometry.intersection_line_plane</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.closest_point_on_polyline.html#compas.geometry.closest_point_on_polyline" title="compas.geometry.closest_point_on_polyline"><code class="xref py py-mod docutils literal">compas.geometry.closest_point_on_polyline</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.is_point_in_triangle.html#compas.geometry.is_point_in_triangle" title="compas.geometry.is_point_in_triangle"><code class="xref py py-mod docutils literal">compas.geometry.is_point_in_triangle</code></a></li>
+<li>...</li>
+</ul>
+<p>The geometry package also includes geometry
+algorithms such as:</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.planarize_faces.html#compas.geometry.planarize_faces" title="compas.geometry.planarize_faces"><code class="xref py py-mod docutils literal">compas.geometry.planarize_faces</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.smooth_centroid.html#compas.geometry.smooth_centroid" title="compas.geometry.smooth_centroid"><code class="xref py py-mod docutils literal">compas.geometry.smooth_centroid</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.smooth_area.html#compas.geometry.smooth_area" title="compas.geometry.smooth_area"><code class="xref py py-mod docutils literal">compas.geometry.smooth_area</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.discrete_coons_patch.html#compas.geometry.discrete_coons_patch" title="compas.geometry.discrete_coons_patch"><code class="xref py py-mod docutils literal">compas.geometry.discrete_coons_patch</code></a></li>
+<li>...</li>
+</ul>
+</div>
+<div class="section">
+<h3>Object-Oriented Interface vs Functions</h3>
+<p>The geometry package features an object-oriented interface:</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Vector</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">u</span> <span class="o">+</span> <span class="n">v</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+</code></pre></div>
+
+<p>The same vector calculations can be computed using functions and
+lists (or tuples) as vectors:</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">length_vector</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">length_vector</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+</code></pre></div>
+
+</div>
+<div class="section">
+<h3>Compute and Visualize a 3D Spiraling Polyline</h3>
+<p>The following example script uses basic vector methods to compute a spiraling polyline
+based on stepwise rotation and scaling.</p>
+<figure class="figure">
+<img alt="../../../images/flatter_spiral.jpg" class="figure-img img-fluid" src="../../../images/flatter_spiral.jpg"/>
+<figcaption class="figure-caption">Spiral created by stepwise rotation and scaling</figcaption>
+</figure>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.add_vectors.html#compas.geometry.add_vectors" title="compas.geometry.add_vectors"><code class="xref py py-meth docutils literal">compas.geometry.add_vectors()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.scale_vector.html#compas.geometry.scale_vector" title="compas.geometry.scale_vector"><code class="xref py py-meth docutils literal">compas.geometry.scale_vector()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.scale_vector.html#compas.geometry.scale_vector" title="compas.geometry.scale_vector"><code class="xref py py-func docutils literal">compas.geometry.scale_vector()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.rotate_points.html#compas.geometry.rotate_points" title="compas.geometry.rotate_points"><code class="xref py py-func docutils literal">compas.geometry.rotate_points()</code></a></li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The following examples are made to be visualised in Rhino. Please check if you
+have the right IronPython version installed.</p>
+<p>Open the script editor in Rhino (Command: _EditPythonScript) and run:</p>
+<blockquote>
+<div><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">)</span>
+</code></pre></div>
+
+</div></blockquote>
+<p class="last">Make sure to have version 2.7.5 installed!</p>
+</div>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">scale_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">scale_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">rotate_points</span>
+
+<span class="c1"># Select Rhino Object</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select line"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># create line list with start and end point coordinates</span>
+<span class="n">line</span> <span class="o">=</span> <span class="p">[</span><span class="n">rs</span><span class="o">.</span><span class="n">CurveStartPoint</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">CurveEndPoint</span><span class="p">(</span><span class="n">obj</span><span class="p">)]</span>
+
+<span class="n">rad</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">fac</span> <span class="o">=</span> <span class="mf">0.98</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">400</span><span class="p">):</span>
+    <span class="c1"># create and scale previous line vector</span>
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">fac</span><span class="p">)</span>
+    <span class="c1"># replace line with new scaled line</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">vec</span><span class="p">)]</span>
+    <span class="c1"># rotate end point of line</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">rotate_points</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span> <span class="n">rad</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># add line to Rhino</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">AddLine</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div>
+
+</div>
+<div class="section">
+<h3>Raytracing Inside a Box</h3>
+<p>The following example script uses basic geometry functions to compute the reflection
+path inside a box based on a given starting ray.</p>
+<figure class="figure">
+<img alt="../../../images/ball.jpg" class="figure-img img-fluid" src="../../../images/ball.jpg"/>
+<figcaption class="figure-caption">Reflection path inside of a box</figcaption>
+</figure>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.reflect_line_triangle.html#compas.geometry.reflect_line_triangle" title="compas.geometry.reflect_line_triangle"><code class="xref py py-meth docutils literal">compas.geometry.reflect_line_triangle()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.distance_point_point.html#compas.geometry.distance_point_point" title="compas.geometry.distance_point_point"><code class="xref py py-meth docutils literal">compas.geometry.distance_point_point()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.subtract_vectors.html#compas.geometry.subtract_vectors" title="compas.geometry.subtract_vectors"><code class="xref py py-meth docutils literal">compas.geometry.subtract_vectors()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.add_vectors.html#compas.geometry.add_vectors" title="compas.geometry.add_vectors"><code class="xref py py-meth docutils literal">compas.geometry.add_vectors()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.scale_vector.html#compas.geometry.scale_vector" title="compas.geometry.scale_vector"><code class="xref py py-meth docutils literal">compas.geometry.scale_vector()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.normalize_vector.html#compas.geometry.normalize_vector" title="compas.geometry.normalize_vector"><code class="xref py py-meth docutils literal">compas.geometry.normalize_vector()</code></a></li>
+</ul>
+</div>
+<p>Rhino file for this example:</p>
+<ul class="simple">
+<li><a class="reference download internal" download="" href="../../../downloads/reflect.3dm"><code class="xref download docutils literal">reflect.3dm</code></a></li>
+</ul>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">reflect_line_triangle</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">distance_point_point</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">subtract_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">scale_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">normalize_vector</span>
+
+<span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+<span class="c1"># Select Objects</span>
+<span class="c1">#-------------------------</span>
+<span class="n">tris_id</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="s2">"Select Triangles"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="c1"># cage of triangles (check direction!)</span>
+<span class="n">line</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select Start Line"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="c1"># initial vector (direction and magnitude)</span>
+
+<span class="n">ab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">CurveStartPoint</span><span class="p">(</span><span class="n">line</span><span class="p">)),</span> <span class="nb">list</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">CurveEndPoint</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+<span class="n">velo</span> <span class="o">=</span> <span class="n">distance_point_point</span><span class="p">(</span><span class="n">ab</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ab</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.2</span>
+
+<span class="c1"># triangles as list of points a, b, c</span>
+<span class="n">tris</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">tri_id</span> <span class="ow">in</span> <span class="n">tris_id</span><span class="p">:</span>
+    <span class="n">tris</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">PolylineVertices</span><span class="p">(</span><span class="n">tri_id</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># ray starting at ab, bouncing back the walls of the cage for max_d times</span>
+<span class="n">max_d</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">poly_pts</span> <span class="o">=</span> <span class="p">[</span><span class="n">ab</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_d</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">tri</span> <span class="ow">in</span> <span class="n">tris</span><span class="p">:</span>
+        <span class="n">reflected_line</span> <span class="o">=</span> <span class="n">reflect_line_triangle</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">tri</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reflected_line</span><span class="p">:</span>
+            <span class="n">ab</span> <span class="o">=</span> <span class="n">reflected_line</span>
+            <span class="n">poly_pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ab</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">break</span>
+
+<span class="c1"># trace complete reflection path</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">AddPolyline</span><span class="p">(</span><span class="n">poly_pts</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">AddPoints</span><span class="p">(</span><span class="n">poly_pts</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Add this script to the previous example to animate a ball bouncing of the walls
+of the given box.</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="c1"># segments of reflection path ab, bc, cd, ...</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">poly_pts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">poly_pts</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">poly_pts</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+
+<span class="c1"># list of descending velocities</span>
+<span class="n">fac</span> <span class="o">=</span> <span class="mf">0.97</span>
+<span class="n">velos</span> <span class="o">=</span> <span class="p">[</span><span class="n">velo</span><span class="p">]</span>
+<span class="k">while</span> <span class="n">velos</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">:</span>
+    <span class="n">velos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">velos</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">fac</span><span class="p">)</span>
+
+<span class="c1"># animate bouncing ball</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">scale</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">velo</span> <span class="ow">in</span> <span class="n">velos</span><span class="p">:</span>
+    <span class="n">scale</span> <span class="o">+=</span> <span class="n">velo</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">ab_len</span> <span class="o">=</span> <span class="n">distance_point_point</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scale</span> <span class="o">&gt;</span> <span class="n">ab_len</span><span class="p">:</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">-</span> <span class="n">ab_len</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">vec</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="n">pt</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">normalize_vector</span><span class="p">(</span><span class="n">vec</span><span class="p">),</span> <span class="n">scale</span><span class="p">))</span>
+
+    <span class="c1"># visualizing ball</span>
+    <span class="n">pt_id</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">AddTextDot</span><span class="p">(</span><span class="s2">"8"</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">DeleteObject</span><span class="p">(</span><span class="n">pt_id</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Exercise</strong>: Allow the player to target a defined corner and stop the ball if
+it is close to that corner.</p>
+<p>Hint code snippet:</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="c1"># use</span>
+<span class="c1"># from compas.geometry import distance_point_point</span>
+
+<span class="c1"># ...</span>
+<span class="c1"># visualizing ball</span>
+<span class="n">pt_id</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">AddTextDot</span><span class="p">(</span><span class="s2">"8"</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span>
+
+<span class="c1"># do something here</span>
+<span class="c1"># ------------------</span>
+</code></pre></div>
+
+</div>
+</div>
+<div class="section">
+<h2>Creating Geometric Algorithms for Architectural Applications</h2>
+<p>Plugging together geometry functions in combinations with datastructures allow to
+develope tools for architectural design and optimization.</p>
+<div class="section">
+<h3>Simple Translational Surfaces for Gridshelss</h3>
+<figure class="figure">
+<img alt="../../../images/sbp.jpg" class="figure-img img-fluid" src="../../../images/sbp.jpg"/>
+<figcaption class="figure-caption">Cabot Circus Bristol and Deutsches Historisches Museum (Photo: SBP)</figcaption>
+</figure>
+<p>Using translational surfaces for the design of gridshells allows to explore freeform
+spaces that can be built from planar (glass) panels. Jörg Schlaich together with Hans
+Schober published several geometric design methods for various gridshells built in the
+last decades.</p>
+<figure class="figure">
+<img alt="../../../images/planar_sweeps.jpg" class="figure-img img-fluid" src="../../../images/planar_sweeps.jpg"/>
+<figcaption class="figure-caption">Various translation surfaces</figcaption>
+</figure>
+<p>Rhino file for the following examples:</p>
+<ul class="simple">
+<li><a class="reference download internal" download="" href="../../../downloads/trans_srf.3dm"><code class="xref download docutils literal">trans_srf.3dm</code></a></li>
+</ul>
+<div class="section">
+<h4>Sweep Translation Surface</h4>
+<p>The following example shows the generation of a simple tanslation surface based on a
+given profile and rail curve.</p>
+<figure class="figure">
+<img alt="../../../images/sweep.jpg" class="figure-img img-fluid" src="../../../images/sweep.jpg"/>
+<figcaption class="figure-caption">Sweep translation surface</figcaption>
+</figure>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.translate_points.html#compas.geometry.translate_points" title="compas.geometry.translate_points"><code class="xref py py-func docutils literal">compas.geometry.translate_points()</code></a></li>
+</ul>
+</div>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">subtract_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">centroid_points</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">translate_points</span>
+
+<span class="c1"># Get inputs</span>
+<span class="n">crv_p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select profile"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">crv_r</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select rail"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">div_p</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">div_r</span> <span class="o">=</span> <span class="mi">40</span>
+
+<span class="c1"># divide profile and rail curve</span>
+<span class="n">pts_p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_p</span><span class="p">,</span> <span class="n">div_p</span><span class="p">)</span>
+<span class="n">pts_r</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_r</span><span class="p">,</span> <span class="n">div_r</span><span class="p">)</span>
+
+
+<span class="c1"># ------------------------------</span>
+<span class="c1"># compas geometry function</span>
+
+<span class="c1"># reference point for profile curve</span>
+<span class="n">pt_ref</span> <span class="o">=</span> <span class="n">centroid_points</span><span class="p">([</span><span class="n">pts_p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pts_p</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+<span class="c1"># create profiles along the rail curve</span>
+<span class="n">pts_sets</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">div_r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">vec_1</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">pts_r</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pt_ref</span><span class="p">)</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">translate_points</span><span class="p">(</span><span class="n">pts_p</span><span class="p">,</span> <span class="n">vec_1</span><span class="p">)</span>
+    <span class="n">pts_sets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+<span class="c1"># create polyline point sets for each face</span>
+<span class="n">polys</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts_sets</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts_sets</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">pts_sets</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">pts_sets</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">p3</span> <span class="o">=</span> <span class="n">pts_sets</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">p4</span> <span class="o">=</span> <span class="n">pts_sets</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">polys</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">,</span> <span class="n">p4</span><span class="p">,</span> <span class="n">p1</span><span class="p">])</span>
+
+<span class="c1"># compas geometry function</span>
+<span class="c1"># ------------------------------</span>
+
+<span class="c1"># draw gridshell in Rhino</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">polys</span><span class="p">:</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">AddPolyline</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div>
+
+</div>
+<div class="section">
+<h4>Aligned Translation Surface</h4>
+<p>The following example shows the generation of a tanslation surface with profile
+curves aligned with the rail curve.</p>
+<figure class="figure">
+<img alt="../../../images/project_plane.jpg" class="figure-img img-fluid" src="../../../images/project_plane.jpg"/>
+<figcaption class="figure-caption">Aligned translation surface</figcaption>
+</figure>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.project_points_plane.html#compas.geometry.project_points_plane" title="compas.geometry.project_points_plane"><code class="xref py py-func docutils literal">compas.geometry.project_points_plane()</code></a></li>
+</ul>
+</div>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">subtract_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">project_points_plane</span>
+
+<span class="c1"># Get inputs</span>
+<span class="n">crv_p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select profile"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">crv_a</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select rail 1"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">div_p</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">div_r</span> <span class="o">=</span> <span class="mi">40</span>
+
+<span class="c1"># divide profile and rail curve</span>
+<span class="n">pts_p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_p</span><span class="p">,</span> <span class="n">div_p</span><span class="p">)</span>
+<span class="n">pts_a</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_a</span><span class="p">,</span> <span class="n">div_r</span><span class="p">)</span>
+
+
+<span class="c1"># ------------------------------</span>
+<span class="c1"># compas geometry function</span>
+
+<span class="c1"># create planes along the rail curve</span>
+<span class="n">planes</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">div_r</span><span class="p">):</span>
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">pts_a</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pts_a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">planes</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">pts_a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">vec</span><span class="p">])</span>
+
+<span class="c1"># subsequentely project profile curve to all planes</span>
+<span class="n">pts_uv</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">pts</span> <span class="o">=</span> <span class="n">pts_p</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">div_r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="n">project_points_plane</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">planes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">pts_uv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+
+<span class="c1"># create polyline point sets for each face</span>
+<span class="n">polys</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+        <span class="n">p3</span> <span class="o">=</span> <span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">p4</span> <span class="o">=</span> <span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">polys</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">,</span> <span class="n">p4</span><span class="p">,</span> <span class="n">p1</span><span class="p">])</span>
+
+<span class="c1"># compas geometry function</span>
+<span class="c1"># ------------------------------</span>
+
+<span class="c1"># draw gridshell in Rhino</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">polys</span><span class="p">:</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">AddPolyline</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Exercise</strong>: Create a mesh object from the extruded geometry. Generate fins
+(rs.AddSrfPt()) normal to the mesh along the edges. Use a (u, v) tuples as vertex keys.</p>
+<p>Hint code snippet:</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="c1"># use:</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas_rhino</span> <span class="kn">import</span> <span class="n">mesh_draw_faces</span>
+<span class="n">trans_mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="p">()</span>
+
+<span class="c1"># add vertices to mesh object</span>
+<span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">])):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+
+        <span class="c1"># do something here:</span>
+        <span class="c1"># trans_mesh.add_vertex(...)</span>
+
+<span class="c1"># add faces to mesh object</span>
+<span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="c1"># do something here</span>
+        <span class="c1"># trans_mesh.add_face(...)</span>
+
+<span class="n">mesh_draw_faces</span><span class="p">(</span><span class="n">trans_mesh</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">trans_mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="c1"># do something here</span>
+</code></pre></div>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><code class="xref py py-func docutils literal">compas_rhino.mesh_draw_faces()</code></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.add_vectors.html#compas.geometry.add_vectors" title="compas.geometry.add_vectors"><code class="xref py py-func docutils literal">compas.geometry.add_vectors()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.scale_vector.html#compas.geometry.scale_vector" title="compas.geometry.scale_vector"><code class="xref py py-func docutils literal">compas.geometry.scale_vector()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.datastructures.Mesh.html#compas.datastructures.Mesh" title="compas.datastructures.Mesh"><code class="xref py py-class docutils literal">compas.datastructures.Mesh</code></a></li>
+<li>mesh.vertex_normal()</li>
+<li>mesh.vertex_coordinates()</li>
+</ul>
+</div>
+<p>Solution:</p>
+<ul class="simple">
+<li><a class="reference download internal" download="" href="../../../downloads/trans_fins.py"><code class="xref download docutils literal">trans_fins.py</code></a></li>
+</ul>
+</div>
+<div class="section">
+<h4>Conical Translation Surface</h4>
+<p>The following figure shows the generation of a tanslation surface with two profile
+curves. The method geneartes planes along the two rail curves and subsequentely uses
+intersections with conical extrusions to guarantee the planarity of resulting mesh.</p>
+<figure class="figure">
+<img alt="../../../images/conical_srf.jpg" class="figure-img img-fluid" src="../../../images/conical_srf.jpg"/>
+<figcaption class="figure-caption">Translation surface with conical sections</figcaption>
+</figure>
+<p>The steps of the algorithm are:</p>
+<ul class="simple">
+<li>Divide profile curve</li>
+<li>Divide rail curves</li>
+<li>Create planes aligned to both rail curves</li>
+<li>Compute focus point based on a pair of tangents to the two rails</li>
+<li>Create cone between projected profile curve and focus point</li>
+<li>Intersect cone with next section plane</li>
+<li>repeat the last three points</li>
+</ul>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.add_vectors.html#compas.geometry.add_vectors" title="compas.geometry.add_vectors"><code class="xref py py-func docutils literal">compas.geometry.add_vectors()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.centroid_points.html#compas.geometry.centroid_points" title="compas.geometry.centroid_points"><code class="xref py py-func docutils literal">compas.geometry.centroid_points()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.intersection_line_plane.html#compas.geometry.intersection_line_plane" title="compas.geometry.intersection_line_plane"><code class="xref py py-func docutils literal">compas.geometry.intersection_line_plane()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.intersection_line_line.html#compas.geometry.intersection_line_line" title="compas.geometry.intersection_line_line"><code class="xref py py-func docutils literal">compas.geometry.intersection_line_line()</code></a></li>
+</ul>
+</div>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">subtract_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">centroid_points</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">intersection_line_plane</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">intersection_line_line</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">normalize_vector</span>
+
+<span class="c1"># Get inputs</span>
+<span class="n">crv_p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select profile"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">crv_a</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select rail 1"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">crv_b</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select rail 2"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">div_p</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">div_r</span> <span class="o">=</span> <span class="mi">40</span>
+
+<span class="c1"># divide profile and rail curves</span>
+<span class="n">pts_p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_p</span><span class="p">,</span> <span class="n">div_p</span><span class="p">)</span>
+<span class="n">pts_a</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_a</span><span class="p">,</span> <span class="n">div_r</span><span class="p">)</span>
+<span class="n">pts_b</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_b</span><span class="p">,</span> <span class="n">div_r</span><span class="p">)</span>
+
+<span class="c1"># ------------------------------</span>
+<span class="c1"># compas geometry function</span>
+
+<span class="c1"># create planes along the rail curve</span>
+<span class="n">planes</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">div_r</span><span class="p">):</span>
+    <span class="n">pt_mid</span> <span class="o">=</span> <span class="n">centroid_points</span><span class="p">([</span><span class="n">pts_a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pts_b</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+    <span class="n">vec_a</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">pts_a</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pts_a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">vec_b</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">pts_b</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pts_b</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">vec_a</span> <span class="o">=</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">vec_a</span><span class="p">)</span>
+    <span class="n">vec_b</span> <span class="o">=</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">vec_b</span><span class="p">)</span>
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">vec_a</span><span class="p">,</span> <span class="n">vec_b</span><span class="p">)</span>
+    <span class="n">planes</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">pt_mid</span><span class="p">,</span> <span class="n">vec</span><span class="p">])</span>
+
+<span class="c1"># create profiles</span>
+<span class="n">pts_uv</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">pts</span> <span class="o">=</span> <span class="n">pts_p</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">div_r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">ray_a</span> <span class="o">=</span> <span class="p">[</span><span class="n">pts_a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pts_a</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+    <span class="n">ray_b</span> <span class="o">=</span> <span class="p">[</span><span class="n">pts_b</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pts_b</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+    <span class="n">pts_x</span> <span class="o">=</span> <span class="n">intersection_line_line</span><span class="p">(</span><span class="n">ray_a</span><span class="p">,</span> <span class="n">ray_b</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">None</span> <span class="ow">in</span> <span class="n">pts_x</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">"parallel!"</span><span class="p">)</span>
+    <span class="n">pt_cent</span> <span class="o">=</span> <span class="n">centroid_points</span><span class="p">(</span><span class="n">pts_x</span><span class="p">)</span>
+    <span class="c1"># computes intersection between a plane and all lines</span>
+    <span class="c1"># from the profile curve points to the intersection point</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="p">[</span><span class="n">intersection_line_plane</span><span class="p">([</span><span class="n">pt</span><span class="p">,</span> <span class="n">pt_cent</span><span class="p">],</span> <span class="n">planes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">pts</span><span class="p">]</span>
+
+    <span class="n">pts_uv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+
+<span class="c1"># create polyline point sets for each face</span>
+<span class="n">polys</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+        <span class="n">p3</span> <span class="o">=</span> <span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">p4</span> <span class="o">=</span> <span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">polys</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">,</span> <span class="n">p4</span><span class="p">,</span> <span class="n">p1</span><span class="p">])</span>
+
+<span class="c1"># compas geometry function</span>
+<span class="c1"># ------------------------------</span>
+
+<span class="c1"># draw gridshell in Rhino</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">polys</span><span class="p">:</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">AddPolyline</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Grasshopper definition:</p>
+<ul class="simple">
+<li><a class="reference download internal" download="" href="../../../downloads/trans_srf.gh"><code class="xref download docutils literal">trans_srf.gh</code></a></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need the GhPython for Grasshopper to run trans_srf.gh.
+* <a class="reference external" href="http://www.food4rhino.com/app/ghpython">http://www.food4rhino.com/app/ghpython</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="section">
+<h2>Using Geometric Algorithms and Optimization Techniques</h2>
+<div class="section">
+<h3>Coons Patches</h3>
+<p>Create a 3D coons patch.</p>
+<figure class="figure">
+<img alt="../../../images/coons.jpg" class="figure-img img-fluid" src="../../../images/coons.jpg"/>
+<figcaption class="figure-caption">Gridshells from Coons meshes</figcaption>
+</figure>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.discrete_coons_patch.html#compas.geometry.discrete_coons_patch" title="compas.geometry.discrete_coons_patch"><code class="xref py py-func docutils literal">compas.geometry.discrete_coons_patch()</code></a></li>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/Coons_patch">https://en.wikipedia.org/wiki/Coons_patch</a></li>
+</ul>
+</div>
+<p>Rhino file for the following examples:</p>
+<ul class="simple">
+<li><a class="reference download internal" download="" href="../../../downloads/coons.3dm"><code class="xref download docutils literal">coons.3dm</code></a></li>
+</ul>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">scale_vector</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">discrete_coons_patch</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino</span> <span class="kn">import</span> <span class="n">mesh_draw_faces</span>
+
+
+<span class="c1"># Select objects in Rhino</span>
+<span class="n">crv_ab</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select ab"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">crv_bc</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select bc"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">crv_dc</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select cd"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">crv_ad</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select ad"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># Define devisions</span>
+<span class="n">div_a</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">div_b</span> <span class="o">=</span> <span class="mi">15</span>
+
+<span class="c1"># height of fons</span>
+<span class="n">height</span> <span class="o">=</span> <span class="mf">0.3</span>
+
+<span class="c1"># divide boundary curves of coons patch</span>
+<span class="n">ab</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_ab</span><span class="p">,</span> <span class="n">div_a</span><span class="p">)</span>
+<span class="n">bc</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_bc</span><span class="p">,</span> <span class="n">div_b</span><span class="p">)</span>
+<span class="n">dc</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_dc</span><span class="p">,</span> <span class="n">div_a</span><span class="p">)</span>
+<span class="n">ad</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_ad</span><span class="p">,</span> <span class="n">div_b</span><span class="p">)</span>
+
+<span class="c1"># compute coons patch</span>
+<span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">discrete_coons_patch</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">ad</span><span class="p">)</span>
+<span class="n">coons</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+
+<span class="c1"># draw coons patch</span>
+<span class="n">mesh_draw_faces</span><span class="p">(</span><span class="n">coons</span><span class="p">,</span> <span class="n">join_faces</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div>
+
+</div>
+<div class="section">
+<h3>Torsion-free Elements for Coons Patch Gridshells</h3>
+<p>Create a 3D coons patch with close-to planar fins.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.planarize_faces.html#compas.geometry.planarize_faces" title="compas.geometry.planarize_faces"><code class="xref py py-func docutils literal">compas.geometry.planarize_faces()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.flatness.html#compas.geometry.flatness" title="compas.geometry.flatness"><code class="xref py py-func docutils literal">compas.geometry.flatness()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.utilities.i_to_rgb.html#compas.utilities.i_to_rgb" title="compas.utilities.i_to_rgb"><code class="xref py py-func docutils literal">compas.utilities.i_to_rgb()</code></a></li>
+</ul>
+</div>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">scale_vector</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">discrete_coons_patch</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino</span> <span class="kn">import</span> <span class="n">mesh_draw_faces</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">planarize_faces</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">flatness</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">i_to_rgb</span>
+
+<span class="k">def</span> <span class="nf">draw_fins</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">):</span>
+    <span class="c1"># don't refresh viewport</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+    <span class="c1"># compute level of flatness</span>
+    <span class="n">flat_vals</span> <span class="o">=</span> <span class="n">flatness</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">maxdev</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+    <span class="n">srfs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">face</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">faces</span><span class="p">):</span>
+        <span class="c1"># vertex coordinates for face</span>
+        <span class="n">pts</span> <span class="o">=</span> <span class="p">[</span><span class="n">vertices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">face</span><span class="p">]</span>
+        <span class="c1"># create Rhino surface</span>
+        <span class="n">srfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">AddSrfPt</span><span class="p">(</span><span class="n">pts</span><span class="p">))</span>
+        <span class="c1"># color surface based on flatness</span>
+        <span class="n">rgb</span> <span class="o">=</span> <span class="n">i_to_rgb</span><span class="p">(</span><span class="n">flat_vals</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">rs</span><span class="o">.</span><span class="n">ObjectColor</span><span class="p">(</span><span class="n">srfs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">rgb</span><span class="p">)</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">AddObjectsToGroup</span><span class="p">(</span><span class="n">srfs</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">AddGroup</span><span class="p">())</span>
+    <span class="c1"># refresh viewport</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">srfs</span>
+
+<span class="c1"># Select objects in Rhino</span>
+<span class="n">crv_ab</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select ab"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">crv_bc</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select bc"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">crv_dc</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select cd"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">crv_ad</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select ad"</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># Define devisions</span>
+<span class="n">div_a</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">div_b</span> <span class="o">=</span> <span class="mi">15</span>
+
+<span class="c1"># height of fons</span>
+<span class="n">height</span> <span class="o">=</span> <span class="mf">0.3</span>
+
+<span class="c1"># divide boundary curves of coons patch</span>
+<span class="n">ab</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_ab</span><span class="p">,</span> <span class="n">div_a</span><span class="p">)</span>
+<span class="n">bc</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_bc</span><span class="p">,</span> <span class="n">div_b</span><span class="p">)</span>
+<span class="n">dc</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_dc</span><span class="p">,</span> <span class="n">div_a</span><span class="p">)</span>
+<span class="n">ad</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">DivideCurve</span><span class="p">(</span><span class="n">crv_ad</span><span class="p">,</span> <span class="n">div_b</span><span class="p">)</span>
+
+<span class="c1"># compute coons patch</span>
+<span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">discrete_coons_patch</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">ad</span><span class="p">)</span>
+<span class="n">coons</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+
+<span class="c1"># draw coons patch</span>
+<span class="n">mesh_draw_faces</span><span class="p">(</span><span class="n">coons</span><span class="p">,</span> <span class="n">join_faces</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># build index-key and key-index maps</span>
+<span class="n">index_key</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span> <span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coons</span><span class="o">.</span><span class="n">vertices</span><span class="p">())}</span>
+<span class="n">key_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span> <span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coons</span><span class="o">.</span><span class="n">vertices</span><span class="p">())}</span>
+
+<span class="c1"># convert vertices dictionary to vertices list</span>
+<span class="n">vertices_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">coons</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">coons</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
+<span class="c1"># number of vertices of coons mesh</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">coons</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span>
+
+<span class="c1"># compute offset vertices</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)):</span>
+    <span class="n">normal</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">coons</span><span class="o">.</span><span class="n">vertex_normal</span><span class="p">(</span><span class="n">index_key</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">height</span><span class="p">)</span>
+    <span class="n">vertices_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_vectors</span><span class="p">(</span><span class="n">vertices_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">normal</span><span class="p">))</span>
+
+<span class="c1"># convert faces with vertex keys to vertex indices</span>
+<span class="n">faces_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">coons</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="n">faces_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">key_index</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">key_index</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="n">key_index</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="n">key_index</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="n">n</span><span class="p">])</span>
+
+<span class="c1"># visualize fins</span>
+<span class="n">draw_fins</span><span class="p">(</span><span class="n">vertices_list</span><span class="p">,</span> <span class="n">faces_list</span><span class="p">)</span>
+
+<span class="c1"># define callback</span>
+<span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">callback_args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">Prompt</span><span class="p">(</span><span class="s1">'Iteration: {0} '</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+
+<span class="c1"># planarize fins</span>
+<span class="n">planarize_faces</span><span class="p">(</span><span class="n">vertices_list</span><span class="p">,</span> <span class="n">faces_list</span><span class="p">,</span> <span class="n">kmax</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">)</span>
+
+<span class="c1"># visualize planarized fins</span>
+<span class="n">draw_fins</span><span class="p">(</span><span class="n">vertices_list</span><span class="p">,</span> <span class="n">faces_list</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Exercise</strong>: Fix the lower vertices of the fins during the planarization optimization. Relate the
+height of the fins to the z-values of the vertices. The largest fins should be at the supports.</p>
+</div>
+<div class="section">
+<h3>Volumetric Network Structures with Subdivision Meshes</h3>
+<p>The following code computes a solidified smooth mesh from a spatial network of lines.
+The shown method yields similar results as the exoskeleton plugin for Grasshopper
+to create meshes for 3D printing.</p>
+<figure class="figure">
+<img alt="../../../images/node.jpg" class="figure-img img-fluid" src="../../../images/node.jpg"/>
+<figcaption class="figure-caption">Smooth volumetric mesh from lines</figcaption>
+</figure>
+<p>The steps of the algorithm are:</p>
+<ul class="simple">
+<li>Align quad frames for each adjacent edge per node</li>
+<li>One quad frame close to the node, the other one at the midpoint of the edge</li>
+<li>Compute convex hull with the verticies of the inner frames</li>
+<li>Add rectangular pipe between convex hull and midpoints for each edge</li>
+<li>Create a joined mesh and subdivides using Catmull-Clark subdivision</li>
+</ul>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.orient_points.html#compas.geometry.orient_points" title="compas.geometry.orient_points"><code class="xref py py-func docutils literal">compas.geometry.orient_points()</code></a></li>
+<li><code class="xref py py-func docutils literal">compas.geometry.convex_hull()</code></li>
+<li><code class="xref py py-func docutils literal">compas.datastructures.mesh.mesh_subdivide_catmullclark()</code></li>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/Convex_hull">https://en.wikipedia.org/wiki/Convex_hull</a></li>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/Catmull%E2%80%93Clark_subdivision_surface">https://en.wikipedia.org/wiki/Catmull%E2%80%93Clark_subdivision_surface</a></li>
+</ul>
+</div>
+<p>Rhino file for the following examples:</p>
+<ul class="simple">
+<li><a class="reference download internal" download="" href="../../../downloads/tree.3dm"><code class="xref download docutils literal">tree.3dm</code></a></li>
+</ul>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">convex_hull</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">orient_points</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">subtract_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">normalize_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">scale_vector</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh</span> <span class="kn">import</span> <span class="n">mesh_subdivide_catmullclark</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures.network</span> <span class="kn">import</span> <span class="n">Network</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino</span> <span class="kn">import</span> <span class="n">mesh_draw_faces</span>
+
+<span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+
+<span class="k">def</span> <span class="nf">generate_section</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">target_plane</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+    <span class="n">num_p</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># discretization of the circle</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">num_p</span>  <span class="c1"># angle step size</span>
+    <span class="c1"># create cross section points around the origin</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[(</span><span class="n">radius</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="n">i</span><span class="p">),</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="n">i</span><span class="p">),</span> <span class="mf">0.</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_p</span><span class="p">)]</span>
+    <span class="c1"># align cross section points with the edge</span>
+    <span class="k">if</span> <span class="n">flag</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">target_plane</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">target_plane</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">orient_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">target_plane</span><span class="o">=</span><span class="n">target_plane</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">generate_node</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">fac</span><span class="p">):</span>
+    <span class="c1"># initialize mesh object</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="p">()</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'mesh'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="c1"># coordinates of the node</span>
+    <span class="n">pt_cent</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="c1"># u's and v's of all connected edges</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_connected_edges</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="c1"># loop over all edges</span>
+    <span class="n">section_keys</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="c1"># create edge vector</span>
+        <span class="c1"># check if edges point towards or away from the node</span>
+        <span class="k">if</span> <span class="n">u</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
+            <span class="n">vec_nbr</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">vec_nbr</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+        <span class="c1"># create point to locate the inner section</span>
+        <span class="n">pt_1</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">pt_cent</span><span class="p">,</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">vec_nbr</span><span class="p">,</span> <span class="n">fac</span><span class="p">))</span>
+        <span class="c1"># create point to locate the outer section</span>
+        <span class="n">pt_2</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">pt_cent</span><span class="p">,</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">vec_nbr</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="c1"># create inner cross section points</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">generate_section</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="p">[</span><span class="n">pt_1</span><span class="p">,</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">vec_nbr</span><span class="p">)],</span><span class="n">flag</span><span class="p">)</span>
+
+        <span class="n">inner_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+        <span class="c1"># create outer cross section points</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">generate_section</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="p">[</span><span class="n">pt_2</span><span class="p">,</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">vec_nbr</span><span class="p">)],</span><span class="n">flag</span><span class="p">)</span>
+        <span class="n">outer_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+
+        <span class="c1"># create faces between inner and outer cross section</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inner_keys</span><span class="p">)):</span>
+            <span class="n">face</span> <span class="o">=</span> <span class="p">[</span><span class="n">inner_keys</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">inner_keys</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">outer_keys</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">outer_keys</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+
+        <span class="n">section_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_keys</span><span class="p">)</span>
+
+    <span class="c1"># vertices coordinates of all inner cross sections</span>
+    <span class="n">section_keys_all</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">section_keys</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">section_keys_all</span><span class="p">]</span>
+    <span class="c1"># key index list for mapping</span>
+    <span class="n">key_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">section_keys_all</span><span class="p">)]</span>
+    <span class="c1"># compute convex hull for all inner cross section points</span>
+    <span class="n">faces_index</span> <span class="o">=</span> <span class="n">convex_hull</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="c1"># add convex hull faces to the mesh</span>
+    <span class="k">for</span> <span class="n">face_index</span> <span class="ow">in</span> <span class="n">faces_index</span><span class="p">:</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="p">[</span><span class="n">key_index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">face_index</span><span class="p">]</span>
+        <span class="n">add_face</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">section_key</span> <span class="ow">in</span> <span class="n">section_keys</span><span class="p">:</span>
+            <span class="c1"># don't add faces for the cross section caps</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">section_key</span><span class="p">))</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">add_face</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">break</span>
+        <span class="c1">#add face to mesh</span>
+        <span class="k">if</span> <span class="n">add_face</span><span class="p">:</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mesh</span>
+
+
+<span class="c1"># This code computes a solidified smooth mesh from a spatial network of lines.</span>
+<span class="c1"># The shown method yields similar results as the exoskeleton plugin for Grasshopper</span>
+<span class="c1"># to create meshes for 3D pinting.</span>
+
+<span class="c1"># select a network of lines</span>
+<span class="n">objs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="s2">"lines"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="n">radius</span> <span class="o">=</span> <span class="mf">0.3</span>    <span class="c1"># global radius for pipes</span>
+<span class="n">fac</span> <span class="o">=</span> <span class="mf">0.15</span>     <span class="c1"># global scale for smooth corners (&lt;0.5)</span>
+<span class="n">sub_level</span> <span class="o">=</span> <span class="mi">2</span>   <span class="c1"># steps of subdivisions (&lt;3 gets very slow quickly)</span>
+
+<span class="c1"># create network from lines in Rhino</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">rs</span><span class="o">.</span><span class="n">CurveStartPoint</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">CurveEndPoint</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">]</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
+    <span class="c1"># skip if node is not connected to any neighbour (leaf)</span>
+    <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">is_vertex_leaf</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+        <span class="k">continue</span>
+    <span class="c1"># generate mesh per node</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">generate_node</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">fac</span><span class="p">)</span>
+    <span class="c1"># subdivide mesh</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh_subdivide_catmullclark</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">sub_level</span><span class="p">)</span>
+    <span class="c1"># draw mesh</span>
+    <span class="n">mesh_draw_faces</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">redraw</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">join_faces</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div>
+
+<figure class="figure">
+<img alt="../../../images/tree.jpg" class="figure-img img-fluid" src="../../../images/tree.jpg"/>
+<figcaption class="figure-caption">Volumetric tree structure</figcaption>
+</figure>
+<p>The shown tree structure can be structurally improved by finding a more
+“balanced” network geometry. A spatial smoothing can help to improve the
+given configuration.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.datastructures.Network.html#compas.datastructures.Network" title="compas.datastructures.Network"><code class="xref py py-class docutils literal">compas.datastructures.Network</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.network_smooth_centroid.html#compas.geometry.network_smooth_centroid" title="compas.geometry.network_smooth_centroid"><code class="xref py py-func docutils literal">compas.geometry.network_smooth_centroid()</code></a></li>
+<li><code class="xref py py-func docutils literal">compas_rhino.network_draw_edges()</code></li>
+</ul>
+</div>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">network_smooth_centroid</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures.network</span> <span class="kn">import</span> <span class="n">Network</span>
+<span class="kn">from</span> <span class="nn">compas_rhino</span> <span class="kn">import</span> <span class="n">network_draw_edges</span>
+
+<span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+
+<span class="c1"># select a network of lines</span>
+<span class="n">objs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="s2">"lines"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># create network from lines in Rhino</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">rs</span><span class="o">.</span><span class="n">CurveStartPoint</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">CurveEndPoint</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">]</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+<span class="c1"># create list of keys for fixed vertices</span>
+<span class="n">fixed</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span> <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_degree</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># smooth network</span>
+<span class="n">network_smooth_centroid</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="n">fixed</span><span class="p">,</span> <span class="n">kmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">damping</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">callback_args</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+
+<span class="c1"># draw relaxed network</span>
+<span class="n">network_draw_edges</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</code></pre></div>
+
+<p>A callback function can be used to show the iterations:</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">network_smooth_centroid</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures.network</span> <span class="kn">import</span> <span class="n">Network</span>
+<span class="kn">from</span> <span class="nn">compas_rhino</span> <span class="kn">import</span> <span class="n">network_draw_edges</span>
+
+<span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+<span class="c1"># callback function get called in every interation step</span>
+<span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="c1"># unpack arguments</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># print iterations and draw network</span>
+    <span class="k">if</span> <span class="n">k</span> <span class="o">%</span> <span class="n">step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">rs</span><span class="o">.</span><span class="n">Prompt</span><span class="p">(</span><span class="s2">"Iteration: {0}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+        <span class="n">network_draw_edges</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+
+<span class="c1"># select a network of lines</span>
+<span class="n">objs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="s2">"lines"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># create network from lines in Rhino</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">rs</span><span class="o">.</span><span class="n">CurveStartPoint</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">CurveEndPoint</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">]</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+<span class="c1"># create list of keys for fixed vertices</span>
+<span class="n">fixed</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span> <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_degree</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># define callback variables</span>
+<span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># set callback arguments</span>
+<span class="n">callback_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">]</span>
+
+<span class="c1"># smooth network</span>
+<span class="n">network_smooth_centroid</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="n">fixed</span><span class="p">,</span> <span class="n">kmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">damping</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span> <span class="n">callback_args</span><span class="o">=</span><span class="n">callback_args</span><span class="p">)</span>
+
+<span class="c1"># draw relaxed network</span>
+<span class="n">network_draw_edges</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Exercise</strong>: Let the network vertex with y = 0.0 freely slide on the y-z-plane during the smoothing.</p>
+<p>Hint code snippet:</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="c1"># get vertex key for a vertex on the x-z-plane</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
+    <span class="c1"># do something here</span>
+
+<span class="c1"># remove x-z-plane vertex key from fixed</span>
+<span class="c1"># do something here</span>
+
+
+<span class="c1"># in the callback function :</span>
+<span class="c1"># ...</span>
+<span class="k">if</span> <span class="n">k</span> <span class="o">%</span> <span class="n">step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">Prompt</span><span class="p">(</span><span class="s2">"Iteration: {0}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+    <span class="n">network_draw_edges</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># constrain y-coordinate to 0.0 for vertex with specific key</span>
+<span class="c1"># do something here</span>
+</code></pre></div>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><code class="xref py py-func docutils literal">compas_rhino.mesh_draw_faces()</code></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.add_vectors.html#compas.geometry.add_vectors" title="compas.geometry.add_vectors"><code class="xref py py-func docutils literal">compas.geometry.add_vectors()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.scale_vector.html#compas.geometry.scale_vector" title="compas.geometry.scale_vector"><code class="xref py py-func docutils literal">compas.geometry.scale_vector()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.datastructures.Mesh.html#compas.datastructures.Mesh" title="compas.datastructures.Mesh"><code class="xref py py-class docutils literal">compas.datastructures.Mesh</code></a></li>
+<li>mesh.vertex_normal()</li>
+<li>mesh.vertex_coordinates()</li>
+</ul>
+</div>
+<p>Solution:</p>
+<ul class="simple">
+<li><a class="reference download internal" download="" href="../../../downloads/tree_02.py"><code class="xref download docutils literal">tree_02.py</code></a></li>
+</ul>
+<p><strong>Exercise</strong>: Let the network vertex with y = 0.0 slide on the y-z-plane during the smoothing.
+Additionally, the vertex must stay within a user-defined distance in respect to its original location.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.add_vectors.html#compas.geometry.add_vectors" title="compas.geometry.add_vectors"><code class="xref py py-func docutils literal">compas.geometry.add_vectors()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.scale_vector.html#compas.geometry.scale_vector" title="compas.geometry.scale_vector"><code class="xref py py-func docutils literal">compas.geometry.scale_vector()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.subtract_vectors.html#compas.geometry.subtract_vectors" title="compas.geometry.subtract_vectors"><code class="xref py py-func docutils literal">compas.geometry.subtract_vectors()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.length_vector.html#compas.geometry.length_vector" title="compas.geometry.length_vector"><code class="xref py py-func docutils literal">compas.geometry.length_vector()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.normalize_vector.html#compas.geometry.normalize_vector" title="compas.geometry.normalize_vector"><code class="xref py py-func docutils literal">compas.geometry.normalize_vector()</code></a></li>
+<li><a class="reference internal" href="../../../reference/generated/compas.geometry.distance_point_point.html#compas.geometry.distance_point_point" title="compas.geometry.distance_point_point"><code class="xref py py-func docutils literal">compas.geometry.distance_point_point()</code></a></li>
+</ul>
+</div>
+<p>Solution:</p>
+<ul class="simple">
+<li><a class="reference download internal" download="" href="../../../downloads/tree_03.py"><code class="xref download docutils literal">tree_03.py</code></a></li>
+</ul>
+</div>
+<div class="section">
+<h3>Tessellation of a freeform barrel vault</h3>
+<p>wip...</p>
+<p>Generate uv staggered pattern:</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino</span> <span class="kn">import</span> <span class="n">uv_points_from_surface</span>
+
+<span class="n">srf</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="s2">"Select Surface"</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="n">u_div</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">v_div</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="c1">#create initial mesh</span>
+<span class="n">pts_uv</span> <span class="o">=</span> <span class="n">uv_points_from_surface</span><span class="p">(</span><span class="n">srf</span><span class="p">,</span><span class="n">u_div</span><span class="p">,</span><span class="n">v_div</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">u_div</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">rs</span><span class="o">.</span><span class="n">AddPolyline</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">v_div</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">u</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">rs</span><span class="o">.</span><span class="n">AddLine</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">],</span><span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">v</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rs</span><span class="o">.</span><span class="n">AddLine</span><span class="p">(</span><span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span><span class="n">pts_uv</span><span class="p">[</span><span class="n">u</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+</code></pre></div>
+
+</div>
+</div>
 </div>
 <nav class="compas-sideways">
 <a class="btn btn-primary compas-prev" href="../day2.html" role="button">Day 2</a>
@@ -80,7 +1108,31 @@
 </div>
 <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
 <ul class="nav flex-column" id="compas-localnav">
-<li class="nav-item"><a class="nav-link reference internal" href="#">Geometry</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#">Geometry</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#introduction">Introduction</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#object-oriented-interface-vs-functions">Object-Oriented Interface vs Functions</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#compute-and-visualize-a-3d-spiraling-polyline">Compute and Visualize a 3D Spiraling Polyline</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#raytracing-inside-a-box">Raytracing Inside a Box</a></li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="#creating-geometric-algorithms-for-architectural-applications">Creating Geometric Algorithms for Architectural Applications</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#simple-translational-surfaces-for-gridshelss">Simple Translational Surfaces for Gridshelss</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#sweep-translation-surface">Sweep Translation Surface</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#aligned-translation-surface">Aligned Translation Surface</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#conical-translation-surface">Conical Translation Surface</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="#using-geometric-algorithms-and-optimization-techniques">Using Geometric Algorithms and Optimization Techniques</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#coons-patches">Coons Patches</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#torsion-free-elements-for-coons-patch-gridshells">Torsion-free Elements for Coons Patch Gridshells</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#volumetric-network-structures-with-subdivision-meshes">Volumetric Network Structures with Subdivision Meshes</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#tessellation-of-a-freeform-barrel-vault">Tessellation of a freeform barrel vault</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -93,7 +1145,7 @@
             
 
             
-                Last updated on Oct 30, 2017.
+                Last updated on Oct 31, 2017.
             
 
             

@@ -42,18 +42,19 @@
 
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">platform</span>
-    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_implementation</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'IronPython'</span><span class="p">:</span>    
+    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_implementation</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'IronPython'</span><span class="p">:</span>
         <span class="k">raise</span>
+
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">'Matthias Rippmann'</span><span class="p">,</span> <span class="p">]</span>
 <span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">'Copyright 2017, BLOCK Research Group - ETH Zurich'</span>
 <span class="n">__license__</span>    <span class="o">=</span> <span class="s1">'MIT License'</span>
 <span class="n">__email__</span>      <span class="o">=</span> <span class="s1">'rippmann@ethz.ch'</span>
 
+
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'uv_points_from_surface'</span><span class="p">,</span>
-    <span class="p">]</span>
-
+<span class="p">]</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -84,13 +85,12 @@
     <span class="n">u_step</span> <span class="o">=</span> <span class="p">(</span><span class="n">u_domain</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">u_domain</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">u_div</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">v_step</span> <span class="o">=</span> <span class="p">(</span><span class="n">v_domain</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">v_domain</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">v_div</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
-
     <span class="n">uv_points</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">v_div</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u_div</span><span class="p">)]</span>
 
-    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">u_div</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">v_div</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u_div</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">v_div</span><span class="p">):</span>
             <span class="n">uv</span> <span class="o">=</span> <span class="p">(</span><span class="n">u_domain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">u_step</span> <span class="o">*</span> <span class="n">u</span> <span class="p">,</span> <span class="n">v_domain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v_step</span>  <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
-            <span class="n">uv_points</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">EvaluateSurface</span> <span class="p">(</span><span class="n">srf</span><span class="p">,</span> <span class="n">uv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="n">uv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">uv_points</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">EvaluateSurface</span><span class="p">(</span><span class="n">srf</span><span class="p">,</span> <span class="n">uv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="n">uv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">uv_points</span></div>
 </code></pre></div>
@@ -133,7 +133,7 @@
             
 
             
-                Last updated on Oct 30, 2017.
+                Last updated on Oct 31, 2017.
             
 
             

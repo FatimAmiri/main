@@ -39,11 +39,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 
-<span class="c1"># import ast</span>
-
-<span class="c1"># from compas.utilities import geometric_key</span>
-
-<span class="c1"># import compas_rhino</span>
+<span class="kn">import</span> <span class="nn">compas_rhino</span>
 
 <span class="kn">from</span> <span class="nn">compas_rhino.helpers.artists</span> <span class="k">import</span> <span class="n">NetworkArtist</span>
 
@@ -76,6 +72,9 @@
     <span class="s1">'network_update_edge_attributes'</span><span class="p">,</span>
     <span class="s1">'network_move'</span><span class="p">,</span>
     <span class="s1">'network_move_vertex'</span><span class="p">,</span>
+    <span class="s1">'network_draw_reaction_forces'</span><span class="p">,</span>
+    <span class="s1">'network_draw_loads'</span><span class="p">,</span>
+    <span class="s1">'network_draw_axial_forces'</span>
 <span class="p">]</span>
 
 
@@ -126,6 +125,8 @@
 <div class="viewcode-block" id="network_draw"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.helpers.network_draw.html#compas_rhino.helpers.network_draw">[docs]</a><span class="k">def</span> <span class="nf">network_draw</span><span class="p">(</span><span class="n">network</span><span class="p">,</span>
                  <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">clear_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">clear_vertices</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">clear_edges</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">vertexcolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">"""Draw a network data structure in Rhino.</span>
@@ -173,7 +174,12 @@
     <span class="k">if</span> <span class="n">clear_layer</span><span class="p">:</span>
         <span class="n">artist</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">()</span>
 
-    <span class="n">artist</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">clear_vertices</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">clear_vertices</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">clear_edges</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">clear_edges</span><span class="p">()</span>
+
     <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">vertexcolor</span><span class="p">)</span>
     <span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">)</span>
     <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span></div>
@@ -632,6 +638,65 @@
 
 
 <span class="c1"># ==============================================================================</span>
+<span class="c1"># temp</span>
+<span class="c1"># ==============================================================================</span>
+
+
+<span class="k">def</span> <span class="nf">network_draw_reaction_forces</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clear_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'is_fixed'</span><span class="p">]:</span>
+            <span class="n">force</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'rx'</span><span class="p">],</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'ry'</span><span class="p">],</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'rz'</span><span class="p">]</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">-</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">force</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">'start'</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span>
+                <span class="s1">'end'</span>  <span class="p">:</span> <span class="n">end</span><span class="p">,</span>
+                <span class="s1">'name'</span> <span class="p">:</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">.reaction.</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span>
+                <span class="s1">'color'</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="s1">'arrow'</span><span class="p">:</span> <span class="s1">'end'</span><span class="p">,</span>
+            <span class="p">})</span>
+    <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'</span><span class="si">{}</span><span class="s1">.reaction.*'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+    <span class="n">compas_rhino</span><span class="o">.</span><span class="n">delete_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
+    <span class="n">compas_rhino</span><span class="o">.</span><span class="n">xdraw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span> <span class="n">clear</span><span class="o">=</span><span class="n">clear_layer</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">network_draw_loads</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clear_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'is_fixed'</span><span class="p">]:</span>
+            <span class="n">force</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'px'</span><span class="p">],</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'py'</span><span class="p">],</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'pz'</span><span class="p">]</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">+</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">force</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">'start'</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span>
+                <span class="s1">'end'</span>  <span class="p">:</span> <span class="n">end</span><span class="p">,</span>
+                <span class="s1">'name'</span> <span class="p">:</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">.load.</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span>
+                <span class="s1">'color'</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+                <span class="s1">'arrow'</span><span class="p">:</span> <span class="s1">'end'</span><span class="p">,</span>
+            <span class="p">})</span>
+    <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'</span><span class="si">{}</span><span class="s1">.load.*'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+    <span class="n">compas_rhino</span><span class="o">.</span><span class="n">delete_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
+    <span class="n">compas_rhino</span><span class="o">.</span><span class="n">xdraw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span> <span class="n">clear</span><span class="o">=</span><span class="n">clear_layer</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">network_draw_axial_forces</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clear_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">cylinders</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'f'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">cylinders</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">'start'</span> <span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">),</span>
+                <span class="s1">'end'</span>   <span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">),</span>
+                <span class="s1">'radius'</span><span class="p">:</span> <span class="n">scale</span> <span class="o">*</span> <span class="mf">3.14159</span> <span class="o">*</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'f'</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s1">'name'</span>  <span class="p">:</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">.axial.</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span>
+                <span class="s1">'color'</span> <span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="p">})</span>
+    <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'</span><span class="si">{}</span><span class="s1">.axial.*'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+    <span class="n">compas_rhino</span><span class="o">.</span><span class="n">delete_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
+    <span class="n">compas_rhino</span><span class="o">.</span><span class="n">xdraw_cylinders</span><span class="p">(</span><span class="n">cylinders</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span> <span class="n">clear</span><span class="o">=</span><span class="n">clear_layer</span><span class="p">)</span>
+
+
+<span class="c1"># ==============================================================================</span>
 <span class="c1"># Debugging</span>
 <span class="c1"># ==============================================================================</span>
 
@@ -691,7 +756,7 @@
             
 
             
-                Last updated on Oct 30, 2017.
+                Last updated on Oct 31, 2017.
             
 
             
