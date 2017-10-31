@@ -93,7 +93,7 @@ based on stepwise rotation and scaling.
 
     * :meth:`compas.geometry.add_vectors`
     * :meth:`compas.geometry.scale_vector`
-    * :func:`compas.geometry.scale_vector`
+    * :func:`compas.geometry.subtract_vectors`
     * :func:`compas.geometry.rotate_points`
 
 
@@ -119,7 +119,7 @@ based on stepwise rotation and scaling.
 
     from compas.geometry import add_vectors
     from compas.geometry import scale_vector
-    from compas.geometry import scale_vector
+    from compas.geometry import subtract_vectors
     from compas.geometry import rotate_points
 
     # Select Rhino Object 
