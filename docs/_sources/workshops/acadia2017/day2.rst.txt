@@ -8,5 +8,4 @@ Day 2
     :maxdepth: 2
 
     day2/geometry
-    day2/numerical
     day2/formfinding

@@ -809,10 +809,12 @@ The steps of the algorithm are:
 
     * :func:`compas.geometry.orient_points`
     * :func:`compas.geometry.convex_hull`
-    * :func:`compas.datastructures.mesh.mesh_subdivide_catmullclark`
+    * :func:`compas.datastructures.mesh_subdivide_catmullclark`
     
+.. seealso::
+
     * https://en.wikipedia.org/wiki/Convex_hull
-    * https://en.wikipedia.org/wiki/Catmull%E2%80%93Clark_subdivision_surface
+    * https://en.wikipedia.org/wiki/Catmull-Clark_subdivision_surface
 
 
 Rhino file for the following examples:
