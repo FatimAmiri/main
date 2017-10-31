@@ -40,12 +40,14 @@ The full geometry reference can be found here:
 
 
 Object-Oriented Interface vs Functions
-======================================
+--------------------------------------
 
 The geometry package features an object-oriented interface:
 
 .. plot::
     :include-source:
+
+    from __future__ import print_function
 
     from compas.geometry import Vector
 
@@ -64,6 +66,8 @@ lists (or tuples) as vectors:
 .. plot::
     :include-source:
 
+    from __future__ import print_function
+
     from compas.geometry import add_vectors
     from compas.geometry import length_vector
 
@@ -76,86 +80,24 @@ lists (or tuples) as vectors:
     print(length_vector(r))
 
 
-Adding Multiple Vectors 
------------------------
+Compute and Visualize a 3D Spiraling Polyline  
+---------------------------------------------
 
-Create a set of 10.000 random vectors with the origin (1. ,2. ,3.) and compute their
-resultant. Compare the preformance of an object-based and function-based method.  
+The following example script uses basic vector methods to compute a spiraling polyline
+based on stepwise rotation and scaling.  
 
-.. seealso::
-
-    * :meth:`compas.geometry.Vector.from_start_end`
-    * :meth:`compas.geometry.Vector.from_start_end`
-
-    * :func:`compas.geometry.vector_from_points`
-    * :func:`compas.geometry.add_vectors`
-    * :func:`compas.geometry.sum_vectors`
-
-
-Solution:
-
-.. plot::
-    :include-source:
-
-
-    from random import random as rnd
-    import time
-
-    from compas.geometry import Vector
-
-    from compas.geometry import add_vectors
-    from compas.geometry import sum_vectors
-    from compas.geometry import vector_from_points
-
-
-    # create random points
-    points = [(rnd(), rnd(), rnd()) for _ in range(10000)]
-    # define origin
-    origin = [1., 2., 3.]
-
-
-    # Object-based method
-    vecs = [Vector.from_start_end(origin, pt) for pt in points]
-    res = Vector(0., 0., 0.)
-    for v in vecs:
-        res += v
-    print('{0} computed with object-based method'.format(res))
-
-
-    # Function-based method A
-    vecs = [vector_from_points(origin, pt) for pt in points]
-    res = [0., 0., 0.]
-    for v in vecs:
-        res = add_vectors(res, v)
-    print('{0} computed with function-based method A'.format(res))
-
-
-    # Function-based method B
-    vecs = [vector_from_points(origin, pt) for pt in points]
-    res = sum_vectors(vecs)
-    print('{0} computed with function-based method B'.format(res))
-
-
-
-Creating Geometric Algorithms from Simple Functions
-===================================================
-
-Introduction text... Algorithms can ....
-
-
-Simple Translational Surfaces for Gridshelss
---------------------------------------------
-
-Using translational surfaces for the design of gridshells allows to explore freeform
-spaces that can be built from planar (glass) panels. Jörg Schlaich together with Hans 
-Schober developed several geometric design methods for various gridshells built in the 
-last decades.
-
-.. figure:: /_images/sbp.jpg
+.. figure:: /_images/flatter_spiral.jpg
     :figclass: figure
     :class: figure-img img-fluid
 
-    Cabot Circus Bristol and Deutsches Historisches Museum (Photo: SBP)
+    Spiral created by stepwise rotation and scaling
+
+.. seealso::
+
+    * :meth:`compas.geometry.add_vectors`
+    * :meth:`compas.geometry.scale_vector`
+    * :func:`compas.geometry.scale_vector`
+    * :func:`compas.geometry.rotate_points`
 
 
 .. note::
@@ -172,22 +114,210 @@ last decades.
 
     Make sure to have version 2.7.5 installed!
 
+.. plot::
+    :include-source:
+
+    import math
+
+    import rhinoscriptsyntax as rs
+
+    from compas.geometry import add_vectors
+    from compas.geometry import scale_vector
+    from compas.geometry import scale_vector
+    from compas.geometry import rotate_points
+
+    # Select Rhino Object 
+    obj = rs.GetObject("Select line", 4)
+
+    # create line list with start and end point coordinates 
+    line = [rs.CurveStartPoint(obj), rs.CurveEndPoint(obj)]
+
+    rad = math.radians(10)
+    fac = 0.98
+
+    for i in range(400):
+        # create and scale previous line vector
+        vec = subtract_vectors(line[1], line[0])
+        vec = scale_vector(vec, fac)
+        # replace line with new scaled line
+        line = [line[1], add_vectors(line[1], vec)]
+        # rotate end point of line
+        line = rotate_points(line, (0.,0.,1.), rad, line[0])
+        # add line to Rhino
+        rs.AddLine(line[0], line[1])
+
+
+Raytracing Inside a Box  
+-----------------------
+
+The following example script uses basic geometry functions to compute the reflection
+path inside a box based on a given starting ray.  
+
+.. figure:: /_images/ball.jpg
+    :figclass: figure
+    :class: figure-img img-fluid
+
+    Reflection path inside of a box
+
+.. seealso::
+
+    * :meth:`compas.geometry.reflect_line_triangle`
+    * :meth:`compas.geometry.distance_point_point`
+    * :meth:`compas.geometry.subtract_vectors`
+    * :meth:`compas.geometry.add_vectors`
+    * :meth:`compas.geometry.scale_vector`
+    * :meth:`compas.geometry.normalize_vector`
+
+
+Rhino file for this example:
+
+* :download:`reflect.3dm </../../examples/workshops/acadia2017/reflect.3dm>`
+
+.. plot::
+    :include-source:
+
+    from compas.geometry import reflect_line_triangle 
+    from compas.geometry import distance_point_point
+    from compas.geometry import subtract_vectors
+    from compas.geometry import add_vectors
+    from compas.geometry import scale_vector
+    from compas.geometry import normalize_vector
+
+    import rhinoscriptsyntax as rs
+
+    # Select Objects
+    #-------------------------
+    tris_id = rs.GetObjects("Select Triangles", 4) # cage of triangles (check direction!)
+    line = rs.GetObject("Select Start Line", 4) # initial vector (direction and magnitude)
+
+    ab = list(rs.CurveStartPoint(line)), list(rs.CurveEndPoint(line))
+    velo = distance_point_point(ab[0], ab[1]) * 0.2 
+
+    # triangles as list of points a, b, c
+    tris = []
+    for tri_id in tris_id:
+        tris.append(rs.PolylineVertices(tri_id)[:-1])
+
+    # ray starting at ab, bouncing back the walls of the cage for max_d times
+    max_d = 100
+    poly_pts = [ab[0]]
+    for i in range(max_d):
+        for tri in tris:
+            reflected_line = reflect_line_triangle(ab, tri)
+            if reflected_line:
+                ab = reflected_line
+                poly_pts.append(ab[0])
+                break
+
+    # trace complete reflection path 
+    rs.AddPolyline(poly_pts)
+    rs.AddPoints(poly_pts)
+
+
+Add this script to the previous example to animate a ball bouncing of the walls
+of the given box.
+
+.. plot::
+    :include-source:
+
+    # segments of reflection path ab, bc, cd, ...
+    lines = [(poly_pts[i], poly_pts[i + 1]) for i in range(len(poly_pts) - 1)]
+
+    # list of descending velocities   
+    fac = 0.97
+    velos = [velo]
+    while velos[-1] > 0.05:
+        velos.append(velos[-1] * fac)
+        
+    # animate bouncing ball
+    i = 0
+    scale = 0
+    for velo in velos:
+        scale += velo
+        a, b = lines[i]
+        ab_len = distance_point_point(a, b)
+        vec = subtract_vectors(b, a)
+        if scale > ab_len:
+            scale = scale - ab_len
+            i += 1
+            a, b = lines[i]
+            vec = subtract_vectors(b, a)
+                
+        pt = add_vectors(a, scale_vector(normalize_vector(vec), scale)) 
+
+        # visualizing ball
+        pt_id = rs.AddTextDot("8", pt)
+        rs.Sleep(50)
+        rs.DeleteObject(pt_id)
+
+
+**Exercise**: Allow the player to target a defined corner and stop the ball if
+it is close to that corner. 
+
+Hint code snippet:
+
+.. plot::
+    :include-source:
+
+    # use
+    # from compas.geometry import distance_point_point
+     
+    # ... 
+    # visualizing ball
+    pt_id = rs.AddTextDot("8", pt)
+
+    # do something here
+    # ------------------
+
+
+Creating Geometric Algorithms for Architectural Applications
+============================================================
+
+Plugging together geometry functions in combinations with datastructures allow to 
+develope tools for architectural design and optimization.
+
+
+Simple Translational Surfaces for Gridshelss
+--------------------------------------------
+
+.. figure:: /_images/sbp.jpg
+    :figclass: figure
+    :class: figure-img img-fluid
+
+    Cabot Circus Bristol and Deutsches Historisches Museum (Photo: SBP)
+
+Using translational surfaces for the design of gridshells allows to explore freeform
+spaces that can be built from planar (glass) panels. Jörg Schlaich together with Hans 
+Schober published several geometric design methods for various gridshells built in the 
+last decades.
+
+.. figure:: /_images/planar_sweeps.jpg
+    :figclass: figure
+    :class: figure-img img-fluid
+
+    Various translation surfaces
+
+
+Rhino file for the following examples:
+
+* :download:`trans_srf.3dm </../../examples/workshops/acadia2017/trans_srf.3dm>`
+
+Sweep Translation Surface
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following example shows the generation of a simple tanslation surface based on a
 given profile and rail curve. 
 
-.. note::
 
-    The following examples are based on the 3dm file:
-
-    * :download:`trans_srf.3dm </../../examples/trans_srf.3dm>`
-
-
-.. figure:: /_images/trans_srf_01.jpg
+.. figure:: /_images/sweep.jpg
     :figclass: figure
     :class: figure-img img-fluid
 
-    See 3dm file for details 
+    Sweep translation surface
+
+.. seealso::
+
+    * :func:`compas.geometry.translate_points`
 
 
 .. code-block:: python
@@ -243,19 +373,24 @@ given profile and rail curve.
     rs.EnableRedraw(True)
 
 
+Aligned Translation Surface
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following example shows the generation of a tanslation surface with profile
 curves aligned with the rail curve.
 
-.. figure:: /_images/trans_srf_03.jpg
+
+.. figure:: /_images/project_plane.jpg
     :figclass: figure
     :class: figure-img img-fluid
 
-    See 3dm file for details 
+    Aligned translation surface
+
 
 .. seealso::
 
     * :func:`compas.geometry.project_points_plane`
+
 
 .. code-block:: python
 
@@ -311,31 +446,77 @@ curves aligned with the rail curve.
         rs.AddPolyline(poly)
     rs.EnableRedraw(True)
 
-Exercise: 
----------
+
+**Exercise**: Create a mesh object from the extruded geometry. Generate fins
+(rs.AddSrfPt()) normal to the mesh along the edges. Use a (u, v) tuples as vertex keys.
+
+Hint code snippet:
+
+.. plot::
+    :include-source:
+
+    # use:
+    from compas.datastructures import Mesh
+    from compas_rhino import mesh_draw_faces
+    trans_mesh = Mesh()
+
+    # add vertices to mesh object
+    for u in xrange(len(pts_uv)):
+        for v in xrange(len(pts_uv[u])):
+            x, y, z = pts_uv[u][v]
+            
+            # do something here:
+            # trans_mesh.add_vertex(...)
+
+    # add faces to mesh object
+    for u in xrange(len(pts_uv)-1):
+        for v in xrange(len(pts_uv[u])-1):
+            
+            # do something here
+            # trans_mesh.add_face(...)
+
+    mesh_draw_faces(trans_mesh)
+
+    for u, v in trans_mesh.edges():
+        # do something here
+
+
+.. seealso::
+
+    * :func:`compas_rhino.mesh_draw_faces`
+    * :func:`compas.geometry.add_vectors`
+    * :func:`compas.geometry.scale_vector`
+    * :class:`compas.datastructures.Mesh`
+    * mesh.vertex_normal()
+    * mesh.vertex_coordinates()
+
+Solution:
+
+* :download:`trans_fins.py </../../examples/workshops/acadia2017/trans_fins.py>`
+
+
+Conical Translation Surface
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following figure shows the generation of a tanslation surface with two profile
 curves. The method geneartes planes along the two rail curves and subsequentely uses
 intersections with conical extrusions to guarantee the planarity of resulting mesh.
 
-.. figure:: /_images/trans_srf_04.jpg
+.. figure:: /_images/conical_srf.jpg
     :figclass: figure
     :class: figure-img img-fluid
 
-    See 3dm file for details 
+    Translation surface with conical sections
 
 The steps of the algorithm are:
 
-* blabla bl lal lsldd bllbblb
-  blblblbl bldlbl
-  (:func:`compas.geometry.add_vectors`)
-* ...
-
-.. note::
-
-    The following examples is also available for Grasshopper:
-
-    * :download:`trans_srf.3dm </../../examples/trans_srf.gh>`
+* Divide profile curve
+* Divide rail curves
+* Create planes aligned to both rail curves
+* Compute focus point based on a pair of tangents to the two rails
+* Create cone between projected profile curve and focus point
+* Intersect cone with next section plane
+* repeat the last three points
 
 
 .. seealso::
@@ -355,6 +536,7 @@ The steps of the algorithm are:
     from compas.geometry import centroid_points
     from compas.geometry import intersection_line_plane
     from compas.geometry import intersection_line_line
+    from compas.geometry import normalize_vector
         
     # Get inputs
     crv_p = rs.GetObject("Select profile", 4)
@@ -419,12 +601,42 @@ The steps of the algorithm are:
     rs.EnableRedraw(True)
 
 
+Grasshopper definition:
+
+* :download:`trans_srf.gh </../../examples/workshops/acadia2017/trans_srf.gh>`
+
+.. note::
+
+    You need the GhPython for Grasshopper to run trans_srf.gh.
+    * http://www.food4rhino.com/app/ghpython
 
 
-Torsion-free Elements for Gridshells
-====================================
 
-- Create a 3D coons patch.
+Using Geometric Algorithms and Optimization Techniques
+======================================================
+
+
+Coons Patches
+-------------
+
+Create a 3D coons patch.
+
+.. figure:: /_images/coons.jpg
+    :figclass: figure
+    :class: figure-img img-fluid
+
+    Gridshells from Coons meshes 
+
+.. seealso::
+
+    * :func:`compas.geometry.discrete_coons_patch`
+
+    * https://en.wikipedia.org/wiki/Coons_patch
+
+
+Rhino file for the following examples:
+
+* :download:`coons.3dm </../../examples/workshops/acadia2017/coons.3dm>`
 
 
 .. code-block:: python
@@ -432,105 +644,188 @@ Torsion-free Elements for Gridshells
     import rhinoscriptsyntax as rs
 
     from compas.geometry import add_vectors
+    from compas.geometry import scale_vector
 
     from compas.datastructures.mesh import Mesh
-    from compas_rhino.helpers.artists.meshartist import MeshArtist
-    from compas.geometry.algorithms.interpolation import discrete_coons_patch
-    from compas.datastructures import mesh_cull_duplicate_vertices
+    from compas.geometry import discrete_coons_patch
+
+    from compas_rhino import mesh_draw_faces
 
 
-
+    # Select objects in Rhino
     crv_ab = rs.GetObject("Select ab",4)
     crv_bc = rs.GetObject("Select bc",4)
     crv_dc = rs.GetObject("Select cd",4)
     crv_ad = rs.GetObject("Select ad",4)
 
+    # Define devisions
     div_a = 15
     div_b = 15
 
-    ab, bc, dc, ad = None, None, None, None
+    # height of fons
+    height = 0.3
 
-    if crv_ab: ab = rs.DivideCurve(crv_ab, div_a)
-    if crv_bc: bc = rs.DivideCurve(crv_bc, div_b)
-    if crv_dc: dc = rs.DivideCurve(crv_dc, div_a)
-    if crv_ad: ad = rs.DivideCurve(crv_ad, div_b)
+    # divide boundary curves of coons patch
+    ab = rs.DivideCurve(crv_ab, div_a)
+    bc = rs.DivideCurve(crv_bc, div_b)
+    dc = rs.DivideCurve(crv_dc, div_a)
+    ad = rs.DivideCurve(crv_ad, div_b)
 
-    vertices, face_vertices = discrete_coons_patch(ab, bc, dc, ad)
-    coon = Mesh.from_vertices_and_faces(vertices, face_vertices)
+    # compute coons patch
+    vertices, faces = discrete_coons_patch(ab, bc, dc, ad)
+    coons = Mesh.from_vertices_and_faces(vertices, faces)
 
-    artist = MeshArtist(coon, layer='MeshArtist')
-    artist.draw_edges()
-    artist.draw_vertices()
-    artist.draw_faces()
-    #artist.redraw(1.0)
-
-
-    for u, v in coon.edges():
-        pt_u = coon.vertex_coordinates(u)
-        pt_v = coon.vertex_coordinates(v)
-        vec_u = coon.vertex_normal(u)
-        vec_v = coon.vertex_normal(v)
-        pt_uu = add_vectors(pt_u, vec_u)
-        pt_vv = add_vectors(pt_v, vec_v)
-        rs.AddPolyline([pt_u,pt_v,pt_vv,pt_uu,pt_u])
+    # draw coons patch
+    mesh_draw_faces(coons, join_faces=True)
 
 
 
+Torsion-free Elements for Coons Patch Gridshells
+------------------------------------------------
 
-- make a mesh.
-- populate fins
+Create a 3D coons patch with close-to planar fins.
 
-- planarize fins
-- constrain fins to a specific height
+.. seealso::
 
+    * :func:`compas.geometry.planarize_faces`
+    * :func:`compas.geometry.flatness`
+    * :func:`compas.utilities.i_to_rgb`
 
-
-Smoothen on surface
-===================
-
-
-
-
-
-
-Tessellation of a freeform barrel vault
-=======================================
-
-Generate uv staggered pattern:
 
 .. code-block:: python
 
     import rhinoscriptsyntax as rs
 
-    from compas_rhino import uv_points_from_surface
+    from compas.geometry import add_vectors
+    from compas.geometry import scale_vector
 
-    srf = rs.GetObject("Select Surface",8)
+    from compas.datastructures.mesh import Mesh
+    from compas.geometry import discrete_coons_patch
 
-    u_div = 30
-    v_div = 30
+    from compas_rhino import mesh_draw_faces
 
-    #create initial mesh
-    pts_uv = uv_points_from_surface(srf,u_div,v_div)
+    from compas.geometry import planarize_faces
+    from compas.geometry import flatness
+    from compas.utilities import i_to_rgb
 
-    for u in xrange(u_div - 1):
-        rs.AddPolyline(pts_uv[u])
-        for v in xrange(0, v_div - 1, 2):
-            if u % 2:
-                rs.AddLine(pts_uv[u][v],pts_uv[u + 1][v])
-            else:
-                rs.AddLine(pts_uv[u][v + 1],pts_uv[u + 1][v + 1])
+    def draw_fins(vertices, faces):
+        # don't refresh viewport
+        rs.EnableRedraw(False)
+        # compute level of flatness
+        flat_vals = flatness(vertices, faces, maxdev=0.02)
+        srfs = []
+        for i, face in enumerate(faces):
+            # vertex coordinates for face
+            pts = [vertices[key] for key in face]
+            # create Rhino surface
+            srfs.append(rs.AddSrfPt(pts))
+            # color surface based on flatness
+            rgb = i_to_rgb(flat_vals[i])
+            rs.ObjectColor(srfs[-1], rgb)
+        rs.AddObjectsToGroup(srfs, rs.AddGroup())
+        # refresh viewport
+        rs.EnableRedraw(True)
+        return srfs
+
+    # Select objects in Rhino
+    crv_ab = rs.GetObject("Select ab",4)
+    crv_bc = rs.GetObject("Select bc",4)
+    crv_dc = rs.GetObject("Select cd",4)
+    crv_ad = rs.GetObject("Select ad",4)
+
+    # Define devisions
+    div_a = 15
+    div_b = 15
+
+    # height of fons
+    height = 0.3
+
+    # divide boundary curves of coons patch
+    ab = rs.DivideCurve(crv_ab, div_a)
+    bc = rs.DivideCurve(crv_bc, div_b)
+    dc = rs.DivideCurve(crv_dc, div_a)
+    ad = rs.DivideCurve(crv_ad, div_b)
+
+    # compute coons patch
+    vertices, faces = discrete_coons_patch(ab, bc, dc, ad)
+    coons = Mesh.from_vertices_and_faces(vertices, faces)
+
+    # draw coons patch
+    mesh_draw_faces(coons, join_faces=True)
+
+    # build index-key and key-index maps
+    index_key = {i : key for i, key in enumerate(coons.vertices())}
+    key_index = {key : i for i, key in enumerate(coons.vertices())}
+
+    # convert vertices dictionary to vertices list
+    vertices_list = [coons.vertex_coordinates(key) for key in coons.vertices()]
+    # number of vertices of coons mesh
+    n = coons.number_of_vertices()
+
+    # compute offset vertices
+    for i in range(len(vertices)):
+        normal = scale_vector(coons.vertex_normal(index_key[i]), height)
+        vertices_list.append(add_vectors(vertices_list[i], normal))
+
+    # convert faces with vertex keys to vertex indices
+    faces_list = []
+    for u, v in coons.edges():
+        faces_list.append([key_index[u], key_index[v], key_index[v] + n, key_index[u] + n])
+
+    # visualize fins
+    draw_fins(vertices_list, faces_list)
+        
+    # define callback
+    def callback(k, callback_args=None):
+        rs.Prompt('Iteration: {0} '.format(k))
+
+    # planarize fins
+    planarize_faces(vertices_list, faces_list, kmax=200, callback=callback)
+
+    # visualize planarized fins
+    draw_fins(vertices_list, faces_list)
+
+
+**Exercise**: Fix the lower vertices of the fins during the planarization optimization. Relate the 
+height of the fins to the z-values of the vertices. The largest fins should be at the supports.  
 
 
 
 
+Volumetric Network Structures with Subdivision Meshes
+-----------------------------------------------------
 
-subdivision stuff
-=================
+The following code computes a solidified smooth mesh from a spatial network of lines.
+The shown method yields similar results as the exoskeleton plugin for Grasshopper
+to create meshes for 3D printing.
+
+.. figure:: /_images/node.jpg
+    :figclass: figure
+    :class: figure-img img-fluid
+
+    Smooth volumetric mesh from lines
+
+The steps of the algorithm are:
+
+* Align quad frames for each adjacent edge per node
+* One quad frame close to the node, the other one at the midpoint of the edge
+* Compute convex hull with the verticies of the inner frames
+* Add rectangular pipe between convex hull and midpoints for each edge
+* Create a joined mesh and subdivides using Catmull-Clark subdivision
+
+.. seealso::
+
+    * :func:`compas.geometry.orient_points`
+    * :func:`compas.geometry.convex_hull`
+    * :func:`compas.datastructures.mesh.mesh_subdivide_catmullclark`
+    
+    * https://en.wikipedia.org/wiki/Convex_hull
+    * https://en.wikipedia.org/wiki/Catmull%E2%80%93Clark_subdivision_surface
 
 
-subdivision stuff
-=================
+Rhino file for the following examples:
 
+* :download:`tree.3dm </../../examples/workshops/acadia2017/tree.3dm>`
 
 
 .. code-block:: python
@@ -655,5 +950,185 @@ subdivision stuff
         mesh = mesh_subdivide_catmullclark(mesh, sub_level)
         # draw mesh
         mesh_draw_faces(mesh, redraw=False, join_faces=True)
-=======
->>>>>>> d1144cc015660b52049211e6e09dc011cbebf3a6
+
+
+
+.. figure:: /_images/tree.jpg
+    :figclass: figure
+    :class: figure-img img-fluid
+
+    Volumetric tree structure
+
+
+The shown tree structure can be structurally improved by finding a more 
+"balanced" network geometry. A spatial smoothing can help to improve the
+given configuration.
+
+
+.. seealso::
+
+    * :class:`compas.datastructures.Network`
+    * :func:`compas.geometry.network_smooth_centroid`
+    * :func:`compas_rhino.network_draw_edges`
+
+
+.. code-block:: python
+
+    from compas.geometry import network_smooth_centroid
+
+    from compas.datastructures.network import Network
+    from compas_rhino import network_draw_edges
+
+    import rhinoscriptsyntax as rs
+        
+        
+    # select a network of lines
+    objs = rs.GetObjects("lines", 4)
+
+    # create network from lines in Rhino
+    lines = [(rs.CurveStartPoint(obj), rs.CurveEndPoint(obj)) for obj in objs]
+    network = Network.from_lines(lines)
+
+    # create list of keys for fixed vertices
+    fixed = [key for key in network.vertices() if network.vertex_degree(key) == 1]
+
+    # smooth network
+    network_smooth_centroid(network, fixed=fixed, kmax=100, damping=0.1, callback=None, callback_args=None)
+
+    # draw relaxed network
+    network_draw_edges(network)
+
+
+A callback function can be used to show the iterations:
+
+.. code-block:: python
+
+    from compas.geometry import network_smooth_centroid
+
+    from compas.datastructures.network import Network
+    from compas_rhino import network_draw_edges
+
+    import rhinoscriptsyntax as rs
+
+    # callback function get called in every interation step
+    def callback(network, k, args):
+        # unpack arguments
+        step = args[0]
+        # print iterations and draw network
+        if k % step == 0:
+            rs.Prompt("Iteration: {0}".format(k))
+            network_draw_edges(network)
+        
+
+    # select a network of lines
+    objs = rs.GetObjects("lines", 4)
+
+    # create network from lines in Rhino
+    lines = [(rs.CurveStartPoint(obj), rs.CurveEndPoint(obj)) for obj in objs]
+    network = Network.from_lines(lines)
+
+    # create list of keys for fixed vertices
+    fixed = [key for key in network.vertices() if network.vertex_degree(key) == 1]
+
+    # define callback variables
+    step = 1
+
+    # set callback arguments
+    callback_args = [step]
+
+    # smooth network
+    network_smooth_centroid(network, fixed=fixed, kmax=100, damping=0.1, callback=callback, callback_args=callback_args)
+
+    # draw relaxed network
+    network_draw_edges(network)
+
+
+**Exercise**: Let the network vertex with y = 0.0 freely slide on the y-z-plane during the smoothing.
+
+Hint code snippet:
+
+.. plot::
+    :include-source:
+
+
+    # get vertex key for a vertex on the x-z-plane
+    for key in network.vertices():
+        # do something here
+            
+    # remove x-z-plane vertex key from fixed
+    # do something here
+
+
+    # in the callback function :
+    # ...
+    if k % step == 0:
+        rs.Prompt("Iteration: {0}".format(k))
+        network_draw_edges(network)
+    
+    # constrain y-coordinate to 0.0 for vertex with specific key
+    # do something here
+
+
+.. seealso::
+
+    * :func:`compas_rhino.mesh_draw_faces`
+    * :func:`compas.geometry.add_vectors`
+    * :func:`compas.geometry.scale_vector`
+    * :class:`compas.datastructures.Mesh`
+    * mesh.vertex_normal()
+    * mesh.vertex_coordinates()
+
+Solution:
+
+* :download:`tree_02.py </../../examples/workshops/acadia2017/tree_02.py>`
+
+
+**Exercise**: Let the network vertex with y = 0.0 slide on the y-z-plane during the smoothing.
+Additionally, the vertex must stay within a user-defined distance in respect to its original location.
+
+
+.. seealso::
+
+    * :func:`compas.geometry.add_vectors`
+    * :func:`compas.geometry.scale_vector`
+    * :func:`compas.geometry.subtract_vectors`
+    * :func:`compas.geometry.length_vector`
+    * :func:`compas.geometry.normalize_vector`
+    * :func:`compas.geometry.distance_point_point`
+
+Solution:
+
+* :download:`tree_03.py </../../examples/workshops/acadia2017/tree_03.py>`
+
+
+
+Tessellation of a freeform barrel vault
+---------------------------------------
+
+wip...
+
+
+
+Generate uv staggered pattern:
+
+.. code-block:: python
+
+    import rhinoscriptsyntax as rs
+
+    from compas_rhino import uv_points_from_surface
+
+    srf = rs.GetObject("Select Surface",8)
+
+    u_div = 30
+    v_div = 30
+
+    #create initial mesh
+    pts_uv = uv_points_from_surface(srf,u_div,v_div)
+
+    for u in xrange(u_div - 1):
+        rs.AddPolyline(pts_uv[u])
+        for v in xrange(0, v_div - 1, 2):
+            if u % 2:
+                rs.AddLine(pts_uv[u][v],pts_uv[u + 1][v])
+            else:
+                rs.AddLine(pts_uv[u][v + 1],pts_uv[u + 1][v + 1])
