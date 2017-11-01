@@ -370,7 +370,7 @@ Start from Rhino geometry
 
 .. code-block:: python
 
-    guids = compas_rhino.get_lines()
+    guids = compas_rhino.select_lines()
     lines = compas_rhino.get_line_coordinates(guids)
 
     network = Cablenet.from_lines(lines)
