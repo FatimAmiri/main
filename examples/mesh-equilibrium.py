@@ -15,7 +15,7 @@ This examples requires PyOpenGL for visualization.
 import compas
 
 from compas.datastructures import Mesh
-from compas.visualization.viewers import MeshViewer
+from compas.viewers import MeshViewer
 
 from compas.numerical import fd
 

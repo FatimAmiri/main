@@ -8,7 +8,7 @@ import rhinoscriptsyntax as rs
 import compas_rhino
 
 from compas.datastructures import Mesh
-from compas.datastructures import trimesh_remesh
+from compas.topology import trimesh_remesh
 
 from compas_rhino.conduits import MeshConduit
 

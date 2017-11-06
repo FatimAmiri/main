@@ -26,7 +26,7 @@ from compas.com import MatlabEngine
 from compas.datastructures import Network
 from compas.numerical import connectivity_matrix
 from compas.numerical import normrow
-from compas.visualization import NetworkPlotter
+from compas.plotters import NetworkPlotter
 
 
 __author__    = ['Tom Van Mele', ]

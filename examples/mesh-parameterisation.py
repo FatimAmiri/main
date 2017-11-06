@@ -17,7 +17,7 @@ from scipy.sparse import block_diag
 from scipy.sparse.linalg import spsolve
 
 from compas.datastructures import Mesh
-from compas.visualization import MeshPlotter
+from compas.plotters import MeshPlotter
 
 
 __author__    = ['Tom Van Mele', ]
