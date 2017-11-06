@@ -20,7 +20,7 @@ This examples requires PyOpenGL for visualization.
 import compas
 
 from compas.datastructures import Network
-from compas.visualization.viewers import NetworkViewer
+from compas.viewers import NetworkViewer
 
 from compas.numerical import fd
 

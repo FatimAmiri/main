@@ -239,7 +239,7 @@ Geometry
 Algorithms
 ==========
 
-* :func:`compas.datastructures.trimesh_remesh`
+* :func:`compas.topology.trimesh_remesh`
 
 .. code-block:: python
 
@@ -301,9 +301,9 @@ Algorithms
     plotter.show()
 
 
-* :func:`compas.datastructures.trimesh_remesh`
-* :func:`compas.datastructures.delaunay_from_points`
-* :func:`compas.datastructures.voronoi_from_delaunay`
+* :func:`compas.topology.trimesh_remesh`
+* :func:`compas.topology.delaunay_from_points`
+* :func:`compas.topology.voronoi_from_delaunay`
 
 .. code-block:: python
 
@@ -575,9 +575,9 @@ Numerical
 CAD integration
 ===============
 
-* :func:`compas.datastructures.mesh_subdivide`
-* :func:`compas.datastructures.mesh_subdivide_doosabin`
-* :func:`compas.datastructures.mesh_subdivide_catmullclark`
+* :func:`compas.topology.mesh_subdivide`
+* :func:`compas.topology.mesh_subdivide_doosabin`
+* :func:`compas.topology.mesh_subdivide_catmullclark`
 
 * :mod:`compas_rhino`
 
