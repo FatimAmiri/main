@@ -92,7 +92,6 @@ Mesh
       ~Mesh.indexed_edges
       ~Mesh.indexed_face_vertices
       ~Mesh.insert_vertex
-      ~Mesh.is_connected
       ~Mesh.is_edge_on_boundary
       ~Mesh.is_manifold
       ~Mesh.is_orientable

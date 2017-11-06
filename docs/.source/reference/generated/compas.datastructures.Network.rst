@@ -21,6 +21,8 @@ Network
       ~Network.clear_halfedgedict
       ~Network.clear_vertexdict
       ~Network.copy
+      ~Network.delete_edge
+      ~Network.delete_vertex
       ~Network.edge_connected_edges
       ~Network.edge_coordinates
       ~Network.edge_direction
@@ -54,7 +56,6 @@ Network
       ~Network.index_key
       ~Network.index_uv
       ~Network.indexed_edges
-      ~Network.is_connected
       ~Network.is_vertex_connected
       ~Network.is_vertex_leaf
       ~Network.is_vertex_orphan

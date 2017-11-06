@@ -11,6 +11,7 @@ compas
 .. toctree::
     :maxdepth: 1
 
+    compas.cad
     compas.com
     compas.datastructures
     compas.files
@@ -18,7 +19,8 @@ compas
     compas.hpc
     compas.interop
     compas.numerical
-    compas.utilities
+    compas.plotters
     compas.topology
-    compas.visualization
+    compas.utilities
+    compas.viewers
 

@@ -9,12 +9,12 @@ modules = [
     'compas.hpc',
     'compas.interop',
     'compas.numerical',
+    'compas.plotters',
     'compas.utilities',
     'compas.topology',
-    'compas.visualization',
+    'compas.viewers',
 
     'compas_rhino',
-    'compas_rhino.conduits',
     'compas_rhino.forms',
     'compas_rhino.geometry',
     'compas_rhino.helpers',
@@ -29,10 +29,6 @@ modules = [
     'compas_blender.utilities',
 
     'compas_maya',
-
-    'compas_grasshopper',
-    'compas_dynamo',
-
 ]
 
 

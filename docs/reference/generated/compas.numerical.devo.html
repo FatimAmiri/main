@@ -42,58 +42,38 @@
 <h1>devo</h1>
 <dl class="function">
 <dt id="compas.numerical.devo">
-<code class="descclassname">compas.numerical.</code><code class="descname">devo</code><span class="sig-paren">(</span><em>fn</em>, <em>bounds</em>, <em>population</em>, <em>iterations</em>, <em>limit=0</em>, <em>results=None</em>, <em>vectored=False</em>, <em>F=0.8</em>, <em>CR=0.9</em>, <em>name='f'</em>, <em>polish=False</em>, <em>args=()</em><span class="sig-paren">)</span><a class="reference internal" href="../../modules/compas/numerical/solvers/devo.html#devo"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Call the differential evolution solver.</p>
+<code class="descclassname">compas.numerical.</code><code class="descname">devo</code><span class="sig-paren">(</span><em>fn</em>, <em>bounds</em>, <em>population</em>, <em>generations</em>, <em>limit=0</em>, <em>results=None</em>, <em>vectored=False</em>, <em>F=0.8</em>, <em>CR=0.9</em>, <em>polish=False</em>, <em>args=()</em>, <em>callback=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../modules/compas/numerical/solvers/devo.html#devo"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Call the Differential Evolution solver.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">fn must return vectorised output for input (k, population) if vectored is True.</p>
 </div>
 <table class="docutils field-list table table-responsive table-bordered" frame="void" rules="none">
-<col class="field-name"></col>
-<col class="field-body"></col>
+<col class="field-name"/>
+<col class="field-body"/>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>fn</strong> (<em>obj</em>) – The function to evaluate and minimise.</li>
-<li><strong>bounds</strong> (<em>list</em>) – Lower and upper bounds for each DoF.</li>
+<li><strong>bounds</strong> (<em>list</em>) – Lower and upper bounds for each DoF [[lb, ub], ...].</li>
 <li><strong>population</strong> (<em>int</em>) – Number of agents in the population.</li>
-<li><strong>iterations</strong> (<em>int</em>) – Number of cross-over cycles or steps to perform.</li>
+<li><strong>generations</strong> (<em>int</em>) – Number of cross-over cycles/steps to perform.</li>
 <li><strong>limit</strong> (<em>float</em>) – Value of the objective function for which to terminate optimisation.</li>
 <li><strong>results</strong> (<em>str</em>) – Where to store results files.</li>
 <li><strong>vectored</strong> (<em>bool</em>) – Vectored function output.</li>
 <li><strong>F</strong> (<em>float</em>) – Differential evolution parameter.</li>
 <li><strong>CR</strong> (<em>float</em>) – Differential evolution cross-over ratio parameter.</li>
-<li><strong>name</strong> (<em>str</em>) – Name of the analysis function.</li>
 <li><strong>polish</strong> (<em>bool</em>) – Polish the final result with L-BFGS-B.</li>
-<li><strong>arg</strong> (<em>seq</em>) – Sequence of optional arguments to pass to fn.</li>
+<li><strong>args</strong> (<em>seq</em>) – Sequence of optional arguments to pass to fn.</li>
+<li><strong>callback</strong> (<em>obj</em>) – Callback function for each generation.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>float</em> – Optimal value of objective function.
-array: Values that give the optimum (minimised) function.</p>
+list: Values that give the optimum (minimised) function.</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Examples</p>
-<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">fn</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># Booth's function, fopt=0, uopt=(1, 3)</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">x</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">y</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">y</span> <span class="o">-</span> <span class="mi">7</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">z</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fopt</span><span class="p">,</span> <span class="n">uopt</span> <span class="o">=</span> <span class="n">de_solver</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">vectored</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">Iteration: 0 fopt: 9.29475634582</span>
-<span class="go">Iteration: 1 fopt: 0.714845258545</span>
-<span class="go">Iteration: 2 fopt: 0.714845258545</span>
-<span class="gp">...</span>
-<span class="go">Iteration: 148 fopt: 4.22441611201e-22</span>
-<span class="go">Iteration: 149 fopt: 4.22441611201e-22</span>
-<span class="go">Iteration: 150 fopt: 5.18467217924e-23</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">uopt</span><span class="p">)</span>
-<span class="go">array([ 1.,  3.])</span>
-</code></pre></div>
-
 </dd></dl>
 </div>
 <!--<nav class="compas-sideways">
@@ -131,16 +111,15 @@ array: Values that give the optimum (minimised) function.</p>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas.hpc.html">hpc</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas.interop.html">interop</a></li>
 <li class="nav-item active"><a class="nav-link reference internal" href="../compas.numerical.html">numerical</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas.utilities.html">utilities</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../compas.plotters.html">plotters</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas.topology.html">topology</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas.visualization.html">visualization</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../compas.utilities.html">utilities</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../compas.viewers.html">viewers</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_rhino.html">compas_rhino</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_blender.html">compas_blender</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_maya.html">compas_maya</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas_grasshopper.html">compas_grasshopper</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas_dynamo.html">compas_dynamo</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../workshops.html">Workshops</a></li>
@@ -165,7 +144,7 @@ array: Values that give the optimum (minimised) function.</p>
             
 
             
-                Last updated on Nov 02, 2017.
+                Last updated on Nov 06, 2017.
             
 
             
@@ -217,6 +196,21 @@ var copy_code = new Clipboard('.copy-code', {
     target: function(trigger) {
         return trigger.previousElementSibling;
     }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
 });
             </script>
 </body>

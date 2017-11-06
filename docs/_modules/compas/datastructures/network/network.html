@@ -66,7 +66,7 @@
 <span class="kn">from</span> <span class="nn">compas.datastructures.mixins</span> <span class="k">import</span> <span class="n">FromToData</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mixins</span> <span class="k">import</span> <span class="n">FromToJson</span>
 
-<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">bfs_traverse</span>
+<span class="c1"># from compas.topology import bfs_traverse</span>
 
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="s1">'Tom Van Mele'</span>
@@ -128,7 +128,7 @@
 
 <span class="sd">        import compas</span>
 <span class="sd">        from compas.datastructures import Network</span>
-<span class="sd">        from compas.visualization import NetworkPlotter</span>
+<span class="sd">        from compas.plotters import NetworkPlotter</span>
 
 <span class="sd">        network = Network.from_obj(compas.get_data('lines.obj'))</span>
 
@@ -511,7 +511,7 @@
     <span class="c1"># modifiers</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="k">def</span> <span class="nf">delete_vertex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="Network.delete_vertex"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Network.delete_vertex.html#compas.datastructures.Network.delete_vertex">[docs]</a>    <span class="k">def</span> <span class="nf">delete_vertex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_neighbours</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">nbr</span><span class="p">]</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">nbr</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
@@ -521,15 +521,15 @@
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">nbr</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
-    <span class="k">def</span> <span class="nf">delete_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="Network.delete_edge"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Network.delete_edge.html#compas.datastructures.Network.delete_edge">[docs]</a>    <span class="k">def</span> <span class="nf">delete_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span></div>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># info</span>
@@ -544,15 +544,15 @@
 <div class="viewcode-block" id="Network.number_of_halfedges"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Network.number_of_halfedges.html#compas.datastructures.Network.number_of_halfedges">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_halfedges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">halfedges</span><span class="p">()))</span></div>
 
-<div class="viewcode-block" id="Network.is_connected"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Network.is_connected.html#compas.datastructures.Network.is_connected">[docs]</a>    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Return True if for every two vertices a path exists connecting them."""</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
+    <span class="c1"># def is_connected(self):</span>
+    <span class="c1">#     """Return True if for every two vertices a path exists connecting them."""</span>
+    <span class="c1">#     if not self.vertex:</span>
+    <span class="c1">#         return False</span>
 
-        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">()</span>
-        <span class="n">nodes</span> <span class="o">=</span> <span class="n">bfs_traverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+    <span class="c1">#     root = self.get_any_vertex()</span>
+    <span class="c1">#     nodes = bfs_traverse(self.halfedge, root)</span>
 
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span></div>
+    <span class="c1">#     return len(nodes) == self.number_of_vertices()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># accessors</span>
@@ -748,7 +748,7 @@
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
 
     <span class="kn">import</span> <span class="nn">compas</span>
-    <span class="kn">from</span> <span class="nn">compas.visualization</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
+    <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
 
     <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'lines.obj'</span><span class="p">))</span>
 
@@ -803,7 +803,7 @@
             
 
             
-                Last updated on Nov 02, 2017.
+                Last updated on Nov 06, 2017.
             
 
             
@@ -855,6 +855,21 @@ var copy_code = new Clipboard('.copy-code', {
     target: function(trigger) {
         return trigger.previousElementSibling;
     }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
 });
             </script>
 </body>

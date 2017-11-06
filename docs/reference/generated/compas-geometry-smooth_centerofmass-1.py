@@ -1,7 +1,7 @@
 import compas
 from compas.datastructures import Mesh
 from compas.geometry import smooth_centerofmass
-from compas.visualization import MeshPlotter
+from compas.plotters import MeshPlotter
 
 mesh = Mesh.from_obj(compas.get('faces.obj'))
 

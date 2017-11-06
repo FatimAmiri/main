@@ -4,7 +4,7 @@ from compas.datastructures import Mesh
 from compas.datastructures import mesh_split_face
 from compas.datastructures import trimesh_swap_edge
 from compas.datastructures import trimesh_collapse_edge
-from compas.visualization import MeshPlotter
+from compas.plotters import MeshPlotter
 
 from compas.geometry import centroid_points
 

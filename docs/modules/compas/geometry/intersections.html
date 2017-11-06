@@ -341,7 +341,7 @@
     <span class="k">if</span> <span class="n">fabs</span><span class="p">(</span><span class="n">dot</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">epsilon</span><span class="p">:</span>
         <span class="n">v2</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">pt1</span><span class="p">,</span> <span class="n">p_cent</span><span class="p">)</span>
         <span class="n">fac</span> <span class="o">=</span> <span class="o">-</span> <span class="n">dot_vectors</span><span class="p">(</span><span class="n">p_norm</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="o">/</span> <span class="n">dot</span>
-        <span class="k">if</span> <span class="n">fac</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mf">0.</span> <span class="ow">and</span> <span class="n">fac</span> <span class="o">&lt;=</span> <span class="mf">1.</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fac</span> <span class="o">&gt;=</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">fac</span> <span class="o">&lt;=</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="n">vec</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">fac</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">pt1</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -550,8 +550,11 @@
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="k">pass</span>
 </code></pre></div>
-<nav class="compas-sideways">
-</nav>
+<!--<nav class="compas-sideways">
+                            
+
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -589,7 +592,7 @@
             
 
             
-                Last updated on Oct 31, 2017.
+                Last updated on Nov 06, 2017.
             
 
             
@@ -598,11 +601,11 @@
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -611,12 +614,52 @@ var DOCUMENTATION_OPTIONS = {
 <script crossorigin="anonymous" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 <script src="/static/underscore.js"></script>
 <script src="/static/doctools.js"></script>
-<script src="https://compas-dev.github.io/compas/static/searchtools_.js"></script>
+<script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
+
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-2';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

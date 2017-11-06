@@ -1,8 +1,8 @@
 import compas
 from compas.datastructures import FaceNetwork
-from compas.visualization import FaceNetworkPlotter
-from compas.datastructures import network_find_faces
 from compas.datastructures import network_split_edge
+from compas.plotters import FaceNetworkPlotter
+from compas.topology import network_find_faces
 
 network = FaceNetwork.from_obj(compas.get_data('lines.obj'))
 
