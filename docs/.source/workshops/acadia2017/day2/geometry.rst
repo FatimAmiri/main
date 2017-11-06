@@ -638,7 +638,7 @@ Rhino file for the following examples:
     from compas.geometry import add_vectors
     from compas.geometry import scale_vector
 
-    from compas.datastructures.mesh import Mesh
+    from compas.datastructures import Mesh
     from compas.geometry import discrete_coons_patch
 
     from compas_rhino import mesh_draw_faces
@@ -691,7 +691,7 @@ Create a 3D coons patch with close-to planar fins.
     from compas.geometry import add_vectors
     from compas.geometry import scale_vector
 
-    from compas.datastructures.mesh import Mesh
+    from compas.datastructures import Mesh
     from compas.geometry import discrete_coons_patch
 
     from compas_rhino import mesh_draw_faces
@@ -834,10 +834,10 @@ Rhino file for the following examples:
     from compas.geometry import add_vectors
     from compas.geometry import scale_vector
 
-    from compas.datastructures.mesh import Mesh
-    from compas.datastructures.mesh import mesh_subdivide_catmullclark
+    from compas.datastructures import Mesh
+    from compas.datastructures import Network
 
-    from compas.datastructures.network import Network
+    from compas.topology import mesh_subdivide_catmullclark
 
     from compas_rhino import mesh_draw_faces
 
@@ -970,7 +970,7 @@ given configuration.
 
     from compas.geometry import network_smooth_centroid
 
-    from compas.datastructures.network import Network
+    from compas.datastructures import Network
     from compas_rhino import network_draw_edges
 
     import rhinoscriptsyntax as rs
@@ -999,7 +999,7 @@ A callback function can be used to show the iterations:
 
     from compas.geometry import network_smooth_centroid
 
-    from compas.datastructures.network import Network
+    from compas.datastructures import Network
     from compas_rhino import network_draw_edges
 
     import rhinoscriptsyntax as rs

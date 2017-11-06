@@ -2,7 +2,7 @@ import random
 
 import compas
 from compas.datastructures import Network
-from compas.visualization import NetworkPlotter
+from compas.plotters import NetworkPlotter
 from compas.geometry import network_relax
 from compas.utilities import i_to_rgb
 

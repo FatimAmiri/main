@@ -21,7 +21,7 @@ For this tutorial, we will focus on the mesh data structure.
 
     import compas
     from compas.datastructures import Mesh
-    from compas.visualization import MeshPlotter
+    from compas.plotters import MeshPlotter
 
     mesh = Mesh.from_obj(compas.get('faces.obj'))
 
@@ -170,7 +170,7 @@ Topology
 
     import compas
     from compas.datastructures import Mesh
-    from compas.visualization import MeshPlotter
+    from compas.plotters import MeshPlotter
 
     mesh = Mesh.from_obj(compas.get('faces.obj'))
 
@@ -223,7 +223,7 @@ Geometry
 
     import compas
     from compas.datastructures import Mesh
-    from compas.visualization import MeshPlotter
+    from compas.plotters import MeshPlotter
 
     mesh = Mesh.from_obj(compas.get('faces.obj'))
 
@@ -246,9 +246,9 @@ Algorithms
     # mesh remeshing
     
     from compas.datastructures import Mesh
-    from compas.visualization import MeshPlotter
+    from compas.plotters import MeshPlotter
 
-    from compas.datastructures import trimesh_remesh
+    from compas.topology import trimesh_remesh
 
 
     # make a square
@@ -310,11 +310,11 @@ Algorithms
     # delaunay and voronoi
 
     from compas.datastructures import Mesh
-    from compas.visualization import MeshPlotter
+    from compas.plotters import MeshPlotter
 
-    from compas.datastructures import trimesh_remesh
-    from compas.datastructures import delaunay_from_points
-    from compas.datastructures import voronoi_from_delaunay
+    from compas.topology import trimesh_remesh
+    from compas.topology import delaunay_from_points
+    from compas.topology import voronoi_from_delaunay
 
     from compas.geometry import pointcloud_xy
 
@@ -372,7 +372,7 @@ Algorithms
     import compas
 
     from compas.datastructures import Network
-    from compas.visualization import NetworkPlotter
+    from compas.plotters import NetworkPlotter
 
     from compas.topology import dijkstra_path
 
@@ -492,7 +492,8 @@ Numerical
     import compas
 
     from compas.datastructures import Mesh
-    from compas.visualization import MeshPlotter
+    from compas.plotters import MeshPlotter
+    from compas.numerical import fd
     from compas.utilities import i_to_rgb
 
 
@@ -583,8 +584,8 @@ CAD integration
 .. code-block:: python
 
     from compas.datastructures import Mesh
-    from compas.datastructures import mesh_subdivide_doosabin
-    from compas.visualization.viewers import SubdMeshViewer
+    from compas.topology import mesh_subdivide_doosabin
+    from compas.viewers import SubdMeshViewer
 
     mesh = Mesh.from_polyhedron(6)
 
@@ -603,7 +604,7 @@ CAD integration
 .. code-block:: python
 
     from compas.datastructures import Mesh
-    from compas.datastructures import mesh_subdivide_catmullclark
+    from compas.topology import mesh_subdivide_catmullclark
 
     import compas_rhino
 
@@ -626,7 +627,7 @@ CAD integration
     import compas_rhino
 
     from compas.datastructures import Mesh
-    from compas.datastructures import mesh_subdivide
+    from compas.topology import mesh_subdivide
 
 
     # make a control mesh
