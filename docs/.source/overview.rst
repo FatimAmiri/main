@@ -25,16 +25,16 @@ Core functionality
   * :mod:`compas.hpc`
   * :mod:`compas.interop`
   * :mod:`compas.numerical`
+  * :mod:`compas.plotters`
+  * :mod:`compas.topology`
   * :mod:`compas.utilities`
-  * :mod:`compas.visualization`
+  * :mod:`compas.viewers`
 
 
 CAD integration
 ===============
 
 * :mod:`compas_blender`
-* :mod:`compas_dynamo`
-* :mod:`compas_grasshopper`
 * :mod:`compas_maya`
 * :mod:`compas_rhino`
 

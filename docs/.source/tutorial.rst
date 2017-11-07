@@ -10,8 +10,9 @@ Tutorial
 
     tutorial/introduction
     tutorial/datastructures
-    tutorial/geometry
-    tutorial/numerical
     tutorial/cad
-    tutorial/com
+    tutorial/geomaps
+    tutorial/callbacks
+    tutorial/cpython
     tutorial/interop
+    tutorial/tools
