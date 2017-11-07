@@ -161,6 +161,7 @@ Mesh
 
    .. autosummary::
    
+      ~Mesh.adjacency
       ~Mesh.data
       ~Mesh.name
       ~Mesh.x

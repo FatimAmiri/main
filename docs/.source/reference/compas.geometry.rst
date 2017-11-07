@@ -24,38 +24,7 @@ geometry
     - **frame** -- A list of three orthonormal vectors.
 
 
-Algorithms
-==========
-
-.. autosummary::
-    :toctree: generated/
-
-    flatness
-    planarize_faces
-    smooth_centroid
-    smooth_centerofmass
-    smooth_area
-    smooth_resultant
-    discrete_coons_patch
-
-.. autosummary::
-    :toctree: generated/
-
-    mesh_flatness
-    mesh_planarize_faces
-    mesh_planarize_faces_shapeop
-    mesh_circularize_faces_shapeop
-    mesh_smooth_centroid
-
-.. autosummary::
-    :toctree: generated/
-
-    network_smooth_centroid
-    network_smooth_resultant
-    network_relax
-
-
-Objects
+Classes
 =======
 
 This package provides an object-oriented interface to the above functionality.
@@ -77,11 +46,30 @@ This package provides an object-oriented interface to the above functionality.
     KDTree
 
 
+Algorithms
+==========
+
+.. autosummary::
+    :toctree: generated/
+
+    flatness
+    mesh_flatness
+    planarize_faces
+    mesh_planarize_faces
+    mesh_planarize_faces_shapeop
+    mesh_circularize_faces_shapeop
+    smooth_centroid
+    mesh_smooth_centroid
+    network_smooth_centroid
+    smooth_centerofmass
+    smooth_area
+    smooth_resultant
+    network_smooth_resultant
+    discrete_coons_patch
+
+
 Core
 ====
-
-Basics
-------
 
 .. autosummary::
     :toctree: generated/
@@ -141,10 +129,6 @@ Distance
     closest_point_on_polyline_xy
     closest_point_on_segment
     closest_point_on_segment_xy
-
-.. autosummary::
-    :toctree: generated/
-
     distance_line_line
     distance_point_line
     distance_point_line_xy
@@ -175,10 +159,6 @@ Angles
     angle_smallest_vectors_xy
     angle_smallest_vectors_degrees
     angle_smallest_vectors_degrees_xy
-
-.. autosummary::
-    :toctree: generated/
-
     angles_points
     angles_points_xy
     angles_points_degrees
@@ -210,6 +190,7 @@ Constructors
 .. autosummary::
     :toctree: generated/
 
+    bestfit_plane_from_points
     circle_from_points
     circle_from_points_xy
     plane_from_points
@@ -228,14 +209,6 @@ Orientation
     normal_polygon
     normal_triangle
     normal_triangle_xy
-
-Bestfit
--------
-
-.. autosummary::
-    :toctree: generated/
-
-    bestfit_plane_from_points
 
 
 Queries
@@ -340,34 +313,18 @@ Transformations
     mirror_points_point
     mirror_points_point_xy
     mirror_vector_vector
-
-.. autosummary::
-    :toctree: generated/
-
     offset_line
     offset_polyline
     offset_polygon
     orient_points
-
-.. autosummary::
-    :toctree: generated/
-
     project_point_line
     project_point_line_xy
     project_point_plane
     project_points_line
     project_points_line_xy
     project_points_plane
-
-.. autosummary::
-    :toctree: generated/
-
     reflect_line_plane
     reflect_line_triangle
-
-.. autosummary::
-    :toctree: generated/
-
     rotate_points
     rotate_points_xy
     rotate_points_degrees
