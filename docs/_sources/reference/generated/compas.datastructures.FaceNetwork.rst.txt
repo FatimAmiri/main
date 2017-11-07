@@ -111,6 +111,7 @@ FaceNetwork
       ~FaceNetwork.set_vertex_attributes
       ~FaceNetwork.set_vertices_attribute
       ~FaceNetwork.set_vertices_attributes
+      ~FaceNetwork.split_edge
       ~FaceNetwork.to_data
       ~FaceNetwork.to_json
       ~FaceNetwork.to_lines

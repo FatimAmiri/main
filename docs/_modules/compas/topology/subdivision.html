@@ -40,8 +40,6 @@
 
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">centroid_points</span>
 
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">mesh_split_edge</span>
-
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="s1">'Tom Van Mele'</span>
 <span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">'Copyright 2014, Block Research Group - ETH Zurich'</span>
@@ -130,7 +128,7 @@
         <span class="n">subd</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">subd</span><span class="o">.</span><span class="n">halfedges</span><span class="p">()):</span>
-            <span class="n">mesh_split_edge</span><span class="p">(</span><span class="n">subd</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">subd</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
 
@@ -172,7 +170,7 @@
 
         <span class="c1"># split every edge</span>
         <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">subd</span><span class="o">.</span><span class="n">halfedges</span><span class="p">()):</span>
-            <span class="n">mesh_split_edge</span><span class="p">(</span><span class="n">subd</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">subd</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># create 4 new faces for every old face</span>
         <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
@@ -320,7 +318,7 @@
 
         <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">subd</span><span class="o">.</span><span class="n">halfedges</span><span class="p">()):</span>
 
-            <span class="n">w</span> <span class="o">=</span> <span class="n">mesh_split_edge</span><span class="p">(</span><span class="n">subd</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">subd</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="c1"># document why this is necessary</span>
             <span class="c1"># everything else in this loop is just quad subdivision</span>
@@ -540,7 +538,7 @@
 
         <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">subd</span><span class="o">.</span><span class="n">edges</span><span class="p">()):</span>
 
-            <span class="n">w</span> <span class="o">=</span> <span class="n">mesh_split_edge</span><span class="p">(</span><span class="n">subd</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">subd</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="n">edgepoints</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="n">w</span>
             <span class="n">edgepoints</span><span class="p">[(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">)]</span> <span class="o">=</span> <span class="n">w</span>

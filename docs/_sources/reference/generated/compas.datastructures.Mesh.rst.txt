@@ -22,6 +22,8 @@ Mesh
       ~Mesh.clear_facedict
       ~Mesh.clear_halfedgedict
       ~Mesh.clear_vertexdict
+      ~Mesh.collapse_edge
+      ~Mesh.collapse_edge_tri
       ~Mesh.copy
       ~Mesh.cull_edges
       ~Mesh.cull_vertices
@@ -119,11 +121,16 @@ Mesh
       ~Mesh.set_vertex_attributes
       ~Mesh.set_vertices_attribute
       ~Mesh.set_vertices_attributes
+      ~Mesh.split_edge
+      ~Mesh.split_edge_tri
+      ~Mesh.split_face
       ~Mesh.summary
+      ~Mesh.swap_edge_tri
       ~Mesh.to_data
       ~Mesh.to_json
       ~Mesh.to_obj
       ~Mesh.to_vertices_and_faces
+      ~Mesh.unweld_vertices
       ~Mesh.update_default_edge_attributes
       ~Mesh.update_default_face_attributes
       ~Mesh.update_default_vertex_attributes

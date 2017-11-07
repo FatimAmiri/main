@@ -73,6 +73,7 @@ Network
       ~Network.set_vertex_attributes
       ~Network.set_vertices_attribute
       ~Network.set_vertices_attributes
+      ~Network.split_edge
       ~Network.to_data
       ~Network.to_json
       ~Network.to_lines
