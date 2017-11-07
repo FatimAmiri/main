@@ -49,7 +49,7 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="network_split_edge"><a class="viewcode-back" href="../../../../../reference/generated/compas.datastructures.network_split_edge.html#compas.datastructures.network_split_edge">[docs]</a><span class="k">def</span> <span class="nf">network_split_edge</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">network_split_edge</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">"""Split and edge by inserting a vertex along its length.</span>
 
 <span class="sd">    Parameters:</span>
@@ -74,7 +74,6 @@
 
 <span class="sd">            import compas</span>
 <span class="sd">            from compas.datastructures import FaceNetwork</span>
-<span class="sd">            from compas.datastructures import network_split_edge</span>
 <span class="sd">            from compas.plotters import FaceNetworkPlotter</span>
 <span class="sd">            from compas.topology import network_find_faces</span>
 
@@ -82,10 +81,10 @@
 
 <span class="sd">            network_find_faces(network, breakpoints=network.leaves())</span>
 
-<span class="sd">            a = network_split_edge(network, 0, 22)</span>
-<span class="sd">            b = network_split_edge(network, 2, 30)</span>
-<span class="sd">            c = network_split_edge(network, 17, 21)</span>
-<span class="sd">            d = network_split_edge(network, 28, 16)</span>
+<span class="sd">            a = network.split_edge(0, 22)</span>
+<span class="sd">            b = network.split_edge(2, 30)</span>
+<span class="sd">            c = network.split_edge(17, 21)</span>
+<span class="sd">            d = network.split_edge(28, 16)</span>
 
 <span class="sd">            lines = []</span>
 <span class="sd">            for u, v in network.edges():</span>
@@ -176,7 +175,7 @@
         <span class="n">network</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">vertices</span>
 
     <span class="c1"># return the key of the split vertex</span>
-    <span class="k">return</span> <span class="n">w</span></div>
+    <span class="k">return</span> <span class="n">w</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -190,16 +189,15 @@
     <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">FaceNetworkPlotter</span>
 
     <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">network_find_faces</span>
-    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">network_split_edge</span>
 
     <span class="n">network</span> <span class="o">=</span> <span class="n">FaceNetwork</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">'lines.obj'</span><span class="p">))</span>
 
     <span class="n">network_find_faces</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">breakpoints</span><span class="o">=</span><span class="n">network</span><span class="o">.</span><span class="n">leaves</span><span class="p">())</span>
 
-    <span class="n">a</span> <span class="o">=</span> <span class="n">network_split_edge</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">network_split_edge</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="n">network_split_edge</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">21</span><span class="p">)</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">network_split_edge</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">21</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
 
     <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>

@@ -7,13 +7,16 @@ from compas.geometry import pointcloud_xy
 
 from compas.plotters import MeshPlotter
 
-points   = pointcloud_xy(10, (0, 10))
-delaunay = delaunay_from_points(Mesh, points)
+points = pointcloud_xy(10, (0, 10))
+faces = delaunay_from_points(points)
+delaunay = Mesh.from_vertices_and_faces(points, faces)
 
 trimesh_remesh(delaunay, 1.0, allow_boundary_split=True)
 
-points   = [delaunay.vertex_coordinates(key) for key in delaunay.vertices()]
-delaunay = delaunay_from_points(Mesh, points)
+points = [delaunay.vertex_coordinates(key) for key in delaunay.vertices()]
+faces = delaunay_from_points(points)
+delaunay = Mesh.from_vertices_and_faces(points, faces)
+
 voronoi  = voronoi_from_delaunay(delaunay)
 
 lines = []

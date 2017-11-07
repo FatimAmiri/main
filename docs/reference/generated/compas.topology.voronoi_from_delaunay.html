@@ -67,13 +67,16 @@ are on the boundary.</p>
 
 <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
 
-<span class="n">points</span>   <span class="o">=</span> <span class="n">pointcloud_xy</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">delaunay</span> <span class="o">=</span> <span class="n">delaunay_from_points</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">pointcloud_xy</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">faces</span> <span class="o">=</span> <span class="n">delaunay_from_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+<span class="n">delaunay</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
 
 <span class="n">trimesh_remesh</span><span class="p">(</span><span class="n">delaunay</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">allow_boundary_split</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-<span class="n">points</span>   <span class="o">=</span> <span class="p">[</span><span class="n">delaunay</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">delaunay</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
-<span class="n">delaunay</span> <span class="o">=</span> <span class="n">delaunay_from_points</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+<span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">delaunay</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">delaunay</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
+<span class="n">faces</span> <span class="o">=</span> <span class="n">delaunay_from_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+<span class="n">delaunay</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+
 <span class="n">voronoi</span>  <span class="o">=</span> <span class="n">voronoi_from_delaunay</span><span class="p">(</span><span class="n">delaunay</span><span class="p">)</span>
 
 <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
@@ -97,6 +100,9 @@ are on the boundary.</p>
 <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 
+<figure class="figure">
+<img alt="../../images/compas-topology-voronoi_from_delaunay-1.png" class="figure-img img-fluid" src="../../images/compas-topology-voronoi_from_delaunay-1.png"/>
+</figure>
 </dd></dl>
 </div>
 <!--<nav class="compas-sideways">

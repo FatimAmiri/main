@@ -37,6 +37,7 @@
 <h1>Source code for compas.datastructures.mesh.mesh</h1><div class="highlight"><pre><code class="language-python border rounded">
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
+<span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">MethodType</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">ast</span> <span class="k">import</span> <span class="n">literal_eval</span>
 
@@ -61,7 +62,6 @@
 
 <span class="c1"># from compas.topology import bfs_traverse</span>
 
-
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Datastructure</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures.mixins</span> <span class="k">import</span> <span class="n">VertexAttributesManagement</span>
@@ -83,6 +83,13 @@
 <span class="kn">from</span> <span class="nn">compas.datastructures.mixins</span> <span class="k">import</span> <span class="n">EdgeMappings</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mixins</span> <span class="k">import</span> <span class="n">FaceMappings</span>
 
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_collapse_edge</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">trimesh_collapse_edge</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_split_face</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_split_edge</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">trimesh_split_edge</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">trimesh_swap_edge</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_unweld_vertices</span>
 
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="s1">'Tom Van Mele'</span>
@@ -123,7 +130,9 @@
            <span class="n">VertexAttributesManagement</span><span class="p">,</span>
            <span class="n">Datastructure</span><span class="p">):</span>
     <span class="sd">"""Definition of a mesh.</span>
-
+<span class="sd">    </span>
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
 <span class="sd">    The datastructure of the mesh is implemented as a half-edge.</span>
 
 <span class="sd">    Attributes</span>
@@ -2547,6 +2556,25 @@
 
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_edge_on_boundary</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span></div></div>
+
+
+<span class="c1"># Mesh.collapse_edge = MethodType(mesh_collapse_edge, None, Mesh)</span>
+<span class="c1"># Mesh.collapse_edge_tri = MethodType(trimesh_collapse_edge, None, Mesh)</span>
+<span class="c1"># Mesh.split_face = MethodType(mesh_split_face, None, Mesh)</span>
+<span class="c1"># Mesh.split_edge = MethodType(mesh_split_edge, None, Mesh)</span>
+<span class="c1"># Mesh.split_edge_tri = MethodType(trimesh_split_edge, None, Mesh)</span>
+<span class="c1"># Mesh.swap_edge_tri = MethodType(trimesh_swap_edge, None, Mesh)</span>
+<span class="c1"># Mesh.unweld_vertices = MethodType(mesh_unweld_vertices, None, Mesh)</span>
+
+<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"collapse_edge"</span><span class="p">,</span> <span class="n">mesh_collapse_edge</span><span class="p">)</span>
+<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"split_face"</span><span class="p">,</span> <span class="n">mesh_split_face</span><span class="p">)</span>
+<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"split_edge"</span><span class="p">,</span> <span class="n">mesh_split_edge</span><span class="p">)</span>
+
+<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"unweld_vertices"</span><span class="p">,</span> <span class="n">mesh_unweld_vertices</span><span class="p">)</span>
+
+<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"collapse_edge_tri"</span><span class="p">,</span> <span class="n">trimesh_collapse_edge</span><span class="p">)</span>
+<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"split_edge_tri"</span><span class="p">,</span> <span class="n">trimesh_split_edge</span><span class="p">)</span>
+<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"swap_edge_tri"</span><span class="p">,</span> <span class="n">trimesh_swap_edge</span><span class="p">)</span>
 
 
 <span class="c1"># ==============================================================================</span>
