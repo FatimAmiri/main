@@ -3,6 +3,9 @@
 import compas_rhino
 
 from compas.datastructures import Mesh
+from compas.topology import delaunay_from_points
+
+from compas_rhino.helpers import MeshArtist
 
 
 __author__    = ['Tom Van Mele', 'Matthias Rippmann']
@@ -20,9 +23,11 @@ points = compas_rhino.get_point_coordinates(guids)
 
 # make a mesh from the delaunay triangulation of the points
 
-mesh = Mesh.from_points(points)
+faces = delaunay_from_points(points)
+mesh = Mesh.from_vertices_and_faces(points, faces)
 
 
 # draw in Rhino
 
-compas_rhino.mesh_draw(mesh)
+artist = MeshArtist(mesh)
+artist.draw_faces(join_faces=True)

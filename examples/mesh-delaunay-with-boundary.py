@@ -1,8 +1,11 @@
 """Delaunay triangulation with boundary"""
 
-from compas.datastructures import Mesh
-
 import compas_rhino
+
+from compas.datastructures import Mesh
+from compas.topology import delaunay_from_points
+
+from compas_rhino.helpers import MeshArtist
 
 
 __author__    = ['Tom Van Mele', 'Matthias Rippmann']
@@ -29,9 +32,11 @@ holes = [compas_rhino.get_polyline_coordinates(guid) for guid in guids]
 # within the boundary
 # and around the holes
 
-mesh = Mesh.from_points(points, boundary=boundary, holes=holes)
+faces = delaunay_from_points(points, boundary=boundary, holes=holes)
+mesh = Mesh.from_vertices_and_faces(points, faces)
 
 
 # draw the result
 
-compas_rhino.mesh_draw(mesh)
+artist = MeshArtist(mesh)
+artist.draw_faces(join_faces=True)

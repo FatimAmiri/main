@@ -37,7 +37,7 @@
 <h1>Source code for compas.datastructures.mesh.mesh</h1><div class="highlight"><pre><code class="language-python border rounded">
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">MethodType</span>
+<span class="c1"># from types import MethodType</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">ast</span> <span class="k">import</span> <span class="n">literal_eval</span>
 
@@ -59,8 +59,6 @@
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">flatness</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Polyhedron</span>
-
-<span class="c1"># from compas.topology import bfs_traverse</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Datastructure</span>
 
@@ -204,6 +202,10 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># special properties</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1208,28 +1210,6 @@
                 <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">return</span> <span class="kc">True</span></div>
-
-    <span class="c1"># def is_connected(self):</span>
-    <span class="c1">#     """Verify that the mesh is connected.</span>
-
-    <span class="c1">#     A mesh is connected if the following conditions are fulfilled:</span>
-
-    <span class="c1">#     * For every two vertices a path exists connecting them.</span>
-
-    <span class="c1">#     Returns</span>
-    <span class="c1">#     -------</span>
-    <span class="c1">#     bool</span>
-    <span class="c1">#         True, if the mesh is connected.</span>
-    <span class="c1">#         False, otherwise.</span>
-
-    <span class="c1">#     """</span>
-    <span class="c1">#     if not self.vertex:</span>
-    <span class="c1">#         return False</span>
-
-    <span class="c1">#     root = self.get_any_vertex()</span>
-    <span class="c1">#     nodes = bfs_traverse(self.halfedge, root)</span>
-
-    <span class="c1">#     return len(nodes) == self.number_of_vertices()</span>
 
 <div class="viewcode-block" id="Mesh.is_manifold"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Mesh.is_manifold.html#compas.datastructures.Mesh.is_manifold">[docs]</a>    <span class="k">def</span> <span class="nf">is_manifold</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">"""Verify that the mesh is manifold.</span>
@@ -2632,7 +2612,7 @@
             
 
             
-                Last updated on Nov 07, 2017.
+                Last updated on Nov 08, 2017.
             
 
             
