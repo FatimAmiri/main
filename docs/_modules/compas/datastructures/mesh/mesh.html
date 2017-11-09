@@ -55,7 +55,7 @@
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">subtract_vectors</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">normal_polygon</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">area_polygon</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">bestfit_plane_from_points</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">bestfit_plane</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">flatness</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Polyhedron</span>
@@ -83,10 +83,11 @@
 
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_collapse_edge</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">trimesh_collapse_edge</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_split_face</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_split_edge</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">trimesh_split_edge</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">trimesh_swap_edge</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_split_face</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_split_edge</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_unweld_vertices</span>
 
 
@@ -1595,6 +1596,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ordered</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">temp</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">temp</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">temp</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">temp</span>
 
@@ -2547,22 +2551,21 @@
 <span class="c1"># Mesh.unweld_vertices = MethodType(mesh_unweld_vertices, None, Mesh)</span>
 
 <span class="n">Mesh</span><span class="o">.</span><span class="n">collapse_edge</span> <span class="o">=</span> <span class="n">mesh_collapse_edge</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+<span class="n">Mesh</span><span class="o">.</span><span class="n">split_face</span> <span class="o">=</span> <span class="n">mesh_split_face</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+<span class="n">Mesh</span><span class="o">.</span><span class="n">split_edge</span> <span class="o">=</span> <span class="n">mesh_split_edge</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+<span class="n">Mesh</span><span class="o">.</span><span class="n">unweld_vertices</span> <span class="o">=</span> <span class="n">mesh_unweld_vertices</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+
 <span class="n">Mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span> <span class="o">=</span> <span class="n">trimesh_collapse_edge</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
-<span class="c1"># Mesh.split_face = MethodType(mesh_split_face, None, Mesh)</span>
-<span class="c1"># Mesh.split_edge = MethodType(mesh_split_edge, None, Mesh)</span>
-<span class="c1"># Mesh.split_edge_tri = MethodType(trimesh_split_edge, None, Mesh)</span>
-<span class="c1"># Mesh.swap_edge_tri = MethodType(trimesh_swap_edge, None, Mesh)</span>
-<span class="c1"># Mesh.unweld_vertices = MethodType(mesh_unweld_vertices, None, Mesh)</span>
+<span class="n">Mesh</span><span class="o">.</span><span class="n">split_edge_tri</span> <span class="o">=</span> <span class="n">trimesh_split_edge</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+<span class="n">Mesh</span><span class="o">.</span><span class="n">swap_edge_tri</span> <span class="o">=</span> <span class="n">trimesh_swap_edge</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
 
 <span class="c1"># setattr(Mesh, "collapse_edge", mesh_collapse_edge)</span>
-<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"split_face"</span><span class="p">,</span> <span class="n">mesh_split_face</span><span class="p">)</span>
-<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"split_edge"</span><span class="p">,</span> <span class="n">mesh_split_edge</span><span class="p">)</span>
-
-<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"unweld_vertices"</span><span class="p">,</span> <span class="n">mesh_unweld_vertices</span><span class="p">)</span>
-
+<span class="c1"># setattr(Mesh, "split_face", mesh_split_face)</span>
+<span class="c1"># setattr(Mesh, "split_edge", mesh_split_edge)</span>
+<span class="c1"># setattr(Mesh, "unweld_vertices", mesh_unweld_vertices)</span>
 <span class="c1"># setattr(Mesh, "collapse_edge_tri", trimesh_collapse_edge)</span>
-<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"split_edge_tri"</span><span class="p">,</span> <span class="n">trimesh_split_edge</span><span class="p">)</span>
-<span class="nb">setattr</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="s2">"swap_edge_tri"</span><span class="p">,</span> <span class="n">trimesh_swap_edge</span><span class="p">)</span>
+<span class="c1"># setattr(Mesh, "split_edge_tri", trimesh_split_edge)</span>
+<span class="c1"># setattr(Mesh, "swap_edge_tri", trimesh_swap_edge)</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -2576,9 +2579,6 @@
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">'faces.obj'</span><span class="p">))</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">Mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span><span class="p">)</span>
 </code></pre></div>
 <!--<nav class="compas-sideways">
                             
@@ -2622,7 +2622,7 @@
             
 
             
-                Last updated on Nov 08, 2017.
+                Last updated on Nov 09, 2017.
             
 
             

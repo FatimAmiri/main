@@ -43,11 +43,64 @@ This package provides an object-oriented interface to the above functionality.
     Polyhedron
     Spline
     Surface
-    KDTree
 
 
 Algorithms
 ==========
+
+**bounding box**
+
+.. autosummary::
+    :toctree: generated/
+
+    aabb
+    aabb_xy
+    obb_numpy
+    obb_xy_numpy
+
+**fitting**
+
+.. autosummary::
+    :toctree: generated/
+
+    bestfit_plane
+    bestfit_plane_numpy
+    bestfit_circle_numpy
+
+**convex hull**
+
+.. autosummary::
+    :toctree: generated/
+
+    convex_hull
+    convex_hull_xy
+    convex_hull_numpy
+    convex_hull_xy_numpy
+
+**interpolation**
+
+.. autosummary::
+    :toctree: generated/
+
+    discrete_coons_patch
+
+**isolines**
+
+.. autosummary::
+    :toctree: generated/
+
+    scalarfield_contours
+    mesh_contours
+    mesh_isolines
+
+**parallelisation**
+
+.. autosummary::
+    :toctree: generated/
+
+    network_parallelise_edges
+
+**planarisation**
 
 .. autosummary::
     :toctree: generated/
@@ -58,6 +111,19 @@ Algorithms
     mesh_planarize_faces
     mesh_planarize_faces_shapeop
     mesh_circularize_faces_shapeop
+
+**purging**
+
+.. autosummary::
+    :toctree: generated/
+
+    mesh_cull_duplicate_vertices
+
+**smoothing**
+
+.. autosummary::
+    :toctree: generated/
+
     smooth_centroid
     mesh_smooth_centroid
     network_smooth_centroid
@@ -65,11 +131,10 @@ Algorithms
     smooth_area
     smooth_resultant
     network_smooth_resultant
-    discrete_coons_patch
 
 
-Core
-====
+Functions
+=========
 
 .. autosummary::
     :toctree: generated/
@@ -78,12 +143,10 @@ Core
     add_vectors_xy
     cross_vectors
     cross_vectors_xy
-    dehomogenise_vectors
     divide_vectors
     divide_vectors_xy
     dot_vectors
     dot_vectors_xy
-    homogenise_vectors
     length_vector
     length_vector_xy
     length_vector_sqrd
@@ -98,7 +161,6 @@ Core
     normalize_vector_xy
     normalize_vectors
     normalize_vectors_xy
-    orthonormalise_vectors
     power_vector
     power_vectors
     scale_vector
@@ -113,6 +175,18 @@ Core
     transpose_matrix
     vector_component
     vector_component_xy
+
+.. autosummary::
+    :toctree: generated/
+
+    vector_from_points
+    vector_from_points_xy
+    plane_from_points
+    circle_from_points
+    circle_from_points_xy
+    pointcloud
+    pointcloud_xy
+
 
 Distance
 --------
@@ -146,7 +220,7 @@ Angles
 .. note::
 
     All angle functions return a result in radians.
-    For a result in degrees, use the *degrees* variation.
+    For a result in degrees use the *degrees* variation.
 
 .. autosummary::
     :toctree: generated/
@@ -168,6 +242,7 @@ Angles
     angles_vectors_degrees
     angles_vectors_degrees_xy
 
+
 Average
 -------
 
@@ -184,21 +259,6 @@ Average
     midpoint_point_point
     midpoint_point_point_xy
 
-Constructors
-------------
-
-.. autosummary::
-    :toctree: generated/
-
-    bestfit_plane_from_points
-    circle_from_points
-    circle_from_points_xy
-    plane_from_points
-    pointcloud
-    pointcloud_xy
-    vector_from_points
-    vector_from_points_xy
-
 
 Orientation
 -----------
@@ -213,20 +273,6 @@ Orientation
 
 Queries
 -------
-
-.. autosummary::
-    :toctree: generated/
-
-    is_circle
-    is_frame
-    is_line
-    is_plane
-    is_polygon
-    is_polyhedron
-    is_polyline
-    is_point
-    is_segment
-    is_vector
 
 .. autosummary::
     :toctree: generated/
@@ -251,6 +297,7 @@ Queries
     is_point_on_line
     is_point_on_line_xy
     is_point_on_plane
+    is_point_infront_plane
     is_point_in_polygon_xy
     is_point_on_polyline
     is_point_on_segment
@@ -271,11 +318,8 @@ Intersections
     intersection_line_line_xy
     intersection_line_plane
     intersection_line_triangle
-    intersection_lines
-    intersection_lines_xy
     intersection_plane_plane
     intersection_plane_plane_plane
-    intersection_planes
     intersection_segment_segment
     intersection_segment_segment_xy
     intersection_segment_plane
@@ -291,13 +335,37 @@ Size
     area_polygon_xy
     area_triangle
     area_triangle_xy
-    bounding_box
-    bounding_box_xy
     volume_polyhedron
 
 
 Transformations
 ---------------
+
+.. autosummary::
+    :toctree: generated/
+
+    transform
+    transform_numpy
+
+.. autosummary::
+    :toctree: generated/
+
+    homogenize
+    dehomogenize
+    homogenize_numpy
+    dehomogenize_numpy
+    local_axes
+    local_coords_numpy
+    global_coords_numpy
+
+.. autosummary::
+    :toctree: generated/
+
+    projection_matrix
+    rotation_matrix
+    scale_matrix
+    shear_matrix
+    translation_matrix
 
 .. autosummary::
     :toctree: generated/
@@ -333,22 +401,4 @@ Transformations
     translate_lines_xy
     translate_points
     translate_points_xy
-
-
-XForms
-------
-
-.. autosummary::
-    :toctree: generated/
-
-    transform
-
-.. autosummary::
-    :toctree: generated/
-
-    projection_matrix
-    rotation_matrix
-    scale_matrix
-    shear_matrix
-    translation_matrix
 

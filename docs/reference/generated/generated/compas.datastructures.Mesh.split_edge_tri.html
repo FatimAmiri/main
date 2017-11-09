@@ -43,14 +43,13 @@
 <h1>Mesh.split_edge_tri</h1>
 <dl class="method">
 <dt id="compas.datastructures.Mesh.split_edge_tri">
-<code class="descclassname">Mesh.</code><code class="descname">split_edge_tri</code><span class="sig-paren">(</span><em>mesh</em>, <em>u</em>, <em>v</em>, <em>t=0.5</em>, <em>allow_boundary=False</em><span class="sig-paren">)</span></dt>
+<code class="descclassname">Mesh.</code><code class="descname">split_edge_tri</code><span class="sig-paren">(</span><em>u</em>, <em>v</em>, <em>t=0.5</em>, <em>allow_boundary=False</em><span class="sig-paren">)</span></dt>
 <dd><p>Split an edge of a triangle mesh.</p>
 <table class="docutils field-list table table-responsive table-bordered" frame="void" rules="none">
 <col class="field-name"/>
 <col class="field-body"/>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mesh</strong> (<em>Mesh</em>) – A mesh object.</li>
 <li><strong>u</strong> (<em>hashable</em>) – Identifier of the first vertex.</li>
 <li><strong>v</strong> (<em>hashable</em>) – Identifier of the second vertex.</li>
 <li><strong>t</strong> (<em>float (0.5)</em>) – The location of the split point along the original edge.
@@ -68,14 +67,12 @@ The value should be between 0.0 and 1.0</li>
 <p class="rubric">Example</p>
 <div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">compas</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
-
 <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
+<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="kn">import</span> <span class="n">mesh_quads_to_triangles</span>
 
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">'faces.obj'</span><span class="p">))</span>
 
-<span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()):</span>
-    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">split_face</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+<span class="n">mesh_quads_to_triangles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 
 <span class="n">split</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">split_edge_tri</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
 
@@ -162,7 +159,7 @@ The value should be between 0.0 and 1.0</li>
             
 
             
-                Last updated on Nov 08, 2017.
+                Last updated on Nov 09, 2017.
             
 
             

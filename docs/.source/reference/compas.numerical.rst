@@ -6,23 +6,18 @@ numerical
 
 .. module:: compas.numerical
 
-.. note::
 
-    The numerical package is built around NumPy and SciPy.
-
-    * NumPy: http://www.numpy.org/
-    * SciPy: http://www.scipy.org/
-
-
-Methods
-=======
+Algorithms
+==========
 
 .. autosummary::
     :toctree: generated/
 
-    dr
+    dr_numpy
+    network_dr
     drx
-    fd
+    fd_numpy
+    pca_numpy
 
 
 Solvers
@@ -39,21 +34,10 @@ Solvers
     moga
 
 
-Core
-====
+Functions
+=========
 
-geometry
---------
-
-.. autosummary::
-    :toctree: generated/
-
-    scalarfield_contours
-    plot_scalarfield_contours
-
-
-linalg
-------
+**linalg**
 
 .. autosummary::
     :toctree: generated/
@@ -73,8 +57,7 @@ linalg
     spsolve_with_known
 
 
-matrices
---------
+**matrices**
 
 .. autosummary::
     :toctree: generated/
@@ -89,8 +72,7 @@ matrices
     equilibrium_matrix
 
 
-operators
----------
+**operators**
 
 .. autosummary::
     :toctree: generated/
@@ -100,44 +82,8 @@ operators
     curl
 
 
-spatial
--------
-
-.. autosummary::
-    :toctree: generated/
-
-    closest_points_points
-    project_points_heightfield
-    iterative_closest_point
-    bounding_box_xy
-    bounding_box
-
-
-statistics
-----------
-
-.. autosummary::
-    :toctree: generated/
-
-    principal_components
-
-
-transformations
----------------
-
-.. autosummary::
-    :toctree: generated/
-
-
-triangulation
--------------
-
-.. autosummary::
-    :toctree: generated/
-
-
-utilities
----------
+Utilities
+=========
 
 .. autosummary::
     :toctree: generated/
@@ -145,16 +91,4 @@ utilities
     set_array_print_precision
     unset_array_print_precision
 
-
-xforms
-------
-
-.. autosummary::
-    :toctree: generated/
-
-    translation_matrix
-    rotation_matrix
-    random_rotation_matrix
-    scale_matrix
-    projection_matrix
 

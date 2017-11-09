@@ -1,13 +1,11 @@
 import compas
 from compas.datastructures import Mesh
-
 from compas.plotters import MeshPlotter
+from compas.topology import mesh_quads_to_triangles
 
 mesh = Mesh.from_obj(compas.get_data('faces.obj'))
 
-for fkey in list(mesh.faces()):
-    a, b, c, d = mesh.face_vertices(fkey)
-    mesh.split_face(fkey, b, d)
+mesh_quads_to_triangles(mesh)
 
 split = mesh.split_edge_tri(17, 30)
 

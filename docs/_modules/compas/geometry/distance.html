@@ -32,8 +32,7 @@
 <nav class="breadcrumb">
 <a class="breadcrumb-item" href="https://compas-dev.github.io/">compas</a>
 <a class="breadcrumb-item" href="https://compas-dev.github.io/compas/index.html">main library</a>
-<a class="breadcrumb-item" href="../../index.html">module code</a>
-<a accesskey="U" class="breadcrumb-item" href="../geometry.html">compas.geometry</a>
+<a accesskey="U" class="breadcrumb-item" href="../../index.html">module code</a>
 </nav>
 <h1>Source code for compas.geometry.distance</h1><div class="highlight"><pre><code class="language-python border rounded">
 <span></span><span class="sd">""""""</span>
@@ -43,7 +42,7 @@
 
 <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">fabs</span>
 
-<span class="kn">from</span> <span class="nn">compas.utilities.itertools_</span> <span class="k">import</span> <span class="n">pairwise</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">add_vectors</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">add_vectors_xy</span>
@@ -540,6 +539,50 @@
     <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
+<span class="k">def</span> <span class="nf">closest_points_in_cloud_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">cloud</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">7</span><span class="p">,</span> <span class="n">distances</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_nbrs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">"""Find the closest points in a point cloud to a set of sample points.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Items in cloud further from items in points than threshold return zero</span>
+<span class="sd">        distance and will affect the indices returned if not set suitably high.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        points (array, list): The sample points (n,).</span>
+<span class="sd">        cloud (array, list): The cloud points to compare to (n,).</span>
+<span class="sd">        threshold (float): Points are checked within this distance.</span>
+<span class="sd">        distances (boolean): Return distance matrix.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: Indices of the closest points in the cloud per point in points.</span>
+<span class="sd">        array: Distances between points and closest points in cloud (n x n).</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; a = np.random.rand(4, 3)</span>
+<span class="sd">        &gt;&gt;&gt; b = np.random.rand(4, 3)</span>
+<span class="sd">        &gt;&gt;&gt; indices, distances = closest_points(a, b, distances=True)</span>
+<span class="sd">        [1, 2, 0, 3]</span>
+<span class="sd">        array([[ 1.03821946,  0.66226402,  0.67964346,  0.98877891],</span>
+<span class="sd">               [ 0.4650432 ,  0.54484186,  0.36158995,  0.60385484],</span>
+<span class="sd">               [ 0.19562088,  0.73240154,  0.50235761,  0.51439644],</span>
+<span class="sd">               [ 0.84680233,  0.85390316,  0.72154983,  0.50432293]])</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">argmin</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">argpartition</span>
+    <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">distance_matrix</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">cloud</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">d_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">cloud</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num_nbrs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">argmin</span><span class="p">(</span><span class="n">d_matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">argpartition</span><span class="p">(</span><span class="n">d_matrix</span><span class="p">,</span> <span class="n">num_nbrs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">distances</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">indices</span><span class="p">,</span> <span class="n">d_matrix</span>
+    <span class="k">return</span> <span class="n">indices</span>
+
+
 <div class="viewcode-block" id="closest_point_in_cloud_xy"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.closest_point_in_cloud_xy.html#compas.geometry.closest_point_in_cloud_xy">[docs]</a><span class="k">def</span> <span class="nf">closest_point_in_cloud_xy</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">cloud</span><span class="p">):</span>
     <span class="sd">"""Calculates the closest point in a list of points in the XY-plane.</span>
 
@@ -843,7 +886,7 @@
             
 
             
-                Last updated on Nov 08, 2017.
+                Last updated on Nov 09, 2017.
             
 
             
