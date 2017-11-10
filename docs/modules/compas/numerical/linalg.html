@@ -91,6 +91,7 @@
     <span class="s1">'pivots'</span><span class="p">,</span>
     <span class="s1">'nonpivots'</span><span class="p">,</span>
     <span class="s1">'rref'</span><span class="p">,</span>
+    <span class="s1">'uvw_lengths'</span><span class="p">,</span>
     <span class="s1">'normrow'</span><span class="p">,</span>
     <span class="s1">'normalizerow'</span><span class="p">,</span>
     <span class="s1">'rot90'</span><span class="p">,</span>
@@ -332,67 +333,6 @@
         <span class="n">odict</span> <span class="o">=</span> <span class="n">loadmat</span><span class="p">(</span><span class="n">ofile</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">odict</span><span class="p">[</span><span class="s1">'R'</span><span class="p">]</span></div>
 
-<span class="c1"># if algo == 'lu':</span>
-<span class="c1">#     _, _, u = lu(A)</span>
-<span class="c1">#     if tol is None:</span>
-<span class="c1">#         eps = sys.float_info.epsilon</span>
-<span class="c1">#         tol = max(u.shape) * eps * max(sum(abs(u), axis=1))</span>
-<span class="c1">#     pivots = {}</span>
-<span class="c1">#     # iterate over the rows to find the non-pivoting elements</span>
-<span class="c1">#     # a pivoting element in an upper triangular matrix is the first nonzero</span>
-<span class="c1">#     # element in a row, if all elements below are also zero</span>
-<span class="c1">#     m, n = u.shape</span>
-<span class="c1">#     for i in range(m):</span>
-<span class="c1">#         row = u[i]</span>
-<span class="c1">#         # find the first element in the row of which the abs value is above</span>
-<span class="c1">#         # the threshold</span>
-<span class="c1">#         cols = nonzero(abs(row) &gt; tol)[0]</span>
-<span class="c1">#         if len(cols) == 0:</span>
-<span class="c1">#             # in this row, all elements are zero</span>
-<span class="c1">#             col = None</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             # in this row, the first nonzero element is at cols[0]</span>
-<span class="c1">#             # this is not necessarily a pivot,</span>
-<span class="c1">#             # since this column might have been identified in a previous</span>
-<span class="c1">#             # row as the pivot</span>
-<span class="c1">#             piv = i</span>
-<span class="c1">#             col = cols[0]</span>
-<span class="c1">#             # check if the rows below for the highest value at this column</span>
-<span class="c1">#             # swap rows to put the higher row on top</span>
-<span class="c1">#             j = argmax(abs(u[i : m, col]))</span>
-<span class="c1">#             if j &gt; 0:</span>
-<span class="c1">#                 u[i], u[i + j] = u[i + j], u[i]</span>
-<span class="c1">#                 row = u[i]</span>
-<span class="c1">#         # subtract multiples from previously found pivoting rows</span>
-<span class="c1">#         # until the actual pivot is found</span>
-<span class="c1">#         # or until the entire row is zero</span>
-<span class="c1">#         count = 10000</span>
-<span class="c1">#         while True:</span>
-<span class="c1">#             if count == 0:</span>
-<span class="c1">#                 # make sure the loop is not infinite</span>
-<span class="c1">#                 break</span>
-<span class="c1">#             count -= 1</span>
-<span class="c1">#             if col not in pivots:</span>
-<span class="c1">#                 # if this pivot was not yet found</span>
-<span class="c1">#                 # update the row in the upper triangular matrix</span>
-<span class="c1">#                 # this is not a row 'switch'</span>
-<span class="c1">#                 u[i] = row</span>
-<span class="c1">#                 break</span>
-<span class="c1">#             # if there is a row that already had a pivot at this column</span>
-<span class="c1">#             # update the row by subtracting a multiple of the previously</span>
-<span class="c1">#             # found row such that the pivot becomes zero</span>
-<span class="c1">#             piv  = pivots[col]</span>
-<span class="c1">#             row  = row - (row[col] / u[piv, col]) * u[piv]</span>
-<span class="c1">#             cols = nonzero(abs(row) &gt; tol)[0]</span>
-<span class="c1">#             if len(cols) == 0:</span>
-<span class="c1">#                 # the entire row has become zero</span>
-<span class="c1">#                 col = None</span>
-<span class="c1">#             else:</span>
-<span class="c1">#                 col = cols[0]</span>
-<span class="c1">#         if col is not None:</span>
-<span class="c1">#             pivots[col] = piv</span>
-<span class="c1">#     nonpivots = list(set(range(n)) - set(pivots))</span>
-
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Factorisation</span>
@@ -490,6 +430,31 @@
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Geometry</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
+
+
+<span class="k">def</span> <span class="nf">uvw_lengths</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="sd">r"""Calculates the lengths and co-ordinate differences.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        C (sparse): Connectivity matrix (m x n)</span>
+<span class="sd">        X (array): Co-ordinates of vertices/points (n x 3).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: Vectors of co-ordinate differences in x, y and z (m x 3).</span>
+<span class="sd">        array: Lengths of members (m x 1)</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; C = connectivity_matrix([[0, 1], [1, 2]], 'csr')</span>
+<span class="sd">        &gt;&gt;&gt; X = array([[0, 0, 0], [1, 1, 0], [0, 0, 1]])</span>
+<span class="sd">        &gt;&gt;&gt; uvw</span>
+<span class="sd">        array([[ 1,  1,  0],</span>
+<span class="sd">               [-1, -1,  1]])</span>
+<span class="sd">        &gt;&gt;&gt; l</span>
+<span class="sd">        array([[ 1.41421356],</span>
+<span class="sd">               [ 1.73205081]])</span>
+<span class="sd">    """</span>
+    <span class="n">uvw</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">normrow</span><span class="p">(</span><span class="n">uvw</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="normrow"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.normrow.html#compas.numerical.normrow">[docs]</a><span class="k">def</span> <span class="nf">normrow</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
@@ -734,7 +699,7 @@
             
 
             
-                Last updated on Nov 08, 2017.
+                Last updated on Nov 10, 2017.
             
 
             
@@ -774,7 +739,7 @@ for (var i = 0; i < pre.length; i++) {
 
         var button = document.createElement('button');
 
-        button.className = 'btn btn-secondary copy-code mt-2';
+        button.className = 'btn btn-secondary copy-code mt-4';
         button.textContent = 'Copy code';
         button.type = 'button';
 

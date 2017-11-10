@@ -32,8 +32,7 @@
 <nav class="breadcrumb">
 <a class="breadcrumb-item" href="https://compas-dev.github.io/">compas</a>
 <a class="breadcrumb-item" href="https://compas-dev.github.io/compas/index.html">main library</a>
-<a class="breadcrumb-item" href="../../index.html">module code</a>
-<a accesskey="U" class="breadcrumb-item" href="../geometry.html">compas.geometry</a>
+<a accesskey="U" class="breadcrumb-item" href="../../index.html">module code</a>
 </nav>
 <h1>Source code for compas.geometry.queries</h1><div class="highlight"><pre><code class="language-python border rounded">
 <span></span><span class="sd">""""""</span>
@@ -60,7 +59,7 @@
 <span class="kn">from</span> <span class="nn">compas.geometry.average</span> <span class="k">import</span> <span class="n">center_of_mass_polygon</span>
 
 
-<span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">'Tom Van Mele'</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">'Tom Van Mele'</span><span class="p">,</span> <span class="s1">'Matthias Rippmann'</span><span class="p">]</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">'Copyright 2016 - Block Research Group, ETH Zurich'</span>
 <span class="n">__license__</span>   <span class="o">=</span> <span class="s1">'MIT License'</span>
 <span class="n">__email__</span>     <span class="o">=</span> <span class="s1">'vanmelet@ethz.ch'</span>
@@ -74,6 +73,7 @@
     <span class="s1">'is_polygon_convex'</span><span class="p">,</span>
     <span class="s1">'is_polygon_convex_xy'</span><span class="p">,</span>
     <span class="s1">'is_point_on_plane'</span><span class="p">,</span>
+    <span class="s1">'is_point_infront_plane'</span><span class="p">,</span>
     <span class="s1">'is_point_on_line'</span><span class="p">,</span>
     <span class="s1">'is_point_on_line_xy'</span><span class="p">,</span>
     <span class="s1">'is_point_on_segment'</span><span class="p">,</span>
@@ -320,6 +320,27 @@
     <span class="k">return</span> <span class="n">distance_point_plane</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">plane</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">tol</span></div>
 
 
+<div class="viewcode-block" id="is_point_infront_plane"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.is_point_infront_plane.html#compas.geometry.is_point_infront_plane">[docs]</a><span class="k">def</span> <span class="nf">is_point_infront_plane</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">plane</span><span class="p">):</span>
+    <span class="sd">"""Verify if a point lies in front of a plane.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    point : sequence of float</span>
+<span class="sd">        XYZ coordinates.</span>
+<span class="sd">    plane : tuple</span>
+<span class="sd">        Base point and normal defining a plane.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        ``True`` if the point is in front of the plane.</span>
+<span class="sd">        ``False`` otherwise.</span>
+
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">dot_vectors</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">plane</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">plane</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.0</span></div>
+    
+
+
 <div class="viewcode-block" id="is_point_on_line"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.is_point_on_line.html#compas.geometry.is_point_on_line">[docs]</a><span class="k">def</span> <span class="nf">is_point_on_line</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
     <span class="sd">"""Verify if a point lies on a line.</span>
 
@@ -551,7 +572,7 @@
     <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="is_point_in_triangle_xy"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.is_point_in_triangle_xy.html#compas.geometry.is_point_in_triangle_xy">[docs]</a><span class="k">def</span> <span class="nf">is_point_in_triangle_xy</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">triangle</span><span class="p">):</span>
+<div class="viewcode-block" id="is_point_in_triangle_xy"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.is_point_in_triangle_xy.html#compas.geometry.is_point_in_triangle_xy">[docs]</a><span class="k">def</span> <span class="nf">is_point_in_triangle_xy</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">triangle</span><span class="p">,</span> <span class="n">colinear</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">"""Verify if a point is in the interior of a triangle lying in the XY-plane.</span>
 
 <span class="sd">    Parameters</span>
@@ -560,7 +581,10 @@
 <span class="sd">        XY(Z) coordinates of a point.</span>
 <span class="sd">    triangle : sequence</span>
 <span class="sd">        XY(Z) coordinates of the corners of the triangle.</span>
-
+<span class="sd">    colinear : bool, optional</span>
+<span class="sd">        Allow points to be colinear.</span>
+<span class="sd">        Default is ``False``.</span>
+<span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    bool</span>
@@ -569,12 +593,12 @@
 
 <span class="sd">    """</span>
     <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">triangle</span>
-    <span class="n">ccw</span> <span class="o">=</span> <span class="n">is_ccw_xy</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">ccw</span> <span class="o">=</span> <span class="n">is_ccw_xy</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">colinear</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">ccw</span> <span class="o">!=</span> <span class="n">is_ccw_xy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ccw</span> <span class="o">!=</span> <span class="n">is_ccw_xy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">colinear</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">if</span> <span class="n">ccw</span> <span class="o">!=</span> <span class="n">is_ccw_xy</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ccw</span> <span class="o">!=</span> <span class="n">is_ccw_xy</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">colinear</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">return</span> <span class="kc">True</span></div>
@@ -929,7 +953,7 @@
             
 
             
-                Last updated on Nov 08, 2017.
+                Last updated on Nov 10, 2017.
             
 
             
@@ -969,7 +993,7 @@ for (var i = 0; i < pre.length; i++) {
 
         var button = document.createElement('button');
 
-        button.className = 'btn btn-secondary copy-code mt-2';
+        button.className = 'btn btn-secondary copy-code mt-4';
         button.textContent = 'Copy code';
         button.type = 'button';
 

@@ -34,13 +34,13 @@ edges = [(k_i[u], k_i[v]) for u, v in mesh.edges()]
 # compute equilibrium
 # update the mesh geometry
 
-xyz, q, f, l, r = fd_numpy(xyz, edges, fixed, q, loads, rtype='list')
+xyz, q, f, l, r = fd_numpy(xyz, edges, fixed, q, loads)
 
 for key, attr in mesh.vertices(True):
     index = k_i[key]
-    attr['x'] = xyz[index][0]
-    attr['y'] = xyz[index][1]
-    attr['z'] = xyz[index][2]
+    attr['x'] = xyz[index, 0]
+    attr['y'] = xyz[index, 1]
+    attr['z'] = xyz[index, 2]
 
 # visualisae the result
 # color the vertices according to their elevation

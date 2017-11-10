@@ -32,16 +32,16 @@
 <nav class="breadcrumb">
 <a class="breadcrumb-item" href="https://compas-dev.github.io/">compas</a>
 <a class="breadcrumb-item" href="https://compas-dev.github.io/compas/index.html">main library</a>
-<a class="breadcrumb-item" href="../../index.html">module code</a>
-<a accesskey="U" class="breadcrumb-item" href="../geometry.html">compas.geometry</a>
+<a accesskey="U" class="breadcrumb-item" href="../../index.html">module code</a>
 </nav>
 <h1>Source code for compas.geometry.intersections</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="sd">""""""</span>
-
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 
 <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">fabs</span>
+
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">add_vectors</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">subtract_vectors</span>
@@ -73,9 +73,9 @@
     <span class="s1">'intersection_segment_plane'</span><span class="p">,</span>
     <span class="s1">'intersection_plane_plane'</span><span class="p">,</span>
     <span class="s1">'intersection_plane_plane_plane'</span><span class="p">,</span>
-    <span class="s1">'intersection_lines'</span><span class="p">,</span>
-    <span class="s1">'intersection_lines_xy'</span><span class="p">,</span>
-    <span class="s1">'intersection_planes'</span><span class="p">,</span>
+    <span class="c1"># 'intersection_lines',</span>
+    <span class="c1"># 'intersection_lines_xy',</span>
+    <span class="c1"># 'intersection_planes',</span>
 <span class="p">]</span>
 
 
@@ -386,21 +386,77 @@
 <span class="sd">        Currently this only computes the intersection point. E.g.: If two planes</span>
 <span class="sd">        are parallel the intersection lines are not computed. see:</span>
 <span class="sd">        http://geomalgorithms.com/Pic_3-planes.gif</span>
+
 <span class="sd">    """</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">intersection_plane_plane</span><span class="p">(</span><span class="n">plane1</span><span class="p">,</span> <span class="n">plane2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
-    <span class="n">pt</span> <span class="o">=</span> <span class="n">intersection_line_plane</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">plane3</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">pt</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pt</span>
+    <span class="n">point</span> <span class="o">=</span> <span class="n">intersection_line_plane</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">plane3</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">point</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">point</span>
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="intersection_lines"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.intersection_lines.html#compas.geometry.intersection_lines">[docs]</a><span class="k">def</span> <span class="nf">intersection_lines</span><span class="p">():</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+<span class="k">def</span> <span class="nf">intersection_lines_numpy</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        lines = []</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">arange</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">eye</span>
+    <span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
+    <span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="k">import</span> <span class="n">solve</span>
+
+    <span class="n">l1</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">l3</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">l4</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">l1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">l2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">p3</span> <span class="o">=</span> <span class="n">l3</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">p4</span> <span class="o">=</span> <span class="n">l4</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">n1</span> <span class="o">=</span> <span class="p">(</span><span class="n">l1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">l1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">n2</span> <span class="o">=</span> <span class="p">(</span><span class="n">l2</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">l2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">n3</span> <span class="o">=</span> <span class="p">(</span><span class="n">l3</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">l3</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">n4</span> <span class="o">=</span> <span class="p">(</span><span class="n">l4</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">l4</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">n1</span> <span class="o">=</span> <span class="n">n1</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span>
+    <span class="n">n2</span> <span class="o">=</span> <span class="n">n2</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">n2</span><span class="p">)</span>
+    <span class="n">n3</span> <span class="o">=</span> <span class="n">n3</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">n3</span><span class="p">)</span>
+    <span class="n">n4</span> <span class="o">=</span> <span class="n">n4</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">n4</span><span class="p">)</span>
+
+    <span class="c1"># an eye matrix (ones on the diagonal)</span>
+
+    <span class="n">I</span> <span class="o">=</span> <span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="c1"># R.p = q</span>
+
+    <span class="n">R</span> <span class="o">=</span> <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">n1</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n1</span><span class="o">.</span><span class="n">T</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">n2</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n2</span><span class="o">.</span><span class="n">T</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">n3</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n3</span><span class="o">.</span><span class="n">T</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">n4</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n4</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="p">((</span><span class="n">I</span> <span class="o">-</span> <span class="n">n1</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n1</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span> <span class="o">+</span>
+         <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">n2</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n2</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span> <span class="o">+</span>
+         <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">n3</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n3</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p3</span><span class="p">)</span> <span class="o">+</span>
+         <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">n4</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n4</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p4</span><span class="p">))</span>
+
+    <span class="n">RtR</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="n">Rtq</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">RtR</span><span class="p">,</span> <span class="n">Rtq</span><span class="p">)</span>
+
+    <span class="c1"># plot the lines</span>
+
+    <span class="n">xy1</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">+</span> <span class="n">n1</span> <span class="o">*</span> <span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">xy2</span> <span class="o">=</span> <span class="n">p2</span> <span class="o">+</span> <span class="n">n2</span> <span class="o">*</span> <span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">xy3</span> <span class="o">=</span> <span class="n">p3</span> <span class="o">+</span> <span class="n">n3</span> <span class="o">*</span> <span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">xy4</span> <span class="o">=</span> <span class="n">p4</span> <span class="o">+</span> <span class="n">n4</span> <span class="o">*</span> <span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="intersection_lines_xy"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.intersection_lines_xy.html#compas.geometry.intersection_lines_xy">[docs]</a><span class="k">def</span> <span class="nf">intersection_lines_xy</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">intersection_lines_xy</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
     <span class="sd">"""Compute the intersections of mulitple lines in the XY plane.</span>
 
 <span class="sd">    Parameters:</span>
@@ -418,129 +474,17 @@
 <span class="sd">        https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection</span>
 
 <span class="sd">    """</span>
-    <span class="kn">import</span> <span class="nn">itertools</span>
-
-    <span class="n">pdic</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
-        <span class="n">intx</span> <span class="o">=</span> <span class="n">intersection_line_line_xy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">intx</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="n">pdic</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">intx</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">pdic</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pdic</span>
-    <span class="k">return</span> <span class="kc">None</span></div>
+    <span class="c1"># points = []</span>
+    <span class="c1"># for a, b in pairwise(lines):</span>
+    <span class="c1">#     point = intersection_line_line_xy(a, b)</span>
+    <span class="c1">#     if point:</span>
+    <span class="c1">#         points.append(point)</span>
+    <span class="c1"># return points</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
-<div class="viewcode-block" id="intersection_planes"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.intersection_planes.html#compas.geometry.intersection_planes">[docs]</a><span class="k">def</span> <span class="nf">intersection_planes</span><span class="p">():</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-
-<span class="c1"># def is_intersection_box_box(box_1, box_2):</span>
-<span class="c1">#     """Checks if two boxes are intersecting in 3D.</span>
-
-<span class="c1">#     Parameters:</span>
-<span class="c1">#         box_1 (list of tuples): list of 8 points (bottom: 0,1,2,3 top: 4,5,6,7)</span>
-<span class="c1">#         box_2 (list of tuples): list of 8 points (bottom: 0,1,2,3 top: 4,5,6,7)</span>
-
-<span class="c1">#     Returns:</span>
-<span class="c1">#         bool: True if the boxes intersect, False otherwise.</span>
-
-<span class="c1">#     Examples:</span>
-
-<span class="c1">#         .. code-block:: python</span>
-
-<span class="c1">#             x, y, z = 1, 1, 1</span>
-<span class="c1">#             box_a = [</span>
-<span class="c1">#                 (0.0, 0.0, 0.0),</span>
-<span class="c1">#                 (x,   0.0, 0.0),</span>
-<span class="c1">#                 (x,   y,   0.0),</span>
-<span class="c1">#                 (0.0, y,   0.0),</span>
-<span class="c1">#                 (0.0, 0.0, z),</span>
-<span class="c1">#                 (x,   0.0, z),</span>
-<span class="c1">#                 (x,   y,   z),</span>
-<span class="c1">#                 (0.0, y,   z)</span>
-<span class="c1">#             ]</span>
-<span class="c1">#             box_b = [</span>
-<span class="c1">#                 (0.5, 0.5, 0.0),</span>
-<span class="c1">#                 (1.5, 0.5, 0.0),</span>
-<span class="c1">#                 (1.5, 1.5, 0.0),</span>
-<span class="c1">#                 (0.5, 1.5, 0.0),</span>
-<span class="c1">#                 (0.5, 0.5, 1.0),</span>
-<span class="c1">#                 (1.5, 0.5, 1.0),</span>
-<span class="c1">#                 (1.5, 1.5, 1.0),</span>
-<span class="c1">#                 (0.5, 1.5, 1.0)</span>
-<span class="c1">#             ]</span>
-<span class="c1">#             if is_box_intersecting_box(box_a, box_b):</span>
-<span class="c1">#                 print("intersection found")</span>
-<span class="c1">#             else:</span>
-<span class="c1">#                 print("no intersection found")</span>
-
-<span class="c1">#     Warning:</span>
-<span class="c1">#         Does not check if one box is completely enclosed by the other.</span>
-
-<span class="c1">#     """</span>
-<span class="c1">#     # all edges of box one</span>
-<span class="c1">#     edges = [</span>
-<span class="c1">#         (box_1[0], box_1[1]),</span>
-<span class="c1">#         (box_1[1], box_1[2]),</span>
-<span class="c1">#         (box_1[2], box_1[3]),</span>
-<span class="c1">#         (box_1[3], box_1[0])</span>
-<span class="c1">#     ]</span>
-<span class="c1">#     edges += [</span>
-<span class="c1">#         (box_1[4], box_1[5]),</span>
-<span class="c1">#         (box_1[5], box_1[6]),</span>
-<span class="c1">#         (box_1[6], box_1[7]),</span>
-<span class="c1">#         (box_1[7], box_1[4])</span>
-<span class="c1">#     ]</span>
-<span class="c1">#     edges += [</span>
-<span class="c1">#         (box_1[0], box_1[4]),</span>
-<span class="c1">#         (box_1[1], box_1[5]),</span>
-<span class="c1">#         (box_1[2], box_1[6]),</span>
-<span class="c1">#         (box_1[3], box_1[7])</span>
-<span class="c1">#     ]</span>
-<span class="c1">#     # triangulation of box two</span>
-<span class="c1">#     tris = [</span>
-<span class="c1">#         (box_2[0], box_2[1], box_2[2]),</span>
-<span class="c1">#         (box_2[0], box_2[2], box_2[3])</span>
-<span class="c1">#     ]  # bottom</span>
-<span class="c1">#     tris += [</span>
-<span class="c1">#         (box_2[4], box_2[5], box_2[6]),</span>
-<span class="c1">#         (box_2[4], box_2[6], box_2[7])</span>
-<span class="c1">#     ]  # top</span>
-<span class="c1">#     tris += [</span>
-<span class="c1">#         (box_2[0], box_2[4], box_2[7]),</span>
-<span class="c1">#         (box_2[0], box_2[7], box_2[3])</span>
-<span class="c1">#     ]  # side 1</span>
-<span class="c1">#     tris += [</span>
-<span class="c1">#         (box_2[0], box_2[1], box_2[5]),</span>
-<span class="c1">#         (box_2[0], box_2[5], box_2[4])</span>
-<span class="c1">#     ]  # side 2</span>
-<span class="c1">#     tris += [</span>
-<span class="c1">#         (box_2[1], box_2[2], box_2[6]),</span>
-<span class="c1">#         (box_2[1], box_2[6], box_2[5])</span>
-<span class="c1">#     ]  # side 3</span>
-<span class="c1">#     tris += [</span>
-<span class="c1">#         (box_2[2], box_2[3], box_2[7]),</span>
-<span class="c1">#         (box_2[2], box_2[7], box_2[6])</span>
-<span class="c1">#     ]  # side 4</span>
-<span class="c1">#     # checks for edge triangle intersections</span>
-<span class="c1">#     intx = False</span>
-<span class="c1">#     for pt1, pt2 in edges:</span>
-<span class="c1">#         for tri in tris:</span>
-<span class="c1">#             for line in [(pt1, pt2), (pt2, pt1)]:</span>
-<span class="c1">#                 test_pt = intersection_line_triangle(line, tri)</span>
-<span class="c1">#                 if test_pt:</span>
-<span class="c1">#                     if is_point_on_segment(test_pt, line):</span>
-<span class="c1">#                         # intersection found</span>
-<span class="c1">#                         intx = True</span>
-<span class="c1">#                         break</span>
-<span class="c1">#             else:</span>
-<span class="c1">#                 continue</span>
-<span class="c1">#             break</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             continue</span>
-<span class="c1">#         break</span>
-<span class="c1">#     return intx</span>
+<span class="k">def</span> <span class="nf">intersection_planes</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -592,7 +536,7 @@
             
 
             
-                Last updated on Nov 08, 2017.
+                Last updated on Nov 10, 2017.
             
 
             
@@ -632,7 +576,7 @@ for (var i = 0; i < pre.length; i++) {
 
         var button = document.createElement('button');
 
-        button.className = 'btn btn-secondary copy-code mt-2';
+        button.className = 'btn btn-secondary copy-code mt-4';
         button.textContent = 'Copy code';
         button.type = 'button';
 

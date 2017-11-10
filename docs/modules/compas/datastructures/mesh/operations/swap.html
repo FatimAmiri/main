@@ -47,7 +47,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'trimesh_swap_edge'</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">trimesh_swap_edge</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">trimesh_swap_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">"""Replace an edge of the mesh by an edge connecting the opposite</span>
 <span class="sd">    vertices of the adjacent faces.</span>
 
@@ -65,38 +65,38 @@
 
     <span class="c1"># check legality of the swap</span>
     <span class="c1"># swapping on the boundary is not allowed</span>
-    <span class="n">fkey_uv</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
-    <span class="n">fkey_vu</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
+    <span class="n">fkey_uv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+    <span class="n">fkey_vu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">fkey_uv</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">fkey_vu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_boundary</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">mesh</span><span class="o">.</span><span class="n">is_vertex_on_boundary</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="ow">or</span> <span class="n">mesh</span><span class="o">.</span><span class="n">is_vertex_on_boundary</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_vertex_on_boundary</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_vertex_on_boundary</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
             <span class="k">return</span>
 
     <span class="c1"># swapping to a half-edge that already exists is not allowed</span>
-    <span class="n">uv</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span>
-    <span class="n">vu</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span>
+    <span class="n">uv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span>
+    <span class="n">vu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span>
 
     <span class="n">o_uv</span> <span class="o">=</span> <span class="n">uv</span><span class="p">[</span><span class="n">uv</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="n">o_vu</span> <span class="o">=</span> <span class="n">vu</span><span class="p">[</span><span class="n">vu</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">o_uv</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">o_vu</span><span class="p">]</span> <span class="ow">and</span> <span class="n">o_vu</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">o_uv</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">o_uv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">o_vu</span><span class="p">]</span> <span class="ow">and</span> <span class="n">o_vu</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">o_uv</span><span class="p">]:</span>
         <span class="k">return</span>
 
     <span class="c1"># swap</span>
     <span class="c1"># delete the current half-edge</span>
-    <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
-    <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
+    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
 
     <span class="c1"># delete the adjacent faces</span>
-    <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span>
-    <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span>
+    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span>
+    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span>
 
     <span class="c1"># add the faces created by the swap</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">o_uv</span><span class="p">,</span> <span class="n">o_vu</span><span class="p">,</span> <span class="n">v</span><span class="p">])</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">o_vu</span><span class="p">,</span> <span class="n">o_uv</span><span class="p">,</span> <span class="n">u</span><span class="p">])</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">o_uv</span><span class="p">,</span> <span class="n">o_vu</span><span class="p">,</span> <span class="n">v</span><span class="p">])</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">o_vu</span><span class="p">,</span> <span class="n">o_uv</span><span class="p">,</span> <span class="n">u</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
 
@@ -150,7 +150,7 @@
             
 
             
-                Last updated on Nov 08, 2017.
+                Last updated on Nov 10, 2017.
             
 
             
@@ -190,7 +190,7 @@ for (var i = 0; i < pre.length; i++) {
 
         var button = document.createElement('button');
 
-        button.className = 'btn btn-secondary copy-code mt-2';
+        button.className = 'btn btn-secondary copy-code mt-4';
         button.textContent = 'Copy code';
         button.type = 'button';
 

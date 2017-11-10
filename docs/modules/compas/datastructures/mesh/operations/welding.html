@@ -49,7 +49,7 @@
 <span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">mesh_unweld_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">mesh_unweld_vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">"""Unweld a face of the mesh.</span>
 
 <span class="sd">    Parameters</span>
@@ -93,25 +93,25 @@
 
 <span class="sd">    """</span>
     <span class="n">face</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">vertices</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">where</span><span class="p">:</span>
         <span class="n">where</span> <span class="o">=</span> <span class="n">vertices</span>
 
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">where</span><span class="p">:</span>
-            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
         <span class="n">face</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
-    <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">where</span><span class="p">:</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertex_descendant</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertex_ancestor</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_vertex_descendant</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_vertex_ancestor</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -186,7 +186,7 @@
             
 
             
-                Last updated on Nov 08, 2017.
+                Last updated on Nov 10, 2017.
             
 
             
@@ -226,7 +226,7 @@ for (var i = 0; i < pre.length; i++) {
 
         var button = document.createElement('button');
 
-        button.className = 'btn btn-secondary copy-code mt-2';
+        button.className = 'btn btn-secondary copy-code mt-4';
         button.textContent = 'Copy code';
         button.type = 'button';
 

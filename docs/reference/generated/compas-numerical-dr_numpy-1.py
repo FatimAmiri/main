@@ -35,18 +35,18 @@ for key, attr in network.vertices(True):
 for index, (u, v, attr) in enumerate(network.edges(True)):
     attr['qpre'] = index + 1
 
-k2i = network.key_index()
+k_i = network.key_index()
 
-vertices = [network.vertex_coordinates(key) for key in network.vertex]
-edges    = [(k2i[u], k2i[v]) for u, v in network.edges()]
-fixed    = [k2i[key] for key, attr in network.vertices(True) if attr['is_fixed']]
-loads    = [(attr['px'], attr['py'], attr['pz']) for key, attr in network.vertices(True)]
-qpre     = [attr['qpre'] for u, v, attr in network.edges(True)]
-fpre     = [attr['fpre'] for u, v, attr in network.edges(True)]
-lpre     = [attr['lpre'] for u, v, attr in network.edges(True)]
-linit    = [attr['linit'] for u, v, attr in network.edges(True)]
-E        = [attr['E'] for u, v, attr in network.edges(True)]
-radius   = [attr['radius'] for u, v, attr in network.edges(True)]
+vertices = network.get_vertices_attributes(('x', 'y', 'z'))
+edges    = [(k_i[u], k_i[v]) for u, v in network.edges()]
+fixed    = [k_i[key] for key in network.vertices_where({'is_fixed': True})]
+loads    = network.get_vertices_attributes(('px', 'py', 'pz'))
+qpre     = network.get_edges_attribute('qpre')
+fpre     = network.get_edges_attribute('fpre')
+lpre     = network.get_edges_attribute('lpre')
+linit    = network.get_edges_attribute('linit')
+E        = network.get_edges_attribute('E')
+radius   = network.get_edges_attribute('radius')
 
 lines = []
 for u, v in network.edges():
@@ -63,7 +63,7 @@ plotter.draw_lines(lines)
 xyz, q, f, l, r = dr_numpy(vertices, edges, fixed, loads, qpre, fpre, lpre, linit, E, radius)
 
 for key, attr in network.vertices(True):
-    index = k2i[key]
+    index = k_i[key]
     attr['x'] = xyz[index, 0]
     attr['y'] = xyz[index, 1]
     attr['z'] = xyz[index, 2]
