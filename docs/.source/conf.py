@@ -51,6 +51,7 @@ autodoc_default_flags = [
     'private-members',
     'special-members',
     'show-inheritance',
+    'nosignatures'
 ]
 
 autodoc_member_order = 'alphabetical'

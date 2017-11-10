@@ -91,6 +91,8 @@
     <span class="s1">'pivots'</span><span class="p">,</span>
     <span class="s1">'nonpivots'</span><span class="p">,</span>
     <span class="s1">'rref'</span><span class="p">,</span>
+    <span class="s1">'rref_sympy'</span><span class="p">,</span>
+    <span class="s1">'rref_matlab'</span><span class="p">,</span>
     <span class="s1">'uvw_lengths'</span><span class="p">,</span>
     <span class="s1">'normrow'</span><span class="p">,</span>
     <span class="s1">'normalizerow'</span><span class="p">,</span>
@@ -254,7 +256,7 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">cols</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="rref"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.rref.html#compas.numerical.rref">[docs]</a><span class="k">def</span> <span class="nf">rref</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">algo</span><span class="o">=</span><span class="s1">'qr'</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="rref"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.rref.html#compas.numerical.rref">[docs]</a><span class="k">def</span> <span class="nf">rref</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">r"""Reduced row-echelon form of matrix A.</span>
 
 <span class="sd">    Parameters:</span>
@@ -278,60 +280,110 @@
 
 <span class="sd">    """</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">atleast_2d</span><span class="p">(</span><span class="n">asarray</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">algo</span> <span class="o">==</span> <span class="s1">'qr'</span><span class="p">:</span>
-        <span class="c1"># do qr with column pivoting</span>
-        <span class="c1"># to have non-decreasing absolute values on the diagonal of R</span>
-        <span class="c1"># column pivoting ensures that the largest absolute value is used</span>
-        <span class="c1"># as leading element</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">qr</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="n">lead_pos</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">num_rows</span><span class="p">,</span> <span class="n">num_cols</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">shape</span>
-        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_rows</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">lead_pos</span> <span class="o">&gt;=</span> <span class="n">num_cols</span><span class="p">:</span>
-                <span class="k">return</span>
-            <span class="n">i</span> <span class="o">=</span> <span class="n">r</span>
-            <span class="c1"># find a nonzero lead in column lead_pos</span>
-            <span class="k">while</span> <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">lead_pos</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">num_rows</span><span class="p">:</span>
-                    <span class="n">i</span> <span class="o">=</span> <span class="n">r</span>
-                    <span class="n">lead_pos</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="k">if</span> <span class="n">lead_pos</span> <span class="o">==</span> <span class="n">num_cols</span><span class="p">:</span>
-                        <span class="k">return</span>
-            <span class="c1"># swap the row with the nonzero lead with the current row</span>
-            <span class="n">U</span><span class="p">[[</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">]]</span> <span class="o">=</span> <span class="n">U</span><span class="p">[[</span><span class="n">r</span><span class="p">,</span> <span class="n">i</span><span class="p">]]</span>
-            <span class="c1"># "normalize" the values of the row</span>
-            <span class="n">lead_val</span> <span class="o">=</span> <span class="n">U</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">lead_pos</span><span class="p">]</span>
-            <span class="n">U</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">U</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">/</span> <span class="n">lead_val</span>
-            <span class="c1"># make sure all other column values are zero</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_rows</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">r</span><span class="p">:</span>
-                    <span class="n">lead_val</span> <span class="o">=</span> <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">lead_pos</span><span class="p">]</span>
-                    <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">lead_val</span> <span class="o">*</span> <span class="n">U</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
-            <span class="c1"># go to the next column</span>
-            <span class="n">lead_pos</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">U</span>
-    <span class="k">if</span> <span class="n">algo</span> <span class="o">==</span> <span class="s1">'sympy'</span><span class="p">:</span>
-        <span class="c1"># return asarray?</span>
-        <span class="kn">import</span> <span class="nn">sympy</span>
-        <span class="k">return</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">rref</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">algo</span> <span class="o">==</span> <span class="s1">'matlab'</span><span class="p">:</span>
-        <span class="c1"># replace this by the matlab com interface implementation</span>
-        <span class="kn">import</span> <span class="nn">platform</span>
-        <span class="n">ifile</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">'ifile'</span><span class="p">]</span>
-        <span class="n">ofile</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">'ofile'</span><span class="p">]</span>
-        <span class="n">idict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'A'</span><span class="p">:</span> <span class="n">A</span><span class="p">}</span>
-        <span class="n">savemat</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">idict</span><span class="p">)</span>
-        <span class="n">matlab</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'matlab'</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'Windows'</span><span class="p">:</span>
-            <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'-nosplash'</span><span class="p">,</span> <span class="s1">'-wait'</span><span class="p">,</span> <span class="s1">'-r'</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'-nosplash'</span><span class="p">,</span> <span class="s1">'-r'</span><span class="p">]</span>
-        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"load('</span><span class="si">{0}</span><span class="s2">');[R, jb]=rref(A);save('</span><span class="si">{1}</span><span class="s2">');exit;"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">ofile</span><span class="p">)]</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">matlab</span> <span class="o">+</span> <span class="n">options</span> <span class="o">+</span> <span class="n">command</span><span class="p">)</span>
-        <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
-        <span class="n">odict</span> <span class="o">=</span> <span class="n">loadmat</span><span class="p">(</span><span class="n">ofile</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">odict</span><span class="p">[</span><span class="s1">'R'</span><span class="p">]</span></div>
+
+    <span class="c1"># do qr with column pivoting</span>
+    <span class="c1"># to have non-decreasing absolute values on the diagonal of R</span>
+    <span class="c1"># column pivoting ensures that the largest absolute value is used</span>
+    <span class="c1"># as leading element</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">qr</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">lead_pos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">num_rows</span><span class="p">,</span> <span class="n">num_cols</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_rows</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">lead_pos</span> <span class="o">&gt;=</span> <span class="n">num_cols</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="c1"># find a nonzero lead in column lead_pos</span>
+        <span class="k">while</span> <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">lead_pos</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">num_rows</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">r</span>
+                <span class="n">lead_pos</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">lead_pos</span> <span class="o">==</span> <span class="n">num_cols</span><span class="p">:</span>
+                    <span class="k">return</span>
+        <span class="c1"># swap the row with the nonzero lead with the current row</span>
+        <span class="n">U</span><span class="p">[[</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">]]</span> <span class="o">=</span> <span class="n">U</span><span class="p">[[</span><span class="n">r</span><span class="p">,</span> <span class="n">i</span><span class="p">]]</span>
+        <span class="c1"># "normalize" the values of the row</span>
+        <span class="n">lead_val</span> <span class="o">=</span> <span class="n">U</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">lead_pos</span><span class="p">]</span>
+        <span class="n">U</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">U</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">/</span> <span class="n">lead_val</span>
+        <span class="c1"># make sure all other column values are zero</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_rows</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">r</span><span class="p">:</span>
+                <span class="n">lead_val</span> <span class="o">=</span> <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">lead_pos</span><span class="p">]</span>
+                <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">lead_val</span> <span class="o">*</span> <span class="n">U</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+        <span class="c1"># go to the next column</span>
+        <span class="n">lead_pos</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">U</span></div>
+
+
+<div class="viewcode-block" id="rref_sympy"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.rref_sympy.html#compas.numerical.rref_sympy">[docs]</a><span class="k">def</span> <span class="nf">rref_sympy</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">r"""Reduced row-echelon form of matrix A.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        A (array, list): Matrix A represented as an array or list.</span>
+<span class="sd">        tol (float): Tolerance.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array/list: RREF of A.</span>
+
+<span class="sd">    A matrix is in reduced row-echelon form after Gauss-Jordan elimination, the</span>
+<span class="sd">    result is independent of the method/algorithm used.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; A = [[1, 0, 1, 3], [2, 3, 4, 7], [-1, -3, -3, -4]]</span>
+<span class="sd">        &gt;&gt;&gt; n = rref(A, algo='sympy')</span>
+<span class="sd">        &gt;&gt;&gt; array(n)</span>
+<span class="sd">        [[1.0 0 1.0 3.0]</span>
+<span class="sd">         [0 1.0 0.667 0.333]</span>
+<span class="sd">         [0 0 0 0]]</span>
+
+<span class="sd">    """</span>
+    <span class="kn">import</span> <span class="nn">sympy</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">atleast_2d</span><span class="p">(</span><span class="n">asarray</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">rref</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="rref_matlab"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.rref_matlab.html#compas.numerical.rref_matlab">[docs]</a><span class="k">def</span> <span class="nf">rref_matlab</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">ifile</span><span class="p">,</span> <span class="n">ofile</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">r"""Reduced row-echelon form of matrix A.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        A (array, list): Matrix A represented as an array or list.</span>
+<span class="sd">        tol (float): Tolerance.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array/list: RREF of A.</span>
+
+<span class="sd">    A matrix is in reduced row-echelon form after Gauss-Jordan elimination, the</span>
+<span class="sd">    result is independent of the method/algorithm used.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; A = [[1, 0, 1, 3], [2, 3, 4, 7], [-1, -3, -3, -4]]</span>
+<span class="sd">        &gt;&gt;&gt; n = rref(A, algo='sympy')</span>
+<span class="sd">        &gt;&gt;&gt; array(n)</span>
+<span class="sd">        [[1.0 0 1.0 3.0]</span>
+<span class="sd">         [0 1.0 0.667 0.333]</span>
+<span class="sd">         [0 0 0 0]]</span>
+
+<span class="sd">    """</span>
+    <span class="kn">import</span> <span class="nn">platform</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">atleast_2d</span><span class="p">(</span><span class="n">asarray</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+
+    <span class="n">idict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'A'</span><span class="p">:</span> <span class="n">A</span><span class="p">}</span>
+    <span class="n">savemat</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">idict</span><span class="p">)</span>
+
+    <span class="n">matlab</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'matlab'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'Windows'</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'-nosplash'</span><span class="p">,</span> <span class="s1">'-wait'</span><span class="p">,</span> <span class="s1">'-r'</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'-nosplash'</span><span class="p">,</span> <span class="s1">'-r'</span><span class="p">]</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"load('</span><span class="si">{0}</span><span class="s2">');[R, jb]=rref(A);save('</span><span class="si">{1}</span><span class="s2">');exit;"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">ofile</span><span class="p">)]</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">matlab</span> <span class="o">+</span> <span class="n">options</span> <span class="o">+</span> <span class="n">command</span><span class="p">)</span>
+    <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+
+    <span class="n">odict</span> <span class="o">=</span> <span class="n">loadmat</span><span class="p">(</span><span class="n">ofile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">odict</span><span class="p">[</span><span class="s1">'R'</span><span class="p">]</span></div>
 
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
@@ -432,7 +484,7 @@
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
 
-<span class="k">def</span> <span class="nf">uvw_lengths</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="uvw_lengths"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.uvw_lengths.html#compas.numerical.uvw_lengths">[docs]</a><span class="k">def</span> <span class="nf">uvw_lengths</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
     <span class="sd">r"""Calculates the lengths and co-ordinate differences.</span>
 
 <span class="sd">    Parameters:</span>
@@ -454,7 +506,7 @@
 <span class="sd">               [ 1.73205081]])</span>
 <span class="sd">    """</span>
     <span class="n">uvw</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">normrow</span><span class="p">(</span><span class="n">uvw</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">normrow</span><span class="p">(</span><span class="n">uvw</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="normrow"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.normrow.html#compas.numerical.normrow">[docs]</a><span class="k">def</span> <span class="nf">normrow</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
