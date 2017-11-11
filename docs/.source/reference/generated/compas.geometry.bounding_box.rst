@@ -1,6 +1,6 @@
-obb_xy_numpy
+bounding_box
 ============================
 
 .. currentmodule:: compas.geometry
 
-.. autofunction:: obb_xy_numpy
+.. autofunction:: bounding_box

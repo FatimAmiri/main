@@ -97,14 +97,28 @@
 <span class="sd">        from compas.numerical import drx_numpy</span>
 <span class="sd">        from compas.utilities import i_to_rgb</span>
 
-<span class="sd">        network = Network.from_obj(compas.get('lines.obj'))</span>
-<span class="sd">        network.update_default_vertex_attributes({'is_fixed': False, 'P': [1, 1, 0]})</span>
-<span class="sd">        network.update_default_edge_attributes({'E': 10, 'A': 1, 'ct': 't'})</span>
-<span class="sd">        network.set_vertices_attributes(network.leaves(), {'B': [0, 0, 0], 'is_fixed': True})</span>
+<span class="sd">        from numpy import linspace</span>
 
-<span class="sd">        drx_numpy(network=network, tol=0.001, refresh=5, update=True)</span>
+<span class="sd">        L0 = 1</span>
+<span class="sd">        L = 1.5</span>
+<span class="sd">        n = 40</span>
+<span class="sd">        EI = 0.2</span>
+<span class="sd">        pins = [0, 5, 20, n - 5]</span>
 
-<span class="sd">        plotter = NetworkPlotter(network)</span>
+<span class="sd">        # Network</span>
+
+<span class="sd">        vertices = [[i, i, 0] for i in list(linspace(0, L0, n))]</span>
+<span class="sd">        edges = [[i, i + 1] for i in range(n - 1)]</span>
+
+<span class="sd">        network = Network.from_vertices_and_edges(vertices=vertices, edges=edges)</span>
+<span class="sd">        network.update_default_vertex_attributes({'is_fixed': False, 'P': [1, -2, 0], 'EIx': EI, 'EIy': EI})</span>
+<span class="sd">        network.update_default_edge_attributes({'E': 50, 'A': 1, 'l0': L / n})</span>
+<span class="sd">        network.set_vertices_attributes(pins, {'B': [0, 0, 0], 'is_fixed': True})</span>
+<span class="sd">        network.beams = {'beam': {'nodes': list(range(n))}}</span>
+
+<span class="sd">        # Plotter</span>
+
+<span class="sd">        plotter = NetworkPlotter(network, figsize=(10, 7))</span>
 <span class="sd">        lines = []</span>
 <span class="sd">        for u, v in network.edges():</span>
 <span class="sd">            lines.append({</span>
@@ -113,13 +127,12 @@
 <span class="sd">                'color': '#cccccc',</span>
 <span class="sd">                'width': 1.0})</span>
 <span class="sd">        plotter.draw_lines(lines)</span>
-<span class="sd">        plotter.draw_vertices(facecolor={key: '#ff0000' for key in network.vertices_where({'is_fixed': True})})</span>
+<span class="sd">        plotter.draw_vertices(radius=0.005, facecolor={key: '#ff0000' for key in network.vertices_where({'is_fixed': True})})</span>
+<span class="sd">        plotter.draw_edges()</span>
 
-<span class="sd">        fmax = max(network.get_edges_attribute('f'))</span>
+<span class="sd">        # Solver</span>
 
-<span class="sd">        plotter.draw_edges(</span>
-<span class="sd">            color={(u, v): i_to_rgb(attr['f'] / fmax) for u, v, attr in network.edges(True)},</span>
-<span class="sd">            width={(u, v): 10 * attr['f'] / fmax for u, v, attr in network.edges(True)})</span>
+<span class="sd">        drx_numpy(network=network, tol=0.01, refresh=10, factor=30, update=True)</span>
 
 <span class="sd">        plotter.show()</span>
 
