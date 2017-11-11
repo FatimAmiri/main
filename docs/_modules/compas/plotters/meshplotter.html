@@ -48,6 +48,7 @@
 
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">valuedict</span>
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">color_to_rgb</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
 
 <span class="kn">from</span> <span class="nn">compas.plotters.plotter</span> <span class="k">import</span> <span class="n">Plotter</span>
 
@@ -313,6 +314,19 @@
             <span class="n">segments</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">'xy'</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">'xy'</span><span class="p">)])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edgecollection</span><span class="o">.</span><span class="n">set_segments</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="MeshPlotter.highlight_path"><a class="viewcode-back" href="../../../reference/generated/generated/compas.plotters.MeshPlotter.highlight_path.html#compas.plotters.MeshPlotter.highlight_path">[docs]</a>    <span class="k">def</span> <span class="nf">highlight_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">edgetext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">edgewidth</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">'xy'</span><span class="p">)</span>
+            <span class="n">ep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">'xy'</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">'start'</span> <span class="p">:</span> <span class="n">sp</span><span class="p">,</span>
+                <span class="s1">'end'</span>   <span class="p">:</span> <span class="n">ep</span><span class="p">,</span>
+                <span class="s1">'width'</span> <span class="p">:</span> <span class="n">edgewidth</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'edge.width'</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span>
+                <span class="s1">'color'</span> <span class="p">:</span> <span class="n">edgecolor</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'edge.color'</span><span class="p">,</span> <span class="s1">'#ff0000'</span><span class="p">)</span>
+            <span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="MeshPlotter.draw_faces"><a class="viewcode-back" href="../../../reference/generated/generated/compas.plotters.MeshPlotter.draw_faces.html#compas.plotters.MeshPlotter.draw_faces">[docs]</a>    <span class="k">def</span> <span class="nf">draw_faces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                    <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -470,7 +484,7 @@
             
 
             
-                Last updated on Nov 10, 2017.
+                Last updated on Nov 11, 2017.
             
 
             

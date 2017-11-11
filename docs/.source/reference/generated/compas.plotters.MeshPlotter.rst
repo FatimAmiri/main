@@ -26,6 +26,7 @@ MeshPlotter
       ~MeshPlotter.draw_points
       ~MeshPlotter.draw_polygons
       ~MeshPlotter.draw_vertices
+      ~MeshPlotter.highlight_path
       ~MeshPlotter.register_listener
       ~MeshPlotter.save
       ~MeshPlotter.show
