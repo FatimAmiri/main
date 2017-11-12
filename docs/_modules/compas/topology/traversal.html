@@ -1,71 +1,43 @@
 
-
-
 <!DOCTYPE html>
+
 <html lang="en">
-    <head>
-        <title>compas -- a computational framework for research in architecture and structures</title>
-
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    
-        <meta name="author" content="Tom Van Mele" />
-        <meta name="description" content="compas is a computational framework for research in architecture and structures." />
-
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
-        <link rel="stylesheet" type="text/css" href="/css/github.css" />
-        <link rel="stylesheet" type="text/css" href="/css/compas.css" />
-        <link rel="stylesheet" type="text/css" href="/css/compas-reference.css" />
-
-        
-        
-        
-
-        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
-    </head>
-    <body data-spy="scroll" data-target="#compas-localnav">
-
-        <header class="navbar navbar-expand navbar-dark bg-dark compas-navbar">
-            <a class="navbar-brand" href="/">compas</a>
-
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/main/">Main library</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/packages/">Additional Packages</a>
-                    </li>
-                </ul>
-        </header>
-        
-        <div class="container-fluid compas-container">
-            <div class="row flex-xl-nowrap">
-
-                <main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
-
-                    
-
-                        
-    <nav class="breadcrumb">
-        <a class="breadcrumb-item" href="https://compas-dev.github.io/">compas</a>
-        <a class="breadcrumb-item" href="https://compas-dev.github.io/compas/index.html">main library</a>
-        
-            
-                <a class="breadcrumb-item" href="../../index.html" accesskey="U">module code</a>
-            
-        
-    </nav>
-
-
-                        
-
-                        
-
-                        <h1>Source code for compas.topology.traversal</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<head>
+<title>compas -- a computational framework for research in architecture and structures</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<meta content="Tom Van Mele" name="author"/>
+<meta content="compas is a computational framework for research in architecture and structures." name="description"/>
+<link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" rel="stylesheet"/>
+<link href="/css/github.css" rel="stylesheet" type="text/css"/>
+<link href="/css/compas.css" rel="stylesheet" type="text/css"/>
+<link href="/css/compas-reference.css" rel="stylesheet" type="text/css"/>
+<script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
+</head>
+<body data-spy="scroll" data-target="#compas-localnav">
+<header class="navbar navbar-expand navbar-dark bg-dark compas-navbar">
+<a class="navbar-brand" href="/">compas</a>
+<ul class="navbar-nav">
+<li class="nav-item">
+<a class="nav-link active" href="/main/">Main library</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="/packages/">Additional Packages</a>
+</li>
+</ul>
+</header>
+<div class="container-fluid compas-container">
+<div class="row flex-xl-nowrap">
+<main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+<nav class="breadcrumb">
+<a class="breadcrumb-item" href="https://compas-dev.github.io/">compas</a>
+<a class="breadcrumb-item" href="https://compas-dev.github.io/compas/index.html">main library</a>
+<a accesskey="U" class="breadcrumb-item" href="../../index.html">module code</a>
+</nav>
+<h1>Source code for compas.topology.traversal</h1><div class="highlight"><pre><code class="language-python border rounded">
+<span></span><span class="sd">"""</span>
 <span class="sd">http://eddmann.com/posts/depth-first-search-and-breadth-first-search-in-python/</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
@@ -73,21 +45,21 @@
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
 
 
-<span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele &lt;vanmelet@ethz.ch&gt;&#39;</span><span class="p">,</span> <span class="p">]</span>
-<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">&#39;Copyright 2014, Block Research Group - ETH Zurich&#39;</span>
-<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">&#39;MIT License&#39;</span>
-<span class="n">__email__</span>      <span class="o">=</span> <span class="s1">&#39;vanmelet@ethz.ch&#39;</span>
+<span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">'Tom Van Mele &lt;vanmelet@ethz.ch&gt;'</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">'Copyright 2014, Block Research Group - ETH Zurich'</span>
+<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">'MIT License'</span>
+<span class="n">__email__</span>      <span class="o">=</span> <span class="s1">'vanmelet@ethz.ch'</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;depth_first_ordering&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;depth_first_tree&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;breadth_first_ordering&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;breadth_first_traverse&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;breadth_first_paths&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;shortest_path&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;dijkstra_distances&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;dijkstra_path&#39;</span>
+    <span class="s1">'depth_first_ordering'</span><span class="p">,</span>
+    <span class="s1">'depth_first_tree'</span><span class="p">,</span>
+    <span class="s1">'breadth_first_ordering'</span><span class="p">,</span>
+    <span class="s1">'breadth_first_traverse'</span><span class="p">,</span>
+    <span class="s1">'breadth_first_paths'</span><span class="p">,</span>
+    <span class="s1">'shortest_path'</span><span class="p">,</span>
+    <span class="s1">'dijkstra_distances'</span><span class="p">,</span>
+    <span class="s1">'dijkstra_path'</span>
 <span class="p">]</span>
 
 
@@ -97,17 +69,17 @@
 
 
 <div class="viewcode-block" id="depth_first_ordering"><a class="viewcode-back" href="../../../reference/generated/compas.topology.depth_first_ordering.html#compas.topology.depth_first_ordering">[docs]</a><span class="k">def</span> <span class="nf">depth_first_ordering</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return all nodes of a connected component containing &#39;root&#39; of a network</span>
+    <span class="sd">"""</span>
+<span class="sd">    Return all nodes of a connected component containing 'root' of a network</span>
 <span class="sd">    represented by an adjacency dictionary.</span>
 
 <span class="sd">    This implementation uses a *to visit* stack. The principle of a stack</span>
 <span class="sd">    is LIFO. In Python, a list is a stack.</span>
 
 <span class="sd">    Initially only the root element is on the stack. While there are still</span>
-<span class="sd">    elements on the stack, the node on top of the stack is &#39;popped off&#39; and if</span>
+<span class="sd">    elements on the stack, the node on top of the stack is 'popped off' and if</span>
 <span class="sd">    this node was not already visited, its neighbours are added to the stack if</span>
-<span class="sd">    they hadn&#39;t already been visited themselves.</span>
+<span class="sd">    they hadn't already been visited themselves.</span>
 
 <span class="sd">    Since the last element on top of the stack is always popped off, the</span>
 <span class="sd">    algorithm goes deeper and deeper in the datastructure, until it reaches a</span>
@@ -131,13 +103,13 @@
 <span class="sd">        &gt;&gt;&gt; import compas</span>
 <span class="sd">        &gt;&gt;&gt; from compas.datastructures import Network</span>
 <span class="sd">        &gt;&gt;&gt; from compas.topology import depth_first_search as dfs</span>
-<span class="sd">        &gt;&gt;&gt; network = Network.from_obj(compas.get_data(&#39;lines.obj&#39;))</span>
+<span class="sd">        &gt;&gt;&gt; network = Network.from_obj(compas.get_data('lines.obj'))</span>
 <span class="sd">        &gt;&gt;&gt; print(dfs(network, network.get_any_vertex()))</span>
 
 <span class="sd">    See Also:</span>
 <span class="sd">        ...</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span><span class="n">nbrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">adjacency</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
     <span class="n">tovisit</span> <span class="o">=</span> <span class="p">[</span><span class="n">root</span><span class="p">]</span>
     <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -158,7 +130,7 @@
 
 
 <div class="viewcode-block" id="depth_first_tree"><a class="viewcode-back" href="../../../reference/generated/compas.topology.depth_first_tree.html#compas.topology.depth_first_tree">[docs]</a><span class="k">def</span> <span class="nf">depth_first_tree</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Construct a spanning tree using a depth-first search.</span>
+    <span class="sd">"""Construct a spanning tree using a depth-first search.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -185,7 +157,7 @@
 <span class="sd">        from compas.topology import depth_first_tree</span>
 <span class="sd">        from compas.utilities import pairwise</span>
 
-<span class="sd">        mesh = Mesh.from_obj(compas.get(&#39;faces.obj&#39;))</span>
+<span class="sd">        mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
 <span class="sd">        edges = list(mesh.edges())</span>
 
@@ -199,7 +171,7 @@
 <span class="sd">        for u, v in pairwise(paths[0]):</span>
 <span class="sd">            if not mesh.has_edge(u, v):</span>
 <span class="sd">                u, v = v, u</span>
-<span class="sd">            edgecolor[(u, v)] = &#39;#ff0000&#39;</span>
+<span class="sd">            edgecolor[(u, v)] = '#ff0000'</span>
 <span class="sd">            edgewidth[(u, v)] = 3.0</span>
 
 <span class="sd">        for path in paths[1:]:</span>
@@ -207,17 +179,17 @@
 <span class="sd">            for u, v in pairwise([parent] + path):</span>
 <span class="sd">                if not mesh.has_edge(u, v):</span>
 <span class="sd">                    u, v = v, u</span>
-<span class="sd">                edgecolor[(u, v)] = &#39;#00ff00&#39;</span>
+<span class="sd">                edgecolor[(u, v)] = '#00ff00'</span>
 <span class="sd">                edgewidth[(u, v)] = 3.0</span>
 
 <span class="sd">        plotter = MeshPlotter(mesh, figsize=(10, 7))</span>
 
-<span class="sd">        plotter.draw_vertices(text=&#39;key&#39;, facecolor={root: &#39;#ff0000&#39;}, radius=0.2)</span>
+<span class="sd">        plotter.draw_vertices(text='key', facecolor={root: '#ff0000'}, radius=0.2)</span>
 <span class="sd">        plotter.draw_edges(color=edgecolor, width=edgewidth)</span>
 
 <span class="sd">        plotter.show()</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span><span class="n">nbrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">adjacency</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
     <span class="n">tovisit</span> <span class="o">=</span> <span class="p">[</span><span class="n">root</span><span class="p">]</span>
     <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -259,12 +231,12 @@
 
 
 <div class="viewcode-block" id="breadth_first_ordering"><a class="viewcode-back" href="../../../reference/generated/compas.topology.breadth_first_ordering.html#compas.topology.breadth_first_ordering">[docs]</a><span class="k">def</span> <span class="nf">breadth_first_ordering</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a breadth-first ordering of all vertices in an adjacency dictionary</span>
+    <span class="sd">"""Return a breadth-first ordering of all vertices in an adjacency dictionary</span>
 <span class="sd">    reachable from a chosen root vertex.</span>
 
 <span class="sd">    This implementation uses a double-ended queue (deque) to keep track of nodes to visit.</span>
 <span class="sd">    The principle of a queue is FIFO. In Python, a deque is ideal for removing elements</span>
-<span class="sd">    from the beginning, i.e. from the &#39;left&#39;.</span>
+<span class="sd">    from the beginning, i.e. from the 'left'.</span>
 
 <span class="sd">    In a breadth-first search, all unvisited neighbours of a node are visited</span>
 <span class="sd">    first. When a neighbour is visited, its univisited neighbours are added to</span>
@@ -286,7 +258,7 @@
 <span class="sd">        and by visiting the nodes at the start of the list first, the network is</span>
 <span class="sd">        traversed in *breadth-first* order.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">tovisit</span>  <span class="o">=</span> <span class="n">deque</span><span class="p">([</span><span class="n">root</span><span class="p">])</span>
     <span class="n">visited</span>  <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">root</span><span class="p">])</span>
     <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="n">root</span><span class="p">]</span>
@@ -322,7 +294,7 @@
 
 
 <div class="viewcode-block" id="breadth_first_paths"><a class="viewcode-back" href="../../../reference/generated/compas.topology.breadth_first_paths.html#compas.topology.breadth_first_paths">[docs]</a><span class="k">def</span> <span class="nf">breadth_first_paths</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">goal</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return all paths from root to goal.</span>
+    <span class="sd">"""Return all paths from root to goal.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -342,7 +314,7 @@
 <span class="sd">    ----</span>
 <span class="sd">    Due to the nature of the search, the first path returned is the shortest.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span><span class="n">nbrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">adjacency</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
     <span class="n">tovisit</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">root</span><span class="p">,</span> <span class="p">[</span><span class="n">root</span><span class="p">])])</span>
 
@@ -362,7 +334,7 @@
 
 
 <div class="viewcode-block" id="shortest_path"><a class="viewcode-back" href="../../../reference/generated/compas.topology.shortest_path.html#compas.topology.shortest_path">[docs]</a><span class="k">def</span> <span class="nf">shortest_path</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">goal</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Find the shortest path between two vertices of a network.</span>
+    <span class="sd">"""Find the shortest path between two vertices of a network.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -392,7 +364,7 @@
 <span class="sd">        from compas.topology import shortest_path</span>
 <span class="sd">        from compas.plotters import NetworkPlotter</span>
 
-<span class="sd">        network = Network.from_obj(compas.get_data(&#39;grid_irregular.obj&#39;))</span>
+<span class="sd">        network = Network.from_obj(compas.get_data('grid_irregular.obj'))</span>
 
 <span class="sd">        adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
 
@@ -413,18 +385,18 @@
 
 <span class="sd">        plotter.draw_vertices(</span>
 <span class="sd">            text={key: key for key in path},</span>
-<span class="sd">            facecolor={key: &#39;#ff0000&#39; for key in (path[0], path[-1])},</span>
+<span class="sd">            facecolor={key: '#ff0000' for key in (path[0], path[-1])},</span>
 <span class="sd">            radius=0.15</span>
 <span class="sd">        )</span>
 
 <span class="sd">        plotter.draw_edges(</span>
-<span class="sd">            color={(u, v): &#39;#ff0000&#39; for u, v in edges},</span>
+<span class="sd">            color={(u, v): '#ff0000' for u, v in edges},</span>
 <span class="sd">            width={(u, v): 2.0 for u, v in edges}</span>
 <span class="sd">        )</span>
 
 <span class="sd">        plotter.show()</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">breadth_first_paths</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">goal</span><span class="p">))</span>
     <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
@@ -432,7 +404,7 @@
 
 
 <div class="viewcode-block" id="dijkstra_distances"><a class="viewcode-back" href="../../../reference/generated/compas.topology.dijkstra_distances.html#compas.topology.dijkstra_distances">[docs]</a><span class="k">def</span> <span class="nf">dijkstra_distances</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute Dijkstra distances from all vertices in a connected set to one target vertex.</span>
+    <span class="sd">"""Compute Dijkstra distances from all vertices in a connected set to one target vertex.</span>
 
 <span class="sd">    Parameters:</span>
 <span class="sd">        adjacency (dict): An adjacency dictionary. Each key represents a vertex</span>
@@ -455,7 +427,7 @@
 <span class="sd">            from compas.plotters import NetworkPlotter</span>
 <span class="sd">            from compas.utilities import i_to_red</span>
 
-<span class="sd">            network = Network.from_obj(compas.get_data(&#39;grid_irregular.obj&#39;))</span>
+<span class="sd">            network = Network.from_obj(compas.get_data('grid_irregular.obj'))</span>
 
 <span class="sd">            adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
 
@@ -471,7 +443,7 @@
 <span class="sd">            dmax = max(distances.values())</span>
 
 <span class="sd">            facecolor = {key: i_to_red(distances[key] / dmax) for key in network.vertices()}</span>
-<span class="sd">            text = {key: &#39;{:.1f}&#39;.format(distances[key]) for key in network.vertices()}</span>
+<span class="sd">            text = {key: '{:.1f}'.format(distances[key]) for key in network.vertices()}</span>
 
 <span class="sd">            plotter.draw_vertices(</span>
 <span class="sd">                text=text,</span>
@@ -485,7 +457,7 @@
 <span class="sd">    Notes:</span>
 <span class="sd">        ...</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span><span class="n">nbrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span> <span class="ow">in</span> <span class="n">adjacency</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
     <span class="n">distance</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">target</span> <span class="k">else</span> <span class="mi">1</span><span class="n">e</span><span class="o">+</span><span class="mi">17</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">adjacency</span><span class="p">}</span>
     <span class="n">tovisit</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">adjacency</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -506,7 +478,7 @@
 
 
 <div class="viewcode-block" id="dijkstra_path"><a class="viewcode-back" href="../../../reference/generated/compas.topology.dijkstra_path.html#compas.topology.dijkstra_path">[docs]</a><span class="k">def</span> <span class="nf">dijkstra_path</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Find the shortest path between two vertices if the edge weights are not</span>
+    <span class="sd">"""Find the shortest path between two vertices if the edge weights are not</span>
 <span class="sd">    all the same.</span>
 
 <span class="sd">    Parameters:</span>
@@ -535,7 +507,7 @@
 <span class="sd">            from compas.topology import dijkstra_path</span>
 <span class="sd">            from compas.plotters import NetworkPlotter</span>
 
-<span class="sd">            network = Network.from_obj(compas.get_data(&#39;grid_irregular.obj&#39;))</span>
+<span class="sd">            network = Network.from_obj(compas.get_data('grid_irregular.obj'))</span>
 
 <span class="sd">            adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
 
@@ -559,14 +531,14 @@
 
 <span class="sd">            plotter.draw_vertices(</span>
 <span class="sd">                text={key: key for key in path},</span>
-<span class="sd">                facecolor={key: &#39;#ff0000&#39; for key in (path[0], path[-1])},</span>
+<span class="sd">                facecolor={key: '#ff0000' for key in (path[0], path[-1])},</span>
 <span class="sd">                radius=0.15</span>
 <span class="sd">            )</span>
 
 <span class="sd">            plotter.draw_edges(</span>
-<span class="sd">                color={(u, v): &#39;#ff0000&#39; for u, v in edges},</span>
+<span class="sd">                color={(u, v): '#ff0000' for u, v in edges},</span>
 <span class="sd">                width={(u, v): 2.0 for u, v in edges},</span>
-<span class="sd">                text={(u, v): &#39;{:.1f}&#39;.format(weight[(u, v)]) for u, v in network.edges()}</span>
+<span class="sd">                text={(u, v): '{:.1f}'.format(weight[(u, v)]) for u, v in network.edges()}</span>
 <span class="sd">            )</span>
 
 <span class="sd">            plotter.show()</span>
@@ -580,7 +552,7 @@
 <span class="sd">            from compas.topology import dijkstra_path</span>
 <span class="sd">            from compas.plotters import NetworkPlotter</span>
 
-<span class="sd">            network = Network.from_obj(compas.get_data(&#39;grid_irregular.obj&#39;))</span>
+<span class="sd">            network = Network.from_obj(compas.get_data('grid_irregular.obj'))</span>
 
 <span class="sd">            adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
 
@@ -607,19 +579,19 @@
 
 <span class="sd">            plotter.draw_vertices(</span>
 <span class="sd">                text={key: key for key in path},</span>
-<span class="sd">                facecolor={key: &#39;#ff0000&#39; for key in (path[0], path[-1])},</span>
+<span class="sd">                facecolor={key: '#ff0000' for key in (path[0], path[-1])},</span>
 <span class="sd">                radius=0.15</span>
 <span class="sd">            )</span>
 
 <span class="sd">            plotter.draw_edges(</span>
-<span class="sd">                color={(u, v): &#39;#ff0000&#39; for u, v in edges},</span>
+<span class="sd">                color={(u, v): '#ff0000' for u, v in edges},</span>
 <span class="sd">                width={(u, v): 2.0 for u, v in edges},</span>
-<span class="sd">                text={(u, v): &#39;{:.1f}&#39;.format(weight[(u, v)]) for u, v in network.edges()}</span>
+<span class="sd">                text={(u, v): '{:.1f}'.format(weight[(u, v)]) for u, v in network.edges()}</span>
 <span class="sd">            )</span>
 
 <span class="sd">            plotter.show()</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">dist</span><span class="p">:</span>
         <span class="n">dist</span> <span class="o">=</span> <span class="n">dijkstra_distances</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
     <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="n">source</span><span class="p">]</span>
@@ -664,13 +636,13 @@
 <span class="c1"># Debugging</span>
 <span class="c1"># ==============================================================================</span>
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
 
     <span class="kn">import</span> <span class="nn">compas</span>
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
     <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">MeshPlotter</span>
 
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'faces.obj'</span><span class="p">))</span>
 
     <span class="n">edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
 
@@ -684,7 +656,7 @@
     <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
             <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">,</span> <span class="n">u</span>
-        <span class="n">edgecolor</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">&#39;#ff0000&#39;</span>
+        <span class="n">edgecolor</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">'#ff0000'</span>
         <span class="n">edgewidth</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">3.0</span>
 
     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
@@ -692,12 +664,12 @@
         <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">([</span><span class="n">parent</span><span class="p">]</span> <span class="o">+</span> <span class="n">path</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
                 <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">,</span> <span class="n">u</span>
-            <span class="n">edgecolor</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">&#39;#00ff00&#39;</span>
+            <span class="n">edgecolor</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">'#00ff00'</span>
             <span class="n">edgewidth</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">3.0</span>
 
     <span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 
-    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="p">)},</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'key'</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#ff0000'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="p">)},</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
     <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">edgewidth</span><span class="p">)</span>
 
     <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -711,7 +683,7 @@
     <span class="c1"># from compas.topology import breadth_first_paths</span>
     <span class="c1"># from compas.plotters import NetworkPlotter</span>
 
-    <span class="c1"># network = Network.from_obj(compas.get(&#39;lines.obj&#39;))</span>
+    <span class="c1"># network = Network.from_obj(compas.get('lines.obj'))</span>
 
     <span class="c1"># adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
 
@@ -744,17 +716,17 @@
 
     <span class="c1"># plotter = NetworkPlotter(network)</span>
 
-    <span class="c1"># # plotter.draw_vertices(text=&#39;key&#39;)</span>
+    <span class="c1"># # plotter.draw_vertices(text='key')</span>
     <span class="c1"># # plotter.draw_edges()</span>
 
     <span class="c1"># plotter.draw_vertices(</span>
     <span class="c1">#     text={key: key for key in network.vertices()},</span>
-    <span class="c1">#     facecolor={key: &#39;#ff0000&#39; for key in (path[0], path[-1])},</span>
+    <span class="c1">#     facecolor={key: '#ff0000' for key in (path[0], path[-1])},</span>
     <span class="c1">#     radius=0.15</span>
     <span class="c1"># )</span>
 
     <span class="c1"># plotter.draw_edges(</span>
-    <span class="c1">#     color={(u, v): &#39;#ff0000&#39; for u, v in edges},</span>
+    <span class="c1">#     color={(u, v): '#ff0000' for u, v in edges},</span>
     <span class="c1">#     width={(u, v): 2.0 for u, v in edges}</span>
     <span class="c1"># )</span>
 
@@ -766,7 +738,7 @@
     <span class="c1"># from compas.topology import shortest_path</span>
     <span class="c1"># from compas.plotters import NetworkPlotter</span>
 
-    <span class="c1"># network = Network.from_obj(compas.get_data(&#39;grid_irregular.obj&#39;))</span>
+    <span class="c1"># network = Network.from_obj(compas.get_data('grid_irregular.obj'))</span>
 
     <span class="c1"># adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
 
@@ -787,12 +759,12 @@
 
     <span class="c1"># plotter.draw_vertices(</span>
     <span class="c1">#     text={key: key for key in network.vertices()},</span>
-    <span class="c1">#     facecolor={key: &#39;#ff0000&#39; for key in (path[0], path[-1])},</span>
+    <span class="c1">#     facecolor={key: '#ff0000' for key in (path[0], path[-1])},</span>
     <span class="c1">#     radius=0.15</span>
     <span class="c1"># )</span>
 
     <span class="c1"># plotter.draw_edges(</span>
-    <span class="c1">#     color={(u, v): &#39;#ff0000&#39; for u, v in edges},</span>
+    <span class="c1">#     color={(u, v): '#ff0000' for u, v in edges},</span>
     <span class="c1">#     width={(u, v): 2.0 for u, v in edges}</span>
     <span class="c1"># )</span>
 
@@ -805,7 +777,7 @@
     <span class="c1"># from compas.plotters import NetworkPlotter</span>
     <span class="c1"># from compas.utilities import i_to_red</span>
 
-    <span class="c1"># network = Network.from_obj(compas.get_data(&#39;grid_irregular.obj&#39;))</span>
+    <span class="c1"># network = Network.from_obj(compas.get_data('grid_irregular.obj'))</span>
 
     <span class="c1"># adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
 
@@ -821,7 +793,7 @@
     <span class="c1"># dmax = max(distances.values())</span>
 
     <span class="c1"># facecolor = {key: i_to_red(distances[key] / dmax) for key in network.vertices()}</span>
-    <span class="c1"># text = {key: &#39;{:.1f}&#39;.format(distances[key]) for key in network.vertices()}</span>
+    <span class="c1"># text = {key: '{:.1f}'.format(distances[key]) for key in network.vertices()}</span>
 
     <span class="c1"># plotter.draw_vertices(</span>
     <span class="c1">#     text=text,</span>
@@ -839,7 +811,7 @@
 
     <span class="c1"># from compas.topology import dijkstra_path</span>
 
-    <span class="c1"># network = Network.from_obj(compas.get(&#39;grid_irregular.obj&#39;))</span>
+    <span class="c1"># network = Network.from_obj(compas.get('grid_irregular.obj'))</span>
 
     <span class="c1"># adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
 
@@ -874,22 +846,22 @@
     <span class="c1">#         edges.append([u, v])</span>
 
     <span class="c1">#     vertexcolor = {}</span>
-    <span class="c1">#     vertexcolor[start] = &#39;#00ff00&#39;</span>
-    <span class="c1">#     vertexcolor[end] = &#39;#00ff00&#39;</span>
-    <span class="c1">#     vertexcolor[via] = &#39;#0000ff&#39;</span>
+    <span class="c1">#     vertexcolor[start] = '#00ff00'</span>
+    <span class="c1">#     vertexcolor[end] = '#00ff00'</span>
+    <span class="c1">#     vertexcolor[via] = '#0000ff'</span>
 
     <span class="c1">#     plotter.clear_vertices()</span>
     <span class="c1">#     plotter.clear_edges()</span>
 
     <span class="c1">#     plotter.draw_vertices(text={key: key for key in (start, via, end)},</span>
-    <span class="c1">#                           textcolor={key: &#39;#ffffff&#39; for key in path[1:-1]},</span>
+    <span class="c1">#                           textcolor={key: '#ffffff' for key in path[1:-1]},</span>
     <span class="c1">#                           facecolor=vertexcolor,</span>
     <span class="c1">#                           radius=0.15,</span>
     <span class="c1">#                           picker=10)</span>
 
-    <span class="c1">#     plotter.draw_edges(color={(u, v): &#39;#ff0000&#39; for u, v in edges},</span>
+    <span class="c1">#     plotter.draw_edges(color={(u, v): '#ff0000' for u, v in edges},</span>
     <span class="c1">#                        width={(u, v): 4.0 for u, v in edges},</span>
-    <span class="c1">#                        text={(u, v): &#39;{:.1f}&#39;.format(weight[(u, v)]) for u, v in network.edges()},</span>
+    <span class="c1">#                        text={(u, v): '{:.1f}'.format(weight[(u, v)]) for u, v in network.edges()},</span>
     <span class="c1">#                        fontsize=4.0)</span>
 
     <span class="c1"># def onpick(e):</span>
@@ -903,37 +875,25 @@
     <span class="c1"># plotter.register_listener(onpick)</span>
     <span class="c1"># plotter.show()</span>
 </code></pre></div>
-                        
-                        <!--<nav class="compas-sideways">
+<!--<nav class="compas-sideways">
                             
 
                             
                         </nav>-->
-
-                    
-
-                </main>
-
-                <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation"> 
-                    <div class="navbar-light">
-
-                        <form id="" class="d-flex compas-searchbox" action="../../../search.html" method="get">
-                            <input class="form-control" type="text" name="q" placeholder="Search docs" />
-                            <input type="hidden" name="check_keywords" value="yes" />
-                            <input type="hidden" name="area" value="default" />
-
-                            <button class="navbar-toggler d-md-none compas-navigation-toggler" type="button" data-toggle="collapse" data-target="#compas-navigation" aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation">
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
-                        </form>
-
-                        
-                        
-
-                            <div class="navbar-expand-md">
-                                <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
-
-                                <ul class="nav flex-column">
+</main>
+<div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
+<div class="navbar-light">
+<form action="../../../search.html" class="d-flex compas-searchbox" id="" method="get">
+<input class="form-control" name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+<button aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler d-md-none compas-navigation-toggler" data-target="#compas-navigation" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+</form>
+<div class="navbar-expand-md">
+<div class="collapse navbar-collapse compas-navigation" id="compas-navigation">
+<ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
@@ -941,30 +901,18 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../workshops.html">Workshops</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../bibliography.html">Bibliography</a></li>
 </ul>
-
-
-                                </div>
-                            </div>
-
-                        
-
-                    </div>
-                </div>
-                
-                <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
-
-                    
-
-                    
-
-                </div>
-            </div>
-        </div>
-
-        <footer class="compas-footer">
+</div>
+</div>
+</div>
+</div>
+<div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+</div>
+</div>
+</div>
+<footer class="compas-footer">
             
                 
-                    &#169; Copyright 2017, Block Research Group - ETH Zurich.
+                    © Copyright 2017, Block Research Group - ETH Zurich.
                 
             
 
@@ -976,10 +924,7 @@
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
             
         </footer>
-
-        
-
-            <script type="text/javascript">
+<script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT: '',
     VERSION: '',
@@ -989,21 +934,16 @@ var DOCUMENTATION_OPTIONS = {
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
-
-            <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-            
-            <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
-
-            <script src="/static/underscore.js"></script>
-            <script src="/static/doctools.js"></script>
-            <script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
-
-            <script>
+<script crossorigin="anonymous" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+<script src="/static/underscore.js"></script>
+<script src="/static/doctools.js"></script>
+<script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
+<script>
 hljs.initHighlightingOnLoad();
 anchors.add();
 
@@ -1046,7 +986,5 @@ copy_code.on('error', function(event) {
     }, 2000);
 });
             </script>
-
-        
-    </body>
+</body>
 </html>
