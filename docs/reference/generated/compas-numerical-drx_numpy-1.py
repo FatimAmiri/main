@@ -26,6 +26,7 @@ network.beams = {'beam': {'nodes': list(range(n))}}
 # Plotter
 
 plotter = NetworkPlotter(network, figsize=(10, 7))
+
 lines = []
 for u, v in network.edges():
     lines.append({
@@ -33,12 +34,16 @@ for u, v in network.edges():
         'end'  : network.vertex_coordinates(v, 'xy'),
         'color': '#cccccc',
         'width': 1.0})
+
 plotter.draw_lines(lines)
-plotter.draw_vertices(radius=0.005, facecolor={key: '#ff0000' for key in network.vertices_where({'is_fixed': True})})
-plotter.draw_edges()
 
 # Solver
 
 drx_numpy(network=network, tol=0.01, refresh=10, factor=30, update=True)
+
+# Result
+
+plotter.draw_vertices(radius=0.005, facecolor={key: '#ff0000' for key in pins})
+plotter.draw_edges()
 
 plotter.show()
