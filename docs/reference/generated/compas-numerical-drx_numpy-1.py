@@ -25,7 +25,7 @@ network.beams = {'beam': {'nodes': list(range(n))}}
 
 # Plotter
 
-plotter = NetworkPlotter(network, figsize=(10, 7))
+plotter = NetworkPlotter(network)
 
 lines = []
 for u, v in network.edges():
