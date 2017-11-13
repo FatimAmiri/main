@@ -7,19 +7,23 @@ from compas_blender.utilities import clear_layer
 from compas_blender.utilities import get_objects
 from compas_blender.utilities import xdraw_mesh
 
-from compas.hpc import numba_drx
+from compas.hpc import drx_numba
 
-from compas.numerical import closest_points_points
-from compas.numerical import devo
+from compas.numerical import devo_numpy
 from compas.numerical import normrow
 
 from numpy import array
 from numpy import arctan2
+from numpy import argmin
 from numpy import cos
 from numpy import mean
 from numpy import pi
 from numpy import sin
 from numpy import vstack
+
+from scipy.spatial.distance import cdist
+
+from compas.plotters.evoplotter import EvoPlotter
 
 
 __author__     = ['Andrew Liew <liew@arch.ethz.ch>']
@@ -39,9 +43,9 @@ def update(dofs, network, tol, plot, Xt, ds):
     network.set_vertex_attributes(ep, {'x': x2, 'z': z2})
     network.set_vertex_attributes(sp + 1, {'x': dx1 + x1, 'z': dz1 + z1})
     network.set_vertex_attributes(ep - 1, {'x': dx2 + x2, 'z': dz2 + z2})
-    X, f, l = numba_drx(network=network, factor=1, tol=tol)
+    X, f, l = drx_numba(network=network, factor=1, tol=tol)
     if plot:
-        ind = closest_points_points(X, Xt, distances=False)
+        ind = argmin(cdist(X, Xt), axis=1)
         vertices = vstack([X, Xt[ind, :]])
         n = X.shape[0]
         edges = [[i, i + n] for i in range(n)] + list(network.edges())
@@ -52,7 +56,7 @@ def update(dofs, network, tol, plot, Xt, ds):
 def fn(dofs, *args):
     network, Xt, tol, ds = args
     X = update(dofs=dofs, network=network, tol=tol, plot=False, Xt=Xt, ds=ds)
-    ind = closest_points_points(X, Xt, distances=False)
+    ind = argmin(cdist(X, Xt), axis=1)
     return 1000 * mean(normrow(X - Xt[ind, :]))
 
 
@@ -99,6 +103,8 @@ network.beams = {'beam': {'nodes': list(range(network.number_of_vertices()))}}
 
 # Optimise
 
+generations = 30
+
 xa, za = Xt[+0, [0, 2]]
 xb, zb = Xt[+1, [0, 2]]
 xc, zc = Xt[-2, [0, 2]]
@@ -108,7 +114,16 @@ r2 = arctan2(zc - zd, xc - xd)
 bounds = [(xa - du, xa + du), (za - du, za + du), (r1 - dr, r1 + dr),
           (xd - du, xd + du), (zd - du, zd + du), (r2 - dr, r2 + dr)]
 args = network, Xt, tol, ds
-fopt, uopt = devo(fn=fn, bounds=bounds, population=20, iterations=30, args=args)
+
+
+def callback(ts, f, evoplotter):
+    evoplotter.update_points(generation=ts, values=f)
+    evoplotter.update_lines(generation=ts, values=f)
+
+evoplotter = EvoPlotter(generations=generations, fmax=20, xaxis_div=generations, yaxis_div=10, pointsize=0.1)
+    
+fopt, uopt = devo_numpy(fn=fn, bounds=bounds, population=20, generations=generations, args=args, callback=callback, 
+                        evoplotter=evoplotter)
 
 # Plot
 

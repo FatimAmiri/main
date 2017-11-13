@@ -4,7 +4,7 @@ from compas_blender.utilities import set_objects_show_name
 from compas_blender.utilities import xdraw_mesh
 from compas_blender.utilities import xdraw_spheres
 
-from compas.hpc import numba_length
+from compas.hpc import length_vector_numba
 
 from numpy import array
 from numpy import hstack
@@ -47,47 +47,47 @@ year = 365 * day
 # Planets data
 
 planets_radius = [
-    2440 * kilo,  # mercury
-    6052 * kilo,  # venus
-    6371 * kilo,  # earth
-    3390 * kilo,  # mars
-    69911 * kilo, # jupiter
-    58232 * kilo, # saturn
-    25362 * kilo, # uranus
-    24622 * kilo, # neptune
+    2440 * kilo,   # mercury
+    6052 * kilo,   # venus
+    6371 * kilo,   # earth
+    3390 * kilo,   # mars
+    69911 * kilo,  # jupiter
+    58232 * kilo,  # saturn
+    25362 * kilo,  # uranus
+    24622 * kilo,  # neptune
     ]
 
 planets_distance = [
-    57.91 * giga, # mercury
-    108.2 * giga, # venus
-    149.6 * giga, # earth
-    227.9 * giga, # mars
-    778.5 * giga, # jupiter
-    1429. * giga, # saturn
-    2871. * giga, # uranus
-    4498. * giga, # neptune
+    57.91 * giga,  # mercury
+    108.2 * giga,  # venus
+    149.6 * giga,  # earth
+    227.9 * giga,  # mars
+    778.5 * giga,  # jupiter
+    1429. * giga,  # saturn
+    2871. * giga,  # uranus
+    4498. * giga,  # neptune
     ]
 
 planets_mass = array([
-    3.285 * 10**23, # mercury
-    4.867 * 10**24, # venus
-    5.972 * 10**24, # earth
-    6.390 * 10**23, # mars
-    1.898 * 10**27, # jupiter
-    55.68 * 10**26, # saturn
-    8.681 * 10**25, # uranus
-    1.024 * 10**26, # neptune
+    3.285 * 10**23,  # mercury
+    4.867 * 10**24,  # venus
+    5.972 * 10**24,  # earth
+    6.390 * 10**23,  # mars
+    1.898 * 10**27,  # jupiter
+    55.68 * 10**26,  # saturn
+    8.681 * 10**25,  # uranus
+    1.024 * 10**26,  # neptune
 ])
 
 planets_speed = [
-    47.36 * kilo, # mercury
-    35.02 * kilo, # venus
-    29.80 * kilo, # earth
-    24.08 * kilo, # mars
-    13.07 * kilo, # jupiter
-    9.690 * kilo, # saturn
-    6.800 * kilo, # uranus
-    5.430 * kilo, # neptune
+    47.36 * kilo,  # mercury
+    35.02 * kilo,  # venus
+    29.80 * kilo,  # earth
+    24.08 * kilo,  # mars
+    13.07 * kilo,  # jupiter
+    9.690 * kilo,  # saturn
+    6.800 * kilo,  # uranus
+    5.430 * kilo,  # neptune
 ]
 
 planets_colour = [
@@ -160,10 +160,10 @@ rocket = xdraw_spheres([{'name': 'rocket', 'pos': list(x_rocket / giga), 'radius
 m = G * sun_mass * rocket_mass
 p = G * planets_mass * rocket_mass * 1
 
+
 # Simulation
 
-@jit(float64[:, :](int64, float64[:], float64[:, :], float64[:], float64, float64[:], float64, float64, float64, float64[:]),
-     nogil=True, nopython=True)
+@jit(float64[:, :](int64, float64[:], float64[:, :], float64[:], float64, float64[:], float64, float64, float64, float64[:]), nogil=True, nopython=True)
 def simulation(n, x_sun, xv_all, k, dt, planets_mass, rocket_mass, day, m, p):
 
     for j in range(int(day // dt)):
@@ -172,7 +172,7 @@ def simulation(n, x_sun, xv_all, k, dt, planets_mass, rocket_mass, day, m, p):
 
         for i in range(n):
             r = x_sun - xv_all[i, :3]
-            d = numba_length(r)
+            d = length_vector_numba(r)
             c = k[i] / d**3
             Fx = c * r[0]
             Fy = c * r[1]
@@ -185,7 +185,7 @@ def simulation(n, x_sun, xv_all, k, dt, planets_mass, rocket_mass, day, m, p):
         # Rocket - Sun
 
         r = x_sun - xv_all[n, :3]
-        d = numba_length(r)
+        d = length_vector_numba(r)
         c = m / d**3
         Fx = c * r[0]
         Fy = c * r[1]
@@ -195,7 +195,7 @@ def simulation(n, x_sun, xv_all, k, dt, planets_mass, rocket_mass, day, m, p):
 
         for i in range(n):
             r = xv_all[i, :3] - xv_all[n, :3]
-            d = numba_length(r)
+            d = length_vector_numba(r)
             c = p[i] / d**3
             Fx += c * r[0]
             Fy += c * r[1]
@@ -210,6 +210,7 @@ def simulation(n, x_sun, xv_all, k, dt, planets_mass, rocket_mass, day, m, p):
 
     return xv_all
 
+
 # Loop
 
 xv_all = vstack([xv_planets, xv_rocket])
@@ -223,7 +224,7 @@ for i in range(duration // day):
     # Plot
 
     if i % refresh == 0:
-        locations = [list(location) for location in list(xv_all[:, :3] / giga)]
+        locations = [list(loc) for loc in list(xv_all[:, :3] / giga)]
         set_objects_location(objects=planets, locations=locations[:8])
         set_objects_location(objects=[rocket], locations=[locations[8]])
         mesh = xdraw_mesh(name='path', vertices=[locations[8]])

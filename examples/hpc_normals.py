@@ -24,7 +24,7 @@ points = [[x, y, sin(x) * cos(y)] for x, y, z in vertices]
 
 # Set-up XFunc
 
-basedir = 'E:/compas_core/examples/'
+basedir = 'D:/compas-dev/examples/'
 tmpdir = 'C:/Temp/'
 xfunc = XFunc(basedir=basedir, tmpdir=tmpdir)
 

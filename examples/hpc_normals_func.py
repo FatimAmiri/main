@@ -19,8 +19,8 @@ from numba import float64
 from numba import int64
 from numba import jit
 
-from compas.hpc import numba_cross
-from compas.hpc import numba_length
+from compas.hpc import cross_vectors_numba
+from compas.hpc import length_vector_numba
 
 from time import time
 
@@ -114,8 +114,8 @@ def njit(normals, X, Y, Z, n, delta, offset):
         zy = fj(xi, yi + delta)
         vecx[2] = zx - zi
         vecy[2] = zy - zi
-        n_ = numba_cross(vecx, vecy)
-        vecn = n_ / numba_length(n_)
+        n_ = cross_vectors_numba(vecx, vecy)
+        vecn = n_ / length_vector_numba(n_)
         normals[i, 0] = xi + offset * vecn[0]
         normals[i, 1] = yi + offset * vecn[1]
         normals[i, 2] = zi + offset * vecn[2]

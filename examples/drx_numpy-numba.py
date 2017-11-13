@@ -5,8 +5,8 @@ from compas_blender.helpers import network_from_bmesh
 from compas_blender.utilities import clear_layer
 from compas_blender.utilities import draw_plane
 
-from compas.numerical import drx as numpy_drx
-from compas.hpc import numba_drx
+from compas.numerical import drx_numpy
+from compas.hpc import drx_numba
 
 from time import time
 
@@ -42,14 +42,14 @@ for m in range(10, 71, 5):
     # Numpy-SciPy
 
     tic = time()
-    X, f, l = numpy_drx(network=network, tol=0.01)
+    X, f, l = drx_numpy(network=network, tol=0.01)
     data['numpy'].append(time() - tic)
     blendermesh.update_vertices(X)
 
     # Numba
 
     tic = time()
-    X, f, l = numba_drx(network=network, tol=0.01)
+    X, f, l = drx_numba(network=network, tol=0.01)
     data['numba'].append(time() - tic)
     blendermesh.update_vertices(X)
 

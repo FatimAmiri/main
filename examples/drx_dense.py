@@ -5,8 +5,8 @@ from compas_blender.helpers import network_from_bmesh
 from compas_blender.utilities import clear_layer
 from compas_blender.utilities import draw_plane
 
-from compas.numerical import drx as numpy_drx
-from compas.hpc import numba_drx
+from compas.numerical import drx_numpy
+from compas.hpc import drx_numba
 
 from numpy import zeros
 
@@ -23,10 +23,10 @@ __email__      = 'liew@arch.ethz.ch'
 
 def callback(X, blendermesh):
     blendermesh.update_vertices(X)
-    
-    
+
+
 clear_layer(layer=0)
-    
+
 # Set-up Network
 
 m = 200
@@ -43,7 +43,7 @@ network.set_vertices_attributes(corners, {'B': [0, 0, 0]})
 # Numpy-SciPy
 
 tic = time()
-X, f, l = numpy_drx(network=network, tol=0.01, refresh=10, callback=callback, blendermesh=blendermesh)
+X, f, l = drx_numpy(network=network, tol=0.01, refresh=10, callback=callback, blendermesh=blendermesh)
 blendermesh.update_vertices(X)
 print('\nNumpy: {0}s\n'.format(time() - tic))
 
@@ -52,6 +52,6 @@ blendermesh.update_vertices(X * 0)
 # Numba
 
 tic = time()
-X, f, l = numba_drx(network=network, tol=0.01)
+X, f, l = drx_numba(network=network, tol=0.01)
 blendermesh.update_vertices(X)
 print('\nNumba: {0}s\n'.format(time() - tic))
