@@ -55,8 +55,10 @@ and for ...</p>
 <li><a class="reference internal" href="reference/compas.hpc.html#module-compas.hpc" title="compas.hpc"><code class="xref py py-mod docutils literal">compas.hpc</code></a></li>
 <li><a class="reference internal" href="reference/compas.interop.html#module-compas.interop" title="compas.interop"><code class="xref py py-mod docutils literal">compas.interop</code></a></li>
 <li><a class="reference internal" href="reference/compas.numerical.html#module-compas.numerical" title="compas.numerical"><code class="xref py py-mod docutils literal">compas.numerical</code></a></li>
+<li><a class="reference internal" href="reference/compas.plotters.html#module-compas.plotters" title="compas.plotters"><code class="xref py py-mod docutils literal">compas.plotters</code></a></li>
+<li><code class="xref py py-mod docutils literal">compas.topology</code></li>
 <li><a class="reference internal" href="reference/compas.utilities.html#module-compas.utilities" title="compas.utilities"><code class="xref py py-mod docutils literal">compas.utilities</code></a></li>
-<li><a class="reference internal" href="reference/compas.visualization.html#module-compas.visualization" title="compas.visualization"><code class="xref py py-mod docutils literal">compas.visualization</code></a></li>
+<li><a class="reference internal" href="reference/compas.viewers.html#module-compas.viewers" title="compas.viewers"><code class="xref py py-mod docutils literal">compas.viewers</code></a></li>
 </ul>
 </li>
 </ul>
@@ -65,17 +67,20 @@ and for ...</p>
 <h2>CAD integration</h2>
 <ul class="simple">
 <li><a class="reference internal" href="reference/compas_blender.html#module-compas_blender" title="compas_blender"><code class="xref py py-mod docutils literal">compas_blender</code></a></li>
-<li><a class="reference internal" href="reference/compas_dynamo.html#module-compas_dynamo" title="compas_dynamo"><code class="xref py py-mod docutils literal">compas_dynamo</code></a></li>
-<li><a class="reference internal" href="reference/compas_grasshopper.html#module-compas_grasshopper" title="compas_grasshopper"><code class="xref py py-mod docutils literal">compas_grasshopper</code></a></li>
 <li><a class="reference internal" href="reference/compas_maya.html#module-compas_maya" title="compas_maya"><code class="xref py py-mod docutils literal">compas_maya</code></a></li>
 <li><a class="reference internal" href="reference/compas_rhino.html#module-compas_rhino" title="compas_rhino"><code class="xref py py-mod docutils literal">compas_rhino</code></a></li>
 </ul>
 </div>
 </div>
-<nav class="compas-sideways">
-<a class="btn btn-primary compas-prev" href="index.html" role="button">The main library of compas</a>
-<a class="btn btn-primary compas-next" href="examples.html" role="button">Examples</a>
-</nav>
+<!--<nav class="compas-sideways">
+                            
+                                <a href="index.html" class="btn btn-primary compas-prev" role="button">The main library of compas</a>
+                            
+
+                            
+                                <a href="examples.html" class="btn btn-primary compas-next" role="button">Examples</a>
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -120,7 +125,7 @@ and for ...</p>
             
 
             
-                Last updated on Oct 31, 2017.
+                Last updated on Nov 12, 2017.
             
 
             
@@ -129,11 +134,11 @@ and for ...</p>
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -147,10 +152,47 @@ var DOCUMENTATION_OPTIONS = {
 <script src="/static/doctools.js"></script>
 <script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
 
-                var clipboard = new Clipboard('.language-python');
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

@@ -49,8 +49,8 @@
 <p class="first admonition-title">See also</p>
 <ul class="last simple">
 <li><a class="reference internal" href="../../../reference/generated/compas.datastructures.Network.html#compas.datastructures.Network" title="compas.datastructures.Network"><code class="xref py py-class docutils literal">compas.datastructures.Network</code></a></li>
-<li><a class="reference internal" href="../../../reference/generated/compas.geometry.network_relax.html#compas.geometry.network_relax" title="compas.geometry.network_relax"><code class="xref py py-class docutils literal">compas.geometry.network_relax</code></a></li>
-<li><a class="reference internal" href="../../../reference/generated/compas.visualization.NetworkPlotter.html#compas.visualization.NetworkPlotter" title="compas.visualization.NetworkPlotter"><code class="xref py py-class docutils literal">compas.visualization.NetworkPlotter</code></a></li>
+<li><code class="xref py py-class docutils literal">compas.geometry.network_relax</code></li>
+<li><code class="xref py py-class docutils literal">compas.visualization.NetworkPlotter</code></li>
 <li><a class="reference internal" href="../../../reference/generated/compas.numerical.dr.html#compas.numerical.dr" title="compas.numerical.dr"><code class="xref py py-class docutils literal">compas.numerical.dr</code></a></li>
 </ul>
 </div>
@@ -67,7 +67,7 @@
 
 <span class="kn">import</span> <span class="nn">compas</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Network</span>
-<span class="kn">from</span> <span class="nn">compas.visualization</span> <span class="kn">import</span> <span class="n">NetworkPlotter</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">NetworkPlotter</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">network_relax</span>
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">i_to_rgb</span>
 
@@ -518,10 +518,15 @@ fixed options already filled in.</li>
 </div>
 </div>
 </div>
-<nav class="compas-sideways">
-<a class="btn btn-primary compas-prev" href="geometry.html" role="button">Geometry</a>
-<a class="btn btn-primary compas-next" href="../day3.html" role="button">Day 3</a>
-</nav>
+<!--<nav class="compas-sideways">
+                            
+                                <a href="geometry.html" class="btn btn-primary compas-prev" role="button">Geometry</a>
+                            
+
+                            
+                                <a href="../day3.html" class="btn btn-primary compas-next" role="button">Day 3</a>
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -578,7 +583,7 @@ fixed options already filled in.</li>
             
 
             
-                Last updated on Nov 01, 2017.
+                Last updated on Nov 12, 2017.
             
 
             
@@ -587,11 +592,11 @@ fixed options already filled in.</li>
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -605,10 +610,47 @@ var DOCUMENTATION_OPTIONS = {
 <script src="/static/doctools.js"></script>
 <script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
 
-                var clipboard = new Clipboard('.language-python');
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

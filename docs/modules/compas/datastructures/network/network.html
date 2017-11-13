@@ -66,7 +66,9 @@
 <span class="kn">from</span> <span class="nn">compas.datastructures.mixins</span> <span class="k">import</span> <span class="n">FromToData</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mixins</span> <span class="k">import</span> <span class="n">FromToJson</span>
 
-<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">bfs_traverse</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.network.operations</span> <span class="k">import</span> <span class="n">network_split_edge</span>
+
+<span class="c1"># from compas.topology import breadth_first_traverse</span>
 
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="s1">'Tom Van Mele'</span>
@@ -128,7 +130,7 @@
 
 <span class="sd">        import compas</span>
 <span class="sd">        from compas.datastructures import Network</span>
-<span class="sd">        from compas.visualization import NetworkPlotter</span>
+<span class="sd">        from compas.plotters import NetworkPlotter</span>
 
 <span class="sd">        network = Network.from_obj(compas.get_data('lines.obj'))</span>
 
@@ -140,6 +142,8 @@
 <span class="sd">        plotter.show()</span>
 
 <span class="sd">    """</span>
+
+    <span class="n">split_edge</span> <span class="o">=</span> <span class="n">network_split_edge</span>
 
 <div class="viewcode-block" id="Network.__init__"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Network.__init__.html#compas.datastructures.Network.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Network</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
@@ -511,23 +515,25 @@
     <span class="c1"># modifiers</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="c1"># def delete_vertex(self, key):</span>
-    <span class="c1">#     pass</span>
+<div class="viewcode-block" id="Network.delete_vertex"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Network.delete_vertex.html#compas.datastructures.Network.delete_vertex">[docs]</a>    <span class="k">def</span> <span class="nf">delete_vertex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_neighbours</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">nbr</span><span class="p">]</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">nbr</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="ow">and</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">nbr</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">nbr</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
-    <span class="c1"># def delete_edge(self, u, v):</span>
-    <span class="c1">#     raise NotImplementedError</span>
-    <span class="c1">#     if self.face:</span>
-    <span class="c1">#         # there are faces</span>
-    <span class="c1">#         f1 = self.halfedge[u][v]</span>
-    <span class="c1">#         f2 = self.halfedge[v][u]</span>
-    <span class="c1">#         if f1 is not None and f2 is not None:</span>
-    <span class="c1">#             vertices1 = self.face[f1]</span>
-    <span class="c1">#             vertices2 = self.face[f2]</span>
-    <span class="c1">#     else:</span>
-    <span class="c1">#         # there are no faces</span>
-    <span class="c1">#         del self.halfedge[u][v]</span>
-    <span class="c1">#         del self.halfedge[v][u]</span>
-    <span class="c1">#         del self.edge[u][v]</span>
+<div class="viewcode-block" id="Network.delete_edge"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Network.delete_edge.html#compas.datastructures.Network.delete_edge">[docs]</a>    <span class="k">def</span> <span class="nf">delete_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span></div>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># info</span>
@@ -542,15 +548,15 @@
 <div class="viewcode-block" id="Network.number_of_halfedges"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Network.number_of_halfedges.html#compas.datastructures.Network.number_of_halfedges">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_halfedges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">halfedges</span><span class="p">()))</span></div>
 
-<div class="viewcode-block" id="Network.is_connected"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Network.is_connected.html#compas.datastructures.Network.is_connected">[docs]</a>    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Return True if for every two vertices a path exists connecting them."""</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
+    <span class="c1"># def is_connected(self):</span>
+    <span class="c1">#     """Return True if for every two vertices a path exists connecting them."""</span>
+    <span class="c1">#     if not self.vertex:</span>
+    <span class="c1">#         return False</span>
 
-        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">()</span>
-        <span class="n">nodes</span> <span class="o">=</span> <span class="n">bfs_traverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+    <span class="c1">#     root = self.get_any_vertex()</span>
+    <span class="c1">#     nodes = breadth_first_traverse(self.halfedge, root)</span>
 
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span></div>
+    <span class="c1">#     return len(nodes) == self.number_of_vertices()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># accessors</span>
@@ -745,12 +751,25 @@
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
 
-    <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">'open_edges.obj'</span><span class="p">))</span>
+    <span class="kn">import</span> <span class="nn">compas</span>
+    <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'lines.obj'</span><span class="p">))</span>
+
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+    <span class="n">network</span><span class="o">.</span><span class="n">delete_vertex</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'key'</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
-<nav class="compas-sideways">
-</nav>
+<!--<nav class="compas-sideways">
+                            
+
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -788,7 +807,7 @@
             
 
             
-                Last updated on Oct 31, 2017.
+                Last updated on Nov 11, 2017.
             
 
             
@@ -797,11 +816,11 @@
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -810,12 +829,52 @@ var DOCUMENTATION_OPTIONS = {
 <script crossorigin="anonymous" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 <script src="/static/underscore.js"></script>
 <script src="/static/doctools.js"></script>
-<script src="https://compas-dev.github.io/compas/static/searchtools_.js"></script>
+<script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
+
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

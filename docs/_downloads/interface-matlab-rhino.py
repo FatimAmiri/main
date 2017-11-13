@@ -47,7 +47,8 @@ network = Network.from_lines(lines)
 
 # vertex coordinates
 
-xyz = matlab.matrix_from_list(network.get_vertices_attributes('xyz'))
+xyz = network.get_vertices_attributes('xyz')
+xyz = matlab.matrix_from_list(xyz)
 
 # connectivity matrix
 

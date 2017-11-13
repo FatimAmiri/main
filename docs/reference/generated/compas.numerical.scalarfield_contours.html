@@ -48,8 +48,8 @@
 available through matplotlib
 (<a class="reference external" href="http://matplotlib.org/api/_as_gen/matplotlib.axes.Axes.contour.html#matplotlib.axes.Axes.contour">http://matplotlib.org/api/_as_gen/matplotlib.axes.Axes.contour.html#matplotlib.axes.Axes.contour</a>).</p>
 <table class="docutils field-list table table-responsive table-bordered" frame="void" rules="none">
-<col class="field-name"></col>
-<col class="field-body"></col>
+<col class="field-name"/>
+<col class="field-body"/>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>xy</strong> (<em>array-like</em>) – The xy-coordinates at which the scalar field is defined.</li>
@@ -93,17 +93,21 @@ Each contour line is a list of paths, and each path is a list polygons.</p>
         <span class="k">for</span> <span class="n">polygon</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
             <span class="k">print</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
 </code></pre></div>
-
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><code class="xref py py-func docutils literal">compas.datastructures.numerical.geometry.mesh_contours()</code></p>
 </div>
 </dd></dl>
 </div>
-<nav class="compas-sideways">
-<a class="btn btn-primary compas-prev" href="compas.numerical.moga.html" role="button">moga</a>
-<a class="btn btn-primary compas-next" href="compas.numerical.plot_scalarfield_contours.html" role="button">plot_scalarfield_contours</a>
-</nav>
+<!--<nav class="compas-sideways">
+                            
+                                <a href="compas.numerical.moga.html" class="btn btn-primary compas-prev" role="button">moga</a>
+                            
+
+                            
+                                <a href="compas.numerical.plot_scalarfield_contours.html" class="btn btn-primary compas-next" role="button">plot_scalarfield_contours</a>
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -130,16 +134,15 @@ Each contour line is a list of paths, and each path is a list polygons.</p>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas.hpc.html">hpc</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas.interop.html">interop</a></li>
 <li class="nav-item active"><a class="nav-link reference internal" href="../compas.numerical.html">numerical</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas.utilities.html">utilities</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../compas.plotters.html">plotters</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas.topology.html">topology</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas.visualization.html">visualization</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../compas.utilities.html">utilities</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../compas.viewers.html">viewers</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_rhino.html">compas_rhino</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_blender.html">compas_blender</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_maya.html">compas_maya</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas_grasshopper.html">compas_grasshopper</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas_dynamo.html">compas_dynamo</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../workshops.html">Workshops</a></li>
@@ -164,7 +167,7 @@ Each contour line is a list of paths, and each path is a list polygons.</p>
             
 
             
-                Last updated on Nov 01, 2017.
+                Last updated on Nov 08, 2017.
             
 
             
@@ -173,11 +176,11 @@ Each contour line is a list of paths, and each path is a list polygons.</p>
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -191,10 +194,47 @@ var DOCUMENTATION_OPTIONS = {
 <script src="/static/doctools.js"></script>
 <script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
 
-                var clipboard = new Clipboard('.language-python');
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

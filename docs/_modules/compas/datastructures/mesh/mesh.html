@@ -37,6 +37,7 @@
 <h1>Source code for compas.datastructures.mesh.mesh</h1><div class="highlight"><pre><code class="language-python border rounded">
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
+<span class="c1"># from types import MethodType</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">ast</span> <span class="k">import</span> <span class="n">literal_eval</span>
 
@@ -54,8 +55,8 @@
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">subtract_vectors</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">normal_polygon</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">area_polygon</span>
-
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">bestfit_plane_from_points</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">bestfit_plane</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">flatness</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Polyhedron</span>
 
@@ -80,10 +81,14 @@
 <span class="kn">from</span> <span class="nn">compas.datastructures.mixins</span> <span class="k">import</span> <span class="n">EdgeMappings</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mixins</span> <span class="k">import</span> <span class="n">FaceMappings</span>
 
-<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.algorithms</span> <span class="k">import</span> <span class="n">delaunay_from_points</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_collapse_edge</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">trimesh_collapse_edge</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">trimesh_split_edge</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">trimesh_swap_edge</span>
 
-<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">bfs_traverse</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">flatness</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_split_face</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_split_edge</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.operations</span> <span class="k">import</span> <span class="n">mesh_unweld_vertices</span>
 
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="s1">'Tom Van Mele'</span>
@@ -124,7 +129,9 @@
            <span class="n">VertexAttributesManagement</span><span class="p">,</span>
            <span class="n">Datastructure</span><span class="p">):</span>
     <span class="sd">"""Definition of a mesh.</span>
-
+<span class="sd">    </span>
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
 <span class="sd">    The datastructure of the mesh is implemented as a half-edge.</span>
 
 <span class="sd">    Attributes</span>
@@ -196,6 +203,10 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># special properties</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -437,8 +448,8 @@
 <span class="sd">        &gt;&gt;&gt; mesh = Mesh.from_obj(compas.get('bunny.ply'))</span>
 
 <span class="sd">        """</span>
-        <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">network_find_faces</span>
-        <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">FaceNetwork</span>
+        <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">network_find_faces</span>
+        <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">FaceNetwork</span>
 
         <span class="n">network</span> <span class="o">=</span> <span class="n">FaceNetwork</span><span class="o">.</span><span class="n">from_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">)</span>
 
@@ -522,6 +533,8 @@
 <span class="sd">            A mesh object.</span>
 
 <span class="sd">        """</span>
+        <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">delaunay_from_points</span>
+
         <span class="k">return</span> <span class="n">delaunay_from_points</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="n">boundary</span><span class="p">,</span> <span class="n">holes</span><span class="o">=</span><span class="n">holes</span><span class="p">)</span></div>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
@@ -925,7 +938,7 @@
 
 <span class="sd">            import compas</span>
 <span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.visualization import MeshPlotter</span>
+<span class="sd">            from compas.plotters import MeshPlotter</span>
 
 <span class="sd">            mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
@@ -947,7 +960,7 @@
 
 <span class="sd">            import compas</span>
 <span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.visualization import MeshPlotter</span>
+<span class="sd">            from compas.plotters import MeshPlotter</span>
 
 <span class="sd">            mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
@@ -1013,7 +1026,7 @@
 
 <span class="sd">            import compas</span>
 <span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.visualization import MeshPlotter</span>
+<span class="sd">            from compas.plotters import MeshPlotter</span>
 
 <span class="sd">            mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
@@ -1056,7 +1069,7 @@
 
 <span class="sd">            import compas</span>
 <span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.visualization import MeshPlotter</span>
+<span class="sd">            from compas.plotters import MeshPlotter</span>
 
 <span class="sd">            mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
@@ -1198,28 +1211,6 @@
                 <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">return</span> <span class="kc">True</span></div>
-
-<div class="viewcode-block" id="Mesh.is_connected"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Mesh.is_connected.html#compas.datastructures.Mesh.is_connected">[docs]</a>    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Verify that the mesh is connected.</span>
-
-<span class="sd">        A mesh is connected if the following conditions are fulfilled:</span>
-
-<span class="sd">        * For every two vertices a path exists connecting them.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        bool</span>
-<span class="sd">            True, if the mesh is connected.</span>
-<span class="sd">            False, otherwise.</span>
-
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">()</span>
-        <span class="n">nodes</span> <span class="o">=</span> <span class="n">bfs_traverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Mesh.is_manifold"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Mesh.is_manifold.html#compas.datastructures.Mesh.is_manifold">[docs]</a>    <span class="k">def</span> <span class="nf">is_manifold</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">"""Verify that the mesh is manifold.</span>
@@ -1407,7 +1398,7 @@
 
 <span class="sd">            import compas</span>
 <span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.visualization import MeshPlotter</span>
+<span class="sd">            from compas.plotters import MeshPlotter</span>
 
 <span class="sd">            mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
@@ -1577,7 +1568,7 @@
 
 <span class="sd">            import compas</span>
 <span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.visualization import MeshPlotter</span>
+<span class="sd">            from compas.plotters import MeshPlotter</span>
 
 <span class="sd">            mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
@@ -1603,6 +1594,9 @@
         <span class="n">temp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ordered</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">temp</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">temp</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">temp</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -1664,7 +1658,7 @@
 
 <span class="sd">            import compas</span>
 <span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.visualization import MeshPlotter</span>
+<span class="sd">            from compas.plotters import MeshPlotter</span>
 
 <span class="sd">            mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
@@ -1791,7 +1785,7 @@
 
 <span class="sd">            import compas</span>
 <span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.visualization import MeshPlotter</span>
+<span class="sd">            from compas.plotters import MeshPlotter</span>
 
 <span class="sd">            mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
@@ -1994,7 +1988,7 @@
 
 <span class="sd">            import compas</span>
 <span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.visualization import MeshPlotter</span>
+<span class="sd">            from compas.plotters import MeshPlotter</span>
 
 <span class="sd">            mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
@@ -2093,7 +2087,7 @@
 
     <span class="c1">#         import compas</span>
     <span class="c1">#         from compas.datastructures import Mesh</span>
-    <span class="c1">#         from compas.visualization import MeshPlotter</span>
+    <span class="c1">#         from compas.plotters import MeshPlotter</span>
 
     <span class="c1">#         mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
@@ -2255,7 +2249,7 @@
 
 <span class="sd">            import compas</span>
 <span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.visualization import MeshPlotter</span>
+<span class="sd">            from compas.plotters import MeshPlotter</span>
 
 <span class="sd">            mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
@@ -2548,6 +2542,32 @@
         <span class="k">return</span> <span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_edge_on_boundary</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span></div></div>
 
 
+<span class="c1"># Mesh.collapse_edge = MethodType(mesh_collapse_edge, None, Mesh)</span>
+<span class="c1"># Mesh.collapse_edge_tri = MethodType(trimesh_collapse_edge, None, Mesh)</span>
+<span class="c1"># Mesh.split_face = MethodType(mesh_split_face, None, Mesh)</span>
+<span class="c1"># Mesh.split_edge = MethodType(mesh_split_edge, None, Mesh)</span>
+<span class="c1"># Mesh.split_edge_tri = MethodType(trimesh_split_edge, None, Mesh)</span>
+<span class="c1"># Mesh.swap_edge_tri = MethodType(trimesh_swap_edge, None, Mesh)</span>
+<span class="c1"># Mesh.unweld_vertices = MethodType(mesh_unweld_vertices, None, Mesh)</span>
+
+<span class="n">Mesh</span><span class="o">.</span><span class="n">collapse_edge</span> <span class="o">=</span> <span class="n">mesh_collapse_edge</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+<span class="n">Mesh</span><span class="o">.</span><span class="n">split_face</span> <span class="o">=</span> <span class="n">mesh_split_face</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+<span class="n">Mesh</span><span class="o">.</span><span class="n">split_edge</span> <span class="o">=</span> <span class="n">mesh_split_edge</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+<span class="n">Mesh</span><span class="o">.</span><span class="n">unweld_vertices</span> <span class="o">=</span> <span class="n">mesh_unweld_vertices</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+
+<span class="n">Mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span> <span class="o">=</span> <span class="n">trimesh_collapse_edge</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+<span class="n">Mesh</span><span class="o">.</span><span class="n">split_edge_tri</span> <span class="o">=</span> <span class="n">trimesh_split_edge</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+<span class="n">Mesh</span><span class="o">.</span><span class="n">swap_edge_tri</span> <span class="o">=</span> <span class="n">trimesh_swap_edge</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+
+<span class="c1"># setattr(Mesh, "collapse_edge", mesh_collapse_edge)</span>
+<span class="c1"># setattr(Mesh, "split_face", mesh_split_face)</span>
+<span class="c1"># setattr(Mesh, "split_edge", mesh_split_edge)</span>
+<span class="c1"># setattr(Mesh, "unweld_vertices", mesh_unweld_vertices)</span>
+<span class="c1"># setattr(Mesh, "collapse_edge_tri", trimesh_collapse_edge)</span>
+<span class="c1"># setattr(Mesh, "split_edge_tri", trimesh_split_edge)</span>
+<span class="c1"># setattr(Mesh, "swap_edge_tri", trimesh_swap_edge)</span>
+
+
 <span class="c1"># ==============================================================================</span>
 <span class="c1"># Debugging</span>
 <span class="c1"># ==============================================================================</span>
@@ -2559,10 +2579,12 @@
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">'faces.obj'</span><span class="p">))</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-
 </code></pre></div>
-<nav class="compas-sideways">
-</nav>
+<!--<nav class="compas-sideways">
+                            
+
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -2600,7 +2622,7 @@
             
 
             
-                Last updated on Nov 01, 2017.
+                Last updated on Nov 12, 2017.
             
 
             
@@ -2609,11 +2631,11 @@
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -2627,10 +2649,47 @@ var DOCUMENTATION_OPTIONS = {
 <script src="/static/doctools.js"></script>
 <script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
 
-                var clipboard = new Clipboard('.language-python');
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<title>compas -- a computational framework for research in architecture and structures</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<meta content="Tom Van Mele" name="author"/>
+<meta content="compas is a computational framework for research in architecture and structures." name="description"/>
+<link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" rel="stylesheet"/>
+<link href="/css/github.css" rel="stylesheet" type="text/css"/>
+<link href="/css/compas.css" rel="stylesheet" type="text/css"/>
+<link href="/css/compas-reference.css" rel="stylesheet" type="text/css"/>
+<script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
+</head>
+<body data-spy="scroll" data-target="#compas-localnav">
+<header class="navbar navbar-expand navbar-dark bg-dark compas-navbar">
+<a class="navbar-brand" href="/">compas</a>
+<ul class="navbar-nav">
+<li class="nav-item">
+<a class="nav-link active" href="/main/">Main library</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="/packages/">Additional Packages</a>
+</li>
+</ul>
+</header>
+<div class="container-fluid compas-container">
+<div class="row flex-xl-nowrap">
+<main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+<nav class="breadcrumb">
+<a class="breadcrumb-item" href="https://compas-dev.github.io/">compas</a>
+<a class="breadcrumb-item" href="https://compas-dev.github.io/compas/index.html">main library</a>
+<a accesskey="U" class="breadcrumb-item" href="../../index.html">module code</a>
+</nav>
+<h1>Source code for compas.viewers.networkviewer</h1><div class="highlight"><pre><code class="language-python border rounded">
+<span></span><span class="kn">from</span> <span class="nn">OpenGL.GLUT</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">OpenGL.GLU</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">OpenGL.GL</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sqrt</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">centroid_points</span>
+
+<span class="kn">from</span> <span class="nn">compas.viewers.viewer</span> <span class="k">import</span> <span class="n">Viewer</span>
+
+<span class="kn">from</span> <span class="nn">compas.viewers.core.drawing</span> <span class="k">import</span> <span class="n">xdraw_points</span>
+<span class="kn">from</span> <span class="nn">compas.viewers.core.drawing</span> <span class="k">import</span> <span class="n">xdraw_lines</span>
+
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">color_to_colordict</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">color_to_rgb</span>
+
+
+<span class="n">__author__</span>     <span class="o">=</span> <span class="s1">'Tom Van Mele'</span>
+<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">'Copyright 2014, Block Research Group - ETH Zurich'</span>
+<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">'MIT License'</span>
+<span class="n">__email__</span>      <span class="o">=</span> <span class="s1">'&lt;vanmelet@ethz.ch&gt;'</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'NetworkViewer'</span><span class="p">,</span> <span class="p">]</span>
+
+
+<div class="viewcode-block" id="NetworkViewer"><a class="viewcode-back" href="../../../reference/generated/compas.viewers.NetworkViewer.html#compas.viewers.NetworkViewer">[docs]</a><span class="k">class</span> <span class="nc">NetworkViewer</span><span class="p">(</span><span class="n">Viewer</span><span class="p">):</span>
+    <span class="sd">"""An OpenGL viewer for networks.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        network (compas.datastructures.network.Network): The network object.</span>
+<span class="sd">        width (int): Optional. The viewport width. Default is ``1280``.</span>
+<span class="sd">        height (int): Optional. The viewport height. Default is ``800``.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            import compas</span>
+<span class="sd">            from compas.datastructures.network import Network</span>
+<span class="sd">            from compas.datastructures.network.viewer import NetworkViewer</span>
+
+<span class="sd">            network = Network.from_obj(compas.get_data('lines.obj'))</span>
+
+<span class="sd">            network.add_edge(0, 14)</span>
+<span class="sd">            network.add_edge(15, 10)</span>
+<span class="sd">            network.add_edge(21, 24)</span>
+
+<span class="sd">            viewer = NetworkViewer(network, 600, 600)</span>
+
+<span class="sd">            viewer.grid_on = False</span>
+
+<span class="sd">            viewer.setup()</span>
+<span class="sd">            viewer.show()</span>
+
+<span class="sd">    """</span>
+
+<div class="viewcode-block" id="NetworkViewer.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.NetworkViewer.__init__.html#compas.viewers.NetworkViewer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1280</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NetworkViewer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_vertexcolor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_edgecolor</span>   <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_facecolor</span>   <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices_on</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges_on</span>    <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">faces_on</span>    <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertexcolor</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edgecolor</span>   <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">facecolor</span>   <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertexlabel</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edgelabel</span>   <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">facelabel</span>   <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertexsize</span>  <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edgewidth</span>   <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">()</span></div>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># helpers (temp)</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="NetworkViewer.center"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.NetworkViewer.center.html#compas.viewers.NetworkViewer.center">[docs]</a>    <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
+        <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cz</span> <span class="o">=</span> <span class="n">centroid_points</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">attr</span><span class="p">[</span><span class="s1">'x'</span><span class="p">]</span> <span class="o">-=</span> <span class="n">cx</span>
+            <span class="n">attr</span><span class="p">[</span><span class="s1">'y'</span><span class="p">]</span> <span class="o">-=</span> <span class="n">cy</span></div>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># main drawing functionality</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="NetworkViewer.display"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.NetworkViewer.display.html#compas.viewers.NetworkViewer.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">vcolor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">'color.vertex'</span><span class="p">]</span>
+        <span class="n">vcolor</span> <span class="o">=</span> <span class="n">vcolor</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_vertexcolor</span>
+        <span class="n">vcolor</span> <span class="o">=</span> <span class="n">color_to_rgb</span><span class="p">(</span><span class="n">vcolor</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">'pos'</span>  <span class="p">:</span> <span class="p">(</span><span class="n">attr</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'y'</span><span class="p">],</span> <span class="n">attr</span><span class="p">[</span><span class="s1">'z'</span><span class="p">]),</span>
+                <span class="s1">'size'</span> <span class="p">:</span> <span class="mf">6.0</span><span class="p">,</span>
+                <span class="s1">'color'</span><span class="p">:</span> <span class="n">vcolor</span><span class="p">,</span>
+            <span class="p">})</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ecolor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">'color.vertex'</span><span class="p">]</span>
+        <span class="n">ecolor</span> <span class="o">=</span> <span class="n">ecolor</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_edgecolor</span>
+        <span class="n">ecolor</span> <span class="o">=</span> <span class="n">color_to_rgb</span><span class="p">(</span><span class="n">ecolor</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">'start'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">),</span>
+                <span class="s1">'end'</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">),</span>
+                <span class="s1">'color'</span><span class="p">:</span> <span class="n">ecolor</span><span class="p">,</span>
+                <span class="s1">'width'</span><span class="p">:</span> <span class="mf">1.0</span>
+            <span class="p">})</span>
+        <span class="c1"># loads = []</span>
+        <span class="c1"># for key, attr in self.network.vertices(True):</span>
+        <span class="c1">#     if attr['is_fixed']:</span>
+        <span class="c1">#         continue</span>
+        <span class="c1">#     if 'p' in attr:</span>
+        <span class="c1">#         p = attr['p']</span>
+        <span class="c1">#         l = sqrt(p[0] ** 2 + p[1] ** 2 + p[2] ** 2)</span>
+        <span class="c1">#         if l:</span>
+        <span class="c1">#             start = self.network.vertex_coordinates(key)</span>
+        <span class="c1">#             end   = [start[i] + p[i] for i in range(3)]</span>
+        <span class="c1">#             loads.append({</span>
+        <span class="c1">#                 'start': start,</span>
+        <span class="c1">#                 'end'  : end,</span>
+        <span class="c1">#                 'color': (0, 1.0, 0),</span>
+        <span class="c1">#                 'width': 3.0</span>
+        <span class="c1">#             })</span>
+        <span class="n">xdraw_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">xdraw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+        <span class="c1"># xdraw_lines(loads)</span>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># keyboard functionality</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="NetworkViewer.keypress"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.NetworkViewer.keypress.html#compas.viewers.NetworkViewer.keypress">[docs]</a>    <span class="k">def</span> <span class="nf">keypress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">"""Assign network functionality to keys.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'c'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screenshot</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">TEMP</span><span class="p">,</span> <span class="s1">'screenshots/network-viewer_screenshot.jpg'</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="NetworkViewer.special"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.NetworkViewer.special.html#compas.viewers.NetworkViewer.special">[docs]</a>    <span class="k">def</span> <span class="nf">special</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">"""Define the meaning of pressing function keys.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span></div></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Debugging</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+
+    <span class="kn">import</span> <span class="nn">compas</span>
+    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
+
+    <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'saddle.obj'</span><span class="p">))</span>
+
+    <span class="n">viewer</span> <span class="o">=</span> <span class="n">NetworkViewer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+
+    <span class="n">viewer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+<!--<nav class="compas-sideways">
+                            
+
+                            
+                        </nav>-->
+</main>
+<div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
+<div class="navbar-light">
+<form action="../../../search.html" class="d-flex compas-searchbox" id="" method="get">
+<input class="form-control" name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+<button aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler d-md-none compas-navigation-toggler" data-target="#compas-navigation" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+</form>
+<div class="navbar-expand-md">
+<div class="collapse navbar-collapse compas-navigation" id="compas-navigation">
+<ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../workshops.html">Workshops</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../bibliography.html">Bibliography</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+</div>
+</div>
+</div>
+<footer class="compas-footer">
+            
+                
+                    © Copyright 2017, Block Research Group - ETH Zurich.
+                
+            
+
+            
+                Last updated on Nov 11, 2017.
+            
+
+            
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+            
+        </footer>
+<script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT: '',
+    VERSION: '',
+    COLLAPSE_INDEX: false,
+    FILE_SUFFIX: '.html',
+    HAS_SOURCE: true,
+    SOURCELINK_SUFFIX: '.txt'
+};
+            </script>
+<script crossorigin="anonymous" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+<script src="/static/underscore.js"></script>
+<script src="/static/doctools.js"></script>
+<script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
+<script>
+hljs.initHighlightingOnLoad();
+anchors.add();
+
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+            </script>
+</body>
+</html>

@@ -32,8 +32,7 @@
 <nav class="breadcrumb">
 <a class="breadcrumb-item" href="https://compas-dev.github.io/">compas</a>
 <a class="breadcrumb-item" href="https://compas-dev.github.io/compas/index.html">main library</a>
-<a class="breadcrumb-item" href="../../index.html">module code</a>
-<a accesskey="U" class="breadcrumb-item" href="../geometry.html">compas.geometry</a>
+<a accesskey="U" class="breadcrumb-item" href="../../index.html">module code</a>
 </nav>
 <h1>Source code for compas.geometry.size</h1><div class="highlight"><pre><code class="language-python border rounded">
 <span></span><span class="sd">""""""</span>
@@ -63,59 +62,12 @@
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">'bounding_box'</span><span class="p">,</span>
-    <span class="s1">'bounding_box_xy'</span><span class="p">,</span>
     <span class="s1">'area_polygon'</span><span class="p">,</span>
     <span class="s1">'area_polygon_xy'</span><span class="p">,</span>
     <span class="s1">'area_triangle'</span><span class="p">,</span>
     <span class="s1">'area_triangle_xy'</span><span class="p">,</span>
     <span class="s1">'volume_polyhedron'</span><span class="p">,</span>
 <span class="p">]</span>
-
-
-<div class="viewcode-block" id="bounding_box"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.bounding_box.html#compas.geometry.bounding_box">[docs]</a><span class="k">def</span> <span class="nf">bounding_box</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
-    <span class="sd">"""Computes the bounding box of a list of points.</span>
-<span class="sd">    """</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">points</span><span class="p">)</span>
-    <span class="n">min_x</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">max_x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">min_y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-    <span class="n">max_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-    <span class="n">min_z</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-    <span class="n">max_z</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">)]</span></div>
-
-
-<div class="viewcode-block" id="bounding_box_xy"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.bounding_box_xy.html#compas.geometry.bounding_box_xy">[docs]</a><span class="k">def</span> <span class="nf">bounding_box_xy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
-    <span class="sd">"""Compute the bounding box of a list of points lying in the XY-plane.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    points : sequence</span>
-<span class="sd">        A sequence of XY(Z) coordinates of a 2D or 3D points.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    sequence of float</span>
-<span class="sd">        XYZ coordinates of four points defining a rectangle (Z components = 0).</span>
-
-<span class="sd">    """</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">points</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">min_x</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">max_x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">min_y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-    <span class="n">max_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="area_polygon"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.area_polygon.html#compas.geometry.area_polygon">[docs]</a><span class="k">def</span> <span class="nf">area_polygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">):</span>
@@ -248,8 +200,11 @@
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="k">pass</span>
 </code></pre></div>
-<nav class="compas-sideways">
-</nav>
+<!--<nav class="compas-sideways">
+                            
+
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -287,7 +242,7 @@
             
 
             
-                Last updated on Oct 31, 2017.
+                Last updated on Nov 11, 2017.
             
 
             
@@ -296,11 +251,11 @@
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -309,12 +264,52 @@ var DOCUMENTATION_OPTIONS = {
 <script crossorigin="anonymous" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 <script src="/static/underscore.js"></script>
 <script src="/static/doctools.js"></script>
-<script src="https://compas-dev.github.io/compas/static/searchtools_.js"></script>
+<script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
+
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

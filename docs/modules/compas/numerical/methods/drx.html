@@ -36,6 +36,7 @@
 </nav>
 <h1>Source code for compas.numerical.methods.drx</h1><div class="highlight"><pre><code class="language-python border rounded">
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">arccos</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span>
@@ -64,7 +65,7 @@
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">'drx'</span><span class="p">,</span>
+    <span class="s1">'drx'</span>
 <span class="p">]</span>
 
 
@@ -84,6 +85,44 @@
 <span class="sd">        array: Vertex co-ordinates.</span>
 <span class="sd">        array: Edge forces.</span>
 <span class="sd">        array: Edge lengths.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        import compas</span>
+<span class="sd">        from compas.datastructures import Network</span>
+<span class="sd">        from compas.plotters import NetworkPlotter</span>
+<span class="sd">        from compas.numerical import drx</span>
+<span class="sd">        from compas.utilities import i_to_rgb</span>
+
+<span class="sd">        network = Network.from_obj(compas.get('lines.obj'))</span>
+<span class="sd">        network.update_default_vertex_attributes({'is_fixed': False, 'P': [1, 1, 0]})</span>
+<span class="sd">        network.update_default_edge_attributes({'E': 10, 'A': 1, 'ct': 't'})</span>
+<span class="sd">        network.set_vertices_attributes(network.leaves(), {'B': [0, 0, 0], 'is_fixed': True})</span>
+
+<span class="sd">        drx(network=network, tol=0.001, refresh=5, update=True)</span>
+
+<span class="sd">        plotter = NetworkPlotter(network)</span>
+<span class="sd">        lines = []</span>
+<span class="sd">        for u, v in network.edges():</span>
+<span class="sd">            lines.append({</span>
+<span class="sd">                'start': network.vertex_coordinates(u, 'xy'),</span>
+<span class="sd">                'end'  : network.vertex_coordinates(v, 'xy'),</span>
+<span class="sd">                'color': '#cccccc',</span>
+<span class="sd">                'width': 1.0})</span>
+<span class="sd">        plotter.draw_lines(lines)</span>
+<span class="sd">        plotter.draw_vertices(facecolor={key: '#ff0000' for key in network.vertices_where({'is_fixed': True})})</span>
+
+<span class="sd">        fmax = max(network.get_edges_attribute('f'))</span>
+
+<span class="sd">        plotter.draw_edges(</span>
+<span class="sd">            color={(u, v): i_to_rgb(attr['f'] / fmax) for u, v, attr in network.edges(True)},</span>
+<span class="sd">            width={(u, v): 10 * attr['f'] / fmax for u, v, attr in network.edges(True)})</span>
+
+<span class="sd">        plotter.show()</span>
+
 <span class="sd">    """</span>
 
     <span class="c1"># Setup</span>
@@ -115,11 +154,17 @@
     <span class="c1"># Update</span>
 
     <span class="k">if</span> <span class="n">update</span><span class="p">:</span>
+
         <span class="n">k_i</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
             <span class="n">i</span> <span class="o">=</span> <span class="n">k_i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">network</span><span class="o">.</span><span class="n">set_vertex_attributes</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">{</span><span class="s1">'x'</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">:</span> <span class="n">z</span><span class="p">})</span>
+
+        <span class="n">uv_i</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">uv_index</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">uv_i</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span>
+            <span class="n">network</span><span class="o">.</span><span class="n">set_edge_attribute</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="s1">'f'</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
 
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span></div>
 
@@ -381,10 +426,117 @@
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
 
-    <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">compas</span>
+
+    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
+    <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
+    <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">i_to_rgb</span>
+
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">linspace</span>
+
+
+    <span class="k">def</span> <span class="nf">plot_iterations</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.005</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">network</span><span class="o">.</span><span class="n">set_vertex_attributes</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">{</span><span class="s1">'x'</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">:</span> <span class="n">z</span><span class="p">})</span>
+
+        <span class="n">plotter</span><span class="o">.</span><span class="n">update_vertices</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">update_edges</span><span class="p">()</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pause</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># Example 1</span>
+    <span class="c1"># ==========================================================================</span>
+
+    <span class="c1"># # Load Network</span>
+
+    <span class="c1"># network = Network.from_obj(compas.get('lines.obj'))</span>
+    <span class="c1"># network.update_default_vertex_attributes({'is_fixed': False, 'P': [1, 1, 0]})</span>
+    <span class="c1"># network.update_default_edge_attributes({'E': 10, 'A': 1, 'ct': 't'})</span>
+    <span class="c1"># network.set_vertices_attributes(network.leaves(), {'B': [0, 0, 0], 'is_fixed': True})</span>
+
+    <span class="c1"># # Plotter</span>
+
+    <span class="c1"># plotter = NetworkPlotter(network, figsize=(10, 7))</span>
+
+    <span class="c1"># lines = []</span>
+    <span class="c1"># for u, v in network.edges():</span>
+    <span class="c1">#     lines.append({</span>
+    <span class="c1">#         'start': network.vertex_coordinates(u, 'xy'),</span>
+    <span class="c1">#         'end'  : network.vertex_coordinates(v, 'xy'),</span>
+    <span class="c1">#         'color': '#cccccc',</span>
+    <span class="c1">#         'width': 1.0})</span>
+    <span class="c1"># plotter.draw_lines(lines)</span>
+    <span class="c1"># plotter.draw_vertices(facecolor={key: '#ff0000' for key in network.vertices_where({'is_fixed': True})})</span>
+    <span class="c1"># plotter.draw_edges()</span>
+
+    <span class="c1"># # Solver</span>
+
+    <span class="c1"># X, f, l = drx(network=network, tol=0.001, refresh=2, update=True, callback=plot_iterations, radius=0.1)</span>
+
+    <span class="c1"># # Forces</span>
+
+    <span class="c1"># fmax = max(network.get_edges_attribute('f'))</span>
+
+    <span class="c1"># plotter.draw_edges(</span>
+    <span class="c1">#     color={(u, v): i_to_rgb(attr['f'] / fmax) for u, v, attr in network.edges(True)},</span>
+    <span class="c1">#     width={(u, v): 10 * attr['f'] / fmax for u, v, attr in network.edges(True)})</span>
+
+    <span class="c1"># plotter.update()</span>
+    <span class="c1"># plotter.show()</span>
+
+
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># Example 2</span>
+    <span class="c1"># ==========================================================================</span>
+
+    <span class="c1"># Input</span>
+
+    <span class="n">L0</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="mf">1.5</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">40</span>
+    <span class="n">EI</span> <span class="o">=</span> <span class="mf">0.2</span>
+    <span class="n">pins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">5</span><span class="p">]</span>
+
+    <span class="c1"># Network</span>
+
+    <span class="n">vertices</span> <span class="o">=</span> <span class="p">[[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">n</span><span class="p">))]</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="p">[[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+
+    <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_vertices_and_edges</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">)</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">update_default_vertex_attributes</span><span class="p">({</span><span class="s1">'is_fixed'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'P'</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s1">'EIx'</span><span class="p">:</span> <span class="n">EI</span><span class="p">,</span> <span class="s1">'EIy'</span><span class="p">:</span> <span class="n">EI</span><span class="p">})</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">update_default_edge_attributes</span><span class="p">({</span><span class="s1">'E'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'l0'</span><span class="p">:</span> <span class="n">L</span> <span class="o">/</span> <span class="n">n</span><span class="p">})</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">set_vertices_attributes</span><span class="p">(</span><span class="n">pins</span><span class="p">,</span> <span class="p">{</span><span class="s1">'B'</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s1">'is_fixed'</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">beams</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'beam'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'nodes'</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))}}</span>
+
+    <span class="c1"># Plotter</span>
+
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s1">'start'</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">'xy'</span><span class="p">),</span>
+            <span class="s1">'end'</span>  <span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">'xy'</span><span class="p">),</span>
+            <span class="s1">'color'</span><span class="p">:</span> <span class="s1">'#cccccc'</span><span class="p">,</span>
+            <span class="s1">'width'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#ff0000'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">'is_fixed'</span><span class="p">:</span> <span class="kc">True</span><span class="p">})})</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+
+    <span class="c1"># Solver</span>
+
+    <span class="n">drx</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">refresh</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">plot_iterations</span><span class="p">)</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
 </code></pre></div>
-<nav class="compas-sideways">
-</nav>
+<!--<nav class="compas-sideways">
+                            
+
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -422,7 +574,7 @@
             
 
             
-                Last updated on Oct 31, 2017.
+                Last updated on Nov 08, 2017.
             
 
             
@@ -431,11 +583,11 @@
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -444,12 +596,52 @@ var DOCUMENTATION_OPTIONS = {
 <script crossorigin="anonymous" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 <script src="/static/underscore.js"></script>
 <script src="/static/doctools.js"></script>
-<script src="https://compas-dev.github.io/compas/static/searchtools_.js"></script>
+<script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
+
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

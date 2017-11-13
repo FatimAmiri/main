@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 from compas.numerical.xforms import rotation_matrix
 from compas.numerical.transformations import transform
 
-from compas.visualization.plotters.core.helpers import Axes3D
-from compas.visualization.plotters.core.helpers import Cloud3D
-from compas.visualization.plotters.core.helpers import Bounds
-from compas.visualization.plotters.core.drawing import create_axes_3d
+from compas.plotters.core.helpers import Axes3D
+from compas.plotters.core.helpers import Cloud3D
+from compas.plotters.core.helpers import Bounds
+from compas.plotters.core.drawing import create_axes_3d
 
 from compas.numerical.statistics import principal_components
 

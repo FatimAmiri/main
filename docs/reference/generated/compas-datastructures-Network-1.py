@@ -1,6 +1,6 @@
 import compas
 from compas.datastructures import Network
-from compas.visualization import NetworkPlotter
+from compas.plotters import NetworkPlotter
 
 network = Network.from_obj(compas.get_data('lines.obj'))
 

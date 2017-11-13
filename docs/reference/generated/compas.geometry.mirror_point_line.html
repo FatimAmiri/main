@@ -13,7 +13,7 @@
 <link href="/css/compas.css" rel="stylesheet" type="text/css"/>
 <link href="/css/compas-reference.css" rel="stylesheet" type="text/css"/>
 <link href="compas.geometry.mirror_point_line_xy.html" rel="next" title="mirror_point_line_xy"/>
-<link href="compas.geometry.volume_polyhedron.html" rel="prev" title="volume_polyhedron"/>
+<link href="compas.geometry.translation_matrix.html" rel="prev" title="translation_matrix"/>
 <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
 </head>
 <body data-spy="scroll" data-target="#compas-localnav">
@@ -45,10 +45,15 @@
 <code class="descclassname">compas.geometry.</code><code class="descname">mirror_point_line</code><span class="sig-paren">(</span><em>point</em>, <em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../../modules/compas/geometry/transformations.html#mirror_point_line"><span class="viewcode-link">[source]</span></a></dt>
 <dd></dd></dl>
 </div>
-<nav class="compas-sideways">
-<a class="btn btn-primary compas-prev" href="compas.geometry.volume_polyhedron.html" role="button">volume_polyhedron</a>
-<a class="btn btn-primary compas-next" href="compas.geometry.mirror_point_line_xy.html" role="button">mirror_point_line_xy</a>
-</nav>
+<!--<nav class="compas-sideways">
+                            
+                                <a href="compas.geometry.translation_matrix.html" class="btn btn-primary compas-prev" role="button">translation_matrix</a>
+                            
+
+                            
+                                <a href="compas.geometry.mirror_point_line_xy.html" class="btn btn-primary compas-next" role="button">mirror_point_line_xy</a>
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -75,16 +80,15 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../compas.hpc.html">hpc</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas.interop.html">interop</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas.numerical.html">numerical</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas.utilities.html">utilities</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../compas.plotters.html">plotters</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas.topology.html">topology</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas.visualization.html">visualization</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../compas.utilities.html">utilities</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../compas.viewers.html">viewers</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_rhino.html">compas_rhino</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_blender.html">compas_blender</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_maya.html">compas_maya</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas_grasshopper.html">compas_grasshopper</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas_dynamo.html">compas_dynamo</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../workshops.html">Workshops</a></li>
@@ -109,7 +113,7 @@
             
 
             
-                Last updated on Nov 01, 2017.
+                Last updated on Nov 12, 2017.
             
 
             
@@ -118,11 +122,11 @@
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -136,10 +140,47 @@ var DOCUMENTATION_OPTIONS = {
 <script src="/static/doctools.js"></script>
 <script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
 
-                var clipboard = new Clipboard('.language-python');
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

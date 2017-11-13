@@ -2,7 +2,7 @@ import compas
 
 from compas.datastructures import Network
 from compas.topology import dijkstra_distances
-from compas.visualization import NetworkPlotter
+from compas.plotters import NetworkPlotter
 from compas.utilities import i_to_red
 
 network = Network.from_obj(compas.get_data('grid_irregular.obj'))

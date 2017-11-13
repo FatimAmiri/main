@@ -5,9 +5,8 @@ from __future__ import print_function
 import compas
 
 from compas.datastructures import Mesh
-from compas.datastructures import mesh_split_face
-from compas.datastructures import trimesh_collapse_edge
-from compas.visualization import MeshPlotter
+from compas.plotters import MeshPlotter
+from compas.topology import mesh_quads_to_triangles
 
 
 __author__    = ['Tom Van Mele', ]
@@ -18,6 +17,8 @@ __email__     = 'van.mele@arch.ethz.ch'
 
 mesh = Mesh.from_obj(compas.get_data('faces.obj'))
 
+u = [key for key in mesh.vertices() if mesh.vertex_degree(key) == 2][0]
+
 plotter = MeshPlotter(mesh, figsize=(10, 7))
 
 plotter.defaults['face.facecolor'] = '#eeeeee'
@@ -27,19 +28,20 @@ plotter.draw_vertices()
 plotter.draw_faces()
 plotter.draw_edges()
 
-for fkey in list(mesh.faces()):
-    vertices = mesh.face_vertices(fkey)
-    mesh_split_face(mesh, fkey, vertices[0], vertices[2])
+mesh_quads_to_triangles(mesh)
 
-u = 18
-vertices = [3, 29, 24, 1, 21, 23, 2, 12, 28, 34, 0, 20, 4, 26, 7, 32, 5, 15, 25, 17, 22, 11, 8, 31, 19, 9, 30, 16, 13, 14, 6, 33, 27, 35]
+while True:
+    nbrs = mesh.vertex_neighbours(u, ordered=True)
 
-for v in vertices:
-    trimesh_collapse_edge(mesh, u, v, t=0.0, allow_boundary=True)
+    if not nbrs:
+        break
 
-    plotter.update_vertices()
-    plotter.update_faces()
-    plotter.update_edges()
-    plotter.update(0.1)
+    for v in nbrs:
+        if mesh.vertex_degree(u):
+            if mesh.collapse_edge_tri(u, v, t=0.0, allow_boundary=True):
+                plotter.update_vertices()
+                plotter.update_faces()
+                plotter.update_edges()
+                plotter.update(0.1)
 
 plotter.show()

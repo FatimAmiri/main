@@ -8,7 +8,8 @@ import rhinoscriptsyntax as rs
 import compas_rhino
 
 from compas.datastructures import Mesh
-from compas.datastructures import trimesh_remesh
+from compas.topology import delaunay_from_points
+from compas.topology import trimesh_remesh
 
 from compas_rhino.conduits import MeshConduit
 
@@ -30,7 +31,8 @@ points   = rs.DivideCurve(boundary, rs.CurveLength(boundary) / length)
 # generate a delaunay triangulation
 # from the points on the boundary
 
-mesh = Mesh.from_points(points, boundary=points)
+faces = delaunay_from_points(points, boundary=points)
+mesh = Mesh.from_vertices_and_faces(points, faces)
 
 
 # make a conduit for visualization

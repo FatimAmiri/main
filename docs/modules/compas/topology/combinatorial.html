@@ -35,7 +35,10 @@
 <a accesskey="U" class="breadcrumb-item" href="../../index.html">module code</a>
 </nav>
 <h1>Source code for compas.topology.combinatorial</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">deque</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">deque</span>
+<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">breadth_first_traverse</span>
 
 
 <span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">'Tom Van Mele'</span><span class="p">,</span> <span class="p">]</span>
@@ -49,7 +52,7 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="vertex_coloring"><a class="viewcode-back" href="../../../reference/generated/compas.topology.vertex_coloring.html#compas.topology.vertex_coloring">[docs]</a><span class="k">def</span> <span class="nf">vertex_coloring</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<div class="viewcode-block" id="vertex_coloring"><a class="viewcode-back" href="../../../reference/generated/compas.topology.vertex_coloring.html#compas.topology.vertex_coloring">[docs]</a><span class="k">def</span> <span class="nf">vertex_coloring</span><span class="p">(</span><span class="n">adjacency</span><span class="p">):</span>
     <span class="sd">"""Color the vertices of a network such that no two colors are adjacent.</span>
 
 <span class="sd">    Parameters</span>
@@ -69,12 +72,12 @@
 
 <span class="sd">        import compas</span>
 <span class="sd">        from compas.datastructures import Network</span>
-<span class="sd">        from compas.visualization import NetworkPlotter</span>
+<span class="sd">        from compas.plotters import NetworkPlotter</span>
 <span class="sd">        from compas.topology import vertex_coloring</span>
 
 <span class="sd">        network = Network.from_obj(compas.get_data('grid_irregular.obj'))</span>
 
-<span class="sd">        key_color = vertex_coloring(network)</span>
+<span class="sd">        key_color = vertex_coloring(network.adjacency)</span>
 <span class="sd">        colors = ['#ff0000', '#00ff00', '#0000ff']</span>
 
 <span class="sd">        plotter = NetworkPlotter(network)</span>
@@ -91,8 +94,8 @@
 
 <span class="sd">    """</span>
     <span class="n">key_to_color</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">key_to_degree</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_degree</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
-    <span class="n">vertices</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">key</span><span class="p">:</span> <span class="n">key_to_degree</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="n">key_to_degree</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">adjacency</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">adjacency</span><span class="p">}</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">adjacency</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">key</span><span class="p">:</span> <span class="n">key_to_degree</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
     <span class="n">uncolored</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">vertices</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">current_color</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="n">uncolored</span><span class="p">:</span>
@@ -100,13 +103,68 @@
         <span class="n">key_to_color</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_color</span>
         <span class="n">colored_with_current</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">uncolored</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">b</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">colored_with_current</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">b</span> <span class="ow">in</span> <span class="n">adjacency</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">colored_with_current</span><span class="p">):</span>
                 <span class="n">key_to_color</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_color</span>
                 <span class="n">colored_with_current</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">colored_with_current</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
             <span class="n">uncolored</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="n">current_color</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">key_to_color</span></div>
+
+
+<span class="k">def</span> <span class="nf">connected_components</span><span class="p">(</span><span class="n">adjacency</span><span class="p">):</span>
+    <span class="n">tovisit</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">adjacency</span><span class="p">)</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">tovisit</span><span class="p">:</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">tovisit</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">visited</span> <span class="o">=</span> <span class="n">breadth_first_traverse</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+        <span class="n">tovisit</span> <span class="o">-=</span> <span class="n">visited</span>
+        <span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">visited</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">components</span>
+
+
+<span class="k">def</span> <span class="nf">network_is_connected</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+    <span class="sd">"""Verify that the mesh is connected.</span>
+
+<span class="sd">    A mesh is connected if the following conditions are fulfilled:</span>
+
+<span class="sd">    * For every two vertices a path exists connecting them.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        True, if the mesh is connected.</span>
+<span class="sd">        False, otherwise.</span>
+
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">nodes</span> <span class="o">=</span> <span class="n">breadth_first_traverse</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">network</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="n">network</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">mesh_is_connected</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+    <span class="sd">"""Verify that the mesh is connected.</span>
+
+<span class="sd">    A mesh is connected if the following conditions are fulfilled:</span>
+
+<span class="sd">    * For every two vertices a path exists connecting them.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        True, if the mesh is connected.</span>
+<span class="sd">        False, otherwise.</span>
+
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">nodes</span> <span class="o">=</span> <span class="n">breadth_first_traverse</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="n">mesh</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -116,23 +174,32 @@
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
 
     <span class="kn">import</span> <span class="nn">compas</span>
-    <span class="kn">from</span> <span class="nn">compas.datastructures.network</span> <span class="k">import</span> <span class="n">Network</span>
-    <span class="kn">from</span> <span class="nn">compas.visualization.plotters.networkplotter</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
+    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
+    <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
 
-    <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">'grid_irregular.obj'</span><span class="p">))</span>
+    <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grid_irregular.obj'</span><span class="p">))</span>
 
-    <span class="n">key_color</span> <span class="o">=</span> <span class="n">vertex_coloring</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">connected_components</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">network_is_connected</span><span class="p">(</span><span class="n">network</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+
+    <span class="n">key_color</span> <span class="o">=</span> <span class="n">vertex_coloring</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">)</span>
+
     <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'#ff0000'</span><span class="p">,</span> <span class="s1">'#00ff00'</span><span class="p">,</span> <span class="s1">'#0000ff'</span><span class="p">]</span>
 
-    <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 
     <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="n">key_color</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()})</span>
     <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
 
     <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
-<nav class="compas-sideways">
-</nav>
+<!--<nav class="compas-sideways">
+                            
+
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -170,7 +237,7 @@
             
 
             
-                Last updated on Oct 31, 2017.
+                Last updated on Nov 11, 2017.
             
 
             
@@ -179,11 +246,11 @@
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -192,12 +259,52 @@ var DOCUMENTATION_OPTIONS = {
 <script crossorigin="anonymous" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 <script src="/static/underscore.js"></script>
 <script src="/static/doctools.js"></script>
-<script src="https://compas-dev.github.io/compas/static/searchtools_.js"></script>
+<script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
+
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

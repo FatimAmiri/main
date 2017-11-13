@@ -35,10 +35,8 @@
 <a accesskey="U" class="breadcrumb-item" href="../../../index.html">module code</a>
 </nav>
 <h1>Source code for compas.numerical.solvers.devo</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-
-<span class="c1"># from compas.numerical.solvers.evolutionary.genetic.visualization.ga_visualization import visualize_evolution</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">argmin</span>
@@ -46,12 +44,12 @@
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">eye</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="nb">min</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">newaxis</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">random</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">reshape</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">tile</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">where</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">zeros</span>
 <span class="kn">from</span> <span class="nn">numpy.random</span> <span class="k">import</span> <span class="n">choice</span>
+<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="k">import</span> <span class="n">rand</span>
 
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">fmin_l_bfgs_b</span>
 
@@ -71,130 +69,137 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="devo"><a class="viewcode-back" href="../../../../reference/generated/compas.numerical.devo.html#compas.numerical.devo">[docs]</a><span class="k">def</span> <span class="nf">devo</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">population</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vectored</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-         <span class="n">F</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">CR</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'f'</span><span class="p">,</span> <span class="n">polish</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">()):</span>
-    <span class="sd">"""Call the differential evolution solver.</span>
+<div class="viewcode-block" id="devo"><a class="viewcode-back" href="../../../../reference/generated/compas.numerical.devo.html#compas.numerical.devo">[docs]</a><span class="k">def</span> <span class="nf">devo</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">population</span><span class="p">,</span> <span class="n">generations</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vectored</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">F</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">CR</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">polish</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">"""Call the Differential Evolution solver.</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        fn must return vectorised output for input (k, population) if vectored is True.</span>
 
 <span class="sd">    Parameters:</span>
 <span class="sd">        fn (obj): The function to evaluate and minimise.</span>
-<span class="sd">        bounds (list): Lower and upper bounds for each DoF.</span>
+<span class="sd">        bounds (list): Lower and upper bounds for each DoF [[lb, ub], ...].</span>
 <span class="sd">        population (int): Number of agents in the population.</span>
-<span class="sd">        iterations (int): Number of cross-over cycles or steps to perform.</span>
+<span class="sd">        generations (int): Number of cross-over cycles/steps to perform.</span>
 <span class="sd">        limit (float): Value of the objective function for which to terminate optimisation.</span>
 <span class="sd">        results (str): Where to store results files.</span>
 <span class="sd">        vectored (bool): Vectored function output.</span>
 <span class="sd">        F (float): Differential evolution parameter.</span>
 <span class="sd">        CR (float): Differential evolution cross-over ratio parameter.</span>
-<span class="sd">        name (str): Name of the analysis function.</span>
 <span class="sd">        polish (bool): Polish the final result with L-BFGS-B.</span>
-<span class="sd">        arg (seq): Sequence of optional arguments to pass to fn.</span>
+<span class="sd">        args (seq): Sequence of optional arguments to pass to fn.</span>
+<span class="sd">        callback (obj): Callback function for each generation.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        float: Optimal value of objective function.</span>
-<span class="sd">        array: Values that give the optimum (minimised) function.</span>
-
-<span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; def fn(u, *args):</span>
-<span class="sd">        &gt;&gt;&gt;     # Booth's function, fopt=0, uopt=(1, 3)</span>
-<span class="sd">        &gt;&gt;&gt;     x = u[0, :]</span>
-<span class="sd">        &gt;&gt;&gt;     y = u[1, :]</span>
-<span class="sd">        &gt;&gt;&gt;     z = (x + 2*y - 7)**2 + (2*x + y - 5)**2</span>
-<span class="sd">        &gt;&gt;&gt;     return z</span>
-<span class="sd">        &gt;&gt;&gt; bounds = [[-10, 10], [-10, 10]]</span>
-<span class="sd">        &gt;&gt;&gt; fopt, uopt = de_solver(fn, bounds, population=100, vectored=True, iterations=150, threads=0)</span>
-<span class="sd">        Iteration: 0 fopt: 9.29475634582</span>
-<span class="sd">        Iteration: 1 fopt: 0.714845258545</span>
-<span class="sd">        Iteration: 2 fopt: 0.714845258545</span>
-<span class="sd">        ...</span>
-<span class="sd">        Iteration: 148 fopt: 4.22441611201e-22</span>
-<span class="sd">        Iteration: 149 fopt: 4.22441611201e-22</span>
-<span class="sd">        Iteration: 150 fopt: 5.18467217924e-23</span>
-<span class="sd">        &gt;&gt;&gt; print(uopt)</span>
-<span class="sd">        array([ 1.,  3.])</span>
+<span class="sd">        list: Values that give the optimum (minimised) function.</span>
 <span class="sd">    """</span>
+
+    <span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 
     <span class="c1"># Heading</span>
 
-    <span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span> <span class="o">+</span> <span class="s1">'-'</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'Differential Evolution started...'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Differential Evolution started'</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">'-'</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
 
-    <span class="c1"># Setup population</span>
+    <span class="c1"># Setup bounds</span>
 
     <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
     <span class="n">bounds</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
-    <span class="n">b_ran</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">bounds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])[:,</span> <span class="n">newaxis</span><span class="p">]</span>
-    <span class="n">b_min</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">bounds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])[:,</span> <span class="n">newaxis</span><span class="p">]</span>
-    <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">tile</span><span class="p">(</span><span class="n">bounds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">][:,</span> <span class="n">newaxis</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">population</span><span class="p">))</span>
-    <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">tile</span><span class="p">(</span><span class="n">bounds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">][:,</span> <span class="n">newaxis</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">population</span><span class="p">))</span>
-    <span class="n">agents</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">population</span><span class="p">)</span> <span class="o">*</span> <span class="n">tile</span><span class="p">(</span><span class="n">b_ran</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">population</span><span class="p">))</span> <span class="o">+</span> <span class="n">tile</span><span class="p">(</span><span class="n">b_min</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">population</span><span class="p">)))</span>
+    <span class="n">b_max</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">][:,</span> <span class="n">newaxis</span><span class="p">]</span>
+    <span class="n">b_min</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">][:,</span> <span class="n">newaxis</span><span class="p">]</span>
+    <span class="n">lb</span> <span class="o">=</span> <span class="n">tile</span><span class="p">(</span><span class="n">b_min</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">population</span><span class="p">))</span>
+    <span class="n">ub</span> <span class="o">=</span> <span class="n">tile</span><span class="p">(</span><span class="n">b_max</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">population</span><span class="p">))</span>
+
+    <span class="c1"># Setup population</span>
+
+    <span class="n">agents</span> <span class="o">=</span> <span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">population</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">ub</span> <span class="o">-</span> <span class="n">lb</span><span class="p">)</span> <span class="o">+</span> <span class="n">lb</span><span class="p">)</span>
     <span class="n">candidates</span> <span class="o">=</span> <span class="n">tile</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">population</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">population</span><span class="p">))</span>
     <span class="n">candidates</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">delete</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">where</span><span class="p">(</span><span class="n">eye</span><span class="p">(</span><span class="n">population</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)),</span> <span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">population</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="n">ts</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Initial conditions</span>
+
     <span class="k">if</span> <span class="n">vectored</span><span class="p">:</span>
-        <span class="n">fun</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">fun</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">population</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">population</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">population</span><span class="p">):</span>
-            <span class="n">fun</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">agents</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
-    <span class="n">fopt</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">Generation: </span><span class="si">{0}</span><span class="s1">  fopt: </span><span class="si">{1:.5g}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">fopt</span><span class="p">))</span>
+            <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">agents</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">fopt</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
     <span class="n">ac</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">population</span><span class="p">))</span>
     <span class="n">bc</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">population</span><span class="p">))</span>
     <span class="n">cc</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">population</span><span class="p">))</span>
 
+    <span class="n">ts</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">Generation: </span><span class="si">{0}</span><span class="s1">  fopt: </span><span class="si">{1:.5g}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">fopt</span><span class="p">))</span>
+
     <span class="c1"># Start evolution</span>
 
-    <span class="n">fopt</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">10</span>
-    <span class="k">while</span> <span class="p">(</span><span class="n">ts</span> <span class="o">&lt;</span> <span class="n">iterations</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fopt</span> <span class="o">&gt;</span> <span class="n">limit</span><span class="p">):</span>
-        <span class="n">ind</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">population</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">CR</span>
+    <span class="k">while</span> <span class="n">ts</span> <span class="o">&lt;</span> <span class="n">generations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">population</span><span class="p">):</span>
             <span class="n">inds</span> <span class="o">=</span> <span class="n">candidates</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">choice</span><span class="p">(</span><span class="n">population</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
             <span class="n">ac</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[:,</span> <span class="n">inds</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
             <span class="n">bc</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[:,</span> <span class="n">inds</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
             <span class="n">cc</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[:,</span> <span class="n">inds</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">population</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">CR</span>
         <span class="n">agents_</span> <span class="o">=</span> <span class="n">ind</span> <span class="o">*</span> <span class="p">(</span><span class="n">ac</span> <span class="o">+</span> <span class="n">F</span> <span class="o">*</span> <span class="p">(</span><span class="n">bc</span> <span class="o">-</span> <span class="n">cc</span><span class="p">))</span> <span class="o">+</span> <span class="o">~</span><span class="n">ind</span> <span class="o">*</span> <span class="n">agents</span>
-        <span class="n">log_lower</span> <span class="o">=</span> <span class="n">agents_</span> <span class="o">&lt;</span> <span class="n">lower_bound</span>
-        <span class="n">log_upper</span> <span class="o">=</span> <span class="n">agents_</span> <span class="o">&gt;</span> <span class="n">upper_bound</span>
-        <span class="n">agents_</span><span class="p">[</span><span class="n">log_lower</span><span class="p">]</span> <span class="o">=</span> <span class="n">lower_bound</span><span class="p">[</span><span class="n">log_lower</span><span class="p">]</span>
-        <span class="n">agents_</span><span class="p">[</span><span class="n">log_upper</span><span class="p">]</span> <span class="o">=</span> <span class="n">upper_bound</span><span class="p">[</span><span class="n">log_upper</span><span class="p">]</span>
+        <span class="n">log_lb</span> <span class="o">=</span> <span class="n">agents_</span> <span class="o">&lt;</span> <span class="n">lb</span>
+        <span class="n">log_ub</span> <span class="o">=</span> <span class="n">agents_</span> <span class="o">&gt;</span> <span class="n">ub</span>
+        <span class="n">agents_</span><span class="p">[</span><span class="n">log_lb</span><span class="p">]</span> <span class="o">=</span> <span class="n">lb</span><span class="p">[</span><span class="n">log_lb</span><span class="p">]</span>
+        <span class="n">agents_</span><span class="p">[</span><span class="n">log_ub</span><span class="p">]</span> <span class="o">=</span> <span class="n">ub</span><span class="p">[</span><span class="n">log_ub</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="n">vectored</span><span class="p">:</span>
-            <span class="n">fun_</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">agents_</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">f_</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">agents_</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">fun_</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">population</span><span class="p">)</span>
+            <span class="n">f_</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">population</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">population</span><span class="p">):</span>
-                <span class="n">fun_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">agents_</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="n">log</span> <span class="o">=</span> <span class="n">where</span><span class="p">((</span><span class="n">fun</span> <span class="o">-</span> <span class="n">fun_</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">f_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">agents_</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="n">log</span> <span class="o">=</span> <span class="n">where</span><span class="p">((</span><span class="n">f</span> <span class="o">-</span> <span class="n">f_</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">agents</span><span class="p">[:,</span> <span class="n">log</span><span class="p">]</span> <span class="o">=</span> <span class="n">agents_</span><span class="p">[:,</span> <span class="n">log</span><span class="p">]</span>
-        <span class="n">fun</span><span class="p">[</span><span class="n">log</span><span class="p">]</span> <span class="o">=</span> <span class="n">fun_</span><span class="p">[</span><span class="n">log</span><span class="p">]</span>
-        <span class="n">fopt</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
-        <span class="n">xopt</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[:,</span> <span class="n">argmin</span><span class="p">(</span><span class="n">fun</span><span class="p">)]</span>
+        <span class="n">f</span><span class="p">[</span><span class="n">log</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_</span><span class="p">[</span><span class="n">log</span><span class="p">]</span>
+        <span class="n">fopt</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">xopt</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[:,</span> <span class="n">argmin</span><span class="p">(</span><span class="n">f</span><span class="p">)]</span>
+
         <span class="n">ts</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">ac</span> <span class="o">*=</span> <span class="mi">0</span>
         <span class="n">bc</span> <span class="o">*=</span> <span class="mi">0</span>
         <span class="n">cc</span> <span class="o">*=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">fopt</span> <span class="o">&lt;</span> <span class="n">limit</span><span class="p">:</span>
+            <span class="k">break</span>
+
         <span class="nb">print</span><span class="p">(</span><span class="s1">'Generation: </span><span class="si">{0}</span><span class="s1">  fopt: </span><span class="si">{1:.5g}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">fopt</span><span class="p">))</span>
 
         <span class="c1"># Save generation</span>
 
         <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+
             <span class="n">fnm</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{0}</span><span class="s1">generation_</span><span class="si">{1:0&gt;5}</span><span class="s1">_population.pop'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ts</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fnm</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'Generation</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="si">{0}</span><span class="se">\n\n</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'Number of individuals per generation</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="si">{0}</span><span class="se">\n\n</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">population</span><span class="p">))</span>
+
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'Population scaled variables</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">population</span><span class="p">):</span>
                     <span class="n">entry</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">agents</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])]</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">Population fitness value</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">population</span><span class="p">):</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fun</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
 
     <span class="c1"># L-BFGS-B polish</span>
@@ -208,19 +213,17 @@
     <span class="c1"># Save parameters</span>
 
     <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">results</span>
+
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">'num_pop'</span><span class="p">:</span> <span class="n">population</span><span class="p">,</span>
-            <span class="s1">'fit_name'</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-            <span class="s1">'min_fit'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">'min_fit'</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
             <span class="s1">'fit_type'</span><span class="p">:</span> <span class="s1">'min'</span><span class="p">,</span>
             <span class="s1">'end_gen'</span><span class="p">:</span> <span class="n">ts</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s1">'num_gen'</span><span class="p">:</span> <span class="n">iterations</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s1">'num_gen'</span><span class="p">:</span> <span class="n">generations</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
             <span class="s1">'start_from_gen'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{0}</span><span class="s1">parameters.json'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">'w+'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'</span><span class="si">{0}</span><span class="s1">parameters.json'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="s1">'w+'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
-        <span class="c1"># visualize_evolution(path, path, show_plot=False)</span>
 
     <span class="c1"># Summary</span>
 
@@ -229,7 +232,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="s1">'fopt: </span><span class="si">{0:.3g}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fopt</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">'-'</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">fopt</span><span class="p">,</span> <span class="n">xopt</span></div>
+    <span class="k">return</span> <span class="n">fopt</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">xopt</span><span class="p">)</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -238,6 +241,8 @@
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
 
+    <span class="kn">from</span> <span class="nn">compas.visualization.plotters.evoplotter</span> <span class="k">import</span> <span class="n">EvoPlotter</span>
+
     <span class="k">def</span> <span class="nf">fn</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="c1"># Booth's function, fopt=0, uopt=(1, 3)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -245,12 +250,20 @@
         <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">7</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
         <span class="k">return</span> <span class="n">z</span>
 
-    <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
-    <span class="n">fopt</span><span class="p">,</span> <span class="n">uopt</span> <span class="o">=</span> <span class="n">devo</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">polish</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">fopt</span><span class="p">,</span> <span class="n">uopt</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">evoplotter</span><span class="p">):</span>
+        <span class="n">evoplotter</span><span class="o">.</span><span class="n">update_points</span><span class="p">(</span><span class="n">generation</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">evoplotter</span><span class="o">.</span><span class="n">update_lines</span><span class="p">(</span><span class="n">generation</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="n">evoplotter</span> <span class="o">=</span> <span class="n">EvoPlotter</span><span class="p">(</span><span class="n">generations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">xaxis_div</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">yaxis_div</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pointsize</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">)]</span>
+    <span class="n">devo</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">generations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">polish</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span> <span class="n">evoplotter</span><span class="o">=</span><span class="n">evoplotter</span><span class="p">)</span>
 </code></pre></div>
-<nav class="compas-sideways">
-</nav>
+<!--<nav class="compas-sideways">
+                            
+
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -288,7 +301,7 @@
             
 
             
-                Last updated on Nov 01, 2017.
+                Last updated on Nov 12, 2017.
             
 
             
@@ -297,11 +310,11 @@
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -315,10 +328,47 @@ var DOCUMENTATION_OPTIONS = {
 <script src="/static/doctools.js"></script>
 <script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
 
-                var clipboard = new Clipboard('.language-python');
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

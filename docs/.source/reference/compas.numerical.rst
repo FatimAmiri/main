@@ -6,23 +6,19 @@ numerical
 
 .. module:: compas.numerical
 
-.. note::
 
-    The numerical package is built around NumPy and SciPy.
-
-    * NumPy: http://www.numpy.org/
-    * SciPy: http://www.scipy.org/
-
-
-Methods
-=======
+Algorithms
+==========
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     dr
-    drx
-    fd
+    dr_numpy
+    drx_numpy
+    fd_numpy
+    pca_numpy
 
 
 Solvers
@@ -30,6 +26,7 @@ Solvers
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     descent
     devo
@@ -39,24 +36,14 @@ Solvers
     moga
 
 
-Core
-====
+Functions
+=========
 
-geometry
---------
-
-.. autosummary::
-    :toctree: generated/
-
-    scalarfield_contours
-    plot_scalarfield_contours
-
-
-linalg
-------
+**linalg**
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     nullspace
     rank
@@ -64,8 +51,11 @@ linalg
     pivots
     nonpivots
     rref
+    rref_sympy
+    rref_matlab
     chofactor
     lufactorized
+    uvw_lengths
     normrow
     normalizerow
     rot90
@@ -73,11 +63,11 @@ linalg
     spsolve_with_known
 
 
-matrices
---------
+**matrices**
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     adjacency_matrix
     degree_matrix
@@ -89,72 +79,25 @@ matrices
     equilibrium_matrix
 
 
-operators
----------
+**operators**
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     grad
     div
     curl
 
 
-spatial
--------
+Utilities
+=========
 
 .. autosummary::
     :toctree: generated/
-
-    closest_points_points
-    project_points_heightfield
-    iterative_closest_point
-    bounding_box_xy
-    bounding_box
-
-
-statistics
-----------
-
-.. autosummary::
-    :toctree: generated/
-
-    principal_components
-
-
-transformations
----------------
-
-.. autosummary::
-    :toctree: generated/
-
-
-triangulation
--------------
-
-.. autosummary::
-    :toctree: generated/
-
-
-utilities
----------
-
-.. autosummary::
-    :toctree: generated/
+    :nosignatures:
 
     set_array_print_precision
     unset_array_print_precision
 
-
-xforms
-------
-
-.. autosummary::
-    :toctree: generated/
-
-    translation_matrix
-    rotation_matrix
-    random_rotation_matrix
-    scale_matrix
-    projection_matrix
 

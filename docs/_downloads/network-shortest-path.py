@@ -7,7 +7,7 @@ import compas
 from compas.utilities import pairwise
 from compas.datastructures import Network
 from compas.topology import dijkstra_path
-from compas.visualization import NetworkPlotter
+from compas.plotters import NetworkPlotter
 
 
 __author__    = ['Tom Van Mele', ]

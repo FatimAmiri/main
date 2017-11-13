@@ -70,7 +70,7 @@
 <span class="kn">import</span> <span class="nn">compas</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
-<span class="kn">from</span> <span class="nn">compas.visualization.viewers</span> <span class="k">import</span> <span class="n">NetworkViewer</span>
+<span class="kn">from</span> <span class="nn">compas.viewers</span> <span class="k">import</span> <span class="n">NetworkViewer</span>
 
 <span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="k">import</span> <span class="n">fd</span>
 
@@ -129,11 +129,17 @@
 <span class="n">viewer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
+
 </div>
-<nav class="compas-sideways">
-<a class="btn btn-primary compas-prev" href="../formfinding.html" role="button">Form Finding</a>
-<a class="btn btn-primary compas-next" href="02-network-blender.html" role="button">Network equilibrium in Blender</a>
-</nav>
+<!--<nav class="compas-sideways">
+                            
+                                <a href="../formfinding.html" class="btn btn-primary compas-prev" role="button">Form Finding</a>
+                            
+
+                            
+                                <a href="02-network-blender.html" class="btn btn-primary compas-next" role="button">Network equilibrium in Blender</a>
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -184,7 +190,7 @@
             
 
             
-                Last updated on Oct 31, 2017.
+                Last updated on Nov 12, 2017.
             
 
             
@@ -193,11 +199,11 @@
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -211,10 +217,47 @@ var DOCUMENTATION_OPTIONS = {
 <script src="/static/doctools.js"></script>
 <script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
 
-                var clipboard = new Clipboard('.language-python');
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

@@ -41,18 +41,24 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/datastructures.html">Working with datastructures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/geometry.html">Geometry processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/numerical.html">Numerical computation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/cad.html">CAD integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/com.html">Communication with external software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/geomaps.html">Geometric maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/callbacks.html">Dynamic visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/cpython.html">CPython in Rhino</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/interop.html">Using external libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/tools.html">Making tools</a></li>
 </ul>
 </div>
 </div>
-<nav class="compas-sideways">
-<a class="btn btn-primary compas-prev" href="examples/misc/interface-01-matlab-rhino.html" role="button">Matlab sessions from Rhino</a>
-<a class="btn btn-primary compas-next" href="tutorial/introduction.html" role="button">Introduction</a>
-</nav>
+<!--<nav class="compas-sideways">
+                            
+                                <a href="examples/misc/interface-01-matlab-rhino.html" class="btn btn-primary compas-prev" role="button">Matlab sessions from Rhino</a>
+                            
+
+                            
+                                <a href="tutorial/introduction.html" class="btn btn-primary compas-next" role="button">Introduction</a>
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -72,11 +78,12 @@
 <li class="nav-item active"><a class="nav-link active current reference internal" href="#">Tutorial</a><ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="tutorial/introduction.html">Introduction</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="tutorial/datastructures.html">Working with datastructures</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="tutorial/geometry.html">Geometry processing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="tutorial/numerical.html">Numerical computation</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="tutorial/cad.html">CAD integration</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="tutorial/com.html">Communication with external software</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="tutorial/geomaps.html">Geometric maps</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="tutorial/callbacks.html">Dynamic visualization</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="tutorial/cpython.html">CPython in Rhino</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="tutorial/interop.html">Using external libraries</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="tutorial/tools.html">Making tools</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="reference.html">API Reference</a></li>
@@ -102,7 +109,7 @@
             
 
             
-                Last updated on Oct 31, 2017.
+                Last updated on Nov 12, 2017.
             
 
             
@@ -111,11 +118,11 @@
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -129,10 +136,47 @@ var DOCUMENTATION_OPTIONS = {
 <script src="/static/doctools.js"></script>
 <script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
 
-                var clipboard = new Clipboard('.language-python');
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>

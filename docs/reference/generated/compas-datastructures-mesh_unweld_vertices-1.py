@@ -3,7 +3,7 @@ import compas
 from compas.datastructures import Mesh
 from compas.datastructures import mesh_unweld_vertices
 
-from compas.visualization import MeshPlotter
+from compas.plotters import MeshPlotter
 
 mesh = Mesh.from_obj(compas.get_data('faces.obj'))
 

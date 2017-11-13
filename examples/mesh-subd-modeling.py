@@ -14,7 +14,7 @@ from functools import partial
 import compas_rhino
 
 from compas.datastructures import Mesh
-from compas.datastructures import mesh_subdivide
+from compas.topology import mesh_subdivide
 
 
 __author__    = ['Tom Van Mele', ]

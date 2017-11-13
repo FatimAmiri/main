@@ -23,6 +23,8 @@ FaceNetwork
       ~FaceNetwork.clear_halfedgedict
       ~FaceNetwork.clear_vertexdict
       ~FaceNetwork.copy
+      ~FaceNetwork.delete_edge
+      ~FaceNetwork.delete_vertex
       ~FaceNetwork.edge_connected_edges
       ~FaceNetwork.edge_coordinates
       ~FaceNetwork.edge_direction
@@ -86,7 +88,6 @@ FaceNetwork
       ~FaceNetwork.index_uv
       ~FaceNetwork.indexed_edges
       ~FaceNetwork.indexed_face_vertices
-      ~FaceNetwork.is_connected
       ~FaceNetwork.is_edge_naked
       ~FaceNetwork.is_vertex_connected
       ~FaceNetwork.is_vertex_leaf
@@ -110,6 +111,7 @@ FaceNetwork
       ~FaceNetwork.set_vertex_attributes
       ~FaceNetwork.set_vertices_attribute
       ~FaceNetwork.set_vertices_attributes
+      ~FaceNetwork.split_edge
       ~FaceNetwork.to_data
       ~FaceNetwork.to_json
       ~FaceNetwork.to_lines

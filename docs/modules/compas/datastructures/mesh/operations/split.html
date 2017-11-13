@@ -51,17 +51,11 @@
 <span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_split_halfedge</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-
-<div class="viewcode-block" id="mesh_split_edge"><a class="viewcode-back" href="../../../../../reference/generated/compas.datastructures.mesh_split_edge.html#compas.datastructures.mesh_split_edge">[docs]</a><span class="k">def</span> <span class="nf">mesh_split_edge</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">mesh_split_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">"""Split and edge by inserting a vertex along its length.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    mesh : Mesh</span>
-<span class="sd">        A mesh object.</span>
 <span class="sd">    u : str</span>
 <span class="sd">        The key of the first vertex of the edge.</span>
 <span class="sd">    v : str</span>
@@ -90,48 +84,46 @@
 
     <span class="c1"># check if the split is legal</span>
     <span class="c1"># don't split if edge is on boundary</span>
-    <span class="n">fkey_uv</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
-    <span class="n">fkey_vu</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
+    <span class="n">fkey_uv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+    <span class="n">fkey_vu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_boundary</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">fkey_uv</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">fkey_vu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
     <span class="c1"># coordinates</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">edge_point</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_point</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
 
     <span class="c1"># the split vertex</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
 
     <span class="c1"># split half-edge UV</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">fkey_uv</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">fkey_uv</span>
-    <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">fkey_uv</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">fkey_uv</span>
+    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
 
     <span class="c1"># update the UV face if it is not the `None` face</span>
     <span class="k">if</span> <span class="n">fkey_uv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">j</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
 
     <span class="c1"># split half-edge VU</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">fkey_vu</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="n">fkey_vu</span>
-    <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">fkey_vu</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="n">fkey_vu</span>
+    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
 
     <span class="c1"># update the VU face if it is not the `None` face</span>
     <span class="k">if</span> <span class="n">fkey_vu</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">w</span></div>
+    <span class="k">return</span> <span class="n">w</span>
 
 
-<div class="viewcode-block" id="trimesh_split_edge"><a class="viewcode-back" href="../../../../../reference/generated/compas.datastructures.trimesh_split_edge.html#compas.datastructures.trimesh_split_edge">[docs]</a><span class="k">def</span> <span class="nf">trimesh_split_edge</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">trimesh_split_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">allow_boundary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">"""Split an edge of a triangle mesh.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    mesh : Mesh</span>
-<span class="sd">        A mesh object.</span>
 <span class="sd">    u : hashable</span>
 <span class="sd">        Identifier of the first vertex.</span>
 <span class="sd">    v : hashable</span>
@@ -153,18 +145,14 @@
 
 <span class="sd">        import compas</span>
 <span class="sd">        from compas.datastructures import Mesh</span>
-<span class="sd">        from compas.datastructures import mesh_split_face</span>
-<span class="sd">        from compas.datastructures import trimesh_split_edge</span>
-
-<span class="sd">        from compas.visualization import MeshPlotter</span>
+<span class="sd">        from compas.plotters import MeshPlotter</span>
+<span class="sd">        from compas.topology import mesh_quads_to_triangles</span>
 
 <span class="sd">        mesh = Mesh.from_obj(compas.get_data('faces.obj'))</span>
 
-<span class="sd">        for fkey in list(mesh.faces()):</span>
-<span class="sd">            a, b, c, d = mesh.face_vertices(fkey)</span>
-<span class="sd">            mesh_split_face(mesh, fkey, b, d)</span>
+<span class="sd">        mesh_quads_to_triangles(mesh)</span>
 
-<span class="sd">        split = trimesh_split_edge(mesh, 17, 30)</span>
+<span class="sd">        split = mesh.split_edge_tri(17, 30)</span>
 
 <span class="sd">        facecolor = {key: '#cccccc' if key != split else '#ff0000' for key in mesh.vertices()}</span>
 
@@ -183,50 +171,50 @@
 
     <span class="c1"># check if the split is legal</span>
     <span class="c1"># don't split if edge is on boundary</span>
-    <span class="n">fkey_uv</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
-    <span class="n">fkey_vu</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
+    <span class="n">fkey_uv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+    <span class="n">fkey_vu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_boundary</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">fkey_uv</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">fkey_vu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
     <span class="c1"># coordinates</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">edge_point</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_point</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
 
     <span class="c1"># the split vertex</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
 
     <span class="c1"># the UV face</span>
     <span class="k">if</span> <span class="n">fkey_uv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">face</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span>
         <span class="n">o</span> <span class="o">=</span> <span class="n">face</span><span class="p">[</span><span class="n">face</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">o</span><span class="p">])</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">w</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">o</span><span class="p">])</span>
-        <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
-        <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">o</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">w</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">o</span><span class="p">])</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_uv</span><span class="p">]</span>
 
     <span class="c1"># the VU face</span>
     <span class="k">if</span> <span class="n">fkey_vu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">face</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span>
         <span class="n">o</span> <span class="o">=</span> <span class="n">face</span><span class="p">[</span><span class="n">face</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">o</span><span class="p">])</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">w</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">o</span><span class="p">])</span>
-        <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
-        <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">o</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">w</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">o</span><span class="p">])</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey_vu</span><span class="p">]</span>
 
     <span class="c1"># return the key of the split vertex</span>
-    <span class="k">return</span> <span class="n">w</span></div>
+    <span class="k">return</span> <span class="n">w</span>
 
 
-<div class="viewcode-block" id="mesh_split_face"><a class="viewcode-back" href="../../../../../reference/generated/compas.datastructures.mesh_split_face.html#compas.datastructures.mesh_split_face">[docs]</a><span class="k">def</span> <span class="nf">mesh_split_face</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">mesh_split_face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
     <span class="sd">"""Split a face by inserting an edge between two specified vertices.</span>
 
 <span class="sd">    Parameters:</span>
@@ -235,10 +223,10 @@
 <span class="sd">        v (str) : The key of the second split vertex.</span>
 
 <span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">u</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span> <span class="ow">or</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">u</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span> <span class="ow">or</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'The split vertices do not belong to the split face.'</span><span class="p">)</span>
 
-    <span class="n">face</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span>
+    <span class="n">face</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span>
 
     <span class="n">i</span> <span class="o">=</span> <span class="n">face</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
     <span class="n">j</span> <span class="o">=</span> <span class="n">face</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -253,12 +241,12 @@
         <span class="n">f</span> <span class="o">=</span> <span class="n">face</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span> <span class="o">+</span> <span class="n">face</span><span class="p">[:</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">face</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
 
-    <span class="n">f</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    <span class="n">g</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 
-    <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span>
+    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span></div>
+    <span class="k">return</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -269,30 +257,29 @@
 
     <span class="kn">import</span> <span class="nn">compas</span>
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
-    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">mesh_split_face</span>
-    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">trimesh_split_edge</span>
-
-    <span class="kn">from</span> <span class="nn">compas.visualization</span> <span class="k">import</span> <span class="n">MeshPlotter</span>
+    <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">MeshPlotter</span>
+    <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">mesh_quads_to_triangles</span>
 
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">'faces.obj'</span><span class="p">))</span>
 
-    <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()):</span>
-        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
-        <span class="n">mesh_split_face</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">mesh_quads_to_triangles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 
-    <span class="n">split</span> <span class="o">=</span> <span class="n">trimesh_split_edge</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="n">split</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">split_edge_tri</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 
     <span class="n">facecolor</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#cccccc'</span> <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="n">split</span> <span class="k">else</span> <span class="s1">'#ff0000'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
 
-    <span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 
     <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()},</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">facecolor</span><span class="p">)</span>
     <span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">fkey</span><span class="p">:</span> <span class="n">fkey</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()})</span>
 
     <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
-<nav class="compas-sideways">
-</nav>
+<!--<nav class="compas-sideways">
+                            
+
+                            
+                        </nav>-->
 </main>
 <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
 <div class="navbar-light">
@@ -330,7 +317,7 @@
             
 
             
-                Last updated on Oct 31, 2017.
+                Last updated on Nov 11, 2017.
             
 
             
@@ -339,11 +326,11 @@
         </footer>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    '',
-    VERSION:     '',
+    URL_ROOT: '',
+    VERSION: '',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true,
+    HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt'
 };
             </script>
@@ -352,12 +339,52 @@ var DOCUMENTATION_OPTIONS = {
 <script crossorigin="anonymous" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 <script src="/static/underscore.js"></script>
 <script src="/static/doctools.js"></script>
-<script src="https://compas-dev.github.io/compas/static/searchtools_.js"></script>
+<script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
 <script>
-                hljs.initHighlightingOnLoad();
-                anchors.add();
+hljs.initHighlightingOnLoad();
+anchors.add();
+
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
             </script>
 </body>
 </html>
