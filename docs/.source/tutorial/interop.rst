@@ -234,4 +234,48 @@ to something like this:
 Convert the Python data to C-compatible types
 ---------------------------------------------
 
+Some of these conversion are quite trivial. For example, converting an integer is simply:
+
+.. code-block:: python
+
+    c_v = ctypes.c_int(v)
+
+Also the 1D arrays are not too complicated. For example:
+
+.. code-block:: python
+    
+    c_fixed_type = ctypes.c_int * v
+    c_fixed_data = c_fixed_type(*fixed)
+
+The 2D arrays are already a bit trickier. For example:
+
+.. code-block:: python
+    
+    c_vertex_type = ctypes.c_double * 3
+
+    c_vertices_type = ctypes.POINTER(ctypes.c_double) * v
+    c_vertices_data = c_vertices_type(*[c_vertex_type(x, y, z) for x, y, z in vertices])
+
+To simplify the construction of these C-compatible types, and C-compatible data,
+there are a few helper classes in :mod:`compas.interop`:
+
+* :class:`compas.interop.core.cpp.Array1D`
+* :class:`compas.interop.core.cpp.Array2D`
+* :class:`compas.interop.core.cpp.Array3D`
+
+With these helpers, the code for the conversion becomes:
+
+.. code-block:: python
+
+    # ==============================================================================
+    # convert the python data to C-compatible types
+    # ==============================================================================
+
+    c_nbrs       = Array1D(nbrs, 'int')
+    c_fixed      = Array1D(fixed, 'int')
+    c_vertices   = Array2D(vertices, 'double')
+    c_neighbours = Array2D(neighbours, 'int')
+
+    # ==============================================================================
+
 

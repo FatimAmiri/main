@@ -258,6 +258,42 @@ to something like this:</p>
 
 <div class="section">
 <h3>Convert the Python data to C-compatible types</h3>
+<p>Some of these conversion are quite trivial. For example, converting an integer is simply:</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">c_v</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Also the 1D arrays are not too complicated. For example:</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">c_fixed_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span> <span class="o">*</span> <span class="n">v</span>
+<span class="n">c_fixed_data</span> <span class="o">=</span> <span class="n">c_fixed_type</span><span class="p">(</span><span class="o">*</span><span class="n">fixed</span><span class="p">)</span>
+</code></pre></div>
+
+<p>The 2D arrays are already a bit trickier. For example:</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">c_vertex_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span> <span class="o">*</span> <span class="mi">3</span>
+
+<span class="n">c_vertices_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span>
+<span class="n">c_vertices_data</span> <span class="o">=</span> <span class="n">c_vertices_type</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">c_vertex_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">])</span>
+</code></pre></div>
+
+<p>To simplify the construction of these C-compatible types, and C-compatible data,
+there are a few helper classes in <a class="reference internal" href="../reference/compas.interop.html#module-compas.interop" title="compas.interop"><code class="xref py py-mod docutils literal">compas.interop</code></a>:</p>
+<ul class="simple">
+<li><code class="xref py py-class docutils literal">compas.interop.core.cpp.Array1D</code></li>
+<li><code class="xref py py-class docutils literal">compas.interop.core.cpp.Array2D</code></li>
+<li><code class="xref py py-class docutils literal">compas.interop.core.cpp.Array3D</code></li>
+</ul>
+<p>With these helpers, the code for the conversion becomes:</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="c1"># ==============================================================================</span>
+<span class="c1"># convert the python data to C-compatible types</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="n">c_nbrs</span>       <span class="o">=</span> <span class="n">Array1D</span><span class="p">(</span><span class="n">nbrs</span><span class="p">,</span> <span class="s1">'int'</span><span class="p">)</span>
+<span class="n">c_fixed</span>      <span class="o">=</span> <span class="n">Array1D</span><span class="p">(</span><span class="n">fixed</span><span class="p">,</span> <span class="s1">'int'</span><span class="p">)</span>
+<span class="n">c_vertices</span>   <span class="o">=</span> <span class="n">Array2D</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="s1">'double'</span><span class="p">)</span>
+<span class="n">c_neighbours</span> <span class="o">=</span> <span class="n">Array2D</span><span class="p">(</span><span class="n">neighbours</span><span class="p">,</span> <span class="s1">'int'</span><span class="p">)</span>
+
+<span class="c1"># ==============================================================================</span>
+</code></pre></div>
+
 </div>
 </div>
 </div>
