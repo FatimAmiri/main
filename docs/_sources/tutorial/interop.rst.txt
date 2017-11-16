@@ -150,6 +150,8 @@ to something like this:
     import compas
     from compas.datastructures import Mesh
     from compas.plotters import MeshPlotter
+    from compas.interop.core.cpp.xdarray import Array1D
+    from compas.interop.core.cpp.xdarray import Array2D
 
     # get the C++ smoothing library
 
@@ -167,6 +169,7 @@ to something like this:
     v          = len(vertices)
     nbrs       = [len(adjacency[i]) for i in range(v)]
     neighbours = [adjacency[i] + [0] * (10 - nbrs[i]) for i in range(v)]
+    kmax       = 50
 
     # ==============================================================================
     # convert the python data to C-compatible types
@@ -183,10 +186,10 @@ to something like this:
     # plot the original line geometry as a reference
 
     lines = []
-    for u, v in mesh.edges():
+    for a, b in mesh.edges():
         lines.append({
-            'start': mesh.vertex_coordinates(u, 'xy'),
-            'end'  : mesh.vertex_coordinates(v, 'xy'),
+            'start': mesh.vertex_coordinates(a, 'xy'),
+            'end'  : mesh.vertex_coordinates(b, 'xy'),
             'color': '#cccccc',
             'width': 0.5
         })
@@ -215,30 +218,26 @@ to something like this:
     # ==============================================================================
 
     # ==============================================================================
-    # set the C-type of each of the arguments
+    # set the argument types for the smoothing function
+    # and call it with C-compatible data
     # ==============================================================================
 
-    # ...
-
-    # ==============================================================================
-
-    # ==============================================================================
-    # run the smoothing function
-    # ==============================================================================
+    smoothing.smooth_centroid.argtypes = [...]
 
     smoothing.smooth_centroid(...)    
 
     # ==============================================================================
 
 
-Convert the Python data to C-compatible types
----------------------------------------------
+C-compatible types and data
+---------------------------
 
 Some of these conversion are quite trivial. For example, converting an integer is simply:
 
 .. code-block:: python
 
     c_v = ctypes.c_int(v)
+
 
 Also the 1D arrays are not too complicated. For example:
 
@@ -247,21 +246,30 @@ Also the 1D arrays are not too complicated. For example:
     c_fixed_type = ctypes.c_int * v
     c_fixed_data = c_fixed_type(*fixed)
 
+
 The 2D arrays are already a bit trickier. For example:
 
 .. code-block:: python
     
     c_vertex_type = ctypes.c_double * 3
-
     c_vertices_type = ctypes.POINTER(ctypes.c_double) * v
     c_vertices_data = c_vertices_type(*[c_vertex_type(x, y, z) for x, y, z in vertices])
 
-To simplify the construction of these C-compatible types, and C-compatible data,
+
+Converting the callback is also quite straightforward:
+
+.. code-block:: python
+
+    c_callback_type = ctypes.CFUNCTYPE(None, c_int)
+    c_callback = c_callback_type(callback)
+
+
+To simplify the construction of C-compatible types, and C-compatible data,
 there are a few helper classes in :mod:`compas.interop`:
 
-* :class:`compas.interop.core.cpp.Array1D`
-* :class:`compas.interop.core.cpp.Array2D`
-* :class:`compas.interop.core.cpp.Array3D`
+* :class:`compas.interop.core.cpp.xdarray.Array1D`
+* :class:`compas.interop.core.cpp.xdarray.Array2D`
+* :class:`compas.interop.core.cpp.xdarray.Array3D`
 
 With these helpers, the code for the conversion becomes:
 
@@ -275,7 +283,201 @@ With these helpers, the code for the conversion becomes:
     c_fixed      = Array1D(fixed, 'int')
     c_vertices   = Array2D(vertices, 'double')
     c_neighbours = Array2D(neighbours, 'int')
+    c_callback   = ctypes.CFUNCTYPE(None, ctypes.c_int)
 
     # ==============================================================================
 
+
+Then we let the smoothing function what it can expect in terms of types by setting
+the argument types of the callable:
+
+.. code-block:: python
+
+    # ==============================================================================
+    # set the argument types for the smoothing function
+    # and call it with C-compatible data
+    # ==============================================================================
+
+    smoothing.smooth_centroid.argtypes = [
+        c_int,
+        c_nbrs.ctype,
+        c_fixed.ctype,
+        c_vertices.ctype,
+        c_neighbours.ctype,
+        c_int,
+        c_callback
+    ]
+
+    smoothing.smooth_centroid(
+        c_int(v),
+        c_nbrs.cdata,
+        c_fixed.cdata,
+        c_vertices.cdata,
+        c_neighbours.cdata,
+        c_int(kmax),
+        c_callback(wrapper)
+    )    
+
+    # ==============================================================================
+
+
+The last step is to define the functionality of the callback.
+The goal is to visualise the changing geometry
+and to change the location of the fixed points 
+during the smoothing process; in C++, but from Python.
+
+.. code-block:: python
+
+    # ==============================================================================
+    # define the callback function
+    # ==============================================================================
+
+    def callback(k):
+        print(k)
+
+        xyz = c_vertices.cdata
+
+        # change the boundary conditions
+
+        if k < kmax - 1:
+            xyz[18][0] = 0.1 * (k + 1)
+
+        # update the plot
+
+        plotter.update_vertices()
+        plotter.update_edges()
+        plotter.update(pause=0.001)
+
+        for key, attr in mesh.vertices(True):
+            attr['x'] = xyz[key][0]
+            attr['y'] = xyz[key][1]
+            attr['z'] = xyz[key][2]
+
+    # ==============================================================================
+
+
+The result
+==========
+
+Putting it all together, we get the following script. Simply copy-paste it and run...
+
+.. code-block:: python
+
+    import ctypes
+    from ctypes import *
+    import compas
+    from compas.datastructures import Mesh
+    from compas.plotters import MeshPlotter
+    from compas.interop.core.cpp.xdarray import Array1D
+    from compas.interop.core.cpp.xdarray import Array2D
+
+
+    # get the C++ smoothing library
+
+    smoothing = ctypes.cdll.LoadLibrary('smoothing.so')
+
+
+    # make a mesh
+
+    mesh = Mesh.from_obj(compas.get('faces.obj'))
+
+
+    # extract the required data for smoothing
+
+    vertices   = mesh.get_vertices_attributes('xyz')
+    adjacency  = [mesh.vertex_neighbours(key) for key in mesh.vertices()]
+    fixed      = [int(mesh.vertex_degree(key) == 2) for key in mesh.vertices()]
+    v          = len(vertices)
+    nbrs       = [len(adjacency[i]) for i in range(v)]
+    neighbours = [adjacency[i] + [0] * (10 - nbrs[i]) for i in range(v)]
+    kmax       = 50
+
+
+    # convert the python data to C-compatible types
+
+    c_nbrs       = Array1D(nbrs, 'int')
+    c_fixed      = Array1D(fixed, 'int')
+    c_vertices   = Array2D(vertices, 'double')
+    c_neighbours = Array2D(neighbours, 'int')
+    c_callback   = CFUNCTYPE(None, c_int)
+
+
+    # make a plotter for visualisation
+
+    plotter = MeshPlotter(mesh, figsize=(10, 7))
+
+
+    # plot the original line geometry as a reference
+
+    lines = []
+    for a, b in mesh.edges():
+        lines.append({
+            'start': mesh.vertex_coordinates(a, 'xy'),
+            'end'  : mesh.vertex_coordinates(b, 'xy'),
+            'color': '#cccccc',
+            'width': 0.5
+        })
+
+    plotter.draw_lines(lines)
+
+
+    # plot the starting point
+
+    plotter.draw_vertices(facecolor={key: '#000000' for key in mesh.vertices() if mesh.vertex_degree(key) == 2})
+    plotter.draw_edges()
+
+    plotter.update(pause=0.5)
+
+
+    # define the callback function
+
+    def callback(k):
+        print(k)
+
+        xyz = c_vertices.cdata
+
+        # change the boundary conditions
+
+        if k < kmax - 1:
+            xyz[18][0] = 0.1 * (k + 1)
+
+        # update the plot
+
+        plotter.update_vertices()
+        plotter.update_edges()
+        plotter.update(pause=0.001)
+
+        for key, attr in mesh.vertices(True):
+            attr['x'] = xyz[key][0]
+            attr['y'] = xyz[key][1]
+            attr['z'] = xyz[key][2]
+
+
+    # set the argument types for the smoothing function
+    # and call it with C-compatible data
+
+    smoothing.smooth_centroid.argtypes = [
+        c_int,
+        c_nbrs.ctype,
+        c_fixed.ctype,
+        c_vertices.ctype,
+        c_neighbours.ctype,
+        c_int,
+        c_callback
+    ]
+
+    smoothing.smooth_centroid(
+        c_int(v),
+        c_nbrs.cdata,
+        c_fixed.cdata,
+        c_vertices.cdata,
+        c_neighbours.cdata,
+        c_int(kmax),
+        c_callback(callback)
+    )    
+
+
+    # keep the plotting window alive
+
+    plotter.show()
 
