@@ -38,6 +38,20 @@
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+    <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">diags</span>
+    <span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">import</span> <span class="n">spsolve</span>
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s1">'ironpython'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+        <span class="k">raise</span>
+
+<span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="k">import</span> <span class="n">connectivity_matrix</span>
+<span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="k">import</span> <span class="n">normrow</span>
+
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">'Tom Van Mele'</span><span class="p">,</span> <span class="p">]</span>
 <span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">'Copyright 2017, Block Research Group - ETH Zurich'</span>
@@ -142,12 +156,6 @@
 <span class="sd">        plotter.show()</span>
 
 <span class="sd">    """</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
-    <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">diags</span>
-    <span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">import</span> <span class="n">spsolve</span>
-    <span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="k">import</span> <span class="n">connectivity_matrix</span>
-    <span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="k">import</span> <span class="n">normrow</span>
-
     <span class="n">v</span>    <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
     <span class="n">free</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">fixed</span><span class="p">))</span>
     <span class="n">xyz</span>  <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
@@ -172,7 +180,7 @@
 
 
 <span class="c1"># ==============================================================================</span>
-<span class="c1"># Debugging</span>
+<span class="c1"># Testing</span>
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
@@ -277,7 +285,7 @@
             
 
             
-                Last updated on Nov 12, 2017.
+                Last updated on Nov 16, 2017.
             
 
             

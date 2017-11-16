@@ -32,14 +32,11 @@
 <nav class="breadcrumb">
 <a class="breadcrumb-item" href="https://compas-dev.github.io/">compas</a>
 <a class="breadcrumb-item" href="https://compas-dev.github.io/compas/index.html">main library</a>
-<a class="breadcrumb-item" href="../../../index.html">module code</a>
-<a accesskey="U" class="breadcrumb-item" href="../../geometry.html">compas.geometry</a>
+<a accesskey="U" class="breadcrumb-item" href="../../../index.html">module code</a>
 </nav>
 <h1>Source code for compas.geometry.objects.kdtree</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="c1"># Wikipedia KDTree &lt;http://en.wikipedia.org/wiki/Kd-tree&gt;</span>
-<span class="c1"># ActiveState KDTree &lt;http://code.activestate.com/recipes/577497-kd-tree-for-nearest-neighbor-search-in-a-k-dimensional-space&gt;</span>
-
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">import</span> <span class="nn">collections</span>
 
@@ -81,7 +78,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    .. plot::</span>
 <span class="sd">        :include-source:</span>
-<span class="sd">        </span>
+
 <span class="sd">        from compas.geometry import KDTree</span>
 <span class="sd">        from compas.geometry import pointcloud_xy</span>
 <span class="sd">        from compas.plotters import Plotter</span>
@@ -137,6 +134,11 @@
 <span class="sd">        plotter.draw_points(points)</span>
 <span class="sd">        plotter.show()</span>
 
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    * `Wikipedia KDTree &lt;http://en.wikipedia.org/wiki/Kd-tree&gt;`_</span>
+<span class="sd">    * `ActiveState KDTree &lt;http://code.activestate.com/recipes/577497-kd-tree-for-nearest-neighbor-search-in-a-k-dimensional-space&gt;`_</span>
+
 <span class="sd">    """</span>
 
 <div class="viewcode-block" id="KDTree.__init__"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.KDTree.__init__.html#compas.geometry.KDTree.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -147,14 +149,14 @@
 
 <div class="viewcode-block" id="KDTree.build"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.KDTree.build.html#compas.geometry.KDTree.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objects</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">"""Populate a kd-tree with given objects.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        objects : list</span>
 <span class="sd">            The tree objects.</span>
 <span class="sd">        axis : int, optional</span>
 <span class="sd">            The axis along which to build.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Node</span>
@@ -179,7 +181,7 @@
 <div class="viewcode-block" id="KDTree.nearest_neighbour"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.KDTree.nearest_neighbour.html#compas.geometry.KDTree.nearest_neighbour">[docs]</a>    <span class="k">def</span> <span class="nf">nearest_neighbour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">"""Find the nearest neighbour to a given point,</span>
 <span class="sd">        excluding neighbours that have already been found.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        point : list</span>
@@ -187,14 +189,14 @@
 <span class="sd">        exclude : set, optional</span>
 <span class="sd">            A set of points to exclude from the search.</span>
 <span class="sd">            Defaults to an empty set.</span>
-<span class="sd">    </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list:</span>
 <span class="sd">            XYZ coordinates of the nearest neighbour.</span>
 <span class="sd">            Label of the nearest neighbour.</span>
 <span class="sd">            Distance to the base point.</span>
-<span class="sd">    </span>
+
 <span class="sd">        """</span>
         <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -233,7 +235,7 @@
 <span class="sd">        distance_sort : bool, optional</span>
 <span class="sd">            Sort the nearest neighbours by distance to the base point.</span>
 <span class="sd">            Default is ``False``.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
@@ -252,7 +254,7 @@
 
 
 <span class="c1"># ==============================================================================</span>
-<span class="c1"># Debugging</span>
+<span class="c1"># Testing</span>
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
@@ -353,7 +355,7 @@
             
 
             
-                Last updated on Nov 08, 2017.
+                Last updated on Nov 16, 2017.
             
 
             

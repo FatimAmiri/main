@@ -17,7 +17,7 @@ from compas_blender.helpers import NetworkArtist
 
 from compas.datastructures import Network
 
-from compas.numerical import fd
+from compas.numerical import fd_numpy
 
 
 __author__    = ['Tom Van Mele', 'Andrew Liew']
@@ -60,7 +60,7 @@ edges = [(key_index[u], key_index[v]) for u, v in network.edges()]
 
 # run the force density method
 
-res = fd(xyz, edges, fixed, q, loads, rtype='list')
+res = fd_numpy(xyz, edges, fixed, q, loads)
 xyz = res[0]
 
 # update the network

@@ -41,6 +41,7 @@
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">norm_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">adjacency_from_edges</span>
 
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">'Tom Van Mele &lt;vanmelet@ethz.ch&gt;'</span><span class="p">]</span>
@@ -382,11 +383,7 @@
 
     <span class="c1"># i_nbrs = {i: [ij[1] if ij[0] == i else ij[0] for ij in edges if i in ij] for i in range(n)}</span>
 
-    <span class="n">i_nbrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)}</span>
-
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">edges</span><span class="p">):</span>
-        <span class="n">i_nbrs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
-        <span class="n">i_nbrs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">i_nbrs</span> <span class="o">=</span> <span class="n">adjacency_from_edges</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
 
     <span class="n">ij_e</span>   <span class="o">=</span> <span class="p">{(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">edges</span><span class="p">)}</span>
     <span class="n">ij_e</span><span class="o">.</span><span class="n">update</span><span class="p">({(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="n">index</span> <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">ij_e</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
@@ -501,7 +498,7 @@
 
 
 <span class="c1"># ==============================================================================</span>
-<span class="c1"># Debugging</span>
+<span class="c1"># Testing</span>
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
@@ -511,7 +508,7 @@
     <span class="kn">import</span> <span class="nn">compas</span>
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
     <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
-    <span class="kn">from</span> <span class="nn">compas.numperical</span> <span class="k">import</span> <span class="n">dr</span>
+    <span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="k">import</span> <span class="n">dr</span>
     <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">i_to_rgb</span>
 
     <span class="c1"># make a network</span>
@@ -686,7 +683,7 @@
             
 
             
-                Last updated on Nov 12, 2017.
+                Last updated on Nov 16, 2017.
             
 
             

@@ -1,0 +1,786 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<title>compas -- a computational framework for research in architecture and structures</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<meta content="Tom Van Mele" name="author"/>
+<meta content="compas is a computational framework for research in architecture and structures." name="description"/>
+<link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" rel="stylesheet"/>
+<link href="/css/github.css" rel="stylesheet" type="text/css"/>
+<link href="/css/compas.css" rel="stylesheet" type="text/css"/>
+<link href="/css/compas-reference.css" rel="stylesheet" type="text/css"/>
+<script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
+</head>
+<body data-spy="scroll" data-target="#compas-localnav">
+<header class="navbar navbar-expand navbar-dark bg-dark compas-navbar">
+<a class="navbar-brand" href="/">compas</a>
+<ul class="navbar-nav">
+<li class="nav-item">
+<a class="nav-link active" href="/main/">Main library</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="/packages/">Additional Packages</a>
+</li>
+</ul>
+</header>
+<div class="container-fluid compas-container">
+<div class="row flex-xl-nowrap">
+<main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+<nav class="breadcrumb">
+<a class="breadcrumb-item" href="https://compas-dev.github.io/">compas</a>
+<a class="breadcrumb-item" href="https://compas-dev.github.io/compas/index.html">main library</a>
+<a accesskey="U" class="breadcrumb-item" href="../../../index.html">module code</a>
+</nav>
+<h1>Source code for compas.hpc.geometry.basic</h1><div class="highlight"><pre><code class="language-python border rounded">
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">float64</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">int64</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">sqrt</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="nb">sum</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">zeros</span>
+
+
+<span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">'Andrew Liew &lt;liew@arch.ethz.ch&gt;'</span><span class="p">]</span>
+<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">'Copyright 2017, BLOCK Research Group - ETH Zurich'</span>
+<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">'MIT License'</span>
+<span class="n">__email__</span>      <span class="o">=</span> <span class="s1">'liew@arch.ethz.ch'</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># 'sum_vectors_numba',</span>
+    <span class="s1">'norm_vector_numba'</span><span class="p">,</span>
+    <span class="s1">'norm_vectors_numba'</span><span class="p">,</span>
+    <span class="s1">'length_vector_numba'</span><span class="p">,</span>
+    <span class="s1">'length_vector_xy_numba'</span><span class="p">,</span>
+    <span class="s1">'length_vector_sqrd_numba'</span><span class="p">,</span>
+    <span class="s1">'length_vector_sqrd_xy_numba'</span><span class="p">,</span>
+    <span class="s1">'scale_vector_numba'</span><span class="p">,</span>
+    <span class="s1">'scale_vector_xy_numba'</span><span class="p">,</span>
+    <span class="s1">'scale_vectors_numba'</span><span class="p">,</span>
+    <span class="s1">'scale_vectors_xy_numba'</span><span class="p">,</span>
+    <span class="s1">'normalize_vector_numba'</span><span class="p">,</span>
+    <span class="s1">'normalize_vector_xy_numba'</span><span class="p">,</span>
+    <span class="s1">'normalize_vectors_numba'</span><span class="p">,</span>
+    <span class="s1">'normalize_vectors_xy_numba'</span><span class="p">,</span>
+    <span class="s1">'power_vector_numba'</span><span class="p">,</span>
+    <span class="s1">'power_vectors_numba'</span><span class="p">,</span>
+    <span class="s1">'square_vector_numba'</span><span class="p">,</span>
+    <span class="s1">'square_vectors_numba'</span><span class="p">,</span>
+    <span class="s1">'add_vectors_numba'</span><span class="p">,</span>
+    <span class="s1">'add_vectors_xy_numba'</span><span class="p">,</span>
+    <span class="s1">'subtract_vectors_numba'</span><span class="p">,</span>
+    <span class="s1">'subtract_vectors_xy_numba'</span><span class="p">,</span>
+    <span class="s1">'multiply_vectors_numba'</span><span class="p">,</span>
+    <span class="s1">'multiply_vectors_xy_numba'</span><span class="p">,</span>
+    <span class="s1">'divide_vectors_numba'</span><span class="p">,</span>
+    <span class="s1">'divide_vectors_xy_numba'</span><span class="p">,</span>
+    <span class="s1">'cross_vectors_numba'</span><span class="p">,</span>
+    <span class="s1">'cross_vectors_xy_numba'</span><span class="p">,</span>
+    <span class="s1">'dot_vectors_numba'</span><span class="p">,</span>
+    <span class="s1">'dot_vectors_xy_numba'</span><span class="p">,</span>
+    <span class="c1"># 'vector_component_numba',</span>
+    <span class="c1"># 'vector_component_xy_numba',</span>
+    <span class="c1"># 'transpose_matrix_numba',</span>
+    <span class="s1">'multiply_matrices_numba'</span><span class="p">,</span>
+    <span class="s1">'multiply_matrix_vector_numba'</span><span class="p">,</span>
+    <span class="c1"># 'orthonormalise_vectors',</span>
+    <span class="c1"># 'homogenise_vectors_numba',</span>
+    <span class="c1"># 'dehomogenise_vectors_numba',</span>
+    <span class="c1"># 'vector_from_points',</span>
+    <span class="c1"># 'vector_from_points_xy',</span>
+    <span class="c1"># 'plane_from_points',</span>
+    <span class="c1"># 'circle_from_points',</span>
+    <span class="c1"># 'circle_from_points_xy',</span>
+    <span class="c1"># 'pointcloud',</span>
+    <span class="c1"># 'pointcloud_xy',</span>
+<span class="p">]</span>
+
+
+<span class="c1"># ==============================================================================</span>
+
+
+<span class="c1"># @jit(float64[:](float64[:, :], int64), nogil=True, nopython=True)</span>
+<span class="c1"># def sum_vectors_numba(a, axis=0):</span>
+<span class="c1">#     """ Calculate the sum of an array of vectors along the specified axis.</span>
+
+<span class="c1">#     Parameters:</span>
+<span class="c1">#         a (array): Array of vectors (m x 3).</span>
+<span class="c1">#         axis (int): Dimension to sum through.</span>
+
+<span class="c1">#     Returns:</span>
+<span class="c1">#         array: The summed values according to the axis of choice.</span>
+<span class="c1">#     """</span>
+<span class="c1">#     return sum(a, axis=axis)</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">norm_vector_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Calculate the L2 norm or length of a vector.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of the vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: The L2 norm of the vector.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">norm_vectors_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Calculate the L2 norm or length of vectors.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of the vectors (m x 3).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: The L2 norm of the vectors (m x 1).</span>
+<span class="sd">    """</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">w</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">length_vector_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Calculate the length of a vector.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of the vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: The length of the vector.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">length_vector_xy_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Calculate the length of the vector, assuming it lies in the XY plane.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XY(Z) components of the vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: The length of the XY component of the vector</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">length_vector_sqrd_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Calculate the squared length of the vector.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of the vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: The squared length of the XYZ components.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">length_vector_sqrd_xy_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Calculate the squared length of the vector, assuming it lies in the XY plane.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XY(Z) components of the vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: The squared length of the XY components.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+
+
+<span class="c1"># ==============================================================================</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">scale_vector_numba</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+    <span class="sd">""" Scale a vector by a given factor.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of the vector.</span>
+<span class="sd">        factor (float): Scale factor.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: The scaled vector, factor * a.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">factor</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">scale_vector_xy_numba</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+    <span class="sd">""" Scale a vector by a given factor, assuming it lies in the XY plane.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XY(Z) components of the vector.</span>
+<span class="sd">        factor (float): Scale factor.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: The scaled vector, factor * a (XY).</span>
+<span class="sd">    """</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">factor</span>
+    <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">b</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:](</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">float64</span><span class="p">),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">scale_vectors_numba</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+    <span class="sd">""" Scale multiple vectors by a given factor.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of the vectors.</span>
+<span class="sd">        factor (float): Scale factor.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: Scaled vectors.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">factor</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:](</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">float64</span><span class="p">),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">scale_vectors_xy_numba</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+    <span class="sd">""" Scale multiple vectors by a given factor, assuming they lie in the XY plane</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XY(Z)components of the vectors.</span>
+<span class="sd">        factor (float): Scale factor.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: Scaled vectors (XY).</span>
+<span class="sd">    """</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">factor</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">return</span> <span class="n">b</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">normalize_vector_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Normalize a given vector.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of the vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: The normalised vector.</span>
+<span class="sd">    """</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">length_vector_numba</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">l</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">normalize_vector_xy_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Normalize a given vector, assuming it lies in the XY-plane.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XY(Z) components of the vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: The normalised vector in the XY-plane (Z = 0.0).</span>
+<span class="sd">    """</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">length_vector_xy_numba</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">/</span> <span class="n">l</span>
+    <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">return</span> <span class="n">b</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:](</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">normalize_vectors_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Normalise multiple vectors.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of vectors.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: The normalised vectors.</span>
+<span class="sd">    """</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">normalize_vector_numba</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="k">return</span> <span class="n">b</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:](</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">normalize_vectors_xy_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Normalise multiple vectors, assuming they lie in the XY plane.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XY(Z) components of vectors.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: The normalised vectors in the XY plane.</span>
+<span class="sd">    """</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">length_vector_xy_numba</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">l</span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">l</span>
+    <span class="k">return</span> <span class="n">b</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">power_vector_numba</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
+    <span class="sd">""" Raise a vector to the given power.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of the vector.</span>
+<span class="sd">        power (float): Power to raise to.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: a^power.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="n">power</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="n">power</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="n">power</span><span class="p">])</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:](</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">float64</span><span class="p">),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">power_vectors_numba</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
+    <span class="sd">""" Raise multiple vectors to the given power.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of the vectors (m x 3).</span>
+<span class="sd">        power (float): Power to raise to.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: a^power.</span>
+<span class="sd">    """</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="n">power</span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="n">power</span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="n">power</span>
+    <span class="k">return</span> <span class="n">b</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">square_vector_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Raise a single vector to the power 2.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of the vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: a^2.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">power_vector_numba</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">2.</span><span class="p">)</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:](</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">square_vectors_numba</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">""" Raise multiple vectors to the power 2.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        a (array): XYZ components of the vectors (m x 3).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: a^2.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">power_vectors_numba</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">2.</span><span class="p">)</span>
+
+
+<span class="c1"># ==============================================================================</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Add two vectors.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XYZ components of the first vector.</span>
+<span class="sd">        v (array): XYZ components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: u + v.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Add two vectors, assuming they lie in the XY-plane.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XYZ components of the first vector.</span>
+<span class="sd">        v (array): XYZ components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: u + v (Z = 0.0).</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.</span><span class="p">])</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">subtract_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Subtract one vector from another.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XYZ components of the first vector.</span>
+<span class="sd">        v (array): XYZ components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: u - v.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">subtract_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Subtract one vector from another, assuming they lie in the XY plane.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XY(Z) components of the first vector.</span>
+<span class="sd">        v (array): XY(Z) components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: u - v (Z = 0.0).</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.</span><span class="p">])</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">multiply_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Element-wise multiplication of two vectors.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XYZ components of the first vector.</span>
+<span class="sd">        v (array): XYZ components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: [ui * vi, uj * vj, uk * vk].</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">multiply_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Element-wise multiplication of two vectors assumed to lie in the XY plane..</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XY(Z) components of the first vector.</span>
+<span class="sd">        v (array): XY(Z) components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: [ui * vi, uj * vj, (Z = 0.0)].</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.</span><span class="p">])</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">divide_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Element-wise division of two vectors.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XYZ components of the first vector.</span>
+<span class="sd">        v (array): XYZ components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: [ui / vi, uj / vj, uk / vk].</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">divide_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Element-wise division of two vectors assumed to lie in the XY plane.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XY(Z) components of the first vector.</span>
+<span class="sd">        v (array): XY(Z) components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: [ui / vi, uj / vj, (Z = 0.0)].</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.</span><span class="p">])</span>
+
+
+<span class="c1"># ==============================================================================</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cross_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Compute the cross product of two vectors.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XYZ components of the first vector.</span>
+<span class="sd">        v (array): XYZ components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: u X v.</span>
+<span class="sd">    """</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">w</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">w</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cross_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Compute the cross product of two vectors, assuming they lie in the XY-plane.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XY(Z) components of the first vector.</span>
+<span class="sd">        v (array): XY(Z) components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: u X v.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">dot_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Compute the dot product of two vectors.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XYZ components of the first vector.</span>
+<span class="sd">        v (array): XYZ components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: u . v.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">dot_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">""" Compute the dot product of two vectors, assuming they lie in the XY-plane.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        u (array): XY(Z) components of the first vector.</span>
+<span class="sd">        v (array): XY(Z) components of the second vector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: u . v (Z = 0.0).</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="c1"># ==============================================================================</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:](</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">float64</span><span class="p">[:,</span> <span class="p">:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">multiply_matrices_numba</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+    <span class="sd">""" The multiplication of matrices.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        A (array): The first matrix (m x n).</span>
+<span class="sd">        B (array): The second matrix (n x p).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: A * B of size (m x p).</span>
+<span class="sd">    """</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">C</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">float64</span><span class="p">[:](</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">float64</span><span class="p">[:]),</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">multiply_matrix_vector_numba</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">""" The multiplication of a matrix with a vector.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        A (array): The matrix (m x n).</span>
+<span class="sd">        b (array): The vector (n,).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: A * b of size (m,).</span>
+<span class="sd">    """</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">C</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Testing</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+
+    <span class="n">u</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">])</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">])</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]])</span>
+
+    <span class="c1"># print(sum_vectors_numba(c, axis=1))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">norm_vector_numba</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">norm_vectors_numba</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">length_vector_numba</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">length_vector_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">length_vector_sqrd_numba</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">length_vector_sqrd_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">scale_vector_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">4.</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">scale_vector_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">4.</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">scale_vectors_numba</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">4.</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">scale_vectors_xy_numba</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">4.</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">normalize_vector_numba</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">normalize_vector_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">normalize_vectors_numba</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">normalize_vectors_xy_numba</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">power_vector_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mf">3.</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">power_vectors_numba</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mf">3.</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">square_vector_numba</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">square_vectors_numba</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">add_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">add_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">subtract_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">subtract_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">multiply_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">multiply_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">divide_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">divide_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">cross_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">cross_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dot_vectors_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dot_vectors_xy_numba</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">multiply_matrices_numba</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">multiply_matrix_vector_numba</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
+
+<span class="c1">#     print(vector_component_numba(u, v))</span>
+<span class="c1">#     print(vector_component_xy_numba(u, v))</span>
+<span class="c1">#     print(homogenise_vectors_numba(d,3))</span>
+<span class="c1">#     print(dehomogenise_vectors_numba(d,3))</span>
+<span class="c1">#     print(transpose_matrix_numba(d))</span>
+</code></pre></div>
+<!--<nav class="compas-sideways">
+                            
+
+                            
+                        </nav>-->
+</main>
+<div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
+<div class="navbar-light">
+<form action="../../../../search.html" class="d-flex compas-searchbox" id="" method="get">
+<input class="form-control" name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+<button aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler d-md-none compas-navigation-toggler" data-target="#compas-navigation" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+</form>
+<div class="navbar-expand-md">
+<div class="collapse navbar-collapse compas-navigation" id="compas-navigation">
+<ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorial.html">Tutorial</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../reference.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../workshops.html">Workshops</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../bibliography.html">Bibliography</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+</div>
+</div>
+</div>
+<footer class="compas-footer">
+            
+                
+                    © Copyright 2017, Block Research Group - ETH Zurich.
+                
+            
+
+            
+                Last updated on Nov 16, 2017.
+            
+
+            
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+            
+        </footer>
+<script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT: '',
+    VERSION: '',
+    COLLAPSE_INDEX: false,
+    FILE_SUFFIX: '.html',
+    HAS_SOURCE: true,
+    SOURCELINK_SUFFIX: '.txt'
+};
+            </script>
+<script crossorigin="anonymous" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+<script src="/static/underscore.js"></script>
+<script src="/static/doctools.js"></script>
+<script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
+<script>
+hljs.initHighlightingOnLoad();
+anchors.add();
+
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+            </script>
+</body>
+</html>

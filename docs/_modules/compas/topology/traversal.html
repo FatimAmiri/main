@@ -633,247 +633,214 @@
 
 
 <span class="c1"># ==============================================================================</span>
-<span class="c1"># Debugging</span>
+<span class="c1"># Testing</span>
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
 
-    <span class="kn">import</span> <span class="nn">compas</span>
-    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
-    <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">MeshPlotter</span>
+    <span class="n">testrun</span> <span class="o">=</span> <span class="mi">4</span>
 
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'faces.obj'</span><span class="p">))</span>
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># testrun 1</span>
+    <span class="c1"># ==========================================================================</span>
 
-    <span class="n">edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">testrun</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">compas</span>
+        <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
+        <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">MeshPlotter</span>
 
-    <span class="n">root</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">()</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'faces.obj'</span><span class="p">))</span>
 
-    <span class="n">ordering</span><span class="p">,</span> <span class="n">predecessors</span><span class="p">,</span> <span class="n">paths</span> <span class="o">=</span> <span class="n">depth_first_tree</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
 
-    <span class="n">edgecolor</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">edgewidth</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">()</span>
 
-    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-            <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">,</span> <span class="n">u</span>
-        <span class="n">edgecolor</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">'#ff0000'</span>
-        <span class="n">edgewidth</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">3.0</span>
+        <span class="n">ordering</span><span class="p">,</span> <span class="n">predecessors</span><span class="p">,</span> <span class="n">paths</span> <span class="o">=</span> <span class="n">depth_first_tree</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-        <span class="n">parent</span> <span class="o">=</span> <span class="n">predecessors</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">([</span><span class="n">parent</span><span class="p">]</span> <span class="o">+</span> <span class="n">path</span><span class="p">):</span>
+        <span class="n">edgecolor</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">edgewidth</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
                 <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">,</span> <span class="n">u</span>
-            <span class="n">edgecolor</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">'#00ff00'</span>
-            <span class="n">edgewidth</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">3.0</span>
+            <span class="n">edgecolor</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">'#ff0000'</span>
+            <span class="n">edgewidth</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">5.0</span>
 
-    <span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">predecessors</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">([</span><span class="n">parent</span><span class="p">]</span> <span class="o">+</span> <span class="n">path</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+                    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">,</span> <span class="n">u</span>
+                <span class="n">edgecolor</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">'#00ff00'</span>
+                <span class="n">edgewidth</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">5.0</span>
 
-    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'key'</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#ff0000'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="p">)},</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">edgewidth</span><span class="p">)</span>
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 
-    <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'key'</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#ff0000'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="p">)},</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">edgewidth</span><span class="p">)</span>
+
+        <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
     <span class="c1"># dynamic traversal to visualize the difference</span>
     <span class="c1"># between DFS and BFS</span>
 
-    <span class="c1"># import compas</span>
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># testrun 2</span>
+    <span class="c1"># ==========================================================================</span>
 
-    <span class="c1"># from compas.datastructures import Network</span>
-    <span class="c1"># from compas.topology import breadth_first_paths</span>
-    <span class="c1"># from compas.plotters import NetworkPlotter</span>
+    <span class="k">if</span> <span class="n">testrun</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">compas</span>
 
-    <span class="c1"># network = Network.from_obj(compas.get('lines.obj'))</span>
+        <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
+        <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">shortest_path</span>
+        <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
 
-    <span class="c1"># adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
+        <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">'grid_irregular.obj'</span><span class="p">))</span>
 
-    <span class="c1"># weight = {(u, v): network.edge_length(u, v) for u, v in network.edges()}</span>
-    <span class="c1"># weight.update({(v, u): weight[(u, v)] for u, v in network.edges()})</span>
+        <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_neighbours</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
 
-    <span class="c1"># start = 0</span>
-    <span class="c1"># end = 24</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">21</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="mi">22</span>
 
-    <span class="c1"># path = travel(adjacency, weight)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">shortest_path</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
 
-    <span class="c1"># print(path)</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">,</span> <span class="n">u</span>
+            <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">])</span>
 
-    <span class="c1"># # n = 0</span>
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 
-    <span class="c1"># # for p in breadth_first_paths(adjacency, start, end):</span>
-    <span class="c1"># #     if len(p) &gt; n:</span>
-    <span class="c1"># #         n = len(p)</span>
-    <span class="c1"># #         path = p</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()},</span>
+            <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#ff0000'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])},</span>
+            <span class="n">radius</span><span class="o">=</span><span class="mf">0.15</span>
+        <span class="p">)</span>
 
-    <span class="c1"># # print(paths)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span>
+            <span class="n">color</span><span class="o">=</span><span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="s1">'#ff0000'</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">},</span>
+            <span class="n">width</span><span class="o">=</span><span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="mf">5.0</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">}</span>
+        <span class="p">)</span>
 
-    <span class="c1"># edges = []</span>
-    <span class="c1"># for i in range(len(path) - 1):</span>
-    <span class="c1">#     u = path[i]</span>
-    <span class="c1">#     v = path[i + 1]</span>
-    <span class="c1">#     if v not in network.edge[u]:</span>
-    <span class="c1">#         u, v = v, u</span>
-    <span class="c1">#     edges.append([u, v])</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-    <span class="c1"># plotter = NetworkPlotter(network)</span>
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># testrun 3</span>
+    <span class="c1"># ==========================================================================</span>
 
-    <span class="c1"># # plotter.draw_vertices(text='key')</span>
-    <span class="c1"># # plotter.draw_edges()</span>
+    <span class="k">if</span> <span class="n">testrun</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">compas</span>
 
-    <span class="c1"># plotter.draw_vertices(</span>
-    <span class="c1">#     text={key: key for key in network.vertices()},</span>
-    <span class="c1">#     facecolor={key: '#ff0000' for key in (path[0], path[-1])},</span>
-    <span class="c1">#     radius=0.15</span>
-    <span class="c1"># )</span>
+        <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
+        <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">dijkstra_distances</span>
+        <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
+        <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">i_to_red</span>
 
-    <span class="c1"># plotter.draw_edges(</span>
-    <span class="c1">#     color={(u, v): '#ff0000' for u, v in edges},</span>
-    <span class="c1">#     width={(u, v): 2.0 for u, v in edges}</span>
-    <span class="c1"># )</span>
+        <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">'grid_irregular.obj'</span><span class="p">))</span>
 
-    <span class="c1"># plotter.show()</span>
+        <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_neighbours</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
 
-    <span class="c1"># import compas</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="n">network</span><span class="o">.</span><span class="n">edge_length</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()}</span>
+        <span class="n">weight</span><span class="o">.</span><span class="n">update</span><span class="p">({(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span> <span class="n">weight</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()})</span>
 
-    <span class="c1"># from compas.datastructures import Network</span>
-    <span class="c1"># from compas.topology import shortest_path</span>
-    <span class="c1"># from compas.plotters import NetworkPlotter</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="mi">22</span>
 
-    <span class="c1"># network = Network.from_obj(compas.get_data('grid_irregular.obj'))</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">dijkstra_distances</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 
-    <span class="c1"># adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 
-    <span class="c1"># start = 0</span>
-    <span class="c1"># end = 22</span>
+        <span class="n">dmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
-    <span class="c1"># path = shortest_path(adjacency, start, end)</span>
+        <span class="n">facecolor</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">i_to_red</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">/</span> <span class="n">dmax</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'</span><span class="si">{:.1f}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
 
-    <span class="c1"># edges = []</span>
-    <span class="c1"># for i in range(len(path) - 1):</span>
-    <span class="c1">#     u = path[i]</span>
-    <span class="c1">#     v = path[i + 1]</span>
-    <span class="c1">#     if v not in network.edge[u]:</span>
-    <span class="c1">#         u, v = v, u</span>
-    <span class="c1">#     edges.append([u, v])</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+            <span class="n">facecolor</span><span class="o">=</span><span class="n">facecolor</span><span class="p">,</span>
+            <span class="n">radius</span><span class="o">=</span><span class="mf">0.15</span>
+        <span class="p">)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
 
-    <span class="c1"># plotter = NetworkPlotter(network)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-    <span class="c1"># plotter.draw_vertices(</span>
-    <span class="c1">#     text={key: key for key in network.vertices()},</span>
-    <span class="c1">#     facecolor={key: '#ff0000' for key in (path[0], path[-1])},</span>
-    <span class="c1">#     radius=0.15</span>
-    <span class="c1"># )</span>
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># testrun 4</span>
+    <span class="c1"># ==========================================================================</span>
 
-    <span class="c1"># plotter.draw_edges(</span>
-    <span class="c1">#     color={(u, v): '#ff0000' for u, v in edges},</span>
-    <span class="c1">#     width={(u, v): 2.0 for u, v in edges}</span>
-    <span class="c1"># )</span>
+    <span class="k">if</span> <span class="n">testrun</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">compas</span>
 
-    <span class="c1"># plotter.show()</span>
+        <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
+        <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
 
-    <span class="c1"># import compas</span>
+        <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">dijkstra_path</span>
 
-    <span class="c1"># from compas.datastructures import Network</span>
-    <span class="c1"># from compas.topology import dijkstra_distances</span>
-    <span class="c1"># from compas.plotters import NetworkPlotter</span>
-    <span class="c1"># from compas.utilities import i_to_red</span>
+        <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grid_irregular.obj'</span><span class="p">))</span>
 
-    <span class="c1"># network = Network.from_obj(compas.get_data('grid_irregular.obj'))</span>
+        <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_neighbours</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
 
-    <span class="c1"># adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="n">network</span><span class="o">.</span><span class="n">edge_length</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()}</span>
+        <span class="n">weight</span><span class="o">.</span><span class="n">update</span><span class="p">({(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span> <span class="n">weight</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()})</span>
 
-    <span class="c1"># weight = {(u, v): network.edge_length(u, v) for u, v in network.edges()}</span>
-    <span class="c1"># weight.update({(v, u): weight[(u, v)] for u, v in network.edges()})</span>
+        <span class="n">heavy</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">19</span><span class="p">)]</span>
 
-    <span class="c1"># target = 22</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">heavy</span><span class="p">:</span>
+            <span class="n">weight</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1000.0</span>
+            <span class="n">weight</span><span class="p">[(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1000.0</span>
 
-    <span class="c1"># distances = dijkstra_distances(adjacency, weight, target)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">21</span>
+        <span class="n">via</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="mi">22</span>
 
-    <span class="c1"># plotter = NetworkPlotter(network)</span>
+        <span class="n">index_key</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">index_key</span><span class="p">()</span>
 
-    <span class="c1"># dmax = max(distances.values())</span>
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 
-    <span class="c1"># facecolor = {key: i_to_red(distances[key] / dmax) for key in network.vertices()}</span>
-    <span class="c1"># text = {key: '{:.1f}'.format(distances[key]) for key in network.vertices()}</span>
+        <span class="k">def</span> <span class="nf">via_via</span><span class="p">(</span><span class="n">via</span><span class="p">):</span>
+            <span class="n">path1</span> <span class="o">=</span> <span class="n">dijkstra_path</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">via</span><span class="p">)</span>
+            <span class="n">path2</span> <span class="o">=</span> <span class="n">dijkstra_path</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">via</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">path1</span> <span class="o">+</span> <span class="n">path2</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
-    <span class="c1"># plotter.draw_vertices(</span>
-    <span class="c1">#     text=text,</span>
-    <span class="c1">#     facecolor=facecolor,</span>
-    <span class="c1">#     radius=0.15</span>
-    <span class="c1"># )</span>
-    <span class="c1"># plotter.draw_edges()</span>
+            <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edge</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">,</span> <span class="n">u</span>
+                <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">])</span>
 
-    <span class="c1"># plotter.show()</span>
+            <span class="n">vertexcolor</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">vertexcolor</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'#00ff00'</span>
+            <span class="n">vertexcolor</span><span class="p">[</span><span class="n">end</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'#00ff00'</span>
+            <span class="n">vertexcolor</span><span class="p">[</span><span class="n">via</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'#0000ff'</span>
 
-    <span class="c1"># import compas</span>
+            <span class="n">plotter</span><span class="o">.</span><span class="n">clear_vertices</span><span class="p">()</span>
+            <span class="n">plotter</span><span class="o">.</span><span class="n">clear_edges</span><span class="p">()</span>
 
-    <span class="c1"># from compas.datastructures import Network</span>
-    <span class="c1"># from compas.plotters import NetworkPlotter</span>
+            <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">via</span><span class="p">,</span> <span class="n">end</span><span class="p">)},</span>
+                                  <span class="n">textcolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#ffffff'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]},</span>
+                                  <span class="n">facecolor</span><span class="o">=</span><span class="n">vertexcolor</span><span class="p">,</span>
+                                  <span class="n">radius</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+                                  <span class="n">picker</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
-    <span class="c1"># from compas.topology import dijkstra_path</span>
+            <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="s1">'#ff0000'</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">},</span>
+                               <span class="n">width</span><span class="o">=</span><span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="mf">4.0</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">},</span>
+                               <span class="n">text</span><span class="o">=</span><span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="s1">'</span><span class="si">{:.1f}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">weight</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)])</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()},</span>
+                               <span class="n">fontsize</span><span class="o">=</span><span class="mf">4.0</span><span class="p">)</span>
 
-    <span class="c1"># network = Network.from_obj(compas.get('grid_irregular.obj'))</span>
+        <span class="k">def</span> <span class="nf">onpick</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">via</span> <span class="o">=</span> <span class="n">index_key</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">via_via</span><span class="p">(</span><span class="n">via</span><span class="p">)</span>
+            <span class="n">plotter</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
-    <span class="c1"># adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}</span>
+        <span class="n">via_via</span><span class="p">(</span><span class="n">via</span><span class="p">)</span>
 
-    <span class="c1"># weight = {(u, v): network.edge_length(u, v) for u, v in network.edges()}</span>
-    <span class="c1"># weight.update({(v, u): weight[(u, v)] for u, v in network.edges()})</span>
-
-    <span class="c1"># heavy = [(7, 17), (9, 19)]</span>
-
-    <span class="c1"># for u, v in heavy:</span>
-    <span class="c1">#     weight[(u, v)] = 1000.0</span>
-    <span class="c1">#     weight[(v, u)] = 1000.0</span>
-
-    <span class="c1"># start = 21</span>
-    <span class="c1"># via = 0</span>
-    <span class="c1"># end = 22</span>
-
-    <span class="c1"># index_key = network.index_key()</span>
-
-    <span class="c1"># plotter = NetworkPlotter(network, figsize=(10, 8), fontsize=6)</span>
-
-    <span class="c1"># def via_via(via):</span>
-    <span class="c1">#     path1 = dijkstra_path(adjacency, weight, start, via)</span>
-    <span class="c1">#     path2 = dijkstra_path(adjacency, weight, via, end)</span>
-    <span class="c1">#     path = path1 + path2[1:]</span>
-
-    <span class="c1">#     edges = []</span>
-    <span class="c1">#     for i in range(len(path) - 1):</span>
-    <span class="c1">#         u = path[i]</span>
-    <span class="c1">#         v = path[i + 1]</span>
-    <span class="c1">#         if v not in network.edge[u]:</span>
-    <span class="c1">#             u, v = v, u</span>
-    <span class="c1">#         edges.append([u, v])</span>
-
-    <span class="c1">#     vertexcolor = {}</span>
-    <span class="c1">#     vertexcolor[start] = '#00ff00'</span>
-    <span class="c1">#     vertexcolor[end] = '#00ff00'</span>
-    <span class="c1">#     vertexcolor[via] = '#0000ff'</span>
-
-    <span class="c1">#     plotter.clear_vertices()</span>
-    <span class="c1">#     plotter.clear_edges()</span>
-
-    <span class="c1">#     plotter.draw_vertices(text={key: key for key in (start, via, end)},</span>
-    <span class="c1">#                           textcolor={key: '#ffffff' for key in path[1:-1]},</span>
-    <span class="c1">#                           facecolor=vertexcolor,</span>
-    <span class="c1">#                           radius=0.15,</span>
-    <span class="c1">#                           picker=10)</span>
-
-    <span class="c1">#     plotter.draw_edges(color={(u, v): '#ff0000' for u, v in edges},</span>
-    <span class="c1">#                        width={(u, v): 4.0 for u, v in edges},</span>
-    <span class="c1">#                        text={(u, v): '{:.1f}'.format(weight[(u, v)]) for u, v in network.edges()},</span>
-    <span class="c1">#                        fontsize=4.0)</span>
-
-    <span class="c1"># def onpick(e):</span>
-    <span class="c1">#     index = e.ind[0]</span>
-    <span class="c1">#     via = index_key[index]</span>
-    <span class="c1">#     via_via(via)</span>
-    <span class="c1">#     plotter.update()</span>
-
-    <span class="c1"># via_via(via)</span>
-
-    <span class="c1"># plotter.register_listener(onpick)</span>
-    <span class="c1"># plotter.show()</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">register_listener</span><span class="p">(</span><span class="n">onpick</span><span class="p">)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 <!--<nav class="compas-sideways">
                             
@@ -917,7 +884,7 @@
             
 
             
-                Last updated on Nov 12, 2017.
+                Last updated on Nov 16, 2017.
             
 
             
