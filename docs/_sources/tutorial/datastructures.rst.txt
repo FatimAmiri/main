@@ -4,648 +4,708 @@
 Working with datastructures
 ********************************************************************************
 
-.. sectionauthor:: Tom Van Mele 
-
-.. add code-generated image or images here
-
-
-Network, Mesh and VolMesh
-=========================
-
-:mod:`compas.datastructures` defines three datastructures:
-``Network``, ``Mesh``, and ``VolMesh``, and algorithms and operations for each
-of them. Each of the datastructures and their corresponding functionality are
-defined in their own subpackage.
-
-
-* compas.datastructures
-
-  * mesh
-
-    * mesh
-    * operations
-    * algorithms
-
-  * network
-
-    * network
-    * operations
-    * algorithms
-
-  * volmesh
-
-    * volmesh
-    * operations
-    * algorithms
+* backgorund/technical info
+* general principles
+* construction
+* visualisation (also refer to CAD integration)
+* access the data
+* access the attributes
+* filters
+* topological queries
+* geometrical queries
+* modify the data
+* algorithms
+* numerical computation
 
 
-The datastructure classes can be imported directly from the datastructures package.
+Network, Mesh, VolMesh
+======================
 
-.. code-block:: python
+The *compas* framework contains three types of data structures and related operations and algorithms:
 
-    >>> from compas.datastructures import Network
-    >>> from compas.datastructures import Mesh
-    >>> from compas.datastructures import VolMesh
-
-The operations and algorithms have been namespaced and pulled up so they can be
-imported directly from the datastructures package as well.
-
-.. code-block:: python
-    
-    >>> from compas.datastructures import network_dijkstra_path
-    >>> from compas.datastructures import mesh_collapse_edge
-
-The ``Network`` is implemented as a directed graph. Each edge connects two and only
-two vertices, pointing from one of the vertices to the other. Between two vertices
-no more than two edges can exist and they must point in opposite directions. The
-``Network`` has no faces.
-
-The ``Mesh`` is implemented as a halfedge datastructure. It can be used to represent
-polygonal surface meshes. Faces can be triangles, quads, and N-sided polygons.
-All faces are assumed closed, which means that the first and last vertex of a face
-definition are not the same. ...
-
-The ...
+* :class:`compas.datastructures.Network`
+* :class:`compas.datastructures.Mesh`
+* :class:`compas.datastructures.VolMesh`
 
 
-Builders and constructors
-=========================
+For this tutorial, we will focus on the mesh data structure.
 
-Every datastructure has a default constructor, builder methods, and
-a series of specialised constructor functions that build datastructures in a
-specific way. The default constructor creates an empty datastructure instance.
+.. plot::
+    :include-source:
 
-.. code-block:: python
+    import compas
+    from compas.datastructures import Mesh
+    from compas.plotters import MeshPlotter
 
-    >>> network = Network()
-    >>> mesh = Mesh()
-    >>> volmesh = VolMesh()
+    mesh = Mesh.from_obj(compas.get('faces.obj'))
+
+    plotter = MeshPlotter(mesh)
+
+    plotter.draw_vertices()
+    plotter.draw_faces()
+    plotter.draw_edges()
+
+    plotter.draw_vertices(
+        text='key',
+        radius=0.15
+    )
+    plotter.draw_faces(
+        text='key',
+    )
+    plotter.draw_edges(
+        text='key'
+    )
+
+    plotter.show()
 
 
-With the builders data can be added to the empyty containers. Each of the
-datastructures has its own builder methods. 
-The ``Network`` defines ``Network.add_vertex`` and ``Network.add_edge``,
-the ``Mesh`` defines ``Mesh.add_vertex`` and ``Mesh.add_face``,
-and the ``VolMesh`` defines ``VolMesh.add_vertex`` and ``VolMesh.add_cell``.
+Construction
+============
 
-.. code-block:: python
-    
-    >>> a = network.add_vertex()
-    >>> b = network.add_vertex()
-    >>> network.add_edge(a, b)
-    (0, 1)
-
-The builders always return the identifiers (*keys*) of the element(s) they created.
-In the above example, the vertex builder returned ``0`` and ``1``, which were assigned
-to the variables ``a`` and ``b``. The edge builder returned the tuple ``(0, 1)``,
-indicating it had added an edge from vertex ``0`` to vertex ``1``.
-
-It is also possible to specify the *keys* of the vertices. Any hashable type can
-be used as a key. This roughly means ``int``, ``float``, ``str``, ``tuple``, and
-``frozenset``, or any object that implements the magic method ``__hash__``. If no
-key is provided, the datastructure will automatically assign an integer. It keeps
-track of the highest integer that was used so far, and increments that value by one.
-
-.. code-block:: python
-    
-    >>> network.add_vertex()
-    0
-    >>> network.add_vertex(3)
-    3
-    >>> network.add_vertex()
-    4
-    >>> network.add_vertex('1')
-    '1'
-    >>> network.add_vertex((5, 3))
-    (5, 3)
-    >>> network.add_vertex(3.14159)
-    3.14159
-    >>> network.add_vertex()
-    5
-
-The builders also provide the possibility to add data attributes in the form of
-attribute dictionaries or keyword arguments (*kwargs*).
-Note that all datastructures (can) define default data attributes for the different
-types of data. For examples, all three datastructures automatically assign XYZ
-coordinates to all vertices, with a default value of ``x = 0.0, y = 0.0, z = 0.0``.
-This means that all following statements are equivalent and add a vertex with
-coordinates (``1.0, 0.0, 0.0``).
-
-.. code-block:: python
-    
-    >>> network.add_vertex(x=1.0)
-    >>> network.add_vertex(x=1.0, y=0.0)
-    >>> network.add_vertex(x=1.0, z=0.0)
-    >>> network.add_vertex(x=1.0, y=0.0, z=0.0)
-    >>> network.add_vertex(attr_dict={'x': 1.0})
-    >>> network.add_vertex(attr_dict={'x': 5.0}, x=1.0)
-    >>> network.add_vertex(attr_dict={'y': 3.0}, x=1.0, y=0.0)
-
-The allowable attributes are not limited to the default attributes.
-
-.. code-block:: python
-    
-    >>> network.add_vertex(attr_dict={'x': 1.0, 'y': 1.0, 'z': 1.0, 'is_fixed': True})
-    >>> network.add_vertex(x=1.0, y=1.0, z=1.0, is_fixed=True)
-
-The mechanism is the same for edges.
-
-.. code-block:: python
-
-    >>> network.add_edge(0, 1, attr_dict={'q': 1.0, 'fmin': 0.0, 'fmax': 10.0})
-    >>> network.add_edge(0, 1, q=1.0, fmin=0.0, fmax=10.0)
-
-All of the above also applies to the ``Mesh`` and ``VolMesh`` datastructures.
-
-.. code-block:: python
-
-    >>> mesh.add_vertex() 
-    >>> mesh.add_vertex()
-    >>> mesh.add_vertex()
-
-For convencience, all datastructures come with specialised alternative constructors.
+All datastructures come with factory constructors.
 These are implemented as class methods (using the ``@classmethod`` decoreator) and
 are named using the following pattern ``.from_xxx``.
 
 .. code-block:: python
 
-    >>> network = Network.from_data(...)
-    >>> network = Network.from_json(...)
-    >>> network = Network.from_obj(...)
-    >>> network = Network.from_vertices_and_edges(...)
-    >>> network = Network.from_lines(...)
+    mesh = Mesh.from_data(...)
+    mesh = Mesh.from_json(...)
+    mesh = Mesh.from_obj(...)
+    mesh = Mesh.from_vertices_and_faces(...)
+    mesh = Mesh.from_polygons(...)
+    mesh = Mesh.from_polyhedron(...)
+    mesh = Mesh.from_points(...)
+
+``compas`` also provides basic sample data that can be used together with the constructors.
 
 .. code-block:: python
 
-    >>> mesh = Mesh.from_data(...)
-    >>> mesh = Mesh.from_json(...)
-    >>> mesh = Mesh.from_obj(...)
-    >>> mesh = Mesh.from_vertices_and_faces(...)
-    >>> mesh = Mesh.from_polygons(...)
-    >>> mesh = Mesh.from_polyhedron(...)
-    >>> mesh = Mesh.from_points(...)
-
-.. code-block:: python
-
-    >>> volmesh = VolMesh.from_data(...)
-    >>> volmesh = VolMesh.from_json(...)
-    >>> volmesh = VolMesh.from_obj(...)
-    >>> volmesh = VolMesh.from_vertices_and_cells(...)
-    >>> volmesh = VolMesh.from_polyhedrons(...)
-
-``compas`` also provides sample data that can be used together with the constructors.
-
-.. code-block:: python
+    from __future__ import print_function
     
-    >>> import compas
-    >>> from compas.datastructures import Network
-    >>> network = Network.from_obj(compas.get_data('lines.obj'))
-    
+    import compas
+    from compas.datastructures import Mesh
 
-General info
-============
+    mesh = Mesh.from_obj(compas.get('faces.obj'))
 
-Use the ``print`` function (or ``print`` statement in Python 2.x) to display
-general information about the datastructure instance.
+    print(mesh)
 
-.. code-block:: python
+    # ================================================================================
+    # Mesh summary
+    # ================================================================================
+    #
+    # - name: Mesh
+    # - vertices: 36
+    # - edges: 60
+    # - faces: 25
+    # - vertex degree: 2/4
+    # - face degree: 2/4
+    #
+    # ================================================================================
 
-    >>> network = Network()
-    >>> print(network)
-
-.. code-block:: none
-
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    network: Network
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    - default vertex attributes
-
-    y => 0.0
-    x => 0.0
-    z => 0.0
-
-    - default edge attributes
-
-    None
-
-    - number of vertices: 0
-    - number of edges: 0
-
-    - vertex degree min: 0
-    - vertex degree max: 0
-
-.. code-block:: python
-
-    >>> mesh = Mesh()
-    >>> print(mesh)
-
-.. code-block:: none
-
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    mesh: Mesh
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    - default vertex attributes
-
-    y => 0.0
-    x => 0.0
-    z => 0.0
-
-    - default edge attributes
-
-    None
-
-    - default face attributes
-
-    None
-
-    - number of vertices: 0
-    - number of edges: 0
-    - number of faces: 0
-
-    - vertex degree min: 0
-    - vertex degree max: 0
-
-    - face degree min: None
-    - face degree max: None
-
-.. code-block:: python
-
-    >>> volmesh = VolMesh()
-    >>> print(volmesh)
-
-.. code-block:: none
-
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    volmesh: VolMesh
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Printing the mesh produces a summary of the mesh's properties:
+the number of vertices, edges and faces and information about vertex and face degree.
 
 
-Accessing the data
-==================
+Access
+======
 
-Every datastructure exposes several functions to access its data.
-All of those *accessors* are iterators; they are meant to be iterated over.
+All data *accessors* are iterators; they are meant to be iterated over.
 Lists of data have to be constructed explicitly.
 
-.. code-block:: python
-
-    >>> import compas
-    >>> from compas.datastructures import Network
-    >>> network = Network.from_obj(compas.get_data('lines.obj'))
-
-.. code-block:: python
-
-    >>> network.vertices()
-    <dictionary-keyiterator object at 0x10f030e68>
-
-.. code-block:: python
-    
-    >>> len(network.vertices())
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-    TypeError: object of type 'dictionary-keyiterator' has no len()
+* mesh.vertices()
+* mesh.faces()
+* mesh.halfedges()
+* mesh.edges()
 
 .. code-block:: python
 
-    >>> list(network.vertices())
-    [0, 1, 2, ..., 29, 30, 31]
-    >>> len(list(network.vertices()))
-    32
-    >>> network.number_of_vertices()
-    32
-
-.. code-block:: python
-    
-    >>> for key in mesh.vertices():
-    ...     print(key)
- 
-    0
-    1
-    2
-    ...
-    29
-    30
-    31
-
-The same applies to the edges.
-The accessor is an iterator; it is meant for iterating over the edges.
-To count the edges or to get a list of edges, the iterator needs to be converted
-explicitly.
-
-.. code-block:: python
-    
-    >>> network.edges()
-    <generator object edges at 0x10f03d140>
-
-.. code-block:: python
-    
-    >>> len(network.edges())
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-    TypeError: object of type 'generator' has no len()
-
-.. code-block:: python
-
-    >>> list(network.edges())
-    [(0, 3), (0, 19), (2, 30), ..., (30, 17), (31, 16), (31, 25)]
-    >>> len(list(network.edges())
-    40
-    >>> network.number_of_edges()
-    40
-
-.. code-block:: python
-    
-    >>> for u, v in network.edges():
-    ...     print(u, v)
-
-    0 3
-    0 19
-    2 30
-    ...
-    30 17
-    31 16
-    31 25
-
-
-Accessing the data attributes
-=============================
-
-The data attributes can be accessed in several ways.
-First as a modifier of the iterators.
-
-.. code-block:: python
-
-    >>> for key, attr in network.vertices(data=True):
-    ...     print(key, attr)
-
-    0 {'y': 8.0, 'x': 2.0, 'z': 0.0}
-    1 {'y': 10.0, 'x': 8.0, 'z': 0.0}
-    2 {'y': 6.0, 'x': 0.0, 'z': 0.0}
-    ...
-    29 {'y': 4.0, 'x': 4.0, 'z': 0.0}
-    30 {'y': 6.0, 'x': 2.0, 'z': 0.0}
-    31 {'y': 2.0, 'x': 8.0, 'z': 0.0}
-
-Second through dedicated attribute accessors.
-
-.. code-block:: python
-
-    >>> network.get_vertex_attribute(0, 'x')
-    2.0
-    >>> network.get_vertex_attributes(0, 'xyz')
-    [2.0, 8.0, 0.0]
-    >>> network.get_vertices_attribute('x')
-    [2.0, 8.0, 0.0, ..., 4.0, 2.0, 8.0]
-    >>> network.get_vertices_attributes('xyz')
-    [[2.0, 8.0, 0.0], [8.0, 10.0, 0.0], [0.0, 6.0, 0.0], ..., [4.0, 4.0, 0.0], [2.0, 6.0, 0.0], [8.0, 2.0, 0.0]]
-
-
-Accessing topological data
-==========================
-
-The available functions for accessing the topological data depend on the type of
-datastructure, although they obviously have a few of them in common.
-In case of the ``Network``, all topological functions have to do with the adjacency
-relationship of the vertices.
-
-.. code-block:: python
-    
-    # undirected
-    
-    >>> network.vertex_neighbours()
-    >>> network.vertex_degree()
-    >>> network.vertex_
-    >>> network.edge_
-
-.. code-block:: python
-
-    >>> mesh.vertex_neighbours()
-    >>> mesh.vertex_degree()
-    >>> mesh.vertex_faces()
-    >>> mesh.vertex_neighbourhood()
-    >>> mesh.vertex_
-    >>> mesh.faces_vertices()
-    >>> mesh.face_neighbours()
-    >>> mesh.face_neighbourhood()
-    >>> mesh.face_
-    >>> mesh.edge_faces()
-
-
-Accessing geometric data
-========================
-
-.. note to self
-   
-    - every function that ends up being used in a list comprehension
-      should have a single-call equivalent, with an optional key parameter
-
-.. code-block:: python
-
-    >>> network.vertex_coordinates()
-    >>> network.vertex_
-    >>> network.edge_coordinates()
-    >>> network.edge_vector()
-    >>> network.edge_direction()
-    >>> network.edge_length()
-    >>> network.edge_midpoint()
-    >>> network.edge_
-
-.. code-block:: python
-
-    >>> mesh.vertex_coordinates()
-    >>> mesh.vertex_area()
-    >>> mesh.vertex_centroid()
-    >>> mesh.vertex_
-    >>> mesh.face_area()
-    >>> mesh.face_centroid()
-    >>> mesh.face_center()
-    >>> mesh.face_frame()
-    >>> mesh.face_circle()
-    >>> mesh.face_normal()
-    >>> mesh.face_
-    >>> mesh.edge_coordinates()
-    >>> mesh.edge_vector()
-    >>> mesh.edge_direction()
-    >>> mesh.edge_length()
-    >>> mesh.edge_midpoint()
-    >>> mesh.edge_
-
-
-Modifying the data
-==================
-
-.. ?
-    
-    - add_vertex
-    - add_edge
-    - add_face
-    - delete/remove => remove!
-    - operations?
-
-
-Modifying the data attributes
-=============================
-
-.. code-block:: python
-
-    >>> network.set_vertex_attribute()
-    >>> network.set_vertex_attributes()
-    >>> network.set_vertices_attribute()
-    >>> network.set_vertices_attributes()
-
-.. code-block:: python
-
-    >>> network.set_edge_attribute()
-    >>> network.set_edge_attributes()
-    >>> network.set_edges_attribute()
-    >>> network.set_edges_attributes()
-
-
-Serialisation
-=============
-
-.. code-block:: python
-
-    >>> data = network.to_data()
-    >>> data = network.data
-
-.. code-block:: python
-
-    >>> network = Network.from_data()
-    >>> network.data = data
-
-.. code-block:: python
-    
-    >>> import json
-    >>> with open('data.json', 'w') as f:
-    ...     json.dump(f, network.to_data())
-    ...
-
-.. code-block:: python
-    
-    >>> import json
-    >>> network = Network()
-    >>> with open('data.json', 'r') as f:
-    ...     network.data = json.load(f)
-
-.. code-block:: python
-    
-    >>> network.to_json('data.json')
-
-.. code-block:: python
-    
-    >>> network = Network.from_json('data.json')
-
-
-Visualisation
-=============
-
-.. note::
-
-    This section describes the visualisation options with the core viewers and plotters.
-    For visualisation in CAD software see:
-    
-    * compas_rhino.artists
-    * compas_blender.xxx
-    * ...
-
-
-.. code-block:: python
-
-    >>> import compas
-    >>> from compas.visualization.plotters import NetworkPlotter
-    >>> from compas.datastructures import Network
-    >>> network = Network.from_obj(compas.get_data('lines.obj'))
-    >>> plotter = NetworkPlotter(network)
-    >>> plotter.draw_vertices()
-    >>> plotter.draw_edges()
-    >>> plotter.show()
-
-.. raw:: html
-
-    <figure class="figure figure-plot">
-
-.. plot::
+    from __future__ import print_function
 
     import compas
-    from compas.visualization.plotters import NetworkPlotter
-    from compas.datastructures import Network
-    network = Network.from_obj(compas.get_data('lines.obj'))
-    plotter = NetworkPlotter(network)
-    plotter.draw_vertices()
+    from compas.datastructures import Mesh
+
+    mesh = Mesh.from_obj(compas.get('faces.obj'))
+
+    for key in mesh.vertices():
+        print(key)
+
+    for key, attr in mesh.vertices(True):
+        print(key, attr)
+
+    print(list(mesh.vertices()))
+    print(mesh.number_of_vertices())
+
+
+.. code-block:: python
+    
+    from __future__ import print_function
+
+    import compas
+    from compas.datastructures import Mesh
+
+    mesh = Mesh.from_obj(compas.get('faces.obj'))
+
+    for fkey in mesh.faces():
+        print(fkey)
+
+    for fkey, attr in mesh.faces(True):
+        print(fkey, attr)
+
+    print(len(list(mesh.faces()))
+    print(mesh.number_of_faces())
+
+
+Topology
+========
+
+* mesh.is_valid()
+* mesh.is_regular()
+* mesh.is_connected()
+* mesh.is_manifold()
+* mesh.is_orientable()
+* mesh.is_trimesh()
+* mesh.is_quadmesh()
+
+* mesh.vertex_neighbours()
+* mesh.vertex_degree()
+* mesh.vertex_faces()
+* mesh.vertex_neighbourhood()
+
+* mesh.face_vertices()
+* mesh.face_halfedges()
+* mesh.face_neighbours()
+* mesh.face_neighbourhood()
+* mesh.face_vertex_ancestor()
+* mesh.face_vertex_descendant()
+
+
+.. plot::
+    :include-source:
+
+    import compas
+    from compas.datastructures import Mesh
+    from compas.plotters import MeshPlotter
+
+    mesh = Mesh.from_obj(compas.get('faces.obj'))
+
+    plotter = MeshPlotter(mesh)
+
+    root = 17
+    nbrs = mesh.vertex_neighbours(root, ordered=True)
+
+    text = {nbr: str(i) for i, nbr in enumerate(nbrs)}
+    text[root] = root 
+
+    facecolor = {nbr: '#cccccc' for nbr in nbrs}
+    facecolor[root] = '#ff0000'
+
+    plotter.draw_vertices(
+        text=text,
+        facecolor=facecolor,
+        radius=0.15
+    )
+    plotter.draw_faces()
     plotter.draw_edges()
+
     plotter.show()
 
-.. raw:: html
 
-    <figcaption class="figure-caption"></figcaption>
-    </figure>
+Geometry
+========
 
+* mesh.vertex_coordinates()
+* mesh.vertex_area()
+* mesh.vertex_centroid()
+* mesh.vertex_normal()
+
+* mesh.face_coordinates()
+* mesh.face_area()
+* mesh.face_centroid()
+* mesh.face_center()
+* mesh.face_normal()
+* mesh.face_flatness()
+
+* mesh.edge_coordinates()
+* mesh.edge_vector()
+* mesh.edge_direction()
+* mesh.edge_length()
+* mesh.edge_midpoint()
+
+
+.. plot::
+    :include-source:
+
+    import compas
+    from compas.datastructures import Mesh
+    from compas.plotters import MeshPlotter
+
+    mesh = Mesh.from_obj(compas.get('faces.obj'))
+
+    plotter = MeshPlotter(mesh)
+
+    plotter.draw_vertices()
+    plotter.draw_faces(text={fkey: '%.1f' % mesh.face_area(fkey) for fkey in mesh.faces()})
+    plotter.draw_edges()
+
+    plotter.show()
+
+
+Algorithms
+==========
+
+* :func:`compas.topology.trimesh_remesh`
 
 .. code-block:: python
 
-    >>> plotter.draw_vertices(text={...}, facecolor={...}, edgecolor={...}, radius={...})
-
-.. code-block:: python
-
-    >>> plotter.draw_edges(text={...}, color={...}, width={...})
-
-
-Operations & Algorithms
-=======================
-
-
-Customisation
-=============
-
-.. code-block:: python
+    # mesh remeshing
     
-    >>> network = Network.from_obj(compas.get_data('lines.obj'))
-    >>> network.update_default_vertex_attributes({...})
-    >>> network.update_default_edge_attributes({...})
-    >>> network.get_vertex_attributes(network.get_any_vertex())
-    >>> print(network)
+    from compas.datastructures import Mesh
+    from compas.plotters import MeshPlotter
+
+    from compas.topology import trimesh_remesh
+
+
+    # make a square
+    # and insert a vertex in the middle
+    # to create a triangle mesh
+
+    vertices = [(0.0, 0.0, 0.0), (10.0, 0.0, 0.0), (10.0, 10.0, 0.0), (0.0, 10.0, 0.0)]
+    faces = [[0, 1, 2, 3]]
+
+    mesh = Mesh.from_vertices_and_faces(vertices, faces)
+
+    mesh.insert_vertex(0)
+
+
+    # create a plotter for visualization
+    # draw the initial mesh as edges
+    # define a callback to update the edges during the algorithm
+
+    plotter = MeshPlotter(mesh)
+
+    plotter.draw_edges()
+
+    def callback(mesh, k, args):
+        plotter.update_edges()
+        plotter.update(pause=0.001)
+
+
+    # run the remeshing algorithm
+    # visualize the end result
+    # with faces and edges
+
+    trimesh_remesh(
+        mesh,
+        0.5,
+        tol=0.02,
+        kmax=500,
+        allow_boundary_split=True,
+        allow_boundary_swap=True,
+        allow_boundary_collapse=False,
+        fixed=mesh.vertices_on_boundary(),
+        callback=callback)
+
+    plotter.clear_edges()
+    plotter.update()
+
+    plotter.draw_faces()
+    plotter.draw_edges()
+    plotter.update()
+
+    plotter.show()
+
+
+* :func:`compas.topology.trimesh_remesh`
+* :func:`compas.topology.delaunay_from_points`
+* :func:`compas.topology.voronoi_from_delaunay`
 
 .. code-block:: python
-    
-    >>> class SpecialNetwork(Network):
-    ...     def __init__(self):
-    ...         super(SpecialNetwork, self).__init__()
-    ...         self.default_vertex_attributes.update({...})
-    ...         self.default_edge_attributes.update({...})
-    ...
+
+    # delaunay and voronoi
+
+    from compas.datastructures import Mesh
+    from compas.plotters import MeshPlotter
+
+    from compas.topology import trimesh_remesh
+    from compas.topology import delaunay_from_points
+    from compas.topology import voronoi_from_delaunay
+
+    from compas.geometry import pointcloud_xy
 
 
-Numerical computation
-=====================
+    # create a 2D pointcloud
+    # and generate a delaunay triangulation from it
+    # remesh the triagulation
+    # to give it a more even distribution of edges
+    # extract the points
+    # and generate the delaunay again
+    # generate a voronoi from that delaunay
+
+    points   = pointcloud_xy(10, (0, 10))
+    delaunay = delaunay_from_points(Mesh, points)
+
+    trimesh_remesh(delaunay, 1.0, kmax=300, allow_boundary_split=True)
+
+    points   = [delaunay.vertex_coordinates(key) for key in delaunay.vertices()]
+    delaunay = delaunay_from_points(Mesh, points)
+    voronoi  = voronoi_from_delaunay(delaunay)
+
+
+    # make a plotter for visualization
+    # draw the voronoi as lines
+    # on top of the delaunay
+
+    plotter = MeshPlotter(delaunay, figsize=(10, 6))
+
+    lines = []
+    for u, v in voronoi.edges():
+        lines.append({
+            'start': voronoi.vertex_coordinates(u, 'xy'),
+            'end'  : voronoi.vertex_coordinates(v, 'xy'),
+            'width': 1.0
+        })
+
+    plotter.draw_lines(lines)
+
+    plotter.draw_vertices(
+        radius=0.075,
+        facecolor={key: '#0092d2' for key in delaunay.vertices() if key not in delaunay.vertices_on_boundary()}
+    )
+
+    plotter.draw_edges(color='#cccccc')
+
+    plotter.show()
+
+
+* :func:`compas.topology.dijkstra_path`
 
 .. code-block:: python
 
-    >>> class NumericalNetwork(NumericalMixin, Network):
-    ...     pass
-    ...
-    >>> network = NumericalNetwork.from_obj('lines.obj')
+    # shortest path
+
+    import compas
+
+    from compas.datastructures import Network
+    from compas.plotters import NetworkPlotter
+
+    from compas.topology import dijkstra_path
+
+
+    # make a network from an irregular grid of lines
+    # extract an adjacency dictionary
+    # set the weight of each edge equal to its length
+
+    network = Network.from_obj(compas.get('grid_irregular.obj'))
+
+    adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}
+
+    weight = {(u, v): network.edge_length(u, v) for u, v in network.edges()}
+    weight.update({(v, u): weight[(u, v)] for u, v in network.edges()})
+
+    # make a few edges heavier
+    # for example to simulate traffic problems
+
+    # heavy = [(7, 17), (9, 19)]
+
+    # for u, v in heavy:
+    #     weight[(u, v)] = 1000.0
+    #     weight[(v, u)] = 1000.0
+
+
+    # make an interactive plotter
+    # for finding shortest paths from a given start to a given end
+    # and through an additional user-selected point
+
+    plotter = NetworkPlotter(network, figsize=(10, 8), fontsize=6)
+
+
+    # choose start and end
+    # and set an initial value for the via point
+
+    start = 21
+    via = 0
+    end = 22
+
+
+    # define the function that computes the shortest path
+    # based on the current via
+
+    def via_via(via):
+
+        # compute the shortest path from start to via
+        # and from via to end
+        # combine the paths
+
+        path1 = dijkstra_path(adjacency, weight, start, via)
+        path2 = dijkstra_path(adjacency, weight, via, end)
+        path = path1 + path2[1:]
+
+        edges = []
+        for i in range(len(path) - 1):
+            u = path[i]
+            v = path[i + 1]
+            if v not in network.edge[u]:
+                u, v = v, u
+            edges.append([u, v])
+
+
+        # update the plot
+
+        vertexcolor = {}
+        vertexcolor[start] = '#00ff00'
+        vertexcolor[end] = '#00ff00'
+        vertexcolor[via] = '#0000ff'
+
+        plotter.clear_vertices()
+        plotter.clear_edges()
+
+        plotter.draw_vertices(text={key: key for key in (start, via, end)},
+                              textcolor={key: '#ffffff' for key in path[1:-1]},
+                              facecolor=vertexcolor,
+                              radius=0.15,
+                              picker=10)
+
+        plotter.draw_edges(color={(u, v): '#ff0000' for u, v in edges},
+                           width={(u, v): 4.0 for u, v in edges},
+                           text={(u, v): '{:.1f}'.format(weight[(u, v)]) for u, v in network.edges()},
+                           fontsize=4.0)
+
+
+    # define a listener for picking points
+    # whenever a new point is picked
+    # it will call the via_via function
+    # with the picked point as via point
+
+    index_key = network.index_key()
+
+    def on_pick(e):
+        index = e.ind[0]
+        via = index_key[index]
+        via_via(via)
+        plotter.update()
+
+
+    # initialize
+    # and start
+
+    via_via(via)
+
+    plotter.register_listener(on_pick)
+    plotter.show()
+
+
+Numerical
+=========
+
+* :func:`compas.numerical.fd`
 
 .. code-block:: python
 
-    >>> network = Network.from_obj('lines.obj', mixins=(NumericalMixin, ))
+    # form finding
+
+    import compas
+
+    from compas.datastructures import Mesh
+    from compas.plotters import MeshPlotter
+    from compas.numerical import fd
+    from compas.utilities import i_to_rgb
+
+
+    # make a mesh from sample data
+    # set the default attributes of edges and vertices
+    # mark the corners as fixed
+    # store the original line geometry for plotting later
+
+    mesh = Mesh.from_obj(compas.get('faces.obj'))
+
+    mesh.update_default_vertex_attributes({'is_anchor': False, 'px': 0.0, 'py': 0.0, 'pz': 0.0})
+    mesh.update_default_edge_attributes({'q': 1.0})
+
+    for key, attr in mesh.vertices(True):
+        attr['is_anchor'] = mesh.vertex_degree(key) == 2
+
+    lines = []
+    for u, v in mesh.edges():
+        lines.append({
+            'start' : mesh.vertex_coordinates(u, 'xy'),
+            'end'   : mesh.vertex_coordinates(v, 'xy'),
+            'color' : '#cccccc',
+            'width' : 1.0
+        })
+
+
+    # process the mesh data
+    # into a computation-friendly format
+    # i.e. convert everything to lists
+    # such that the force density method can convert it into fast Numpy arrays
+
+    k_i   = mesh.key_index()
+    xyz   = mesh.get_vertices_attributes(('x', 'y', 'z'))
+    loads = mesh.get_vertices_attributes(('px', 'py', 'pz'))
+    q     = mesh.get_edges_attribute('q')
+    fixed = mesh.vertices_where({'is_anchor': True})
+    fixed = [k_i[k] for k in fixed]
+    edges = [(k_i[u], k_i[v]) for u, v in mesh.edges()]
+
+
+    # run the force density method
+    # update the mesh with the result
+
+    xyz, q, f, l, r = fd(xyz, edges, fixed, q, loads, rtype='list')
+
+    for key, attr in mesh.vertices(True):
+        index = k_i[key]
+        attr['x'] = xyz[index][0]
+        attr['y'] = xyz[index][1]
+        attr['z'] = xyz[index][2]
+
+    for index, (u, v, attr) in enumerate(mesh.edges(True)):
+        attr['f'] = f[index]
+
+
+    # make a plotter
+    # visualize the original geometry
+    # and the equilibrium shape
+    # and set the thickness and color of edges
+    # proportional to the axial force
+
+    plotter = MeshPlotter(mesh)
+
+    zmax = max(mesh.get_vertices_attribute('z'))
+    fmax = max(mesh.get_edges_attribute('f'))
+
+    plotter.draw_lines(lines)
+
+    plotter.draw_vertices()
+    plotter.draw_faces()
+    plotter.draw_edges(
+        width={(u, v): 10 * attr['f'] / fmax for u, v, attr in mesh.edges(True)},
+        color={(u, v): i_to_rgb(attr['f'] / fmax) for u, v, attr in mesh.edges(True)},
+    )
+
+    plotter.show()
+
+
+CAD integration
+===============
+
+* :func:`compas.topology.mesh_subdivide`
+* :func:`compas.topology.mesh_subdivide_doosabin`
+* :func:`compas.topology.mesh_subdivide_catmullclark`
+
+* :mod:`compas_rhino`
 
 .. code-block:: python
 
-    >>> network = Network.from_obj('lines.obj')
-    >>> network.mix_in((NumericalMixin, ))
+    from compas.datastructures import Mesh
+    from compas.topology import mesh_subdivide_doosabin
+    from compas.viewers import SubdMeshViewer
+
+    mesh = Mesh.from_polyhedron(6)
+
+    viewer = SubdMeshViewer(mesh, subdfunc=mesh_subdivide_doosabin, width=600, height=600)
+
+    viewer.axes_on = False
+    viewer.grid_on = False
+
+    for i in range(10):
+        viewer.camera.zoom_in()
+
+    viewer.setup()
+    viewer.show()
+
 
 .. code-block:: python
-    
-    >>> C = network.connectivity_matrix()
-    >>> xyz = network.vertices_array()
-    >>> C.dot(xyz)
+
+    from compas.datastructures import Mesh
+    from compas.topology import mesh_subdivide_catmullclark
+
+    import compas_rhino
+
+    mesh = Mesh.from_polyhedron(6)
+    subd = mesh_subdivide_catmullclark(mesh, k=4)
+
+    compas_rhino.mesh_draw_faces(
+        subd,
+        join_faces=True
+    )
 
 
-Example
-=======
+.. code-block:: python
+
+    from __future__ import print_function
+    from __future__ import division
+
+    from functools import partial
+
+    import compas_rhino
+
+    from compas.datastructures import Mesh
+    from compas.topology import mesh_subdivide
 
 
+    # make a control mesh
 
+    mesh = Mesh.from_polyhedron(6)
+
+
+    # give it a name
+    # and set default vertex attributes
+
+    mesh.attributes['name'] = 'Control'
+    mesh.update_default_vertex_attributes({'is_fixed': False})
+
+
+    # make a partial function out of compas_rhino.mesh_draw
+    # (a function with some of the parameters already filled in)
+    # that can be used more easily to redraw the mesh
+    # with the same settings in the update loop
+
+    draw = partial(
+        compas_rhino.mesh_draw,
+        layer='SubdModeling::Control',
+        clear_layer=True,
+        show_faces=False,
+        show_vertices=True,
+        show_edges=True)
+
+
+    # draw the control mesh
+    # with showing the faces
+
+    draw(mesh)
+
+
+    # allow the user to change the attributes of the vertices
+    # note: the interaction loop exits
+    #       when the user cancels the selection of mesh vertices
+
+    while True:
+        keys = compas_rhino.mesh_select_vertices(mesh)
+        if not keys:
+            break
+        compas_rhino.mesh_update_vertex_attributes(mesh, keys)
+        draw(mesh, vertexcolor={key: '#ff0000' for key in mesh.vertices_where({'is_fixed': True})})
+
+
+    # make a subd mesh (using catmullclark)
+    # keep the vertices fixed
+    # as indicated by the user
+
+    fixed = mesh.vertices_where({'is_fixed': True})
+    subd = mesh_subdivide(mesh, scheme='catmullclark', k=5, fixed=fixed)
+
+
+    # give the mesh a (different) name
+
+    subd.attributes['name'] = 'Mesh'
+
+
+    # draw the result
+
+    compas_rhino.mesh_draw_faces(
+        subd,
+        layer='SubdModeling::Mesh',
+        clear_layer=True,
+        join_faces=True
+    )

@@ -1,6 +1,10 @@
 .. _tutorial_callbacks:
 
 ********************************************************************************
-Dynamic visualization
+Using callbacks
 ********************************************************************************
 
+* dynamic visualisation
+* applying constraints
+* algorithm customisation
+* live interaction

@@ -12,7 +12,7 @@
 <link href="/css/github.css" rel="stylesheet" type="text/css"/>
 <link href="/css/compas.css" rel="stylesheet" type="text/css"/>
 <link href="/css/compas-reference.css" rel="stylesheet" type="text/css"/>
-<link href="callbacks.html" rel="next" title="Dynamic visualization"/>
+<link href="callbacks.html" rel="next" title="Using callbacks"/>
 <link href="cad.html" rel="prev" title="CAD integration"/>
 <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
 </head>
@@ -38,6 +38,70 @@
 </nav>
 <div class="section">
 <span id="tutorial-geomaps"></span><h1>Geometric maps</h1>
+<div class="section">
+<h2>Exercise</h2>
+<p>Compute the connectivity of a set of lines defined by pairs of point coordinates.</p>
+<p><strong>Lines</strong></p>
+<ul class="simple">
+<li><a class="reference download internal" download="" href="../downloads/lines.json"><code class="xref download docutils literal">lines.json</code></a></li>
+<li><a class="reference download internal" download="" href="../downloads/lines_big.json"><code class="xref download docutils literal">lines_big.json</code></a></li>
+<li><a class="reference download internal" download="" href="../downloads/lines_bigger.json"><code class="xref download docutils literal">lines_bigger.json</code></a></li>
+</ul>
+<p><strong>Approach 1.</strong> Compare the distances between points</p>
+<ul class="simple">
+<li><a class="reference download internal" download="" href="../downloads/python_distance.py"><code class="xref download docutils literal">python_comparison.py</code></a></li>
+</ul>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">json</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'lines.json'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
+
+<span class="n">tol</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+<span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">sp</span><span class="p">,</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+
+    <span class="c1"># do something magical here</span>
+
+
+<span class="c1"># verify the result</span>
+
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">edges</span><span class="p">))</span>
+</code></pre></div>
+
+<p><strong>Approach 2.</strong> Map points to locations</p>
+<ul class="simple">
+<li><a class="reference download internal" download="" href="../downloads/python_geomap.py"><code class="xref download docutils literal">python_geomap.py</code></a></li>
+</ul>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">json</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'lines.json'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
+
+<span class="n">tol</span> <span class="o">=</span> <span class="s1">'3f'</span>
+
+<span class="n">vertexdict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">sp</span><span class="p">,</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+
+    <span class="c1"># do something magical here</span>
+
+
+<span class="c1"># verify the result</span>
+
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">edges</span><span class="p">))</span>
+</code></pre></div>
+
+</div>
 </div>
 <!--<nav class="compas-sideways">
                             
@@ -45,7 +109,7 @@
                             
 
                             
-                                <a href="callbacks.html" class="btn btn-primary compas-next" role="button">Dynamic visualization</a>
+                                <a href="callbacks.html" class="btn btn-primary compas-next" role="button">Using callbacks</a>
                             
                         </nav>-->
 </main>
@@ -69,10 +133,10 @@
 <li class="nav-item"><a class="nav-link reference internal" href="datastructures.html">Working with datastructures</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="cad.html">CAD integration</a></li>
 <li class="nav-item active"><a class="nav-link active current reference internal" href="#">Geometric maps</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="callbacks.html">Dynamic visualization</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="callbacks.html">Using callbacks</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="cpython.html">CPython in Rhino</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="interop.html">Using C/C++ code</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="tools.html">Making tools</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="tools.html">Making tools for Rhino</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../reference.html">API Reference</a></li>
@@ -85,7 +149,10 @@
 </div>
 <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
 <ul class="nav flex-column" id="compas-localnav">
-<li class="nav-item"><a class="nav-link reference internal" href="#">Geometric maps</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#">Geometric maps</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#exercise">Exercise</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -98,7 +165,7 @@
             
 
             
-                Last updated on Nov 16, 2017.
+                Last updated on Nov 20, 2017.
             
 
             
