@@ -103,17 +103,4 @@ Network
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Network.adjacency
-      ~Network.data
-      ~Network.name
-      ~Network.x
-      ~Network.xy
-      ~Network.xyz
-      ~Network.y
-      ~Network.z
-   
    

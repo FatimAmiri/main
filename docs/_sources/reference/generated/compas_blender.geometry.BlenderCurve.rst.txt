@@ -36,10 +36,4 @@ BlenderCurve
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~BlenderCurve.xyz
-   
    

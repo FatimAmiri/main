@@ -52,10 +52,4 @@ BlenderMesh
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~BlenderMesh.xyz
-   
    

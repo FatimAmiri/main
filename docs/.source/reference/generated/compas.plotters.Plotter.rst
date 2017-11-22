@@ -21,6 +21,7 @@ Plotter
       ~Plotter.draw_polygons
       ~Plotter.register_listener
       ~Plotter.save
+      ~Plotter.saveas_gif
       ~Plotter.show
       ~Plotter.update
       ~Plotter.update_linecollection
@@ -30,16 +31,5 @@ Plotter
    
 
    
-   
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Plotter.axes
-      ~Plotter.bgcolor
-      ~Plotter.canvas
-      ~Plotter.figure
-      ~Plotter.interactive
-      ~Plotter.title
    
    

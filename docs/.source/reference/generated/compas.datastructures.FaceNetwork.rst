@@ -147,17 +147,4 @@ FaceNetwork
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~FaceNetwork.adjacency
-      ~FaceNetwork.data
-      ~FaceNetwork.name
-      ~FaceNetwork.x
-      ~FaceNetwork.xy
-      ~FaceNetwork.xyz
-      ~FaceNetwork.y
-      ~FaceNetwork.z
-   
    

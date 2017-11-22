@@ -57,24 +57,24 @@
 
 
 <div class="viewcode-block" id="mix_in_functions"><a class="viewcode-back" href="../../../reference/generated/compas.utilities.mix_in_functions.html#compas.utilities.mix_in_functions">[docs]</a><span class="k">def</span> <span class="nf">mix_in_functions</span><span class="p">(</span><span class="n">mixins</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="c1"># attr = {}</span>
         <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">mixins</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">__name__</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span>
                     <span class="k">continue</span>
             <span class="c1"># attr[func.__name__] = func</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
         <span class="c1"># cls = type(cls.__name__, (cls, ), attr)</span>
-        <span class="k">return</span> <span class="n">cls</span>
+        <span class="k">return</span> <span class="bp">cls</span>
     <span class="k">return</span> <span class="n">decorate</span></div>
 
 
 <div class="viewcode-block" id="mix_in_class_attributes"><a class="viewcode-back" href="../../../reference/generated/compas.utilities.mix_in_class_attributes.html#compas.utilities.mix_in_class_attributes">[docs]</a><span class="k">def</span> <span class="nf">mix_in_class_attributes</span><span class="p">(</span><span class="n">mixins</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">protected</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="c1"># attr = {}</span>
         <span class="k">for</span> <span class="n">mixin</span> <span class="ow">in</span> <span class="n">mixins</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">mixin</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">mixin</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="c1"># magic methods</span>
                 <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'__'</span><span class="p">)</span> <span class="ow">and</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'__'</span><span class="p">):</span>
                     <span class="k">continue</span>
@@ -83,12 +83,12 @@
                     <span class="k">continue</span>
                 <span class="c1"># existing methods</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
                         <span class="k">continue</span>
                 <span class="c1"># attr[name] = value</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="c1"># cls = type(cls.__name__, (cls, ), attr)</span>
-        <span class="k">return</span> <span class="n">cls</span>
+        <span class="k">return</span> <span class="bp">cls</span>
     <span class="k">return</span> <span class="n">decorate</span></div>
 
 
@@ -96,7 +96,7 @@
 <span class="c1"># Testing</span>
 <span class="c1"># ==============================================================================</span>
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
 
     <span class="kn">import</span> <span class="nn">inspect</span>
 
@@ -180,11 +180,11 @@
             
 
             
-                Last updated on Nov 20, 2017.
+                Last updated on Nov 22, 2017.
             
 
             
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
             
         </footer>
 <script type="text/javascript">

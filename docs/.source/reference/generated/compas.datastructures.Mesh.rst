@@ -157,17 +157,4 @@ Mesh
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Mesh.adjacency
-      ~Mesh.data
-      ~Mesh.name
-      ~Mesh.x
-      ~Mesh.xy
-      ~Mesh.xyz
-      ~Mesh.y
-      ~Mesh.z
-   
    

@@ -490,7 +490,7 @@ Assuming that "*if it works in RhinoPython, it works everywhere*", here is a scr
 that does the same as the one above, 
 but uses :func:`compas.geometry.smooth_centroid_cpp` to make things a bit simpler.
 
-.. code-bock:: python
+.. code-block:: python
 
     from __future__ import print_function
     from __future__ import absolute_import

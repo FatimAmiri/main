@@ -19,11 +19,4 @@ XFunc
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~XFunc.basedir
-      ~XFunc.tmpdir
-   
    

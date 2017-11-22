@@ -26,6 +26,7 @@ NetworkPlotter
       ~NetworkPlotter.draw_vertices
       ~NetworkPlotter.register_listener
       ~NetworkPlotter.save
+      ~NetworkPlotter.saveas_gif
       ~NetworkPlotter.show
       ~NetworkPlotter.update
       ~NetworkPlotter.update_edges
@@ -37,16 +38,5 @@ NetworkPlotter
    
 
    
-   
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~NetworkPlotter.axes
-      ~NetworkPlotter.bgcolor
-      ~NetworkPlotter.canvas
-      ~NetworkPlotter.figure
-      ~NetworkPlotter.interactive
-      ~NetworkPlotter.title
    
    

@@ -30,10 +30,4 @@ BlenderPoint
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~BlenderPoint.xyz
-   
    

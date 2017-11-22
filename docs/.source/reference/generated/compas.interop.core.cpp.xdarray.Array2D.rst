@@ -19,15 +19,4 @@ Array2D
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Array2D.cdata
-      ~Array2D.ctype
-      ~Array2D.data
-      ~Array2D.dtype
-      ~Array2D.pydata
-      ~Array2D.shape
-   
    

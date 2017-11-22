@@ -13,9 +13,6 @@ network = Network.from_obj(compas.get('lines.obj'))
 
 dva = {
     'is_fixed': False,
-    'x': 0.0,
-    'y': 0.0,
-    'z': 0.0,
     'px': 0.0,
     'py': 0.0,
     'pz': 0.0,

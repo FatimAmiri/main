@@ -27,6 +27,7 @@ FaceNetworkPlotter
       ~FaceNetworkPlotter.draw_vertices
       ~FaceNetworkPlotter.register_listener
       ~FaceNetworkPlotter.save
+      ~FaceNetworkPlotter.saveas_gif
       ~FaceNetworkPlotter.show
       ~FaceNetworkPlotter.update
       ~FaceNetworkPlotter.update_edges
@@ -38,16 +39,5 @@ FaceNetworkPlotter
    
 
    
-   
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~FaceNetworkPlotter.axes
-      ~FaceNetworkPlotter.bgcolor
-      ~FaceNetworkPlotter.canvas
-      ~FaceNetworkPlotter.figure
-      ~FaceNetworkPlotter.interactive
-      ~FaceNetworkPlotter.title
    
    

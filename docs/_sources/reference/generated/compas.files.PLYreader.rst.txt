@@ -37,15 +37,4 @@ PLYreader
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~PLYreader.binary_byte_order
-      ~PLYreader.binary_property_types
-      ~PLYreader.keywords
-      ~PLYreader.number_of_bytes_per_type
-      ~PLYreader.property_types
-      ~PLYreader.struct_format_per_type
-   
    
