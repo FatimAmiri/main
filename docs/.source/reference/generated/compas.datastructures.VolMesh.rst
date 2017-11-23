@@ -100,17 +100,4 @@ VolMesh
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~VolMesh.color
-      ~VolMesh.data
-      ~VolMesh.name
-      ~VolMesh.x
-      ~VolMesh.xy
-      ~VolMesh.xyz
-      ~VolMesh.y
-      ~VolMesh.z
-   
    

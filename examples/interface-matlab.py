@@ -76,7 +76,7 @@ l = l.flatten().tolist()
 
 # plot results as edge labels
 
-plotter = NetworkPlotter(network)
+plotter = NetworkPlotter(network, figsize=(10, 7), fontsize=6)
 
 plotter.draw_vertices()
 plotter.draw_edges(text={(u, v): '%.1f' % l[index] for index, (u, v) in enumerate(network.edges())})

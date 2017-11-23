@@ -70,12 +70,7 @@
 
 
 <div class="viewcode-block" id="scalarfield_contours_numpy"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.scalarfield_contours_numpy.html#compas.geometry.scalarfield_contours_numpy">[docs]</a><span class="k">def</span> <span class="nf">scalarfield_contours_numpy</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
-    <span class="sd">r"""Compute the contour lines of a scalarfield.</span>
-
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">    The computation of the contour lines is based on the `contours function`_</span>
-<span class="sd">    available through matplotlib.</span>
+    <span class="sa">r</span><span class="sd">"""Compute the contour lines of a scalarfield.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -95,6 +90,11 @@
 <span class="sd">        The list of levels contains the values of the scalarfield at each of</span>
 <span class="sd">        the contours. The second item in the tuple is a list of contour lines.</span>
 <span class="sd">        Each contour line is a list of paths, and each path is a list polygons.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    The computation of the contour lines is based on the `contours function`_</span>
+<span class="sd">    available through matplotlib.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -154,7 +154,7 @@
             <span class="n">polygons</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">to_polygons</span><span class="p">()</span>
             <span class="n">contours</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">polygon</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">polygons</span><span class="p">)):</span>
-                <span class="n">contours</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">polygon</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">contours</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">polygon</span>
     <span class="k">return</span> <span class="n">levels</span><span class="p">,</span> <span class="n">contours</span></div>
 
 
@@ -196,7 +196,7 @@
 <span class="sd">    """</span>
     <span class="n">xy</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">'xy'</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
     <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
-    <span class="k">return</span> <span class="n">scalarfield_contours</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">scalarfield_contours_numpy</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="mesh_isolines_numpy"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.mesh_isolines_numpy.html#compas.geometry.mesh_isolines_numpy">[docs]</a><span class="k">def</span> <span class="nf">mesh_isolines_numpy</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
@@ -223,16 +223,38 @@
 <span class="sd">    """</span>
     <span class="n">xy</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">'xy'</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
     <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">attr_name</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
-    <span class="k">return</span> <span class="n">scalarfield_contours</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">scalarfield_contours_numpy</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
-<span class="c1"># Debugging</span>
+<span class="c1"># Testing</span>
 <span class="c1"># ==============================================================================</span>
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
 
-    <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">compas</span>
+    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">centroid_points</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">distance_point_point</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">scalarfield_contours_numpy</span>
+
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'faces.obj'</span><span class="p">))</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
+    <span class="n">centroid</span> <span class="o">=</span> <span class="n">centroid_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="p">[</span><span class="n">distance_point_point</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">centroid</span><span class="p">)</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+
+    <span class="n">xy</span> <span class="o">=</span> <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+
+    <span class="n">levels</span><span class="p">,</span> <span class="n">contours</span> <span class="o">=</span> <span class="n">scalarfield_contours_numpy</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">distances</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">contours</span><span class="p">)):</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="n">levels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">contour</span> <span class="o">=</span> <span class="n">contours</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">contour</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">polygon</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">([</span><span class="n">point</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">polygon</span><span class="p">])</span>
 </code></pre></div>
 <!--<nav class="compas-sideways">
                             
@@ -257,7 +279,6 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../workshops.html">Workshops</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../bibliography.html">Bibliography</a></li>
 </ul>
 </div>
@@ -276,11 +297,11 @@
             
 
             
-                Last updated on Nov 12, 2017.
+                Last updated on Nov 23, 2017.
             
 
             
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
             
         </footer>
 <script type="text/javascript">

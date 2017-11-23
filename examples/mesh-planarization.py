@@ -29,33 +29,40 @@ __email__     = 'vanmelet@ethz.ch'
 guid = compas_rhino.select_surface('Select an input surface.')
 mesh = compas_rhino.mesh_from_surface_heightfield(Mesh, guid, density=(20, 10))
 
-fixed = mesh.vertices_where({'z': (-0.5, 0.1)})
 
 # create a surface constraint
 
 surf = RhinoSurface(guid)
 
+
 # vertices and faces
 
-vertices_0 = {key: mesh.vertex_coordinates(key) for key in mesh.vertices()}
+key_index = mesh.key_index()
+
+vertices_0 = mesh.get_vertices_attributes('xyz')
 vertices_1 = deepcopy(vertices_0)
 
-faces = [mesh.face_vertices(fkey) for fkey in mesh.faces()]
+faces = [[key_index[key] for key in mesh.face_vertices(fkey)] for fkey in mesh.faces()]
+fixed = [key_index[key] for key in mesh.vertices_where({'z': (-0.5, 0.1)})]
+
 
 # planarize with a conduit for visualization
 
-conduit = FacesConduit(vertices_1, faces,  refreshrate=5)
+conduit = FacesConduit(vertices_1, faces, refreshrate=5)
+
 
 # define a callback to visualise the planarisation process
 
-def callback(vertices, faces, k, args):
-    for key in vertices_1:
-        if key in fixed:
-            vertices_1[key][2] = 0
+def callback(k, args):
+    for index in range(len(vertices_1)):
+        if index in fixed:
+            vertices_1[index][2] = 0
+
     if k % 5 == 0:
-        dev = flatness(vertices, faces, 0.02)
+        dev = flatness(vertices_1, faces, 0.02)
         conduit.colors = [FromArgb(* i_to_rgb(dev[i])) for i in range(len(faces))]
         conduit.redraw()
+
 
 with conduit.enabled():
     planarize_faces(
@@ -64,10 +71,12 @@ with conduit.enabled():
         kmax=500,
         callback=callback)
 
+
 # compute the *flatness*
 
 dev0 = flatness(vertices_0, faces, 0.02)
 dev1 = flatness(vertices_1, faces, 0.02)
+
 
 # draw the original
 
@@ -78,12 +87,14 @@ compas_rhino.mesh_draw_faces(
     color={fkey: i_to_rgb(dev0[index]) for index, fkey in enumerate(mesh.faces())}
 )
 
+
 # draw the result
 
 for key, attr in mesh.vertices(True):
-    attr['x'] = vertices_1[key][0]
-    attr['y'] = vertices_1[key][1]
-    attr['z'] = vertices_1[key][2]
+    index = key_index[key]
+    attr['x'] = vertices_1[index][0]
+    attr['y'] = vertices_1[index][1]
+    attr['z'] = vertices_1[index][2]
 
 color = {fkey: i_to_rgb(dev1[index]) for index, fkey in enumerate(mesh.faces())}
 

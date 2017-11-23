@@ -17,7 +17,7 @@ import compas
 from compas.datastructures import Mesh
 from compas.viewers import MeshViewer
 
-from compas.numerical import fd
+from compas.numerical import fd_numpy
 
 
 __author__    = 'Tom Van Mele'
@@ -63,7 +63,7 @@ fixed = [key_index[key] for key in mesh.vertices_where({'is_anchor': True})]
 edges = mesh.indexed_edges()
 q     = mesh.get_edges_attribute('q')
 
-res = fd(xyz, edges, fixed, q, loads)
+res = fd_numpy(xyz, edges, fixed, q, loads)
 xyz = res[0]
 
 

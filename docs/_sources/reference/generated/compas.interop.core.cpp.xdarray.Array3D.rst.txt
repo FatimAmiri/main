@@ -19,15 +19,4 @@ Array3D
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Array3D.cdata
-      ~Array3D.ctype
-      ~Array3D.data
-      ~Array3D.dtype
-      ~Array3D.pydata
-      ~Array3D.shape
-   
    

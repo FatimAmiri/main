@@ -26,9 +26,11 @@ MeshPlotter
       ~MeshPlotter.draw_points
       ~MeshPlotter.draw_polygons
       ~MeshPlotter.draw_vertices
+      ~MeshPlotter.gifified
       ~MeshPlotter.highlight_path
       ~MeshPlotter.register_listener
       ~MeshPlotter.save
+      ~MeshPlotter.save_gif
       ~MeshPlotter.show
       ~MeshPlotter.update
       ~MeshPlotter.update_edges
@@ -41,16 +43,5 @@ MeshPlotter
    
 
    
-   
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~MeshPlotter.axes
-      ~MeshPlotter.bgcolor
-      ~MeshPlotter.canvas
-      ~MeshPlotter.figure
-      ~MeshPlotter.interactive
-      ~MeshPlotter.title
    
    

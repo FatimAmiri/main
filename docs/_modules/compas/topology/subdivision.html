@@ -404,13 +404,13 @@
 
     <span class="n">fixed</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">fixed</span><span class="p">)</span>
 
-    <span class="n">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
         <span class="n">old_xyz</span>      <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
         <span class="n">fkey_old_new</span> <span class="o">=</span> <span class="p">{</span><span class="n">fkey</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()}</span>
 
-        <span class="n">subd</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
+        <span class="n">subd</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
             <span class="n">vertices</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
@@ -565,94 +565,11 @@
     <span class="k">return</span> <span class="n">subd</span>
 
 
-<span class="c1"># # this was used as a basis for the implementation of doo-sabin</span>
-<span class="c1"># # and the update of catmull-clark</span>
-<span class="c1"># # don't use this for anything other then an example...</span>
-<span class="c1"># # this implementation assumes the mesh is closed</span>
-<span class="c1"># # when extraordinary vertices exist in the control mesh, any subd mesh has faces with more than 4 vertices</span>
-<span class="c1"># def subdivide_quadmesh_quad(mesh, k=1):</span>
-<span class="c1">#     """Subdivide a quad mesh using the quad algorithm.</span>
-<span class="c1">#     """</span>
-<span class="c1">#     c1 = 3. / 16.</span>
-<span class="c1">#     c2 = 9. / 16.</span>
-<span class="c1">#     c3 = 3. / 16.</span>
-<span class="c1">#     c4 = 1. / 16.</span>
-
-<span class="c1">#     cls = type(mesh)</span>
-
-<span class="c1">#     for _ in range(k):</span>
-<span class="c1">#         old_xyz = dict((key, mesh.vertex_coordinates(key)) for key in mesh)</span>
-<span class="c1">#         fkey_old_new = dict((fkey, {}) for fkey in mesh.face)</span>
-<span class="c1">#         subd = cls()</span>
-
-<span class="c1">#         for fkey in mesh.face:</span>
-<span class="c1">#             vertices = mesh.face_vertices(fkey, ordered=True)</span>
-<span class="c1">#             if len(vertices) != 4:</span>
-<span class="c1">#                 raise BRGMeshAlgorithmError</span>
-<span class="c1">#             o1 = old_xyz[vertices[0]]</span>
-<span class="c1">#             o2 = old_xyz[vertices[1]]</span>
-<span class="c1">#             o3 = old_xyz[vertices[2]]</span>
-<span class="c1">#             o4 = old_xyz[vertices[3]]</span>
-<span class="c1">#             n1 = [c1 * o4[i] + c2 * o1[i] + c3 * o2[i] + c4 * o3[i] for i in range(3)]</span>
-<span class="c1">#             n2 = [c1 * o1[i] + c2 * o2[i] + c3 * o3[i] + c4 * o4[i] for i in range(3)]</span>
-<span class="c1">#             n3 = [c1 * o2[i] + c2 * o3[i] + c3 * o4[i] + c4 * o1[i] for i in range(3)]</span>
-<span class="c1">#             n4 = [c1 * o3[i] + c2 * o4[i] + c3 * o1[i] + c4 * o2[i] for i in range(3)]</span>
-<span class="c1">#             a = subd.add_vertex(x=n1[0], y=n1[1], z=n1[2])</span>
-<span class="c1">#             b = subd.add_vertex(x=n2[0], y=n2[1], z=n2[2])</span>
-<span class="c1">#             c = subd.add_vertex(x=n3[0], y=n3[1], z=n3[2])</span>
-<span class="c1">#             d = subd.add_vertex(x=n4[0], y=n4[1], z=n4[2])</span>
-<span class="c1">#             fkey_old_new[fkey][vertices[0]] = a</span>
-<span class="c1">#             fkey_old_new[fkey][vertices[1]] = b</span>
-<span class="c1">#             fkey_old_new[fkey][vertices[2]] = c</span>
-<span class="c1">#             fkey_old_new[fkey][vertices[3]] = d</span>
-
-<span class="c1">#         for fkey in mesh.face:</span>
-<span class="c1">#             if len(vertices) != 4:</span>
-<span class="c1">#                 raise BRGMeshAlgorithmError</span>
-<span class="c1">#             vertices = mesh.face_vertices(fkey, ordered=True)</span>
-<span class="c1">#             old_new = fkey_old_new[fkey]</span>
-<span class="c1">#             subd.add_face([old_new[old] for old in vertices])</span>
-
-<span class="c1">#         for key in mesh.vertex:</span>
-<span class="c1">#             if mesh.is_vertex_on_boundary(key):</span>
-<span class="c1">#                 continue</span>
-<span class="c1">#             face = []</span>
-<span class="c1">#             for nbr in mesh.vertex_neighbours(key, ordered=True):</span>
-<span class="c1">#                 fkey = mesh.halfedge[key][nbr]</span>
-<span class="c1">#                 if fkey is not None:</span>
-<span class="c1">#                     face.append(fkey_old_new[fkey][key])</span>
-<span class="c1">#             if len(face) &gt; 2:</span>
-<span class="c1">#                 subd.add_face(face[::-1])</span>
-
-<span class="c1">#         edges = set()</span>
-
-<span class="c1">#         for u in mesh.halfedge:</span>
-<span class="c1">#             for v in mesh.halfedge[u]:</span>
-<span class="c1">#                 if (u, v) in edges:</span>
-<span class="c1">#                     continue</span>
-<span class="c1">#                 edges.add((u, v))</span>
-<span class="c1">#                 edges.add((v, u))</span>
-<span class="c1">#                 uv_fkey = mesh.halfedge[u][v]</span>
-<span class="c1">#                 vu_fkey = mesh.halfedge[v][u]</span>
-<span class="c1">#                 if uv_fkey is None or vu_fkey is None:</span>
-<span class="c1">#                     continue</span>
-<span class="c1">#                 face = []</span>
-<span class="c1">#                 face.append(fkey_old_new[uv_fkey][u])</span>
-<span class="c1">#                 face.append(fkey_old_new[vu_fkey][u])</span>
-<span class="c1">#                 face.append(fkey_old_new[vu_fkey][v])</span>
-<span class="c1">#                 face.append(fkey_old_new[uv_fkey][v])</span>
-<span class="c1">#                 subd.add_face(face)</span>
-
-<span class="c1">#         mesh = subd</span>
-
-<span class="c1">#     return mesh</span>
-
-
 <span class="c1"># ==============================================================================</span>
-<span class="c1"># Debugging</span>
+<span class="c1"># Testing</span>
 <span class="c1"># ==============================================================================</span>
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
 
     <span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
 
@@ -702,7 +619,6 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../workshops.html">Workshops</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../bibliography.html">Bibliography</a></li>
 </ul>
 </div>
@@ -721,11 +637,11 @@
             
 
             
-                Last updated on Nov 12, 2017.
+                Last updated on Nov 23, 2017.
             
 
             
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
             
         </footer>
 <script type="text/javascript">

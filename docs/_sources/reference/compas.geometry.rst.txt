@@ -12,16 +12,53 @@ geometry
     The functions in this package expect input arguments to be structured in a certain
     way.
 
-    - **point** -- The xyz coordinates as a sequence of floats.
-    - **vector** -- The xyz coordinates of the end point. The start is always the origin.
-    - **line** -- A tuple with two points representing a continuous line (ray).
-    - **segment** -- A tuple with two points representing a line segment.
-    - **plane** -- A tuple with a base point and normal vector.
-    - **circle** -- A tuple with a point the normal vector of the plane of the circle and the radius as float.
-    - **polygon** -- A sequence of points. First and last are not the same. The polygon is assumed closed.
-    - **polyline** -- A sequence of points. First and last are the same if the polyline is closed. Otherwise it is assumed open.
-    - **polyhedron** -- A list of vertices represented by their XYZ coordinates and a list of faces referencing the vertex list.
-    - **frame** -- A list of three orthonormal vectors.
+    - **point**: The xyz coordinates as a sequence of floats.
+    - **vector**: The xyz coordinates of the end point. The start is always the origin.
+    - **line**: A tuple with two points representing a continuous line (ray).
+    - **segment**: A tuple with two points representing a line segment.
+    - **plane**: A tuple with a base point and normal vector.
+    - **circle**: A tuple with a point the normal vector of the plane of the circle and the radius as float.
+    - **polygon**: A sequence of points. First and last are not the same. The polygon is assumed closed.
+    - **polyline**: A sequence of points. First and last are the same if the polyline is closed. Otherwise it is assumed open.
+    - **polyhedron**: A list of vertices represented by their XYZ coordinates and a list of faces referencing the vertex list.
+    - **frame**: A list of three orthonormal vectors.
+
+
+Algorithms
+==========
+
+.. autosummary::
+    :toctree: generated/
+    :nosignatures:
+
+    bestfit_plane
+    bestfit_plane_numpy
+    bestfit_circle_numpy
+    bounding_box
+    bounding_box_xy
+    convex_hull
+    convex_hull_xy
+    convex_hull_numpy
+    convex_hull_xy_numpy
+    discrete_coons_patch
+    flatness
+    mesh_circularize_faces_shapeop
+    mesh_contours_numpy
+    mesh_cull_duplicate_vertices
+    mesh_flatness
+    mesh_isolines_numpy
+    mesh_planarize_faces
+    mesh_planarize_faces_shapeop
+    mesh_smooth_centroid
+    network_parallelise_edges
+    network_smooth_centroid
+    oriented_bounding_box_numpy
+    oriented_bounding_box_xy_numpy
+    planarize_faces
+    scalarfield_contours_numpy
+    smooth_area
+    smooth_centroid
+    smooth_centerofmass
 
 
 Classes
@@ -31,6 +68,7 @@ This package provides an object-oriented interface to the above functionality.
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     Vector
     Point
@@ -44,93 +82,11 @@ This package provides an object-oriented interface to the above functionality.
     Spline
     Surface
 
-
-Algorithms
-==========
-
-**bounding box**
-
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
-    bounding_box
-    bounding_box_xy
-    oriented_bounding_box_numpy
-    oriented_bounding_box_xy_numpy
-
-**fitting**
-
-.. autosummary::
-    :toctree: generated/
-
-    bestfit_plane
-    bestfit_plane_numpy
-    bestfit_circle_numpy
-
-**convex hull**
-
-.. autosummary::
-    :toctree: generated/
-
-    convex_hull
-    convex_hull_xy
-    convex_hull_numpy
-    convex_hull_xy_numpy
-
-**interpolation**
-
-.. autosummary::
-    :toctree: generated/
-
-    discrete_coons_patch
-
-**isolines**
-
-.. autosummary::
-    :toctree: generated/
-
-    scalarfield_contours_numpy
-    mesh_contours_numpy
-    mesh_isolines_numpy
-
-**parallelisation**
-
-.. autosummary::
-    :toctree: generated/
-
-    network_parallelise_edges
-
-**planarisation**
-
-.. autosummary::
-    :toctree: generated/
-
-    flatness
-    mesh_flatness
-    planarize_faces
-    mesh_planarize_faces
-    mesh_planarize_faces_shapeop
-    mesh_circularize_faces_shapeop
-
-**purging**
-
-.. autosummary::
-    :toctree: generated/
-
-    mesh_cull_duplicate_vertices
-
-**smoothing**
-
-.. autosummary::
-    :toctree: generated/
-
-    smooth_centroid
-    mesh_smooth_centroid
-    network_smooth_centroid
-    smooth_centerofmass
-    smooth_area
-    smooth_resultant
-    network_smooth_resultant
+    KDTree
 
 
 Functions
@@ -138,9 +94,11 @@ Functions
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     add_vectors
     add_vectors_xy
+    sum_vectors
     cross_vectors
     cross_vectors_xy
     divide_vectors
@@ -161,6 +119,7 @@ Functions
     normalize_vector_xy
     normalize_vectors
     normalize_vectors_xy
+    orthonormalise_vectors
     power_vector
     power_vectors
     scale_vector
@@ -171,13 +130,13 @@ Functions
     square_vectors
     subtract_vectors
     subtract_vectors_xy
-    sum_vectors
     transpose_matrix
     vector_component
     vector_component_xy
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     vector_from_points
     vector_from_points_xy
@@ -188,11 +147,11 @@ Functions
     pointcloud_xy
 
 
-Distance
---------
+**Distance**
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     closest_point_in_cloud
     closest_point_in_cloud_xy
@@ -214,8 +173,7 @@ Distance
     distance_point_point_sqrd
     distance_point_point_sqrd_xy
 
-Angles
-------
+**Angles**
 
 .. note::
 
@@ -224,6 +182,7 @@ Angles
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     angle_smallest_points
     angle_smallest_points_xy
@@ -243,11 +202,11 @@ Angles
     angles_vectors_degrees_xy
 
 
-Average
--------
+**Average**
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     center_of_mass_polygon
     center_of_mass_polygon_xy
@@ -260,22 +219,22 @@ Average
     midpoint_point_point_xy
 
 
-Orientation
------------
+**Orientation**
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     normal_polygon
     normal_triangle
     normal_triangle_xy
 
 
-Queries
--------
+**Queries**
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     is_ccw_xy
     is_colinear
@@ -306,11 +265,11 @@ Queries
     is_point_in_triangle_xy
 
 
-Intersections
--------------
+**Intersections**
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     intersection_circle_circle
     intersection_circle_circle_xy
@@ -325,11 +284,11 @@ Intersections
     intersection_segment_plane
 
 
-Size
-----
+**Size**
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     area_polygon
     area_polygon_xy
@@ -338,17 +297,18 @@ Size
     volume_polyhedron
 
 
-Transformations
----------------
+**Transformations**
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     transform
     transform_numpy
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     homogenize
     dehomogenize
@@ -360,6 +320,7 @@ Transformations
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     projection_matrix
     rotation_matrix
@@ -369,6 +330,7 @@ Transformations
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     mirror_point_line
     mirror_point_line_xy

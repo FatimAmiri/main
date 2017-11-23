@@ -21,14 +21,4 @@ Polyline
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Polyline.l
-      ~Polyline.length
-      ~Polyline.lines
-      ~Polyline.p
-      ~Polyline.points
-   
    

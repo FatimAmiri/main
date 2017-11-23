@@ -22,13 +22,4 @@ Line
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Line.direction
-      ~Line.length
-      ~Line.midpoint
-      ~Line.vector
-   
    

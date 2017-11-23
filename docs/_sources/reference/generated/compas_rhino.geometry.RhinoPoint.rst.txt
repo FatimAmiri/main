@@ -27,10 +27,4 @@ RhinoPoint
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~RhinoPoint.xyz
-   
    

@@ -44,15 +44,4 @@ Vector
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Vector.length
-      ~Vector.norm
-      ~Vector.w
-      ~Vector.x
-      ~Vector.y
-      ~Vector.z
-   
    

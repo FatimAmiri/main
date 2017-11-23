@@ -5,9 +5,9 @@ from compas.plotters import MeshPlotter
 
 mesh = Mesh.from_obj(compas.get('faces.obj'))
 
-vertices  = {key: mesh.vertex_coordinates(key) for key in mesh.vertices()}
-adjacency = {key: mesh.vertex_neighbours(key, ordered=True) for key in mesh.vertices()}
-fixed     = [key for key in mesh.vertices() if mesh.vertex_degree(key) == 2]
+vertices   = mesh.get_vertices_attributes('xyz')
+neighbours = [mesh.vertex_neighbours(key) for key in mesh.vertices()]
+fixed      = [key for key in mesh.vertices() if mesh.vertex_degree(key) == 2]
 
 lines = []
 for u, v in mesh.edges():
@@ -18,7 +18,7 @@ for u, v in mesh.edges():
         'width': 1.0,
     })
 
-smooth_centerofmass(vertices, adjacency, fixed=fixed, kmax=100)
+smooth_centerofmass(vertices, neighbours, fixed=fixed, kmax=100)
 
 for key, attr in mesh.vertices(True):
     attr['x'] = vertices[key][0]

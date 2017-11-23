@@ -44,56 +44,36 @@
 <dt id="compas.numerical.drx_numpy">
 <code class="descclassname">compas.numerical.</code><code class="descname">drx_numpy</code><span class="sig-paren">(</span><em>network</em>, <em>factor=1.0</em>, <em>tol=0.1</em>, <em>steps=10000</em>, <em>refresh=0</em>, <em>update=False</em>, <em>callback=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../modules/compas/numerical/algorithms/drx_numpy.html#drx_numpy"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Run dynamic relaxation analysis.</p>
-<table class="docutils field-list table table-responsive table-bordered" frame="void" rules="none">
-<col class="field-name"/>
-<col class="field-body"/>
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>network</strong> (<em>obj</em>) – Network to analyse.</li>
-<li><strong>factor</strong> (<em>float</em>) – Convergence factor.</li>
-<li><strong>tol</strong> (<em>float</em>) – Tolerance value.</li>
-<li><strong>steps</strong> (<em>int</em>) – Maximum number of steps.</li>
-<li><strong>refresh</strong> (<em>int</em>) – Update progress every n steps.</li>
-<li><strong>update</strong> (<em>bool</em>) – Update the co-ordinates of the Network.</li>
-<li><strong>callback</strong> (<em>obj</em>) – Callback function.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> (<em>Network</em>) – Network to analyse.</p></li>
+<li><p><strong>factor</strong> (<em>float</em>) – Convergence factor.</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – Tolerance value.</p></li>
+<li><p><strong>steps</strong> (<em>int</em>) – Maximum number of steps.</p></li>
+<li><p><strong>refresh</strong> (<em>int</em>) – Update progress every n steps.</p></li>
+<li><p><strong>update</strong> (<em>bool</em>) – Update the co-ordinates of the Network.</p></li>
+<li><p><strong>callback</strong> (<em>callable</em>) – Callback function.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>array</em> – Vertex co-ordinates.
-array: Edge forces.
-array: Edge lengths.</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><em>tuple</em> –</p>
+<ul class="simple">
+<li><p>array: Vertex co-ordinates.</p></li>
+<li><p>array: Edge forces.</p></li>
+<li><p>array: Edge lengths.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 <p class="rubric">Example</p>
-<figure class="figure">
-<img alt="../../images/compas-numerical-drx_numpy-1.png" class="figure-img img-fluid" src="../../images/compas-numerical-drx_numpy-1.png"/>
-</figure>
-<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="c1"># This code block produces a dynamic visualization</span>
-<span class="c1"># of the figure above using a callback function.</span>
-
-<span class="kn">import</span> <span class="nn">compas</span>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">compas</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Network</span>
 <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">NetworkPlotter</span>
 <span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="kn">import</span> <span class="n">drx_numpy</span>
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">i_to_rgb</span>
 
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linspace</span>
-
-<span class="c1"># Callback</span>
-
-<span class="k">def</span> <span class="nf">plot_iterations</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.005</span><span class="p">):</span>
-
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">set_vertex_attributes</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">{</span><span class="s1">'x'</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">:</span> <span class="n">z</span><span class="p">})</span>
-
-    <span class="n">plotter</span><span class="o">.</span><span class="n">update_vertices</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
-    <span class="n">plotter</span><span class="o">.</span><span class="n">update_edges</span><span class="p">()</span>
-    <span class="n">plotter</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pause</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
-
-<span class="c1"># Setup</span>
 
 <span class="n">L0</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">L</span> <span class="o">=</span> <span class="mf">1.5</span>
@@ -114,9 +94,7 @@ array: Edge lengths.</p>
 
 <span class="c1"># Plotter</span>
 
-<span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
-
-<span class="c1"># Initial configuration</span>
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
 <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
@@ -127,16 +105,28 @@ array: Edge lengths.</p>
         <span class="s1">'width'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
 
 <span class="n">plotter</span><span class="o">.</span><span class="n">draw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+<span class="c1"># Solver</span>
+
+<span class="n">drx_numpy</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">refresh</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># Result</span>
+
 <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">'#ff0000'</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">pins</span><span class="p">})</span>
 <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-
-<span class="c1"># Solver with dynamic visualization</span>
-
-<span class="n">drx_numpy</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">refresh</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">plot_iterations</span><span class="p">)</span>
 
 <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 
+<figure class="figure">
+<img alt="../../images/compas-numerical-drx_numpy-1.png" class="figure-img img-fluid" src="../../images/compas-numerical-drx_numpy-1.png"/>
+</figure>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li></li>
+</ul>
+</div>
 </dd></dl>
 </div>
 <!--<nav class="compas-sideways">
@@ -185,7 +175,6 @@ array: Edge lengths.</p>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_maya.html">compas_maya</a></li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../workshops.html">Workshops</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../bibliography.html">Bibliography</a></li>
 </ul>
 </div>
@@ -207,11 +196,11 @@ array: Edge lengths.</p>
             
 
             
-                Last updated on Nov 12, 2017.
+                Last updated on Nov 23, 2017.
             
 
             
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
             
         </footer>
 <script type="text/javascript">

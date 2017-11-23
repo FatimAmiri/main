@@ -66,7 +66,10 @@
 <span class="s2">import importlib</span>
 
 <span class="s2">import json</span>
-<span class="s2">import cStringIO</span>
+<span class="s2">try:</span>
+<span class="s2">    from cStringIO import StringIO</span>
+<span class="s2">except:</span>
+<span class="s2">    from io import StringIO</span>
 <span class="s2">import cProfile</span>
 <span class="s2">import pstats</span>
 <span class="s2">import traceback</span>
@@ -106,7 +109,7 @@
 
 <span class="s2">    profile.disable()</span>
 
-<span class="s2">    stream = cStringIO.StringIO()</span>
+<span class="s2">    stream = StringIO()</span>
 <span class="s2">    stats  = pstats.Stats(profile, stream=stream)</span>
 <span class="s2">    stats.strip_dirs()</span>
 <span class="s2">    stats.sort_stats(1)</span>
@@ -158,6 +161,7 @@
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numiter</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">pause</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">'test_xfunc_finished'</span>
 
 
 <span class="k">def</span> <span class="nf">_xecute</span><span class="p">(</span><span class="n">funcname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span> <span class="n">tmpdir</span><span class="p">,</span> <span class="n">delete_files</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">callback_args</span><span class="p">,</span>
@@ -315,10 +319,10 @@
 
 
 <span class="c1"># ==============================================================================</span>
-<span class="c1"># Debugging</span>
+<span class="c1"># Testing</span>
 <span class="c1"># ==============================================================================</span>
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
 
     <span class="n">test_xfunc</span> <span class="o">=</span> <span class="n">XFunc</span><span class="p">(</span><span class="s1">'xfunc.test_xfunc'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
@@ -352,7 +356,6 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../workshops.html">Workshops</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../bibliography.html">Bibliography</a></li>
 </ul>
 </div>
@@ -371,11 +374,11 @@
             
 
             
-                Last updated on Nov 12, 2017.
+                Last updated on Nov 23, 2017.
             
 
             
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
             
         </footer>
 <script type="text/javascript">

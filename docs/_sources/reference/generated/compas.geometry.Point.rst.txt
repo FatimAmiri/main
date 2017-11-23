@@ -29,13 +29,4 @@ Point
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Point.precision
-      ~Point.x
-      ~Point.y
-      ~Point.z
-   
    

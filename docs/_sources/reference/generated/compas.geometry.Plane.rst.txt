@@ -23,11 +23,4 @@ Plane
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Plane.basis
-      ~Plane.d
-   
    

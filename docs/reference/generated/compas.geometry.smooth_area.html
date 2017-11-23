@@ -12,8 +12,8 @@
 <link href="/css/github.css" rel="stylesheet" type="text/css"/>
 <link href="/css/compas.css" rel="stylesheet" type="text/css"/>
 <link href="/css/compas-reference.css" rel="stylesheet" type="text/css"/>
-<link href="compas.geometry.smooth_resultant.html" rel="next" title="smooth_resultant"/>
-<link href="compas.geometry.smooth_centerofmass.html" rel="prev" title="smooth_centerofmass"/>
+<link href="compas.geometry.smooth_centroid.html" rel="next" title="smooth_centroid"/>
+<link href="compas.geometry.scalarfield_contours_numpy.html" rel="prev" title="scalarfield_contours_numpy"/>
 <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
 </head>
 <body data-spy="scroll" data-target="#compas-localnav">
@@ -45,36 +45,23 @@
 <code class="descclassname">compas.geometry.</code><code class="descname">smooth_area</code><span class="sig-paren">(</span><em>vertices</em>, <em>faces</em>, <em>adjacency</em>, <em>fixed=None</em>, <em>kmax=1</em>, <em>damping=0.5</em>, <em>callback=None</em>, <em>callback_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../modules/compas/geometry/algorithms/smoothing.html#smooth_area"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Smooth a set of connected vertices by moving each vertex to the centroid
 of the surrounding faces, weighted by the area of the face.</p>
-<table class="docutils field-list table table-responsive table-bordered" frame="void" rules="none">
-<col class="field-name"/>
-<col class="field-body"/>
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>vertices</strong> (<em>dict</em>) – A dictionary of vertex coordinates.</li>
-<li><strong>faces</strong> (<em>dict</em>) – A dictionary of faces referencing the vertices dict.</li>
-<li><strong>adjacency</strong> (<em>dict</em>) – Adjacency information for each of the vertices.</li>
-<li><strong>fixed</strong> (<em>list, optional</em>) – The fixed vertices of the mesh.</li>
-<li><strong>kmax</strong> (<em>int, optional</em>) – The maximum number of iterations.</li>
-<li><strong>d</strong> (<em>float, optional</em>) – The damping factor.</li>
-<li><strong>callback</strong> (<em>callable, optional</em>) – A user-defined callback function to be executed after every iteration.</li>
-<li><strong>callback_args</strong> (<em>list, optional</em>) – A list of arguments to be passed to the callback.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vertices</strong> (<em>dict</em>) – A dictionary of vertex coordinates.</p></li>
+<li><p><strong>faces</strong> (<em>dict</em>) – A dictionary of faces referencing the vertices dict.</p></li>
+<li><p><strong>adjacency</strong> (<em>dict</em>) – Adjacency information for each of the vertices.</p></li>
+<li><p><strong>fixed</strong> (<em>list, optional</em>) – The fixed vertices of the mesh.</p></li>
+<li><p><strong>kmax</strong> (<em>int, optional</em>) – The maximum number of iterations.</p></li>
+<li><p><strong>d</strong> (<em>float, optional</em>) – The damping factor.</p></li>
+<li><p><strong>callback</strong> (<em>callable, optional</em>) – A user-defined callback function to be executed after every iteration.</p></li>
+<li><p><strong>callback_args</strong> (<em>list, optional</em>) – A list of arguments to be passed to the callback.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal">Exception</code> – If a callback is provided, but it is not callable.</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<ul class="last simple">
-<li><a class="reference internal" href="compas.geometry.smooth_centroid.html#compas.geometry.smooth_centroid" title="compas.geometry.smooth_centroid"><code class="xref py py-func docutils literal">smooth_centroid()</code></a></li>
-<li><a class="reference internal" href="compas.geometry.smooth_centerofmass.html#compas.geometry.smooth_centerofmass" title="compas.geometry.smooth_centerofmass"><code class="xref py py-func docutils literal">smooth_centerofmass()</code></a></li>
-<li><a class="reference internal" href="compas.geometry.centroid_points.html#compas.geometry.centroid_points" title="compas.geometry.centroid_points"><code class="xref py py-func docutils literal">compas.geometry.centroid_points()</code></a></li>
-<li><a class="reference internal" href="compas.geometry.area_polygon.html#compas.geometry.area_polygon" title="compas.geometry.area_polygon"><code class="xref py py-func docutils literal">compas.geometry.area_polygon()</code></a></li>
-</ul>
-</div>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-exc docutils literal">Exception</code> – If a callback is provided, but it is not callable.</p>
+</dd>
+</dl>
 <p class="rubric">Example</p>
 <div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">compas</span>
 
@@ -84,9 +71,9 @@ of the surrounding faces, weighted by the area of the face.</p>
 
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'faces.obj'</span><span class="p">))</span>
 
-<span class="n">vertices</span>  <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
-<span class="n">faces</span>     <span class="o">=</span> <span class="p">{</span><span class="n">fkey</span><span class="p">:</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()}</span>
-<span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_faces</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
+<span class="n">vertices</span>  <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">'xyz'</span><span class="p">)</span>
+<span class="n">faces</span>     <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()]</span>
+<span class="n">adjacency</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_faces</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
 <span class="n">fixed</span>     <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span> <span class="k">if</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_degree</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]</span>
 
 <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
@@ -117,15 +104,24 @@ of the surrounding faces, weighted by the area of the face.</p>
 <figure class="figure">
 <img alt="../../images/compas-geometry-smooth_area-1.png" class="figure-img img-fluid" src="../../images/compas-geometry-smooth_area-1.png"/>
 </figure>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="compas.geometry.smooth_centroid.html#compas.geometry.smooth_centroid" title="compas.geometry.smooth_centroid"><code class="xref py py-func docutils literal">smooth_centroid()</code></a></p></li>
+<li><p><a class="reference internal" href="compas.geometry.smooth_centerofmass.html#compas.geometry.smooth_centerofmass" title="compas.geometry.smooth_centerofmass"><code class="xref py py-func docutils literal">smooth_centerofmass()</code></a></p></li>
+<li><p><a class="reference internal" href="compas.geometry.centroid_points.html#compas.geometry.centroid_points" title="compas.geometry.centroid_points"><code class="xref py py-func docutils literal">compas.geometry.centroid_points()</code></a></p></li>
+<li><p><a class="reference internal" href="compas.geometry.area_polygon.html#compas.geometry.area_polygon" title="compas.geometry.area_polygon"><code class="xref py py-func docutils literal">compas.geometry.area_polygon()</code></a></p></li>
+</ul>
+</div>
 </dd></dl>
 </div>
 <!--<nav class="compas-sideways">
                             
-                                <a href="compas.geometry.smooth_centerofmass.html" class="btn btn-primary compas-prev" role="button">smooth_centerofmass</a>
+                                <a href="compas.geometry.scalarfield_contours_numpy.html" class="btn btn-primary compas-prev" role="button">scalarfield_contours_numpy</a>
                             
 
                             
-                                <a href="compas.geometry.smooth_resultant.html" class="btn btn-primary compas-next" role="button">smooth_resultant</a>
+                                <a href="compas.geometry.smooth_centroid.html" class="btn btn-primary compas-next" role="button">smooth_centroid</a>
                             
                         </nav>-->
 </main>
@@ -165,7 +161,6 @@ of the surrounding faces, weighted by the area of the face.</p>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_maya.html">compas_maya</a></li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../workshops.html">Workshops</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../bibliography.html">Bibliography</a></li>
 </ul>
 </div>
@@ -187,11 +182,11 @@ of the surrounding faces, weighted by the area of the face.</p>
             
 
             
-                Last updated on Nov 12, 2017.
+                Last updated on Nov 23, 2017.
             
 
             
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
             
         </footer>
 <script type="text/javascript">
