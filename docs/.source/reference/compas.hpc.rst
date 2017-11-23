@@ -6,11 +6,18 @@ hpc
 
 .. module:: compas.hpc
 
-
 .. warning::
 
     The functionality of this package is experimental and subject to frequent change.
     For now, don't use it for anything important :)
+
+.. note::
+
+    The HPC package id built around Numba, PyCuda and PyOpenCL
+
+    * Numba: https://numba.pydata.org/
+    * PyCuda: https://mathema.tician.de/software/pycuda/
+    * PyOpenCL: https://mathema.tician.de/software/pyopencl/
 
 
 algorithms
@@ -18,6 +25,7 @@ algorithms
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     drx_numba
 
@@ -27,6 +35,7 @@ geometry
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     sum_vectors_numba
     norm_vector_numba
@@ -67,6 +76,7 @@ geometry
     orthonormalise_vectors_numba
     plane_from_points_numba
     circle_from_points_numba
+    circle_from_points_xy_numba
 
 
 core
@@ -77,6 +87,7 @@ cuda
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
 
 euler
@@ -84,6 +95,7 @@ euler
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
     core.euler.connect_to_euler
     core.euler.load_euler_module
@@ -104,6 +116,7 @@ numba
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
 
 opencl
@@ -111,5 +124,6 @@ opencl
 
 .. autosummary::
     :toctree: generated/
+    :nosignatures:
 
 
