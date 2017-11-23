@@ -19,9 +19,10 @@ Plotter
       ~Plotter.draw_lines
       ~Plotter.draw_points
       ~Plotter.draw_polygons
+      ~Plotter.gifified
       ~Plotter.register_listener
       ~Plotter.save
-      ~Plotter.saveas_gif
+      ~Plotter.save_gif
       ~Plotter.show
       ~Plotter.update
       ~Plotter.update_linecollection

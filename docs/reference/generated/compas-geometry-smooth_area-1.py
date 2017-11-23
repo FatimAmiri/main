@@ -6,9 +6,9 @@ from compas.geometry import smooth_area
 
 mesh = Mesh.from_obj(compas.get('faces.obj'))
 
-vertices  = {key: mesh.vertex_coordinates(key) for key in mesh.vertices()}
-faces     = {fkey: mesh.face_vertices(fkey) for fkey in mesh.faces()}
-adjacency = {key: mesh.vertex_faces(key) for key in mesh.vertices()}
+vertices  = mesh.get_vertices_attributes('xyz')
+faces     = [mesh.face_vertices(fkey) for fkey in mesh.faces()]
+adjacency = [mesh.vertex_faces(key, ordered=True) for key in mesh.vertices()]
 fixed     = [key for key in mesh.vertices() if mesh.vertex_degree(key) == 2]
 
 lines = []

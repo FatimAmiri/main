@@ -35,8 +35,9 @@
 <a accesskey="U" class="breadcrumb-item" href="../../../index.html">module code</a>
 </nav>
 <h1>Source code for compas.hpc.algorithms.drx_numba</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">arccos</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span>
@@ -61,10 +62,10 @@
 <span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
 
 
-<span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">'Andrew Liew &lt;liew@arch.ethz.ch&gt;'</span><span class="p">]</span>
-<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">'Copyright 2017, BLOCK Research Group - ETH Zurich'</span>
-<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">'MIT License'</span>
-<span class="n">__email__</span>      <span class="o">=</span> <span class="s1">'liew@arch.ethz.ch'</span>
+<span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">'Andrew Liew &lt;liew@arch.ethz.ch&gt;'</span><span class="p">]</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">'Copyright 2017, BLOCK Research Group - ETH Zurich'</span>
+<span class="n">__license__</span>   <span class="o">=</span> <span class="s1">'MIT License'</span>
+<span class="n">__email__</span>     <span class="o">=</span> <span class="s1">'liew@arch.ethz.ch'</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -75,7 +76,8 @@
 <div class="viewcode-block" id="drx_numba"><a class="viewcode-back" href="../../../../reference/generated/compas.hpc.drx_numba.html#compas.hpc.drx_numba">[docs]</a><span class="k">def</span> <span class="nf">drx_numba</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">""" Run Numba accelerated dynamic relaxation analysis.</span>
 
-<span class="sd">    Parameters:</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
 <span class="sd">        network (obj): Network to analyse.</span>
 <span class="sd">        factor (float): Convergence factor.</span>
 <span class="sd">        tol (float): Tolerance value.</span>
@@ -83,7 +85,8 @@
 <span class="sd">        summary (int): Print summary at end.</span>
 <span class="sd">        update (bool): Update the co-ordinates of the Network.</span>
 
-<span class="sd">    Returns:</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">        array: Vertex co-ordinates.</span>
 <span class="sd">        array: Edge forces.</span>
 <span class="sd">        array: Edge lengths.</span>
@@ -155,12 +158,13 @@
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span></div>
 
 
-<span class="nd">@jit</span><span class="p">(</span><span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@jit</span><span class="p">(</span><span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">drx_solver</span><span class="p">(</span><span class="n">tol</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">l0</span><span class="p">,</span> <span class="n">f0</span><span class="p">,</span> <span class="n">ind_c</span><span class="p">,</span> <span class="n">ind_t</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span>
                <span class="n">inds</span><span class="p">,</span> <span class="n">indi</span><span class="p">,</span> <span class="n">indf</span><span class="p">,</span> <span class="n">EIx</span><span class="p">,</span> <span class="n">EIy</span><span class="p">,</span> <span class="n">beams</span><span class="p">):</span>
     <span class="sd">""" Numba accelerated dynamic relaxation solver.</span>
 
-<span class="sd">    Parameters:</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
 <span class="sd">        tol (float): Tolerance limit.</span>
 <span class="sd">        steps (int): Maximum number of steps.</span>
 <span class="sd">        factor (float): Convergence factor.</span>
@@ -187,7 +191,8 @@
 <span class="sd">        EIy (array): Nodal EIy flexural stiffnesses.</span>
 <span class="sd">        beams (int): Beam analysis on: 1 or off: 0.</span>
 
-<span class="sd">    Returns:</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">        array: Updated nodal co-ordinates.</span>
 <span class="sd">    """</span>
     <span class="n">m</span>   <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
@@ -306,7 +311,7 @@
 
 
 <span class="c1"># ==============================================================================</span>
-<span class="c1"># Testing</span>
+<span class="c1"># Main</span>
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
@@ -336,7 +341,6 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../workshops.html">Workshops</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../bibliography.html">Bibliography</a></li>
 </ul>
 </div>
@@ -355,7 +359,7 @@
             
 
             
-                Last updated on Nov 22, 2017.
+                Last updated on Nov 23, 2017.
             
 
             

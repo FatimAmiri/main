@@ -25,9 +25,10 @@ FaceNetworkPlotter
       ~FaceNetworkPlotter.draw_points
       ~FaceNetworkPlotter.draw_polygons
       ~FaceNetworkPlotter.draw_vertices
+      ~FaceNetworkPlotter.gifified
       ~FaceNetworkPlotter.register_listener
       ~FaceNetworkPlotter.save
-      ~FaceNetworkPlotter.saveas_gif
+      ~FaceNetworkPlotter.save_gif
       ~FaceNetworkPlotter.show
       ~FaceNetworkPlotter.update
       ~FaceNetworkPlotter.update_edges

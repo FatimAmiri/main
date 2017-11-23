@@ -35,16 +35,17 @@
 <a accesskey="U" class="breadcrumb-item" href="../../index.html">module code</a>
 </nav>
 <h1>Source code for compas.numerical.operators</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">tile</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">arange</span>
     <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">divide</span>
     <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">hstack</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">arange</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">tile</span>
 
     <span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">cross</span>
     <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">coo_matrix</span>
@@ -58,10 +59,10 @@
 <span class="kn">from</span> <span class="nn">compas.numerical.linalg</span> <span class="k">import</span> <span class="n">rot90</span>
 
 
-<span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">'Tom Van Mele &lt;vanmelet@ethz.ch&gt;'</span><span class="p">,</span> <span class="p">]</span>
-<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">'Copyright 2014, Block Research Group - ETH Zurich'</span>
-<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">'MIT License'</span>
-<span class="n">__email__</span>      <span class="o">=</span> <span class="s1">'vanmelet@ethz.ch'</span>
+<span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">'Tom Van Mele &lt;vanmelet@ethz.ch&gt;'</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">'Copyright 2017, Block Research Group - ETH Zurich'</span>
+<span class="n">__license__</span>   <span class="o">=</span> <span class="s1">'MIT License'</span>
+<span class="n">__email__</span>     <span class="o">=</span> <span class="s1">'vanmelet@ethz.ch'</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -74,14 +75,15 @@
 <div class="viewcode-block" id="grad"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.grad.html#compas.numerical.grad">[docs]</a><span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">'array'</span><span class="p">):</span>
     <span class="sd">"""Construct the gradient operator of a trianglular mesh.</span>
 
-<span class="sd">    Parameters:</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
 <span class="sd">        V (array): Vertex coordinates of the mesh.</span>
 <span class="sd">        F (array): Face vertex indices of the mesh.</span>
 <span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo'.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        sparse: If ''rtype'' is ``None, 'csc', 'csr', 'coo'``.</span>
-<span class="sd">        array: If ''rtype'' is ``'array'``.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        array, sparse: Depending on rtype return type.</span>
 
 <span class="sd">    The gradient operator is fully determined by the connectivity of the mesh</span>
 <span class="sd">    and the coordinate difference vectors associated with the edges</span>
@@ -124,12 +126,12 @@
         <span class="k">return</span> <span class="n">G</span></div>
 
 
-<div class="viewcode-block" id="div"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.div.html#compas.numerical.div">[docs]</a><span class="k">def</span> <span class="nf">div</span><span class="p">():</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+<span class="k">def</span> <span class="nf">div</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
-<div class="viewcode-block" id="curl"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.curl.html#compas.numerical.curl">[docs]</a><span class="k">def</span> <span class="nf">curl</span><span class="p">():</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+<span class="k">def</span> <span class="nf">curl</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -162,7 +164,6 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../workshops.html">Workshops</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../bibliography.html">Bibliography</a></li>
 </ul>
 </div>
@@ -181,7 +182,7 @@
             
 
             
-                Last updated on Nov 22, 2017.
+                Last updated on Nov 23, 2017.
             
 
             

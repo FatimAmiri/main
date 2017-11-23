@@ -40,8 +40,13 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
+
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">contextmanager</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -297,7 +302,41 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">autoscale</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Plotter.saveas_gif"><a class="viewcode-back" href="../../../reference/generated/generated/compas.plotters.Plotter.saveas_gif.html#compas.plotters.Plotter.saveas_gif">[docs]</a>    <span class="k">def</span> <span class="nf">saveas_gif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Plotter.gifified"><a class="viewcode-back" href="../../../reference/generated/generated/compas.plotters.Plotter.gifified.html#compas.plotters.Plotter.gifified">[docs]</a>    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">gifified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">tempfolder</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">'image_</span><span class="si">{}</span><span class="s1">.png'</span><span class="p">):</span>
+        <span class="sd">""""""</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">def</span> <span class="nf">gifify</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">,</span> <span class="n">pattern</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)))</span>
+                <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">wrapper</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">):</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="n">image</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">,</span> <span class="n">pattern</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)))</span>
+        <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="k">yield</span> <span class="n">gifify</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_gif</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">images</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'done gififying!'</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plotter.save_gif"><a class="viewcode-back" href="../../../reference/generated/generated/compas.plotters.Plotter.save_gif.html#compas.plotters.Plotter.save_gif">[docs]</a>    <span class="k">def</span> <span class="nf">save_gif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">"""Save a series of images as an animated gif.</span>
 
 <span class="sd">        Parameters</span>
@@ -317,22 +356,8 @@
 <span class="sd">        *convert* being on your system path.</span>
 
 <span class="sd">        """</span>
-        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'convert'</span><span class="p">,</span> <span class="s1">'-delay'</span><span class="p">,</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">delay</span><span class="p">),</span> <span class="s1">'-loop'</span><span class="p">,</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loop</span><span class="p">)]</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'convert'</span><span class="p">,</span> <span class="s1">'-delay'</span><span class="p">,</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">delay</span><span class="p">),</span> <span class="s1">'-loop'</span><span class="p">,</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loop</span><span class="p">),</span> <span class="s1">'-layers'</span><span class="p">,</span> <span class="s1">'optimize'</span><span class="p">]</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">command</span> <span class="o">+</span> <span class="n">images</span> <span class="o">+</span> <span class="p">[</span><span class="n">filepath</span><span class="p">])</span></div>
-
-    <span class="c1"># def init_animated_gif(self, folder):</span>
-    <span class="c1">#     if os.path.exists(folder) and os.path.isdir(folder):</span>
-    <span class="c1">#         if not os.access(folder, os.W_OK):</span>
-    <span class="c1">#             raise Exception('You do not have write access to this folder: {}'.format(folder))</span>
-    <span class="c1">#     else:</span>
-    <span class="c1">#         os.makedirs(folder)</span>
-
-    <span class="c1"># # def save_animated_gif_frame(self):</span>
-    <span class="c1"># #     pass</span>
-
-    <span class="c1"># def save_animated_gif(self, filepath, images, delay=10, loop=0):</span>
-    <span class="c1">#     command = ['convert', '-delay', '{}'.format(delay), '-loop', '{}'.format(loop)]</span>
-    <span class="c1">#     subprocess.call(command + images + [filepath])</span>
 
 <div class="viewcode-block" id="Plotter.update"><a class="viewcode-back" href="../../../reference/generated/generated/compas.plotters.Plotter.update.html#compas.plotters.Plotter.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pause</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">):</span>
         <span class="sd">"""Updates and pauses the plot.</span>
@@ -528,7 +553,6 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../workshops.html">Workshops</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../bibliography.html">Bibliography</a></li>
 </ul>
 </div>
@@ -547,7 +571,7 @@
             
 
             
-                Last updated on Nov 22, 2017.
+                Last updated on Nov 23, 2017.
             
 
             

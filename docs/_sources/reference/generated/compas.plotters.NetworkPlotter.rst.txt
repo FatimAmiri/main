@@ -24,9 +24,10 @@ NetworkPlotter
       ~NetworkPlotter.draw_points
       ~NetworkPlotter.draw_polygons
       ~NetworkPlotter.draw_vertices
+      ~NetworkPlotter.gifified
       ~NetworkPlotter.register_listener
       ~NetworkPlotter.save
-      ~NetworkPlotter.saveas_gif
+      ~NetworkPlotter.save_gif
       ~NetworkPlotter.show
       ~NetworkPlotter.update
       ~NetworkPlotter.update_edges

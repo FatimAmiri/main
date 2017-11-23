@@ -26,10 +26,11 @@ MeshPlotter
       ~MeshPlotter.draw_points
       ~MeshPlotter.draw_polygons
       ~MeshPlotter.draw_vertices
+      ~MeshPlotter.gifified
       ~MeshPlotter.highlight_path
       ~MeshPlotter.register_listener
       ~MeshPlotter.save
-      ~MeshPlotter.saveas_gif
+      ~MeshPlotter.save_gif
       ~MeshPlotter.show
       ~MeshPlotter.update
       ~MeshPlotter.update_edges

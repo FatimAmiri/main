@@ -15,5 +15,4 @@ Table of Contents
    examples
    tutorial
    reference
-   workshops
    bibliography
