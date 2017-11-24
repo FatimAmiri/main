@@ -20,6 +20,15 @@ Matlab
     MatlabProcess
     MatlabSession
 
+Rhino
+=====
+
+.. autosummary::
+    :toctree: generated/
+    :nosignatures:
+
+    RhinoClient
+
 ssh
 ===
 
