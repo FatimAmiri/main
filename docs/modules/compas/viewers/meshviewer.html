@@ -1,0 +1,419 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<title>compas -- a computational framework for research in architecture and structures</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<meta content="Tom Van Mele" name="author"/>
+<meta content="compas is a computational framework for research in architecture and structures." name="description"/>
+<link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" rel="stylesheet"/>
+<link href="/css/github.css" rel="stylesheet" type="text/css"/>
+<link href="/css/compas.css" rel="stylesheet" type="text/css"/>
+<link href="/css/compas-reference.css" rel="stylesheet" type="text/css"/>
+<script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
+</head>
+<body data-spy="scroll" data-target="#compas-localnav">
+<header class="navbar navbar-expand navbar-dark bg-dark compas-navbar">
+<a class="navbar-brand" href="/">compas</a>
+<ul class="navbar-nav">
+<li class="nav-item">
+<a class="nav-link active" href="/main/">Main library</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="/packages/">Additional Packages</a>
+</li>
+</ul>
+</header>
+<div class="container-fluid compas-container">
+<div class="row flex-xl-nowrap">
+<main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+<nav class="breadcrumb">
+<a class="breadcrumb-item" href="https://compas-dev.github.io/">compas</a>
+<a class="breadcrumb-item" href="https://compas-dev.github.io/compas/index.html">main library</a>
+<a accesskey="U" class="breadcrumb-item" href="../../index.html">module code</a>
+</nav>
+<h1>Source code for compas.viewers.meshviewer</h1><div class="highlight"><pre><code class="language-python border rounded">
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">centroid_points</span>
+
+<span class="kn">from</span> <span class="nn">compas.viewers.viewer</span> <span class="k">import</span> <span class="n">Viewer</span>
+
+<span class="kn">from</span> <span class="nn">compas.viewers.core.drawing</span> <span class="k">import</span> <span class="n">xdraw_polygons</span>
+<span class="kn">from</span> <span class="nn">compas.viewers.core.drawing</span> <span class="k">import</span> <span class="n">xdraw_lines</span>
+<span class="kn">from</span> <span class="nn">compas.viewers.core.drawing</span> <span class="k">import</span> <span class="n">xdraw_points</span>
+
+
+<span class="n">__author__</span>     <span class="o">=</span> <span class="s1">'Tom Van Mele'</span>
+<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">'Copyright 2014, Block Research Group - ETH Zurich'</span>
+<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">'MIT'</span>
+<span class="n">__email__</span>      <span class="o">=</span> <span class="s1">'vanmelet@ethz.ch'</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">'MeshViewer'</span><span class="p">,</span>
+    <span class="s1">'SubdMeshViewer'</span><span class="p">,</span>
+    <span class="s1">'MultiMeshViewer'</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="MeshViewer"><a class="viewcode-back" href="../../../reference/generated/compas.viewers.MeshViewer.html#compas.viewers.MeshViewer">[docs]</a><span class="k">class</span> <span class="nc">MeshViewer</span><span class="p">(</span><span class="n">Viewer</span><span class="p">):</span>
+    <span class="sd">""""""</span>
+
+<div class="viewcode-block" id="MeshViewer.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.MeshViewer.__init__.html#compas.viewers.MeshViewer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1440</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">900</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MeshViewer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">()</span></div>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># helpers (temp)</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="MeshViewer.center"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.MeshViewer.center.html#compas.viewers.MeshViewer.center">[docs]</a>    <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
+        <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cz</span> <span class="o">=</span> <span class="n">centroid_points</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">attr</span><span class="p">[</span><span class="s1">'x'</span><span class="p">]</span> <span class="o">-=</span> <span class="n">cx</span>
+            <span class="n">attr</span><span class="p">[</span><span class="s1">'y'</span><span class="p">]</span> <span class="o">-=</span> <span class="n">cy</span></div>
+
+    <span class="c1"># change this to a more flexible system</span>
+    <span class="c1"># that provides similar possibilities as the network plotter</span>
+<div class="viewcode-block" id="MeshViewer.display"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.MeshViewer.display.html#compas.viewers.MeshViewer.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">polygons</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_coordinates</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
+            <span class="n">color_front</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_face_attribute</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="s1">'color'</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+            <span class="n">color_back</span>  <span class="o">=</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">polygons</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'points'</span><span class="p">:</span> <span class="n">points</span><span class="p">,</span>
+                             <span class="s1">'color.front'</span><span class="p">:</span> <span class="n">color_front</span><span class="p">,</span>
+                             <span class="s1">'color.back'</span> <span class="p">:</span> <span class="n">color_back</span><span class="p">})</span>
+
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'start'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">),</span>
+                          <span class="s1">'end'</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">),</span>
+                          <span class="s1">'color'</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+                          <span class="s1">'width'</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
+
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
+            <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'pos'</span>   <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">),</span>
+                           <span class="s1">'color'</span> <span class="p">:</span> <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">),</span>
+                           <span class="s1">'size'</span>  <span class="p">:</span> <span class="mf">5.0</span><span class="p">})</span>
+
+        <span class="n">xdraw_polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
+        <span class="n">xdraw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">xdraw_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MeshViewer.keypress"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.MeshViewer.keypress.html#compas.viewers.MeshViewer.keypress">[docs]</a>    <span class="k">def</span> <span class="nf">keypress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Assign mesh functionality to keys.</span>
+
+<span class="sd">        The following keys have a mesh function assigned to them:</span>
+<span class="sd">            * u: unify cycle directions</span>
+<span class="sd">            * f: flip cycle directions</span>
+<span class="sd">            * s: subdivide using quad subdivision</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'u'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">unify_cycles</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'f'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">flip_cycles</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'s'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">subdivide</span><span class="p">(</span><span class="s1">'quad'</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'c'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screenshot</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">TEMP</span><span class="p">,</span> <span class="s1">'screenshot.jpg'</span><span class="p">))</span>
+            <span class="k">return</span></div>
+
+<div class="viewcode-block" id="MeshViewer.special"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.MeshViewer.special.html#compas.viewers.MeshViewer.special">[docs]</a>    <span class="k">def</span> <span class="nf">special</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Assign mesh functionality to function keys.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">SubdMeshViewer</span><span class="p">(</span><span class="n">Viewer</span><span class="p">):</span>
+    <span class="sd">"""Viewer for subdivision meshes.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        mesh (compas.datastructures.mesh.Mesh): The *control* mesh object.</span>
+<span class="sd">        subdfunc (callable): The subdivision algorithm/scheme.</span>
+<span class="sd">        width (int): Optional. Width of the viewport. Default is ``1440``.</span>
+<span class="sd">        height (int): Optional. Height of the viewport. Default is ``900``.</span>
+
+<span class="sd">    Warning:</span>
+<span class="sd">        Not properly tested on meshes with a boundary.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            from functools import partial</span>
+<span class="sd">        </span>
+<span class="sd">            from compas.datastructures import Mesh</span>
+<span class="sd">            from compas.topology import mesh_subdivide</span>
+<span class="sd">            from compas.viewers import SubdMeshViewer</span>
+
+<span class="sd">            subdivide = partial(mesh_subdivide, scheme='doosabin')</span>
+
+<span class="sd">            mesh = Mesh.from_polyhedron(6)</span>
+
+<span class="sd">            viewer = SubdMeshViewer(mesh, subdfunc=subdivide, width=600, height=600)</span>
+
+<span class="sd">            viewer.axes_on = False</span>
+<span class="sd">            viewer.grid_on = False</span>
+
+<span class="sd">            for i in range(10):</span>
+<span class="sd">                viewer.camera.zoom_in()</span>
+
+<span class="sd">            viewer.setup()</span>
+<span class="sd">            viewer.show()</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">subdfunc</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1440</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">900</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SubdMeshViewer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subdfunc</span> <span class="o">=</span> <span class="n">subdfunc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subd</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
+
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">wireframe</span><span class="p">():</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'start'</span> <span class="p">:</span> <span class="n">xyz</span><span class="p">[</span><span class="n">u</span><span class="p">],</span>
+                          <span class="s1">'end'</span>   <span class="p">:</span> <span class="n">xyz</span><span class="p">[</span><span class="n">v</span><span class="p">],</span>
+                          <span class="s1">'color'</span> <span class="p">:</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+                          <span class="s1">'width'</span> <span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
+
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
+            <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'pos'</span>   <span class="p">:</span> <span class="n">xyz</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+                           <span class="s1">'color'</span> <span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                           <span class="s1">'size'</span>  <span class="p">:</span> <span class="mf">10.0</span><span class="p">})</span>
+
+        <span class="n">xdraw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">xdraw_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subd</span><span class="p">:</span>
+            <span class="n">xyz</span>   <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">subd</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subd</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
+            <span class="n">front</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">back</span>  <span class="o">=</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+            <span class="n">poly</span>  <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subd</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
+                <span class="n">poly</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'points'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">subd</span><span class="o">.</span><span class="n">face_coordinates</span><span class="p">(</span><span class="n">fkey</span><span class="p">),</span>
+                             <span class="s1">'color.front'</span><span class="p">:</span> <span class="n">front</span><span class="p">,</span>
+                             <span class="s1">'color.back'</span> <span class="p">:</span> <span class="n">back</span><span class="p">})</span>
+
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subd</span><span class="o">.</span><span class="n">wireframe</span><span class="p">():</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'start'</span><span class="p">:</span> <span class="n">xyz</span><span class="p">[</span><span class="n">u</span><span class="p">],</span>
+                              <span class="s1">'end'</span>  <span class="p">:</span> <span class="n">xyz</span><span class="p">[</span><span class="n">v</span><span class="p">],</span>
+                              <span class="s1">'color'</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+                              <span class="s1">'width'</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
+
+            <span class="n">xdraw_polygons</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
+            <span class="n">xdraw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">keypress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'1'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subdfunc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'2'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subdfunc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'3'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subdfunc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'4'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subdfunc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'5'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subdfunc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'c'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screenshot</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">TEMP</span><span class="p">,</span> <span class="s1">'screenshot.jpg'</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">subdivide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subdfunc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">MultiMeshViewer</span><span class="p">(</span><span class="n">Viewer</span><span class="p">):</span>
+    <span class="sd">""""""</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meshes</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1440</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">900</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MultiMeshViewer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meshes</span> <span class="o">=</span> <span class="n">meshes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="n">colors</span>
+
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meshes</span><span class="p">)):</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meshes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="n">polygons</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
+                <span class="n">color_front</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">color_back</span>  <span class="o">=</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+                <span class="n">polygons</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'points'</span><span class="p">:</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_coordinates</span><span class="p">(</span><span class="n">fkey</span><span class="p">),</span>
+                                 <span class="s1">'color.front'</span><span class="p">:</span> <span class="n">color_front</span><span class="p">,</span>
+                                 <span class="s1">'color.back'</span><span class="p">:</span> <span class="n">color_back</span><span class="p">})</span>
+
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">wireframe</span><span class="p">():</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'start'</span><span class="p">:</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">),</span>
+                              <span class="s1">'end'</span><span class="p">:</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">),</span>
+                              <span class="s1">'color'</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+                              <span class="s1">'width'</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
+
+            <span class="n">xdraw_polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
+            <span class="n">xdraw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">keypress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+
+    <span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+
+    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
+    <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">mesh_subdivide</span>
+
+    <span class="n">subdivide</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">mesh_subdivide</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s1">'doosabin'</span><span class="p">)</span>
+
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_polyhedron</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+
+    <span class="n">viewer</span> <span class="o">=</span> <span class="n">SubdMeshViewer</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">subdfunc</span><span class="o">=</span><span class="n">subdivide</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+
+    <span class="n">viewer</span><span class="o">.</span><span class="n">axes_on</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">grid_on</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">viewer</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">zoom_in</span><span class="p">()</span>
+
+    <span class="n">viewer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+<!--<nav class="compas-sideways">
+                            
+
+                            
+                        </nav>-->
+</main>
+<div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation">
+<div class="navbar-light">
+<form action="../../../search.html" class="d-flex compas-searchbox" id="" method="get">
+<input class="form-control" name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+<button aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler d-md-none compas-navigation-toggler" data-target="#compas-navigation" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+</form>
+<div class="navbar-expand-md">
+<div class="collapse navbar-collapse compas-navigation" id="compas-navigation">
+<ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../bibliography.html">Bibliography</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+</div>
+</div>
+</div>
+<footer class="compas-footer">
+            
+                
+                    © Copyright 2017, Block Research Group - ETH Zurich.
+                
+            
+
+            
+                Last updated on Nov 24, 2017.
+            
+
+            
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+            
+        </footer>
+<script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT: '',
+    VERSION: '',
+    COLLAPSE_INDEX: false,
+    FILE_SUFFIX: '.html',
+    HAS_SOURCE: true,
+    SOURCELINK_SUFFIX: '.txt'
+};
+            </script>
+<script crossorigin="anonymous" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+<script src="/static/underscore.js"></script>
+<script src="/static/doctools.js"></script>
+<script src="https://compas-dev.github.io/main/static/searchtools_.js"></script>
+<script>
+hljs.initHighlightingOnLoad();
+anchors.add();
+
+var pre = document.getElementsByTagName('pre');
+
+for (var i = 0; i < pre.length; i++) {
+
+    var is_code = pre[i].children[0].className.indexOf('language-python');
+
+    if (is_code === 0) {
+
+        var button = document.createElement('button');
+
+        button.className = 'btn btn-secondary copy-code mt-4';
+        button.textContent = 'Copy code';
+        button.type = 'button';
+
+        pre[i].appendChild(button);
+    }
+}
+
+var copy_code = new Clipboard('.copy-code', {
+    target: function(trigger) {
+        return trigger.previousElementSibling;
+    }
+});
+
+copy_code.on('success', function(event) {
+    event.clearSelection();
+    event.trigger.textContent = 'Copied!';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+
+copy_code.on('error', function(event) { 
+    event.trigger.textContent = 'Press "Ctrl + C" to copy...';
+    window.setTimeout(function() {
+        event.trigger.textContent = 'Copy code';
+    }, 2000);
+});
+            </script>
+</body>
+</html>
