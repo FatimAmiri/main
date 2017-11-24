@@ -96,6 +96,53 @@ References
 .. [wikipedia2017f] Wikipedia.   *Line–line intersection*.
                   Available at: https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
 
+.. [wikipedia2017g] Wikipedia.   *k-d tree*.
+                  Available at: https://en.wikipedia.org/wiki/K-d_tree
+
+.. [dellamico2010] Dell'Amico, M.   *KD-Tree for nearest neighbor search in a K-dimensional space (Python recipe)*.
+                  Available at: http://code.activestate.com/recipes/577497-kd-tree-for-nearest-neighbor-search-in-a-k-dimensional-space/
+
+.. [wikipedia2017h] Wikipedia.   *Linear equation*.
+                  Available at: https://en.wikipedia.org/wiki/Linear_equation
+
+.. [stackoverflow_a] Stack Overflow.   *Pythonic Circular List*.
+                  Available at: https://stackoverflow.com/questions/8951020/pythonic-circular-list
+
+.. [wikipedia2017i] Wikipedia.   *Platonic solids.
+                  Available at: https://en.wikipedia.org/wiki/Platonic_solid
+
+.. [wikipedia2017j] Wikipedia.   *Binomial coefficient*.
+                  Available at: https://en.wikipedia.org/wiki/Binomial_coefficient
+
+.. [wikipedia2017k] Wikipedia.   *Bernstein polynomial*.
+                  Available at: https://en.wikipedia.org/wiki/Bernstein_polynomial
+
+.. [marsh2017] Marsh, C.   *Computational Geometry in Python: From Theory to Application*.
+                  Available at: https://www.toptal.com/python/computational-geometry-in-python-from-theory-to-implementation
+
+.. [nurnberg2013] Nurnberg, R.   *Calculating the area and centroid of a polygon in 2d*.
+                  Available at: http://wwwf.imperial.ac.uk/~rn/centroid.pdf
+
+.. [wikipedia2017l] Wikipedia.   *Rotation matrix*.
+                  Available at: https://en.wikipedia.org/wiki/Rotation_matrix
+
+.. [stackoverflow_b] Stack Overflow.   *How do I find the orthogonal projection of a point onto a plane*.
+                  Available at: https://stackoverflow.com/questions/8942950/how-do-i-find-the-orthogonal-projection-of-a-point-onto-a-plane
+
+.. [mathstackexchange_a] Math Stack Exchange.   *Project a point in 3D on a given plane*.
+                  Available at: https://math.stackexchange.com/questions/444968/project-a-point-in-3d-on-a-given-plane
+
+.. [wikibooks2017a] Wiki Books.   *Linear Algebra/Orthogonal Projection Onto a Line*.
+                  Available at: https://en.wikibooks.org/wiki/Linear_Algebra/Orthogonal_Projection_Onto_a_Line
+
+.. [chucarroll2007]  Chu-Carroll, M.   *Graph Coloring Algorithms*.
+                  Available at: http://scienceblogs.com/goodmath/2007/06/28/graph-coloring-algorithms-1/
+
+.. [mathstackexchange_b] Math Stack Exchange.   *How to get a reflection vector?*.
+                  Available at: https://math.stackexchange.com/questions/13261/how-to-get-a-reflection-vector
+
+
+
 Links
 =====
 
