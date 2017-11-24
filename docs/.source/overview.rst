@@ -16,19 +16,17 @@ and for ...
 Core functionality
 ==================
 
-* :mod:`compas`
-
-  * :mod:`compas.com`
-  * :mod:`compas.datastructures`
-  * :mod:`compas.files`
-  * :mod:`compas.geometry`
-  * :mod:`compas.hpc`
-  * :mod:`compas.interop`
-  * :mod:`compas.numerical`
-  * :mod:`compas.plotters`
-  * :mod:`compas.topology`
-  * :mod:`compas.utilities`
-  * :mod:`compas.viewers`
+* :mod:`compas.com`
+* :mod:`compas.datastructures`
+* :mod:`compas.files`
+* :mod:`compas.geometry`
+* :mod:`compas.hpc`
+* :mod:`compas.interop`
+* :mod:`compas.numerical`
+* :mod:`compas.plotters`
+* :mod:`compas.topology`
+* :mod:`compas.utilities`
+* :mod:`compas.viewers`
 
 
 CAD integration
