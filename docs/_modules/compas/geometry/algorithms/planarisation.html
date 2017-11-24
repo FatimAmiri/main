@@ -59,11 +59,9 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'flatness'</span><span class="p">,</span>
     <span class="s1">'planarize_faces'</span><span class="p">,</span>
-
     <span class="s1">'mesh_flatness'</span><span class="p">,</span>
     <span class="s1">'mesh_planarize_faces'</span><span class="p">,</span>
     <span class="s1">'mesh_planarize_faces_shapeop'</span><span class="p">,</span>
-    <span class="s1">'mesh_circularize_faces_shapeop'</span><span class="p">,</span>
 <span class="p">]</span>
 
 
@@ -95,9 +93,9 @@
 <span class="sd">    -------</span>
 <span class="sd">    This function only works as expected for quadrilateral faces.</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
-<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`compas.geometry.mesh_flatness`</span>
 
 <span class="sd">    """</span>
     <span class="n">dev</span> <span class="o">=</span> <span class="p">[]</span>
@@ -137,6 +135,11 @@
 <span class="sd">        A user-defined callback that is called after every iteration.</span>
 <span class="sd">    callback_args : list, optional [None]</span>
 <span class="sd">        A list of arguments to be passed to the callback function.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`compas.geometry.mesh_planarize_faces`</span>
+<span class="sd">    * :func:`compas.geometry.mesh_planarize_faces_shapeop`</span>
 
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
@@ -202,6 +205,10 @@
 <span class="sd">    -------</span>
 <span class="sd">    This function only works as expected for quadrilateral faces.</span>
 
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`compas.geometry.flatness`</span>
+
 <span class="sd">    """</span>
     <span class="n">dev</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
@@ -240,11 +247,10 @@
 <span class="sd">    -------</span>
 <span class="sd">    None</span>
 
-<span class="sd">    Examples</span>
+<span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        #</span>
+<span class="sd">    * :func:`compas.geometry.planarize_faces`</span>
+<span class="sd">    * :func:`compas.geometry.mesh_planarize_faces_shapeop`</span>
 
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
@@ -309,9 +315,10 @@
 <span class="sd">    This planarization algorithm relies on the Python binding of the ShapeOp</span>
 <span class="sd">    library. Installation instructions are available in :mod:`compas.interop`.</span>
 
-<span class="sd">    Examples</span>
+<span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    * :func:`compas.geometry.planarize_faces`</span>
+<span class="sd">    * :func:`compas.geometry.mesh_planarize_faces`</span>
 
 <span class="sd">    """</span>
     <span class="kn">from</span> <span class="nn">compas.interop</span> <span class="k">import</span> <span class="n">shapeop</span>
@@ -367,91 +374,87 @@
     <span class="n">solver</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="mesh_circularize_faces_shapeop"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.mesh_circularize_faces_shapeop.html#compas.geometry.mesh_circularize_faces_shapeop">[docs]</a><span class="k">def</span> <span class="nf">mesh_circularize_faces_shapeop</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span>
-                                   <span class="n">fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                   <span class="n">kmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                                   <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                   <span class="n">callback_args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">"""Circularize the faces of a mesh using ShapeOp.</span>
+<span class="c1"># def mesh_circularize_faces_shapeop(mesh,</span>
+<span class="c1">#                                    fixed=None,</span>
+<span class="c1">#                                    kmax=100,</span>
+<span class="c1">#                                    callback=None,</span>
+<span class="c1">#                                    callback_args=None):</span>
+<span class="c1">#     """Circularize the faces of a mesh using ShapeOp.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    mesh : Mesh</span>
-<span class="sd">        A mesh object.</span>
-<span class="sd">    fixed : list, optional [None]</span>
-<span class="sd">        A list of fixed vertices.</span>
-<span class="sd">    kmax : int, optional [100]</span>
-<span class="sd">        The number of iterations.</span>
-<span class="sd">    callback : callable, optional [None]</span>
-<span class="sd">        A user-defined callback that is called after every iteration.</span>
-<span class="sd">    callback_args : list, optional [None]</span>
-<span class="sd">        A list of arguments to be passed to the callback function.</span>
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     mesh : Mesh</span>
+<span class="c1">#         A mesh object.</span>
+<span class="c1">#     fixed : list, optional [None]</span>
+<span class="c1">#         A list of fixed vertices.</span>
+<span class="c1">#     kmax : int, optional [100]</span>
+<span class="c1">#         The number of iterations.</span>
+<span class="c1">#     callback : callable, optional [None]</span>
+<span class="c1">#         A user-defined callback that is called after every iteration.</span>
+<span class="c1">#     callback_args : list, optional [None]</span>
+<span class="c1">#         A list of arguments to be passed to the callback function.</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">    This cicularization algorithm relies on the Python binding of the ShapeOp</span>
-<span class="sd">    library. Installation instructions are available in :mod:`compas.interop`.</span>
+<span class="c1">#     Note</span>
+<span class="c1">#     ----</span>
+<span class="c1">#     This cicularization algorithm relies on the Python binding of the ShapeOp</span>
+<span class="c1">#     library. Installation instructions are available in :mod:`compas.interop`.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt;</span>
+<span class="c1">#     """</span>
+<span class="c1">#     from compas.interop import shapeop</span>
 
-<span class="sd">    """</span>
-    <span class="kn">from</span> <span class="nn">compas.interop</span> <span class="k">import</span> <span class="n">shapeop</span>
+<span class="c1">#     if callback:</span>
+<span class="c1">#         if not callable(callback):</span>
+<span class="c1">#             raise Exception('The callback is not callable.')</span>
 
-    <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">'The callback is not callable.'</span><span class="p">)</span>
+<span class="c1">#     fixed = fixed or []</span>
+<span class="c1">#     fixed = set(fixed)</span>
 
-    <span class="n">fixed</span> <span class="o">=</span> <span class="n">fixed</span> <span class="ow">or</span> <span class="p">[]</span>
-    <span class="n">fixed</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">fixed</span><span class="p">)</span>
+<span class="c1">#     # create a shapeop solver</span>
+<span class="c1">#     solver = shapeop.ShapeOpSolver()</span>
 
-    <span class="c1"># create a shapeop solver</span>
-    <span class="n">solver</span> <span class="o">=</span> <span class="n">shapeop</span><span class="o">.</span><span class="n">ShapeOpSolver</span><span class="p">()</span>
+<span class="c1">#     # make a key-index map</span>
+<span class="c1">#     # and count the number of vertices in the mesh</span>
+<span class="c1">#     key_index = mesh.key_index()</span>
 
-    <span class="c1"># make a key-index map</span>
-    <span class="c1"># and count the number of vertices in the mesh</span>
-    <span class="n">key_index</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
+<span class="c1">#     # get the vertex coordinates</span>
+<span class="c1">#     xyz = mesh.get_vertices_attributes('xyz')</span>
 
-    <span class="c1"># get the vertex coordinates</span>
-    <span class="n">xyz</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">'xyz'</span><span class="p">)</span>
+<span class="c1">#     # set the coordinates in the solver</span>
+<span class="c1">#     solver.set_points(xyz)</span>
 
-    <span class="c1"># set the coordinates in the solver</span>
-    <span class="n">solver</span><span class="o">.</span><span class="n">set_points</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="c1">#     # add a plane constraint to all faces</span>
+<span class="c1">#     for fkey in mesh.faces():</span>
+<span class="c1">#         vertices = [key_index[key] for key in mesh.face_vertices(fkey)]</span>
+<span class="c1">#         solver.add_circle_constraint(vertices, 1.0)</span>
 
-    <span class="c1"># add a plane constraint to all faces</span>
-    <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="n">key_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)]</span>
-        <span class="n">solver</span><span class="o">.</span><span class="n">add_circle_constraint</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="c1">#     # add a closeness constraint to the fixed vertices</span>
+<span class="c1">#     for key in fixed:</span>
+<span class="c1">#         vertex = key_index[key]</span>
+<span class="c1">#         solver.add_closeness_constraint(vertex, 1.0)</span>
 
-    <span class="c1"># add a closeness constraint to the fixed vertices</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">fixed</span><span class="p">:</span>
-        <span class="n">vertex</span> <span class="o">=</span> <span class="n">key_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="n">solver</span><span class="o">.</span><span class="n">add_closeness_constraint</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="c1">#     solver.init()</span>
 
-    <span class="n">solver</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+<span class="c1">#     for k in range(kmax):</span>
+<span class="c1">#         # solve</span>
+<span class="c1">#         solver.solve(1)</span>
+<span class="c1">#         # # update the points array</span>
+<span class="c1">#         points = solver.get_points()</span>
+<span class="c1">#         # update</span>
+<span class="c1">#         for index, (key, attr) in enumerate(mesh.vertices(True)):</span>
+<span class="c1">#             index *= 3</span>
+<span class="c1">#             attr['x'] = points[index + 0]</span>
+<span class="c1">#             attr['y'] = points[index + 1]</span>
+<span class="c1">#             attr['z'] = points[index + 2]</span>
+<span class="c1">#         # callback</span>
+<span class="c1">#         if callback:</span>
+<span class="c1">#             callback(k, callback_args)</span>
 
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">kmax</span><span class="p">):</span>
-        <span class="c1"># solve</span>
-        <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="c1"># # update the points array</span>
-        <span class="n">points</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">get_points</span><span class="p">()</span>
-        <span class="c1"># update</span>
-        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
-            <span class="n">index</span> <span class="o">*=</span> <span class="mi">3</span>
-            <span class="n">attr</span><span class="p">[</span><span class="s1">'x'</span><span class="p">]</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">0</span><span class="p">]</span>
-            <span class="n">attr</span><span class="p">[</span><span class="s1">'y'</span><span class="p">]</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="n">attr</span><span class="p">[</span><span class="s1">'z'</span><span class="p">]</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
-        <span class="c1"># callback</span>
-        <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
-            <span class="n">callback</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">callback_args</span><span class="p">)</span>
-
-    <span class="c1"># clean up</span>
-    <span class="n">solver</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
+<span class="c1">#     # clean up</span>
+<span class="c1">#     solver.delete()</span>
 
 
 <span class="c1"># ==============================================================================</span>
-<span class="c1"># Testing</span>
+<span class="c1"># Main</span>
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
@@ -532,7 +535,7 @@
             
 
             
-                Last updated on Nov 23, 2017.
+                Last updated on Nov 24, 2017.
             
 
             

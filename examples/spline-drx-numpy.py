@@ -63,6 +63,8 @@ plotter.draw_edges()
 plotter.update()
 
 
+# Callback for dynamic visualization
+
 def plot_iterations(k, X, radius=0.005):
     for i in network.vertices():
         x, y, z = X[i, :]
@@ -83,6 +85,6 @@ drx_numpy(network=network,
           callback=plot_iterations)
 
 
-# keep the plot alive
+# Keep the plot alive
 
 plotter.show()

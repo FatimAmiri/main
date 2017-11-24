@@ -35,7 +35,11 @@
 <a accesskey="U" class="breadcrumb-item" href="../../index.html">module code</a>
 </nav>
 <h1>Source code for compas.viewers.volmeshviewer</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="kn">from</span> <span class="nn">OpenGL.GLUT</span> <span class="k">import</span> <span class="o">*</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">from</span> <span class="nn">OpenGL.GLUT</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">OpenGL.GLU</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">OpenGL.GL</span> <span class="k">import</span> <span class="o">*</span>
 
@@ -64,7 +68,7 @@
 
 <div class="viewcode-block" id="VolMeshViewer.display"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.VolMeshViewer.display.html#compas.viewers.VolMeshViewer.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">polygons</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">ckey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">cells_iter</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">ckey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">cells</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">cell_halffaces</span><span class="p">(</span><span class="n">ckey</span><span class="p">):</span>
                 <span class="n">vkeys</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">halfface_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">points</span>      <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">vkey</span><span class="p">)</span> <span class="k">for</span> <span class="n">vkey</span> <span class="ow">in</span> <span class="n">vkeys</span><span class="p">]</span>
@@ -76,7 +80,7 @@
                     <span class="s1">'color.back'</span>  <span class="p">:</span> <span class="n">color_back</span>
                 <span class="p">})</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">edges_iter</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
             <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
                 <span class="s1">'start'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">),</span>
                 <span class="s1">'end'</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">),</span>
@@ -84,7 +88,7 @@
                 <span class="s1">'width'</span><span class="p">:</span> <span class="mf">3.</span>
             <span class="p">})</span>
         <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">vertices_iter</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
             <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
                 <span class="s1">'pos'</span>   <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">),</span>
                 <span class="s1">'size'</span>  <span class="p">:</span> <span class="mf">10.</span><span class="p">,</span>
@@ -118,7 +122,7 @@
 
 
 <span class="c1"># ==============================================================================</span>
-<span class="c1"># Testing</span>
+<span class="c1"># Main</span>
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
@@ -126,7 +130,7 @@
     <span class="kn">import</span> <span class="nn">compas</span>
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">VolMesh</span>
 
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">VolMesh</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'boxes.json'</span><span class="p">))</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">VolMesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'boxes.obj'</span><span class="p">))</span>
 
     <span class="n">viewer</span> <span class="o">=</span> <span class="n">VolMeshViewer</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
     <span class="n">viewer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
@@ -173,7 +177,7 @@
             
 
             
-                Last updated on Nov 23, 2017.
+                Last updated on Nov 24, 2017.
             
 
             

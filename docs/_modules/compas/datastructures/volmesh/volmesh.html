@@ -35,7 +35,11 @@
 <a accesskey="U" class="breadcrumb-item" href="../../../index.html">module code</a>
 </nav>
 <h1>Source code for compas.datastructures.volmesh.volmesh</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="kn">from</span> <span class="nn">ast</span> <span class="k">import</span> <span class="n">literal_eval</span> <span class="k">as</span> <span class="n">_eval</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">from</span> <span class="nn">ast</span> <span class="k">import</span> <span class="n">literal_eval</span> <span class="k">as</span> <span class="n">_eval</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sqrt</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
 
@@ -59,7 +63,6 @@
 
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FromToData</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FromToJson</span>
-<span class="c1"># from compas.datastructures._mixins import MagicMethods</span>
 
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">'Tom Van Mele'</span><span class="p">,</span> <span class="p">]</span>
@@ -562,6 +565,22 @@
     <span class="c1"># info</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
+<div class="viewcode-block" id="VolMesh.number_of_vertices"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.VolMesh.number_of_vertices.html#compas.datastructures.VolMesh.number_of_vertices">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Count the number of vertices in the mesh."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">()))</span></div>
+
+<div class="viewcode-block" id="VolMesh.number_of_edges"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.VolMesh.number_of_edges.html#compas.datastructures.VolMesh.number_of_edges">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Count the number of edges in the mesh."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">()))</span></div>
+
+<div class="viewcode-block" id="VolMesh.number_of_faces"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.VolMesh.number_of_faces.html#compas.datastructures.VolMesh.number_of_faces">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_faces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Count the number of faces in the mesh."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">()))</span></div>
+
+<div class="viewcode-block" id="VolMesh.number_of_cells"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.VolMesh.number_of_cells.html#compas.datastructures.VolMesh.number_of_cells">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Count the number of faces in the mesh."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">()))</span></div>
+
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># accessors</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
@@ -881,7 +900,7 @@
 
 
 <span class="c1"># ==============================================================================</span>
-<span class="c1"># Testing</span>
+<span class="c1"># Main</span>
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
@@ -905,14 +924,9 @@
     <span class="n">viewer</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">z_color</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
 
     <span class="n">viewer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+
+    <span class="n">viewer</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">zoom_out</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>    
     <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-    <span class="c1"># dual = mesh.dual()</span>
-
-    <span class="c1"># viewer = NetworkViewer(dual, 600, 600)</span>
-    <span class="c1"># viewer.grid_on = True</span>
-    <span class="c1"># viewer.setup()</span>
-    <span class="c1"># viewer.show()</span>
 </code></pre></div>
 <!--<nav class="compas-sideways">
                             
@@ -955,7 +969,7 @@
             
 
             
-                Last updated on Nov 23, 2017.
+                Last updated on Nov 24, 2017.
             
 
             

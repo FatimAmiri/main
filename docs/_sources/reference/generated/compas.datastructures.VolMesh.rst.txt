@@ -70,6 +70,10 @@ VolMesh
       ~VolMesh.halfface_cell
       ~VolMesh.halfface_edges
       ~VolMesh.halfface_vertices
+      ~VolMesh.number_of_cells
+      ~VolMesh.number_of_edges
+      ~VolMesh.number_of_faces
+      ~VolMesh.number_of_vertices
       ~VolMesh.planes
       ~VolMesh.scale
       ~VolMesh.set_edge_attribute

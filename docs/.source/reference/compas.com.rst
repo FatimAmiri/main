@@ -8,9 +8,6 @@ com
 .. module:: compas.com
 
 
-Interface(s) for communication with external software.
-
-
 Matlab
 ======
 

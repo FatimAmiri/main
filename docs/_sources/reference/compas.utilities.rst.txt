@@ -47,7 +47,8 @@ datetime
     :toctree: generated/
     :nosignatures:
 
-    timestamp
+
+.. timestamp
 
 
 itertools
