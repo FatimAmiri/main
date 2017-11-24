@@ -17,9 +17,9 @@ References
                 *Bending incorporated: designing tension structures by integrating bending-active elements*,
                 Proceedings of Tensinet Symposium 2013,Istanbul, Turkey, 2013.
 
-.. [andreassen2011]_ Andreassen E., Clausen A., Schevenels M., Lazarov B. S. and Sigmund O.,
-                     *Efficient topology optimization in MATLAB using 88 lines of code*,
-                     Structural and Multidisciplinary Optimization, 43:1-16, Springer, 2011.
+.. [andreassen2011] Andreassen E., Clausen A., Schevenels M., Lazarov B. S. and Sigmund O.,
+                    *Efficient topology optimization in MATLAB using 88 lines of code*,
+                    Structural and Multidisciplinary Optimization, 43:1-16, Springer, 2011.
 
 
 Links

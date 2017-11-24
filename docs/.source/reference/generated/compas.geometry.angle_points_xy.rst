@@ -1,6 +1,6 @@
-Spline.__init__
+angle_points_xy
 ===============================
 
 .. currentmodule:: compas.geometry
 
-.. automethod:: Spline.__init__
+.. autofunction:: angle_points_xy
