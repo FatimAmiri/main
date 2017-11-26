@@ -49,25 +49,25 @@ sub-packages.
 
 * infrastructure/helpers
   
-  * compas.com: communication with external software
-  * compas.files: handlers for file formats related to geometry definition, cad interoperability, manufacturing
-  * compas.interop: interoperability with C/C++ code and libraries
-  * compas.utilities: other useful things
+  * :mod:`compas.com`: communication with external software
+  * :mod:`compas.files`: handlers for file formats related to geometry definition, cad interoperability, manufacturing
+  * :mod:`compas.interop`: interoperability with C/C++ code and libraries
+  * :mod:`compas.utilities`: other useful things
 
 * datastructures
   
-  * compas.datastructures: mesh (half-edge), network (graph), volmesh (half-plane)
+  * :mod:`compas.datastructures`: mesh (half-edge), network (graph), volmesh (half-plane)
 
 * algorithms
   
-  * compas.geometry: geometry processing
-  * compas.numerical: numerical methods, solvers, ...
-  * compas.topology: combinatorics, traversal, subdivision, ...
+  * :mod:`compas.geometry`: geometry processing
+  * :mod:`compas.numerical`: numerical methods, solvers, ...
+  * :mod:`compas.topology`: combinatorics, traversal, subdivision, ...
 
 * visualisation
 
-  * compas.plotters: 2D visualisation, dynamic plots, basic interaction
-  * compas.viewers: basic 3D visualisation
+  * :mod:`compas.plotters`: 2D visualisation, dynamic plots, basic interaction
+  * :mod:`compas.viewers`: basic 3D visualisation
 
 
 CAD integration
