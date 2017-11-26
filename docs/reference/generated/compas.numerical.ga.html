@@ -51,7 +51,98 @@
 <dl class="function">
 <dt id="compas.numerical.ga">
 <code class="descclassname">compas.numerical.</code><code class="descname">ga</code><span class="sig-paren">(</span><em>fit_function</em>, <em>fit_type</em>, <em>num_var</em>, <em>boundaries</em>, <em>num_gen=100</em>, <em>num_pop=100</em>, <em>num_elite=10</em>, <em>mutation_probability=0.001</em>, <em>num_bin_dig=None</em>, <em>num_pop_init=None</em>, <em>num_gen_init_pop=None</em>, <em>start_from_gen=False</em>, <em>min_fit=None</em>, <em>fit_name=None</em>, <em>fargs=None</em>, <em>fkwargs=None</em>, <em>output_path=None</em>, <em>input_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../modules/compas/numerical/solvers/ga.html#ga"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
+<dd><p>Genetic Algorithm optimisation <a class="reference internal" href="../../bibliography.html#holland1975" id="id1">[holland1975]</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fit_function</strong> (<em>callable</em>) – The function used by the :class’GA’ to determine the fitness value. The function
+must have as a first argument a list of variables that determine the
+fitness value. Other arguments and keyword arguments can be used to feed
+the function relevant data.</p></li>
+<li><p><strong>fit_type</strong> (<em>str</em>) – String that indicates if the fitness function is to be minimized or maximized.
+“min” for minimization and “max” for maximization.</p></li>
+<li><p><strong>num_var</strong> (<em>int</em>) – The number of variables used by the fitness function.</p></li>
+<li><p><strong>boundaries</strong> (<em>list</em>) – The minimum and vaximum values each variable is allowed to have. Must be
+a <code class="docutils literal">num_var</code> long list of tuples in the form [(min, max),…].</p></li>
+<li><p><strong>num_gen</strong> (<em>int, optional [100]</em>) – The maximum number of generations.</p></li>
+<li><p><strong>num_pop</strong> (<em>int, optional [100]</em>) – The number of individuals in the population. Must be an even number.</p></li>
+<li><p><strong>num_elite</strong> (<em>int, optional [10]</em>) – The number of individuals in the elite population. Must be an even number.</p></li>
+<li><p><strong>mutation_probablity</strong> (<em>float, optional [0.001]</em>) – Float from 0 to 1. If 0 is used, none of the genes in each individuals
+chromosome will be mutated. If 1 is used, all of them will mutate.</p></li>
+<li><p><strong>num_bin_dig</strong> (<em>list, optional [None]</em>) – Number of genes used to codify each variable. Must be a <code class="docutils literal">num_var</code> long
+list of intergers. If None is given, each variable will be coded with a
+8 digit binary number, corresponding to 256 steps.</p></li>
+<li><p><strong>num_pop_init</strong> (<em>int, optional [None]</em>) – The number of individuals in the population for the first <code class="docutils literal">num_gen_init_pop</code>
+generations.</p></li>
+<li><p><strong>num_gen_init_pop</strong> (<em>int, optional</em>) – The number of generations to keep a <code class="docutils literal">num_pop_init</code> size population for.</p></li>
+<li><p><strong>start_from_get</strong> (<em>int, optional [None]</em>) – The generation number to restart a previous optimization process.</p></li>
+<li><p><strong>min_fit</strong> (<em>float, optional [None]</em>) – A target fitness value. If the GA finds a solution with a fitness value
+equal or better than <code class="docutils literal">min_fit</code>, the optimization is stopped.</p></li>
+<li><p><strong>fit_name</strong> (<em>str, optional [None]</em>) – The name of the optimisation. If None is given, the name of the fitness
+function is used.</p></li>
+<li><p><strong>fargs</strong> (<em>list, optional [None]</em>) – Arguments fo be fed to the fitness function.</p></li>
+<li><p><strong>fkwargs</strong> (<em>dict, optional [None]</em>) – Keyword arguments to be fed to the fitness function.</p></li>
+<li><p><strong>output_path</strong> (<em>str, optional [None]</em>) – Path for the optimization result files.</p></li>
+<li><p><strong>input_path</strong> (<em>str, optional [None]</em>) – Path to the fitness function file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ga_</strong> (<em>object</em>) – The resulting :class’GA’ instance.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">from</span> <span class="nn">compas.numerical.solvers.ga</span> <span class="kn">import</span> <span class="n">ga</span>
+
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fit</span>
+
+<span class="n">fit_function</span> <span class="o">=</span> <span class="n">foo</span>
+<span class="n">fit_type</span> <span class="o">=</span> <span class="s1">'min'</span>
+<span class="n">num_var</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">boundaries</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">*</span> <span class="n">num_var</span>
+<span class="n">num_bin_dig</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_var</span>
+<span class="n">output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">TEMP</span><span class="p">,</span> <span class="s1">'ga_out/'</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_path</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+
+<span class="n">ga</span> <span class="o">=</span> <span class="n">ga</span><span class="p">(</span><span class="n">fit_function</span><span class="p">,</span>
+        <span class="n">fit_type</span><span class="p">,</span>
+        <span class="n">num_var</span><span class="p">,</span>
+        <span class="n">boundaries</span><span class="p">,</span>
+        <span class="n">num_gen</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">num_pop</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">num_elite</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+        <span class="n">num_bin_dig</span><span class="o">=</span><span class="n">num_bin_dig</span><span class="p">,</span>
+        <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">,</span>
+        <span class="n">min_fit</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><code class="language-python border rounded"><span></span>================================================================================
+GA summary
+================================================================================
+
+- fitness function name: foo
+
+- fitnes function type : min
+
+- number of generations : 100
+
+- number of individuals : 100
+
+- number of variables : 10
+
+- optimal individual : 31
+
+- optimal fitness value : 0.0705882352941
+
+================================================================================
+</code></pre></div>
+
+</dd></dl>
 </div>
 <!--<nav class="compas-sideways">
                             
@@ -120,7 +211,7 @@
             
 
             
-                Last updated on Nov 24, 2017.
+                Last updated on Nov 26, 2017.
             
 
             

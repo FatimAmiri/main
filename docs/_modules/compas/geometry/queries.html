@@ -60,6 +60,8 @@
 <span class="kn">from</span> <span class="nn">compas.geometry.distance</span> <span class="k">import</span> <span class="n">distance_point_line_xy</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.distance</span> <span class="k">import</span> <span class="n">closest_point_on_segment</span>
 
+<span class="kn">from</span> <span class="nn">compas.geometry.size</span> <span class="k">import</span> <span class="n">area_triangle</span>
+
 <span class="kn">from</span> <span class="nn">compas.geometry.angles</span> <span class="k">import</span> <span class="n">angle_vectors</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.average</span> <span class="k">import</span> <span class="n">center_of_mass_polygon</span>
 
@@ -103,7 +105,7 @@
 
 <div class="viewcode-block" id="is_ccw_xy"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.is_ccw_xy.html#compas.geometry.is_ccw_xy">[docs]</a><span class="k">def</span> <span class="nf">is_ccw_xy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">colinear</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">"""Verify if ``c`` is on the left of ``ab`` when looking from ``a`` to ``b``,</span>
-<span class="sd">    and assuming that all points lie in the XY plane.</span>
+<span class="sd">    and assuming that all points lie in the XY plane [marsh2017]_.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -137,10 +139,6 @@
 <span class="sd">    &gt;&gt;&gt; print(is_ccw_xy([0,0,0], [1,0,0], [2,0,0], True))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    References</span>
-<span class="sd">    ----------</span>
-<span class="sd">    https://www.toptal.com/python/computational-geometry-in-python-from-theory-to-implementation</span>
-
 <span class="sd">    """</span>
     <span class="n">ab_x</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">ab_y</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -171,11 +169,28 @@
 <span class="sd">        ``False`` otherwise.</span>
 
 <span class="sd">    """</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+    <span class="k">return</span> <span class="n">area_triangle</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">1e-9</span></div>
 
 
 <div class="viewcode-block" id="is_colinear_xy"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.is_colinear_xy.html#compas.geometry.is_colinear_xy">[docs]</a><span class="k">def</span> <span class="nf">is_colinear_xy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-    <span class="sd">""""""</span>
+    <span class="sd">"""Verify if three points are colinear in the XY plane.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a : tuple, list, Point</span>
+<span class="sd">        Point 1.</span>
+<span class="sd">    b : tuple, list, Point</span>
+<span class="sd">        Point 2.</span>
+<span class="sd">    c : tuple, list, Point</span>
+<span class="sd">        Point 3.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        ``True`` if the points are collinear</span>
+<span class="sd">        ``False`` otherwise.</span>
+
+<span class="sd">    """</span>
     <span class="n">ab_x</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">ab_y</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">ac_x</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -343,7 +358,7 @@
 
 <span class="sd">    """</span>
     <span class="k">return</span> <span class="n">dot_vectors</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">plane</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">plane</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.0</span></div>
-    
+
 
 
 <div class="viewcode-block" id="is_point_on_line"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.is_point_on_line.html#compas.geometry.is_point_on_line">[docs]</a><span class="k">def</span> <span class="nf">is_point_on_line</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
@@ -589,7 +604,7 @@
 <span class="sd">    colinear : bool, optional</span>
 <span class="sd">        Allow points to be colinear.</span>
 <span class="sd">        Default is ``False``.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    bool</span>
@@ -671,6 +686,16 @@
 
 
 <div class="viewcode-block" id="is_point_in_circle"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.is_point_in_circle.html#compas.geometry.is_point_in_circle">[docs]</a><span class="k">def</span> <span class="nf">is_point_in_circle</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">circle</span><span class="p">):</span>
+    <span class="sd">"""Verify if a point lies in a circle.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        point (sequence of float): XYZ coordinates of a 3D point.</span>
+<span class="sd">        circle (tuple): center, radius, normal</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (bool): True if the point lies in the circle, False otherwise.</span>
+
+<span class="sd">    """</span>
     <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">normal</span> <span class="o">=</span> <span class="n">circle</span>
     <span class="k">if</span> <span class="n">is_point_on_plane</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">normal</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">distance_point_point</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">center</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">radius</span>
@@ -957,7 +982,7 @@
             
 
             
-                Last updated on Nov 24, 2017.
+                Last updated on Nov 26, 2017.
             
 
             

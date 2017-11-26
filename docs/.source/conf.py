@@ -21,7 +21,7 @@
 # sys.path.insert(0, os.path.abspath('.'))
 
 
-import sphinx_rtd_theme
+# import sphinx_rtd_theme
 # import sphinx_bootstrap_theme
 
 
@@ -135,9 +135,9 @@ plot_html_show_formats = False
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-# html_theme = 'basic'
-html_theme = 'sphinx_rtd_theme'
+
+html_theme = 'basic'
+# html_theme = 'sphinx_rtd_theme'
 
 # html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
