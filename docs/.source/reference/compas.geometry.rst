@@ -87,6 +87,9 @@ This package provides an object-oriented interface to the above functionality.
 Functions
 =========
 
+Basic
+-----
+
 .. autosummary::
     :toctree: generated/
     :nosignatures:
@@ -142,7 +145,8 @@ Functions
     pointcloud_xy
 
 
-**Distance**
+Distance
+--------
 
 .. autosummary::
     :toctree: generated/
@@ -168,7 +172,8 @@ Functions
     distance_point_point_sqrd
     distance_point_point_sqrd_xy
 
-**Angles**
+Angles
+------
 
 .. note::
 
@@ -189,7 +194,8 @@ Functions
     angles_vectors_xy
 
 
-**Average**
+Average
+-------
 
 .. autosummary::
     :toctree: generated/
@@ -206,7 +212,8 @@ Functions
     midpoint_point_point_xy
 
 
-**Orientation**
+Orientation
+-----------
 
 .. autosummary::
     :toctree: generated/
@@ -217,7 +224,8 @@ Functions
     normal_triangle_xy
 
 
-**Queries**
+Queries
+-------
 
 .. autosummary::
     :toctree: generated/
@@ -252,7 +260,8 @@ Functions
     is_point_in_triangle_xy
 
 
-**Intersections**
+Intersections
+-------------
 
 .. autosummary::
     :toctree: generated/
@@ -269,7 +278,8 @@ Functions
     intersection_segment_plane
 
 
-**Size**
+Size
+----
 
 .. autosummary::
     :toctree: generated/
@@ -282,7 +292,8 @@ Functions
     volume_polyhedron
 
 
-**Transformations**
+Transformations
+---------------
 
 .. autosummary::
     :toctree: generated/

@@ -13,7 +13,7 @@ datastructures
 Mesh
 ====
 
-:class:`compas.datastructure.Mesh` is implemented as a half-edge datastructure.
+:class:`compas.datastructures.Mesh` is implemented as a half-edge datastructure.
 It is meant for the representation of polygonal *"surface"* meshes. A mesh can be
 connected or disconnected. A mesh can be closed or open. A mesh can be comprised
 of only vertices.

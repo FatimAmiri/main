@@ -26,13 +26,6 @@ ShapeOp
 
     shapeop.ShapeOpSolver
 
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    shapeop.int_array
-    shapeop.float_array
-
 
 Core
 ====
