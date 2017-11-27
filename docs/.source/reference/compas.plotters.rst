@@ -9,9 +9,9 @@ plotters
 :mod:`compas.plotters` wraps the Matplotlib plotting library to create a
 two-dimensional visualization toolbox geared towards the datastructures, dynamic
 visualization of algorithm progress, and simple user interaction. The plotting
-package is built around Matplotlib.
+package is built around `Matplotlib`_.
 
-* Matplotlib: https://matplotlib.org/
+.. _Matplotlib: https://matplotlib.org/
 
 
 .. autosummary::

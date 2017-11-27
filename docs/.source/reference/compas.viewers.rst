@@ -6,12 +6,11 @@ viewers
 
 .. module:: compas.viewers
 
-.. note::
+:mod:`compas.viewers` wraps `PyOpenGL`_ and `PySide`_ to provide three-dimensional
+viewers with basic visualization and user interaction capabilities.
 
-    The viewers package is built around PyOpenGL and PySide(2).
-
-    * PyOpenGL: http://pyopengl.sourceforge.net/
-    * PySide: http://pyside.github.io/docs/pyside/index.html
+.. _PyOpenGL: http://pyopengl.sourceforge.net
+.. _PySide: http://pyside.github.io/docs/pyside/index.html
 
 
 .. autosummary::

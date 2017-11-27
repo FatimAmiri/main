@@ -14,11 +14,11 @@ hpc
 
 :mod:`compas.hpc` is a high-performance computing library, which provides
 GPU-accelerated or JIT-compiled versions of many geometry, numerical and topological
-functions and algorithms. The package id built around Numba, PyCuda and PyOpenCL:
+functions and algorithms. The package id built around `Numba`_, `PyCuda`_ and `PyOpenCL`_.
 
-* Numba: https://numba.pydata.org/
-* PyCuda: https://mathema.tician.de/software/pycuda/
-* PyOpenCL: https://mathema.tician.de/software/pyopencl/
+.. _Numba: https://numba.pydata.org/
+.. _PyCuda: https://mathema.tician.de/software/pycuda/
+.. _PyOpenCL: https://mathema.tician.de/software/pyopencl/
 
 
 algorithms

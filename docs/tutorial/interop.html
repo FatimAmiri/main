@@ -69,7 +69,6 @@ implementation of the code in this tutorial is available in the geometry package
     <span class="o">-</span> <span class="n">smoothing</span><span class="o">.</span><span class="n">so</span>
     <span class="o">-</span> <span class="n">smoothing</span><span class="o">.</span><span class="n">py</span>
 </code></pre></div>
-
 </div>
 <div class="section">
 <h2>The smoothing function</h2>
@@ -142,7 +141,6 @@ I would be happy to hear about any and all suggestions (<a class="reference exte
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-
 </div>
 <div class="section">
 <h2>The <code class="docutils literal">ctypes</code> wrapper</h2>
@@ -259,29 +257,24 @@ to something like this:</p>
 
 <span class="c1"># ==============================================================================</span>
 </code></pre></div>
-
 <div class="section">
 <h3>C-compatible types and data</h3>
 <p>Some of these conversion are quite trivial. For example, converting an integer is simply:</p>
 <div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">c_v</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Also the 1D arrays are not too complicated. For example:</p>
 <div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">c_fixed_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span> <span class="o">*</span> <span class="n">v</span>
 <span class="n">c_fixed_data</span> <span class="o">=</span> <span class="n">c_fixed_type</span><span class="p">(</span><span class="o">*</span><span class="n">fixed</span><span class="p">)</span>
 </code></pre></div>
-
 <p>The 2D arrays are already a bit trickier. For example:</p>
 <div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">c_vertex_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span> <span class="o">*</span> <span class="mi">3</span>
 <span class="n">c_vertices_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span>
 <span class="n">c_vertices_data</span> <span class="o">=</span> <span class="n">c_vertices_type</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">c_vertex_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">])</span>
 </code></pre></div>
-
 <p>Converting the callback is also quite straightforward:</p>
 <div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">c_callback_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">c_int</span><span class="p">)</span>
 <span class="n">c_callback</span> <span class="o">=</span> <span class="n">c_callback_type</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
 </code></pre></div>
-
 <p>To simplify the construction of C-compatible types, and C-compatible data,
 there are a few helper classes in <a class="reference internal" href="../reference/compas.interop.html#module-compas.interop" title="compas.interop"><code class="xref py py-mod docutils literal">compas.interop</code></a>:</p>
 <ul class="simple">
@@ -302,7 +295,6 @@ there are a few helper classes in <a class="reference internal" href="../referen
 
 <span class="c1"># ==============================================================================</span>
 </code></pre></div>
-
 <p>Then we let the smoothing function what it can expect in terms of types by setting
 the argument types of the callable:</p>
 <div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="c1"># ==============================================================================</span>
@@ -332,7 +324,6 @@ the argument types of the callable:</p>
 
 <span class="c1"># ==============================================================================</span>
 </code></pre></div>
-
 <p>The last step is to define the functionality of the callback.
 The goal is to visualise the changing geometry
 and to change the location of the fixed points
@@ -364,7 +355,6 @@ during the smoothing process; in C++, but from Python.</p>
 
 <span class="c1"># ==============================================================================</span>
 </code></pre></div>
-
 </div>
 </div>
 <div class="section">
@@ -488,7 +478,6 @@ during the smoothing process; in C++, but from Python.</p>
 
 <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
-
 </div>
 <div class="section">
 <h2>CAD environments</h2>
@@ -565,7 +554,6 @@ but uses <code class="xref py py-func docutils literal">compas.geometry.smooth_c
 <span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
 <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
 </code></pre></div>
-
 </div>
 </div>
 <!--<nav class="compas-sideways">
