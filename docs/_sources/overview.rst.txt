@@ -12,11 +12,11 @@ Overview
 .. geometric models, for visualizing and interacting with :mod:`compas` datastructures,
 .. and for ...
 
-The main library consists of a core package and several additional
-packages for integration of the core functionality in CAD software. The core package
-defines all *real* functionality. The CAD packages simply provide a unified framework
-for processing, visualising, and interacting with datastructures and geometrical
-objects, and for building user interfaces in different CAD software.
+The main library consists of a core package and several additional packages for
+integration of the core into CAD software. The core package defines all *real*
+functionality. The CAD packages simply provide a unified framework for processing,
+visualising and interacting with datastructures and geometrical objects, and for
+building user interfaces in different CAD software.
 
 
 Core functionality
@@ -32,6 +32,7 @@ platforms and in combination with external software and libraries, and at the sa
 time take advantage of the various scientific and non-scientific libraries available
 in the Python ecosystem itself. Furthermore, and perhaps more importantly, it ensures
 that research based on **compas** is not tied to a specific CAD-based ecosystem.
+
 Currently **compas** contains several sub-packages, which can be divided into four
 sub-packages.
 
@@ -46,6 +47,7 @@ sub-packages.
 .. * :mod:`compas.topology`: implements ...
 .. * :mod:`compas.utilities`: provides a wide range of, well, utility functions.
 .. * :mod:`compas.viewers`: wraps PyOpenGL and PySide to provide three-dimensional viewers with basic visualization and user interaction capabilities.
+
 
 **infrastructure/helpers**
   

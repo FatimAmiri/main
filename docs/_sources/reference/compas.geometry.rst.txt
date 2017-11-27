@@ -7,21 +7,22 @@ geometry
 
 .. currentmodule:: compas.geometry
 
-.. note::
+:mod:`compas.geometry` provides functionality for working with geometry outside
+independent of CAD software.
 
-    The functions in this package expect input arguments to be structured in a certain
-    way.
+The functions in this package expect input arguments
+to be structured in a certain way.
 
-    - **point**: The xyz coordinates as a sequence of floats.
-    - **vector**: The xyz coordinates of the end point. The start is always the origin.
-    - **line**: A tuple with two points representing a continuous line (ray).
-    - **segment**: A tuple with two points representing a line segment.
-    - **plane**: A tuple with a base point and normal vector.
-    - **circle**: A tuple with a point the normal vector of the plane of the circle and the radius as float.
-    - **polygon**: A sequence of points. First and last are not the same. The polygon is assumed closed.
-    - **polyline**: A sequence of points. First and last are the same if the polyline is closed. Otherwise it is assumed open.
-    - **polyhedron**: A list of vertices represented by their XYZ coordinates and a list of faces referencing the vertex list.
-    - **frame**: A list of three orthonormal vectors.
+- **point**: The xyz coordinates as a sequence of floats.
+- **vector**: The xyz coordinates of the end point. The start is always the origin.
+- **line**: A tuple with two points representing a continuous line (ray).
+- **segment**: A tuple with two points representing a line segment.
+- **plane**: A tuple with a base point and normal vector.
+- **circle**: A tuple with a point the normal vector of the plane of the circle and the radius as float.
+- **polygon**: A sequence of points. First and last are not the same. The polygon is assumed closed.
+- **polyline**: A sequence of points. First and last are the same if the polyline is closed. Otherwise it is assumed open.
+- **polyhedron**: A list of vertices represented by their XYZ coordinates and a list of faces referencing the vertex list.
+- **frame**: A list of three orthonormal vectors.
 
 
 Algorithms

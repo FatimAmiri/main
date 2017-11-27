@@ -7,6 +7,8 @@ com
 
 .. module:: compas.com
 
+:mode:`compas.com` provides functionality for communicating with external software.
+
 
 Matlab
 ======

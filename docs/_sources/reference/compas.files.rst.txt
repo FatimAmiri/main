@@ -7,10 +7,10 @@ files
 
 .. module:: compas.files
 
-.. warning::
+:mod:`compas.files` provides support for file types related to geometry definition,
+manufacturing processes, CAD interoperability, ...
 
-    The functionality of this package is experimental and subject to frequent change.
-    For now, don't use it for anything important :)
+*under construction...*
 
 
 amf

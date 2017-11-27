@@ -13,6 +13,10 @@ interop
     For now, don't use it for anything important :)
 
 
+:mod:`compas.interop`: includes utility functions for seamless integration of C
+and C++ code, and wrappers for external libraries.
+
+
 ShapeOp
 =======
 
