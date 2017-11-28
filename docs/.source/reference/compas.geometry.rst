@@ -1,10 +1,11 @@
+
 .. _compas.geometry:
 
 ********************************************************************************
 geometry
 ********************************************************************************
 
-.. currentmodule:: compas.geometry
+.. module:: compas.geometry
 
 :mod:`compas.geometry` provides functionality for working with geometry outside
 independent of CAD software.
