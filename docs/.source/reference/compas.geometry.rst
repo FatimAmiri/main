@@ -8,10 +8,8 @@ geometry
 .. module:: compas.geometry
 
 :mod:`compas.geometry` provides functionality for working with geometry outside
-independent of CAD software.
-
-The functions in this package expect input arguments
-to be structured in a certain way.
+independent of CAD software. The functions in this package expect input arguments
+to be structured in a certain way:
 
 - **point**: The xyz coordinates as a sequence of floats.
 - **vector**: The xyz coordinates of the end point. The start is always the origin.
