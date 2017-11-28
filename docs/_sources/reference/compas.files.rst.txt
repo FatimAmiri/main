@@ -10,8 +10,6 @@ files
 :mod:`compas.files` provides support for file types related to geometry definition,
 manufacturing processes, CAD interoperability, ...
 
-*under construction...*
-
 
 amf
 ===
