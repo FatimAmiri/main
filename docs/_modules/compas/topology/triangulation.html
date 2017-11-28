@@ -91,37 +91,52 @@
 
 
 <div class="viewcode-block" id="delaunay_from_points"><a class="viewcode-back" href="../../../reference/generated/compas.topology.delaunay_from_points.html#compas.topology.delaunay_from_points">[docs]</a><span class="k">def</span> <span class="nf">delaunay_from_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">holes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tiny</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">):</span>
-    <span class="sd">"""Computes the delaunay triangulation for a list of points [sloan1987]_.</span>
+    <span class="sd">"""Computes the delaunay triangulation for a list of points.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        points (sequence of tuple): XYZ coordinates of the original points.</span>
-<span class="sd">        boundary (sequence of tuples): list of ordered points describing the outer boundary (optional)</span>
-<span class="sd">        holes (list of sequences of tuples): list of polygons (ordered points describing internal holes (optional)</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points : sequence of tuple</span>
+<span class="sd">        XYZ coordinates of the original points.</span>
+<span class="sd">    boundary : sequence of tuples</span>
+<span class="sd">        list of ordered points describing the outer boundary (optional)</span>
+<span class="sd">    holes : list of sequences of tuples</span>
+<span class="sd">        list of polygons (ordered points describing internal holes (optional)</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        Mesh: A mesh object.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        A mesh object.</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    For more info, see [1]_.</span>
 
-<span class="sd">        .. plot::</span>
-<span class="sd">            :include-source:</span>
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Sloan, S. W., 1987 *A fast algorithm for constructing Delaunay triangulations in the plane*</span>
+<span class="sd">           Advances in Engineering Software 9(1): 34-55, 1978.</span>
 
-<span class="sd">            from compas.geometry import pointcloud_xy</span>
-<span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.topology import delaunay_from_points</span>
-<span class="sd">            from compas.plotters import MeshPlotter</span>
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
 
-<span class="sd">            points = pointcloud_xy(10, (0, 10))</span>
-<span class="sd">            faces = delaunay_from_points(points)</span>
+<span class="sd">        from compas.geometry import pointcloud_xy</span>
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas.topology import delaunay_from_points</span>
+<span class="sd">        from compas.plotters import MeshPlotter</span>
 
-<span class="sd">            delaunay = Mesh.from_vertices_and_faces(points, faces)</span>
+<span class="sd">        points = pointcloud_xy(10, (0, 10))</span>
+<span class="sd">        faces = delaunay_from_points(points)</span>
 
-<span class="sd">            plotter = MeshPlotter(delaunay)</span>
+<span class="sd">        delaunay = Mesh.from_vertices_and_faces(points, faces)</span>
 
-<span class="sd">            plotter.draw_vertices(radius=0.1)</span>
-<span class="sd">            plotter.draw_faces()</span>
+<span class="sd">        plotter = MeshPlotter(delaunay)</span>
 
-<span class="sd">            plotter.show()</span>
+<span class="sd">        plotter.draw_vertices(radius=0.1)</span>
+<span class="sd">        plotter.draw_faces()</span>
+
+<span class="sd">        plotter.show()</span>
 
 <span class="sd">    """</span>
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
@@ -247,58 +262,66 @@
 <div class="viewcode-block" id="voronoi_from_delaunay"><a class="viewcode-back" href="../../../reference/generated/compas.topology.voronoi_from_delaunay.html#compas.topology.voronoi_from_delaunay">[docs]</a><span class="k">def</span> <span class="nf">voronoi_from_delaunay</span><span class="p">(</span><span class="n">delaunay</span><span class="p">):</span>
     <span class="sd">"""Construct the Voronoi dual of the triangulation of a set of points.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        delaunay</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    delaunay : Mesh</span>
+<span class="sd">        A delaunay mesh.</span>
 
-<span class="sd">    Warning:</span>
-<span class="sd">        This function does not work properly if all vertices of the delaunay</span>
-<span class="sd">        are on the boundary.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        The corresponding voronoi mesh.</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Warning</span>
+<span class="sd">    -------</span>
+<span class="sd">    This function does not work properly if all vertices of the delaunay</span>
+<span class="sd">    are on the boundary.</span>
 
-<span class="sd">        .. plot::</span>
-<span class="sd">            :include-source:</span>
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
 
-<span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.topology import trimesh_remesh</span>
-<span class="sd">            from compas.topology import delaunay_from_points</span>
-<span class="sd">            from compas.topology import voronoi_from_delaunay</span>
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas.topology import trimesh_remesh</span>
+<span class="sd">        from compas.topology import delaunay_from_points</span>
+<span class="sd">        from compas.topology import voronoi_from_delaunay</span>
 
-<span class="sd">            from compas.geometry import pointcloud_xy</span>
+<span class="sd">        from compas.geometry import pointcloud_xy</span>
 
-<span class="sd">            from compas.plotters import MeshPlotter</span>
+<span class="sd">        from compas.plotters import MeshPlotter</span>
 
-<span class="sd">            points = pointcloud_xy(10, (0, 10))</span>
-<span class="sd">            faces = delaunay_from_points(points)</span>
-<span class="sd">            delaunay = Mesh.from_vertices_and_faces(points, faces)</span>
+<span class="sd">        points = pointcloud_xy(10, (0, 10))</span>
+<span class="sd">        faces = delaunay_from_points(points)</span>
+<span class="sd">        delaunay = Mesh.from_vertices_and_faces(points, faces)</span>
 
-<span class="sd">            trimesh_remesh(delaunay, 1.0, allow_boundary_split=True)</span>
+<span class="sd">        trimesh_remesh(delaunay, 1.0, allow_boundary_split=True)</span>
 
-<span class="sd">            points = [delaunay.vertex_coordinates(key) for key in delaunay.vertices()]</span>
-<span class="sd">            faces = delaunay_from_points(points)</span>
-<span class="sd">            delaunay = Mesh.from_vertices_and_faces(points, faces)</span>
+<span class="sd">        points = [delaunay.vertex_coordinates(key) for key in delaunay.vertices()]</span>
+<span class="sd">        faces = delaunay_from_points(points)</span>
+<span class="sd">        delaunay = Mesh.from_vertices_and_faces(points, faces)</span>
 
-<span class="sd">            voronoi  = voronoi_from_delaunay(delaunay)</span>
+<span class="sd">        voronoi  = voronoi_from_delaunay(delaunay)</span>
 
-<span class="sd">            lines = []</span>
-<span class="sd">            for u, v in voronoi.edges():</span>
-<span class="sd">                lines.append({</span>
-<span class="sd">                    'start': voronoi.vertex_coordinates(u, 'xy'),</span>
-<span class="sd">                    'end'  : voronoi.vertex_coordinates(v, 'xy'),</span>
-<span class="sd">                    'width': 1.0</span>
-<span class="sd">                })</span>
+<span class="sd">        lines = []</span>
+<span class="sd">        for u, v in voronoi.edges():</span>
+<span class="sd">            lines.append({</span>
+<span class="sd">                'start': voronoi.vertex_coordinates(u, 'xy'),</span>
+<span class="sd">                'end'  : voronoi.vertex_coordinates(v, 'xy'),</span>
+<span class="sd">                'width': 1.0</span>
+<span class="sd">            })</span>
 
-<span class="sd">            plotter = MeshPlotter(delaunay, figsize=(10, 6))</span>
+<span class="sd">        plotter = MeshPlotter(delaunay, figsize=(10, 6))</span>
 
-<span class="sd">            plotter.draw_lines(lines)</span>
+<span class="sd">        plotter.draw_lines(lines)</span>
 
-<span class="sd">            plotter.draw_vertices(</span>
-<span class="sd">                radius=0.075,</span>
-<span class="sd">                facecolor={key: '#0092d2' for key in delaunay.vertices() if key not in delaunay.vertices_on_boundary()})</span>
+<span class="sd">        plotter.draw_vertices(</span>
+<span class="sd">            radius=0.075,</span>
+<span class="sd">            facecolor={key: '#0092d2' for key in delaunay.vertices() if key not in delaunay.vertices_on_boundary()})</span>
 
-<span class="sd">            plotter.draw_edges(color='#cccccc')</span>
+<span class="sd">        plotter.draw_edges(color='#cccccc')</span>
 
-<span class="sd">            plotter.show()</span>
+<span class="sd">        plotter.show()</span>
 
 <span class="sd">    """</span>
     <span class="n">voronoi</span> <span class="o">=</span> <span class="n">mesh_dual</span><span class="p">(</span><span class="n">delaunay</span><span class="p">)</span>
@@ -326,7 +349,7 @@
                    <span class="n">fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">callback_args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">"""Remesh until all edges have a specified target length [botsch2004]_.</span>
+    <span class="sd">"""Remesh until all edges have a specified target length.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -374,6 +397,14 @@
 
 <span class="sd">    The minimum and maximum lengths are calculated based on a desired target</span>
 <span class="sd">    length.</span>
+
+<span class="sd">    For more info, see [1]_.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Botsch, M. &amp; Kobbelt, L., 2004. *A remeshing approach to multiresolution modeling*.</span>
+<span class="sd">           Proceedings of the 2004 Eurographics/ACM SIGGRAPH symposium on Geometry processing - SGP '04, p.185.</span>
+<span class="sd">           Available at: http://portal.acm.org/citation.cfm?doid=1057432.1057457.</span>
 
 <span class="sd">    Warning</span>
 <span class="sd">    -------</span>
@@ -696,7 +727,7 @@
             
 
             
-                Last updated on Nov 28, 2017.
+                Last updated on Nov 29, 2017.
             
 
             

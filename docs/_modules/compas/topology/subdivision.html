@@ -86,25 +86,24 @@
 <div class="viewcode-block" id="mesh_subdivide"><a class="viewcode-back" href="../../../reference/generated/compas.topology.mesh_subdivide.html#compas.topology.mesh_subdivide">[docs]</a><span class="k">def</span> <span class="nf">mesh_subdivide</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s1">'tri'</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
     <span class="sd">"""Subdivide the input mesh.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        mesh (Mesh) : A mesh object.</span>
-<span class="sd">        scheme (str) : Optional.</span>
-<span class="sd">            The scheme according to which the mesh should be subdivided.</span>
-<span class="sd">            Defult is 'tri'. Supported values are:</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    scheme : {'tri', 'corner', 'catmullclark', 'doosabin'}.</span>
+<span class="sd">        The scheme according to which the mesh should be subdivided.</span>
+<span class="sd">    options : dict</span>
+<span class="sd">        Optional additional keyword arguments.</span>
 
-<span class="sd">            * tri: insertion subdivision.</span>
-<span class="sd">            * corner: corner cutting.</span>
-<span class="sd">            * catmullclark : catmull-clark subdivision.</span>
-<span class="sd">            * doosabin : doo-sabin subdivision.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        The subdivided mesh.</span>
 
-<span class="sd">        options (kwargs) : Optional additional keyword arguments.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Mesh: The subdivided mesh.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError</span>
-<span class="sd">        MeshError</span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    NotImplementedError</span>
+<span class="sd">        If the scheme is not supported.</span>
 
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s1">'tri'</span><span class="p">:</span>
@@ -123,6 +122,19 @@
 
 <div class="viewcode-block" id="mesh_subdivide_tri"><a class="viewcode-back" href="../../../reference/generated/compas.topology.mesh_subdivide_tri.html#compas.topology.mesh_subdivide_tri">[docs]</a><span class="k">def</span> <span class="nf">mesh_subdivide_tri</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">"""Subdivide a mesh using simple insertion of vertices.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : Mesh</span>
+<span class="sd">        The mesh object that will be subdivided.</span>
+<span class="sd">    k : int</span>
+<span class="sd">        Optional. The number of levels of subdivision. Default is ``1``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        A new subdivided mesh.</span>
+
 <span class="sd">    """</span>
 
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
@@ -137,7 +149,8 @@
 
 
 <span class="k">def</span> <span class="nf">mesh_subdivide_quad</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">"""Subdivide a mesh such that all faces are quads."""</span>
+    <span class="sd">"""Subdivide a mesh such that all faces are quads.</span>
+<span class="sd">    """</span>
 
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
         <span class="n">subd</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -168,15 +181,27 @@
 <span class="k">def</span> <span class="nf">mesh_subdivide_corner</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">"""Subdivide a mesh by cutting croners.</span>
 
-<span class="sd">    Notes:</span>
-<span class="sd">        This is essentially the same as Loop subdivision, but applied to general</span>
-<span class="sd">        meshes.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : Mesh</span>
+<span class="sd">        The mesh object that will be subdivided.</span>
+<span class="sd">    k : int</span>
+<span class="sd">        Optional. The number of levels of subdivision. Default is ``1``.</span>
 
-<span class="sd">    Warning:</span>
-<span class="sd">        This algorithms does not yet support multiple levels of subd.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        A new subdivided mesh.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        Mesh: The subdivided mesh.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        The subdivided mesh.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This is essentially the same as Loop subdivision, but applied to general</span>
+<span class="sd">    meshes.</span>
 
 <span class="sd">    """</span>
 
@@ -214,100 +239,99 @@
 <div class="viewcode-block" id="mesh_subdivide_catmullclark"><a class="viewcode-back" href="../../../reference/generated/compas.topology.mesh_subdivide_catmullclark.html#compas.topology.mesh_subdivide_catmullclark">[docs]</a><span class="k">def</span> <span class="nf">mesh_subdivide_catmullclark</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">"""Subdivide a mesh using the Catmull-Clark algorithm.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : Mesh</span>
+<span class="sd">        The mesh object that will be subdivided.</span>
+<span class="sd">    k : int</span>
+<span class="sd">        Optional. The number of levels of subdivision. Default is ``1``.</span>
+<span class="sd">    fixed : list</span>
+<span class="sd">        Optional. A list of fixed vertices. Default is ``None``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        A new subdivided mesh.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    Note that *Catmull-Clark* subdivision is like *Quad* subdivision, but with</span>
 <span class="sd">    smoothing after every level of further subdivision. Smoothing is done</span>
 <span class="sd">    according to the scheme prescribed by the Catmull-Clark algorithm.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        mesh (Mesh):</span>
-<span class="sd">            The mesh object that will be subdivided.</span>
-<span class="sd">        k (int): Optional.</span>
-<span class="sd">            The number of levels of subdivision.</span>
-<span class="sd">            Default is ``1``.</span>
-<span class="sd">        fixed (list): Optional.</span>
-<span class="sd">            A list of fixed vertices.</span>
-<span class="sd">            Default is ``None``.</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        Mesh: A new subdivided mesh.</span>
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas.topology import mesh_subdivide_catmullclark</span>
+<span class="sd">        from compas.plotters import MeshPlotter</span>
 
-<span class="sd">    Examples:</span>
+<span class="sd">        vertices = [[0., 0., 0.], [1., 0., 0.], [1., 1., 0.], [0., 1.0, 0.]]</span>
+<span class="sd">        faces = [[0, 1, 2, 3], ]</span>
 
-<span class="sd">        .. plot::</span>
-<span class="sd">            :include-source:</span>
+<span class="sd">        mesh = Mesh.from_vertices_and_faces(vertices, faces)</span>
+<span class="sd">        subd = mesh_subdivide_catmullclark(mesh, k=3, fixed=mesh.vertices())</span>
 
-<span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.topology import mesh_subdivide_catmullclark</span>
-<span class="sd">            from compas.plotters import MeshPlotter</span>
+<span class="sd">        plotter = MeshPlotter(subd)</span>
 
-<span class="sd">            vertices = [[0., 0., 0.], [1., 0., 0.], [1., 1., 0.], [0., 1.0, 0.]]</span>
-<span class="sd">            faces = [[0, 1, 2, 3], ]</span>
+<span class="sd">        plotter.draw_vertices(facecolor={key: '#ff0000' for key in mesh.vertices()}, radius=0.01)</span>
+<span class="sd">        plotter.draw_faces()</span>
 
-<span class="sd">            mesh = Mesh.from_vertices_and_faces(vertices, faces)</span>
-<span class="sd">            subd = mesh_subdivide_catmullclark(mesh, k=3, fixed=mesh.vertices())</span>
-
-<span class="sd">            plotter = MeshPlotter(subd)</span>
-
-<span class="sd">            plotter.draw_vertices(facecolor={key: '#ff0000' for key in mesh.vertices()}, radius=0.01)</span>
-<span class="sd">            plotter.draw_faces()</span>
-
-<span class="sd">            plotter.show()</span>
+<span class="sd">        plotter.show()</span>
 
 
-<span class="sd">        .. plot::</span>
-<span class="sd">            :include-source:</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
 
-<span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.topology import mesh_subdivide_catmullclark</span>
-<span class="sd">            from compas.plotters import MeshPlotter</span>
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas.topology import mesh_subdivide_catmullclark</span>
+<span class="sd">        from compas.plotters import MeshPlotter</span>
 
-<span class="sd">            vertices = [[0., 0., 0.], [1., 0., 0.], [1., 1., 0.], [0., 1.0, 0.]]</span>
-<span class="sd">            faces = [[0, 1, 2, 3], ]</span>
+<span class="sd">        vertices = [[0., 0., 0.], [1., 0., 0.], [1., 1., 0.], [0., 1.0, 0.]]</span>
+<span class="sd">        faces = [[0, 1, 2, 3], ]</span>
 
-<span class="sd">            mesh = Mesh.from_vertices_and_faces(vertices, faces)</span>
-<span class="sd">            subd = mesh_subdivide_catmullclark(mesh, k=3, fixed=None)</span>
+<span class="sd">        mesh = Mesh.from_vertices_and_faces(vertices, faces)</span>
+<span class="sd">        subd = mesh_subdivide_catmullclark(mesh, k=3, fixed=None)</span>
 
-<span class="sd">            plotter = MeshPlotter(subd)</span>
+<span class="sd">        plotter = MeshPlotter(subd)</span>
 
-<span class="sd">            plotter.draw_vertices(facecolor={key: '#ff0000' for key in mesh.vertices()}, radius=0.01)</span>
-<span class="sd">            plotter.draw_faces()</span>
+<span class="sd">        plotter.draw_vertices(facecolor={key: '#ff0000' for key in mesh.vertices()}, radius=0.01)</span>
+<span class="sd">        plotter.draw_faces()</span>
 
-<span class="sd">            plotter.show()</span>
+<span class="sd">        plotter.show()</span>
 
 
-<span class="sd">        .. code-block:: python</span>
+<span class="sd">    .. code-block:: python</span>
 
-<span class="sd">            from compas.datastructures.mesh import Mesh</span>
+<span class="sd">        from compas.datastructures.mesh import Mesh</span>
 
-<span class="sd">            from compas.topology import mesh_subdivide_catmullclark</span>
-<span class="sd">            from compas.geometry import Polyhedron</span>
-<span class="sd">            from compas.plotters import SubdMeshViewer</span>
+<span class="sd">        from compas.topology import mesh_subdivide_catmullclark</span>
+<span class="sd">        from compas.geometry import Polyhedron</span>
+<span class="sd">        from compas.plotters import SubdMeshViewer</span>
 
-<span class="sd">            cube = Polyhedron.generate(6)</span>
+<span class="sd">        cube = Polyhedron.generate(6)</span>
 
-<span class="sd">            mesh = Mesh.from_vertices_and_faces(cube.vertices, cube.faces)</span>
+<span class="sd">        mesh = Mesh.from_vertices_and_faces(cube.vertices, cube.faces)</span>
 
-<span class="sd">            viewer = SubdMeshViewer(mesh, subdfunc=mesh_subdivide_catmullclark, width=1440, height=900)</span>
+<span class="sd">        viewer = SubdMeshViewer(mesh, subdfunc=mesh_subdivide_catmullclark, width=1440, height=900)</span>
 
-<span class="sd">            viewer.axes_on = False</span>
-<span class="sd">            viewer.grid_on = False</span>
+<span class="sd">        viewer.axes_on = False</span>
+<span class="sd">        viewer.grid_on = False</span>
 
-<span class="sd">            for _ in range(10):</span>
-<span class="sd">               viewer.camera.zoom_in()</span>
+<span class="sd">        for _ in range(10):</span>
+<span class="sd">           viewer.camera.zoom_in()</span>
 
-<span class="sd">            viewer.subdivide(k=4)</span>
+<span class="sd">        viewer.subdivide(k=4)</span>
 
-<span class="sd">            viewer.setup()</span>
-<span class="sd">            viewer.show()</span>
+<span class="sd">        viewer.setup()</span>
+<span class="sd">        viewer.show()</span>
 
 
 <span class="sd">    .. figure:: /_images/subdivide_mesh_catmullclark-screenshot.*</span>
 <span class="sd">        :figclass: figure</span>
 <span class="sd">        :class: figure-img img-fluid</span>
-
-<span class="sd">    .. note::</span>
-
-<span class="sd">        Image generated with ``SubdMeshViewer.screenshot()``.</span>
 
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed</span><span class="p">:</span>
@@ -413,7 +437,23 @@
 
 
 <div class="viewcode-block" id="mesh_subdivide_doosabin"><a class="viewcode-back" href="../../../reference/generated/compas.topology.mesh_subdivide_doosabin.html#compas.topology.mesh_subdivide_doosabin">[docs]</a><span class="k">def</span> <span class="nf">mesh_subdivide_doosabin</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">""""""</span>
+    <span class="sd">"""Subdivide a mesh following the doo-sabin scheme.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : Mesh</span>
+<span class="sd">        The mesh object that will be subdivided.</span>
+<span class="sd">    k : int</span>
+<span class="sd">        Optional. The number of levels of subdivision. Default is ``1``.</span>
+<span class="sd">    fixed : list</span>
+<span class="sd">        Optional. A list of fixed vertices. Default is ``None``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        A new subdivided mesh.</span>
+
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed</span><span class="p">:</span>
         <span class="n">fixed</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -498,27 +538,41 @@
 <span class="k">def</span> <span class="nf">trimesh_subdivide_loop</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">"""Subdivide a triangle mesh using the Loop algorithm.</span>
 
-<span class="sd">    Examples:</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : Mesh</span>
+<span class="sd">        The mesh object that will be subdivided.</span>
+<span class="sd">    k : int</span>
+<span class="sd">        Optional. The number of levels of subdivision. Default is ``1``.</span>
+<span class="sd">    fixed : list</span>
+<span class="sd">        Optional. A list of fixed vertices. Default is ``None``.</span>
 
-<span class="sd">        .. code-block:: python</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        A new subdivided mesh.</span>
 
-<span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.topology import mesh_flip_cycle_directions</span>
-<span class="sd">            from compas.plotters import SubdMeshViewer</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
 
-<span class="sd">            mesh = Mesh.from_polyhedron(4)</span>
-<span class="sd">            mesh_flip_cycle_directions(mesh)</span>
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas.topology import mesh_flip_cycle_directions</span>
+<span class="sd">        from compas.plotters import SubdMeshViewer</span>
 
-<span class="sd">            viewer = SubdMeshViewer(mesh, subdfunc=loop_subdivision, width=600, height=600)</span>
+<span class="sd">        mesh = Mesh.from_polyhedron(4)</span>
+<span class="sd">        mesh_flip_cycle_directions(mesh)</span>
 
-<span class="sd">            viewer.axes_on = False</span>
-<span class="sd">            viewer.grid_on = False</span>
+<span class="sd">        viewer = SubdMeshViewer(mesh, subdfunc=loop_subdivision, width=600, height=600)</span>
 
-<span class="sd">            for _ in range(10):</span>
-<span class="sd">                viewer.camera.zoom_in()</span>
+<span class="sd">        viewer.axes_on = False</span>
+<span class="sd">        viewer.grid_on = False</span>
 
-<span class="sd">            viewer.setup()</span>
-<span class="sd">            viewer.show()</span>
+<span class="sd">        for _ in range(10):</span>
+<span class="sd">            viewer.camera.zoom_in()</span>
+
+<span class="sd">        viewer.setup()</span>
+<span class="sd">        viewer.show()</span>
 
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed</span><span class="p">:</span>
@@ -651,7 +705,7 @@
             
 
             
-                Last updated on Nov 28, 2017.
+                Last updated on Nov 29, 2017.
             
 
             
