@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Network.vertex_neighbours_out
 ===================================================
 

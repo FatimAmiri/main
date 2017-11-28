@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 RhinoPoint.from_selection
 ===============================================
 

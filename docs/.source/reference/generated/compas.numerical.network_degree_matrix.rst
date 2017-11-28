@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 network_degree_matrix
 ======================================
 

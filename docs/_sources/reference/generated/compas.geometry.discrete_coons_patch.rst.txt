@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 discrete_coons_patch
 ====================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 browse_for_folder
 ========================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Plotter.save_gif
 ================================
 

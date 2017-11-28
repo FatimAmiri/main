@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 NetworkPlotter.update_vertices
 ==============================================
 

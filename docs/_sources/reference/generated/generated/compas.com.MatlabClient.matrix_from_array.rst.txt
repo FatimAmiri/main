@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 MatlabClient.matrix_from_array
 =========================================
 

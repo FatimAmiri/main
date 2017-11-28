@@ -7,7 +7,7 @@ files
 
 .. module:: compas.files
 
-:mod:`compas.files` provides support for file types related to geometry definition,
+This package provides support for file types related to geometry definition,
 manufacturing processes, CAD interoperability, ...
 
 

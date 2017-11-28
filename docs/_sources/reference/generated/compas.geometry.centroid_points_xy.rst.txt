@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 centroid_points_xy
 ==================================
 

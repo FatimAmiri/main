@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 RhinoClient.__init__
 ===============================
 

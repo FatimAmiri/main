@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Plotter.clear_collection
 ========================================
 

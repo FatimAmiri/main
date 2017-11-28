@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 PLYreader.__init__
 ===============================
 

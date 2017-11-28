@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 midpoint_point_point
 ====================================
 

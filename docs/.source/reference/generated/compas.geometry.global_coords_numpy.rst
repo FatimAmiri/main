@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 global_coords_numpy
 ===================================
 

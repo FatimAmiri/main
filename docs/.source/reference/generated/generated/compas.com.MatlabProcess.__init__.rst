@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 MatlabProcess.__init__
 =================================
 

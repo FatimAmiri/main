@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 BlenderMesh.set_vertex_colors
 =====================================================
 

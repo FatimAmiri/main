@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.length_vector_xy_numba
 =================================
 

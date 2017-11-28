@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 gif_from_images
 ================================
 

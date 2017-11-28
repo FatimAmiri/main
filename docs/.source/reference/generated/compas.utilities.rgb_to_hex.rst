@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 rgb_to_hex
 ===========================
 

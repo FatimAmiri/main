@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 mirror_points_point
 ===================================
 

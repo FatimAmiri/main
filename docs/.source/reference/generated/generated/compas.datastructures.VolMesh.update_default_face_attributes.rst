@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 VolMesh.update_default_face_attributes
 ============================================================
 

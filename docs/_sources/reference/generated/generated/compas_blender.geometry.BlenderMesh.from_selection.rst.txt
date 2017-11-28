@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 BlenderMesh.from_selection
 ==================================================
 

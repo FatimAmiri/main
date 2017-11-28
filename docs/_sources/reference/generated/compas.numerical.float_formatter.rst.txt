@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 float_formatter
 ================================
 

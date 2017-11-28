@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 closest_point_in_cloud
 ======================================
 

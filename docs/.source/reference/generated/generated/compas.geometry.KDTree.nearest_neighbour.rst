@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 KDTree.nearest_neighbour
 ========================================
 

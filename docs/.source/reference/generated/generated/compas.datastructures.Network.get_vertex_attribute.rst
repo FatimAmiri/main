@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Network.get_vertex_attribute
 ==================================================
 

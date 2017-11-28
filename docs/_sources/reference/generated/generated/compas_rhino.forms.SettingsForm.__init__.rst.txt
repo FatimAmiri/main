@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 SettingsForm.__init__
 ========================================
 

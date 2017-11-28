@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 BlenderMesh.get_vertices_and_faces
 ==========================================================
 

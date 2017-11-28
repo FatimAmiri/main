@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 BlenderMesh.get_border
 ==============================================
 

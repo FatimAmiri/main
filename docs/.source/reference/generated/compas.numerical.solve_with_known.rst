@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 solve_with_known
 =================================
 

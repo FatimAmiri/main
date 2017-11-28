@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 ChartForm.on_form_closed
 ===========================================
 

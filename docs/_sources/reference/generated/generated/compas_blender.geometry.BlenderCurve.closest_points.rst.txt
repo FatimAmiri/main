@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 BlenderCurve.closest_points
 ===================================================
 

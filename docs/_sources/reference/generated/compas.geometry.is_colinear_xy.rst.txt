@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 is_colinear_xy
 ==============================
 

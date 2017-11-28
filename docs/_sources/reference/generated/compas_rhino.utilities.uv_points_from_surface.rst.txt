@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 uv_points_from_surface
 =============================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 MatlabSession.find_sessions
 ======================================
 

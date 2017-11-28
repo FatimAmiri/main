@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Mesh.edges_on_boundary
 ============================================
 

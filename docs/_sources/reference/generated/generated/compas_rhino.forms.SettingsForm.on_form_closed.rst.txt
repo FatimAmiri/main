@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 SettingsForm.on_form_closed
 ==============================================
 

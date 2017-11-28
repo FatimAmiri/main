@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 is_curve_line
 ====================================
 

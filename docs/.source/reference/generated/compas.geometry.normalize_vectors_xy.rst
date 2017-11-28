@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 normalize_vectors_xy
 ====================================
 

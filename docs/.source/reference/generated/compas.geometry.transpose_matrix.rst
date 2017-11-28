@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 transpose_matrix
 ================================
 

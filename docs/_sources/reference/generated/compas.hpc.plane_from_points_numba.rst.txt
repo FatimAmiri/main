@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.plane_from_points_numba
 ==================================
 

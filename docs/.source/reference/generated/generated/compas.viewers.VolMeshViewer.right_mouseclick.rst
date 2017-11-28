@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 VolMeshViewer.right_mouseclick
 =============================================
 

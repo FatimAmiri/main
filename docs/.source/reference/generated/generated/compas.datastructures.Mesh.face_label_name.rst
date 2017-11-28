@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Mesh.face_label_name
 ==========================================
 

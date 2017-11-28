@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 MeshViewer.middle_mousemotion
 ============================================
 

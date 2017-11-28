@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.square_vectors_numba
 ===============================
 

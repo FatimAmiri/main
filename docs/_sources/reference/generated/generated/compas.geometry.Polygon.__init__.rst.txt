@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Polygon.__init__
 ================================
 

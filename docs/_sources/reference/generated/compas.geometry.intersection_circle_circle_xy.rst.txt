@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 intersection_circle_circle_xy
 =============================================
 

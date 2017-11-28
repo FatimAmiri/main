@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.normalize_vector_numba
 =================================
 

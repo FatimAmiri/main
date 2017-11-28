@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 BlenderMesh.get_face_vertex_indices
 ===========================================================
 

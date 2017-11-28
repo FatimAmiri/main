@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 set_mesh_vertex_colors
 =============================================
 

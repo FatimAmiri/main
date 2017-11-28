@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.dot_vectors_numba
 ============================
 

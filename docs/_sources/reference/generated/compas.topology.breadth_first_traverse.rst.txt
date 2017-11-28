@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 breadth_first_traverse
 ======================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Network.vertices_where
 ============================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 VolMesh.halfface_edges
 ============================================
 

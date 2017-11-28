@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Network.edge_label_name
 =============================================
 

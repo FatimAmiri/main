@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Mesh.get_edges_attributes
 ===============================================
 

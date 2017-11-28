@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 network_draw_edge_labels
 =============================================
 

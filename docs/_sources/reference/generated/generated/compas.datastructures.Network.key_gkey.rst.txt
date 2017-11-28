@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Network.key_gkey
 ======================================
 

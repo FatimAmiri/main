@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 circle_from_points_xy
 =====================================
 

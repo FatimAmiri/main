@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 NetworkViewer.right_mousemotion
 ==============================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.subtract_vectors_xy_numba
 ====================================
 

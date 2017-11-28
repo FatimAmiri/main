@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Mesh.update_default_vertex_attributes
 ===========================================================
 

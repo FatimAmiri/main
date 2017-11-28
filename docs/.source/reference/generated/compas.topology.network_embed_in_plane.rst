@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 network_embed_in_plane
 ======================================
 

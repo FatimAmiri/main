@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 SliderForm.__init__
 ======================================
 

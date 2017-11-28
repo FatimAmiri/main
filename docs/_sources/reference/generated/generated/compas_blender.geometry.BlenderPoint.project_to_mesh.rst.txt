@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 BlenderPoint.project_to_mesh
 ====================================================
 

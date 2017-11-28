@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 depth_first_tree
 ================================
 

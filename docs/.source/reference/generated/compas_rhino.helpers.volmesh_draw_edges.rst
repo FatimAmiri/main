@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 volmesh_draw_edges
 =======================================
 

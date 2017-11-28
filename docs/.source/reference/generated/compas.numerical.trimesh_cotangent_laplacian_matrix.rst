@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 trimesh_cotangent_laplacian_matrix
 ===================================================
 

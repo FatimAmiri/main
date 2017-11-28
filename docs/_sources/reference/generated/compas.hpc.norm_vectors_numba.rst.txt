@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.norm_vectors_numba
 =============================
 

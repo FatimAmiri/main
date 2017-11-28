@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 mix_in_class_attributes
 ========================================
 

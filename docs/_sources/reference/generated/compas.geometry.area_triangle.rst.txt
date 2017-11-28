@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 area_triangle
 =============================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Network.add_edge
 ======================================
 

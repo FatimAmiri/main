@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 is_polygon_convex_xy
 ====================================
 

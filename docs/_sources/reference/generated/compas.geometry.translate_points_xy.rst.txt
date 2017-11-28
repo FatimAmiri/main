@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 translate_points_xy
 ===================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.transpose_matrix_numba
 =================================
 

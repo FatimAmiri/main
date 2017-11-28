@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 random_permutation
 ===================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 MeshPlotter.draw_faces
 ======================================
 

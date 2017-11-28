@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 unset_array_print_precision
 ============================================
 

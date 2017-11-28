@@ -7,14 +7,13 @@ interop
 
 .. module:: compas.interop
 
+This package includes utility functions for seamless integration of C
+and C++ code, and wrappers for external libraries.
+
 .. warning::
 
     The functionality of this package is experimental and subject to frequent change.
     For now, don't use it for anything important :)
-
-
-:mod:`compas.interop`: includes utility functions for seamless integration of C
-and C++ code, and wrappers for external libraries.
 
 
 ShapeOp

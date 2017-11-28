@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Polyline.is_closed
 ==================================
 

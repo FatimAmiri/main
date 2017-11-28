@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 set_object_show_name
 =============================================
 

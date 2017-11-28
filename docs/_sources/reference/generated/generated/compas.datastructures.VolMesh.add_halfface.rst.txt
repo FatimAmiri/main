@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 VolMesh.add_halfface
 ==========================================
 

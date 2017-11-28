@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 RhinoSurface.closest_point
 ================================================
 

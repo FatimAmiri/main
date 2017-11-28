@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 connect_to_server
 ============================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 bestfit_circle_numpy
 ====================================
 

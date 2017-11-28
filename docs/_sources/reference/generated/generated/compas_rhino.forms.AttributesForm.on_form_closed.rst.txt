@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 AttributesForm.on_form_closed
 ================================================
 

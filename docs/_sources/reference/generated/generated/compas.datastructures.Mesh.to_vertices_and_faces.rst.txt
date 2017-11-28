@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Mesh.to_vertices_and_faces
 ================================================
 

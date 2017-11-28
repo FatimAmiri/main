@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 angle_vectors
 =============================
 

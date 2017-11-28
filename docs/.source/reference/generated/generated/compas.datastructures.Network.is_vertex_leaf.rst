@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Network.is_vertex_leaf
 ============================================
 

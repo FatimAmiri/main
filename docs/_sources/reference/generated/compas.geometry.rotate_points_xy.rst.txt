@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 rotate_points_xy
 ================================
 

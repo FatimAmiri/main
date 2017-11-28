@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Mesh.faces_on_boundary
 ============================================
 

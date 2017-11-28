@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 dot_vectors_xy
 ==============================
 

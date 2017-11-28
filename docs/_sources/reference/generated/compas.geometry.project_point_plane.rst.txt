@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 project_point_plane
 ===================================
 

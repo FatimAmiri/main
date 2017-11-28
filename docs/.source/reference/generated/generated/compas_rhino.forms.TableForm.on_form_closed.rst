@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 TableForm.on_form_closed
 ===========================================
 

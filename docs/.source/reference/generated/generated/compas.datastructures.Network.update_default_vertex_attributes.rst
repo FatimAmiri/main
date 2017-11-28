@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Network.update_default_vertex_attributes
 ==============================================================
 

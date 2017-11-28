@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 screenshot_current_view
 ==============================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 get_document_filename
 ============================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 network_from_bmesh
 =========================================
 

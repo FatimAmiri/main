@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 get_objects_name
 =========================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 update_named_values
 ==========================================
 

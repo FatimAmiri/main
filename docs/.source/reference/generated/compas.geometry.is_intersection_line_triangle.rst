@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 is_intersection_line_triangle
 =============================================
 

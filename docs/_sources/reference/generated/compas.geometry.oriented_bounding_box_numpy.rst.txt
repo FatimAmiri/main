@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 oriented_bounding_box_numpy
 ===========================================
 

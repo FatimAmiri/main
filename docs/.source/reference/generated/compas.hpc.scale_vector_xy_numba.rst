@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.scale_vector_xy_numba
 ================================
 

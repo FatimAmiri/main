@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.divide_vectors_numba
 ===============================
 

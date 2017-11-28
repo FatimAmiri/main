@@ -7,13 +7,13 @@ datastructures
 
 .. module:: compas.datastructures
 
-:mod:`compas.datastructures` defines a mesh datastructure, a network, and a cellular mesh.
+This package defines a mesh datastructure, a network, and a cellular mesh.
 
 
 Mesh
 ====
 
-:class:`compas.datastructures.Mesh` is implemented as a half-edge datastructure.
+The mesh is implemented as a half-edge datastructure.
 It is meant for the representation of polygonal *"surface"* meshes. A mesh can be
 connected or disconnected. A mesh can be closed or open. A mesh can be comprised
 of only vertices.
@@ -34,7 +34,7 @@ of only vertices.
 Network
 =======
 
-:class:`compas.datastructures.Network` is a connectivity graph.
+The network is a connectivity graph.
 It is meant for the representation of networks of vertices connected by edges.
 The edges are directed. A network does not have faces. A network can be connected
 or disconnected. A network with vertices only is also a valid network.
@@ -55,7 +55,7 @@ or disconnected. A network with vertices only is also a valid network.
 VolMesh
 =======
 
-:class:`compas.datastructures.VolMesh` is a cellular mesh. It is implemented as
+The volmesh is a cellular mesh. It is implemented as
 a half-plane, the three-dimensional equivalent of a half-edge. It can, for example,
 be used for the representation of subdivided/partitioned polyhedra.
 

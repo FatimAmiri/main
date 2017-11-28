@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 distance_point_line
 ===================================
 

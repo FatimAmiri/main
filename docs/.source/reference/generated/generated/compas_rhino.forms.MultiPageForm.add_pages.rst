@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 MultiPageForm.add_pages
 ==========================================
 

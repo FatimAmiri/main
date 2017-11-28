@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 ImageForm.on_form_closed
 ===========================================
 

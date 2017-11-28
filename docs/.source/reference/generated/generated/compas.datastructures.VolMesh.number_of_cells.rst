@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 VolMesh.number_of_cells
 =============================================
 

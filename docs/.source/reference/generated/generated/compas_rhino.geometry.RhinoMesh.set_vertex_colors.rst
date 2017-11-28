@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 RhinoMesh.set_vertex_colors
 =================================================
 

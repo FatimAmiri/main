@@ -6,19 +6,19 @@ hpc
 
 .. module:: compas.hpc
 
-.. warning::
-
-    The functionality of this package is experimental and subject to frequent change.
-    For now, don't use it for anything important :)
-
-
-:mod:`compas.hpc` is a high-performance computing library, which provides
-GPU-accelerated or JIT-compiled versions of many geometry, numerical and topological
-functions and algorithms. The package id built around `Numba`_, `PyCuda`_ and `PyOpenCL`_.
+This package provides GPU-accelerated or JIT-compiled versions of many geometry,
+numerical and topological functions and algorithms. The package id built around
+`Numba`_, `PyCuda`_ and `PyOpenCL`_.
 
 .. _Numba: https://numba.pydata.org/
 .. _PyCuda: https://mathema.tician.de/software/pycuda/
 .. _PyOpenCL: https://mathema.tician.de/software/pyopencl/
+
+
+.. warning::
+
+    The functionality of this package is experimental and subject to frequent change.
+    For now, don't use it for anything important :)
 
 
 algorithms

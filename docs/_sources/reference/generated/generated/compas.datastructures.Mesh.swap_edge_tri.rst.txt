@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Mesh.swap_edge_tri
 ========================================
 

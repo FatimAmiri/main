@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Mesh.set_edge_attribute
 =============================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 center_of_mass_polygon
 ======================================
 

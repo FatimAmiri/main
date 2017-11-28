@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.sum_vectors_numba
 ============================
 

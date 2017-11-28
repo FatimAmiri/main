@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 is_point_in_triangle_xy
 =======================================
 

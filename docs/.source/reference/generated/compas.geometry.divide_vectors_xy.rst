@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 divide_vectors_xy
 =================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 length_vector_sqrd
 ==================================
 

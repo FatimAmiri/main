@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 SliderForm.on_form_closed
 ============================================
 

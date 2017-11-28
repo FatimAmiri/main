@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Vector.norm_vectors
 ===================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.power_vectors_numba
 ==============================
 

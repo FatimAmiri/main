@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Mesh.edge_faces
 =====================================
 

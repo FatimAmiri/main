@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 VolMesh.get_edges_attribute
 =================================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 smooth_area
 ===========================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 RhinoMesh.get_vertex_coordinates
 ======================================================
 

@@ -6,7 +6,7 @@ numerical
 
 .. module:: compas.numerical
 
-:mod:`compas.numerical` implements numerical solvers and methods for form finding
+This package implements numerical solvers and methods for form finding
 and analysis of structures. The array and matrix-based implementations are built
 around `NumPy`_ and `SciPy`_.
 

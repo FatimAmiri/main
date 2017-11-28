@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 PLYreader.numpy_vertex_ptypes
 ==========================================
 

@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 print_display_on
 =======================================
 

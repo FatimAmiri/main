@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 RhinoPoint.project_to_surface
 ===================================================
 

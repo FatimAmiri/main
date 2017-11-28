@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.multiply_matrices_numba
 ==================================
 

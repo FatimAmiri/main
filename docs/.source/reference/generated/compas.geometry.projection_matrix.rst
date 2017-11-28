@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 projection_matrix
 =================================
 

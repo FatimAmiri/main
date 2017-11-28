@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 mirror_vector_vector
 ====================================
 

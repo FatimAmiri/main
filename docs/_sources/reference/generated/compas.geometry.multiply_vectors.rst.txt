@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 multiply_vectors
 ================================
 

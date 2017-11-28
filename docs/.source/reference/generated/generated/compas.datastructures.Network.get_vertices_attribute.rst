@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Network.get_vertices_attribute
 ====================================================
 

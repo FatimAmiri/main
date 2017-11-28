@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 NetworkPlotter.draw_polygons
 ============================================
 

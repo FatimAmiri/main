@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Network.from_json
 =======================================
 

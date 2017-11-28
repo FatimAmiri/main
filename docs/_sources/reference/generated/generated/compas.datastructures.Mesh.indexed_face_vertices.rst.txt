@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Mesh.indexed_face_vertices
 ================================================
 

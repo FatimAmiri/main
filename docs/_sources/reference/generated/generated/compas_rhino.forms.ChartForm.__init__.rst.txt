@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 ChartForm.__init__
 =====================================
 

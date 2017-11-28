@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Polyline.__init__
 =================================
 

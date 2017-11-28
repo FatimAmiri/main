@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 Point.project_to_plane
 ======================================
 

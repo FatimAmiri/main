@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 is_intersection_plane_plane
 ===========================================
 

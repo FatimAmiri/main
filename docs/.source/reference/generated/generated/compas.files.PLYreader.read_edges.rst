@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 PLYreader.read_edges
 =================================
 

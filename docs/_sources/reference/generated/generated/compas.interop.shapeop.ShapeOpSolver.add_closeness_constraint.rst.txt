@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 ShapeOpSolver.add_closeness_constraint
 =============================================================
 

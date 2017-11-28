@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 voronoi_from_delaunay
 =====================================
 

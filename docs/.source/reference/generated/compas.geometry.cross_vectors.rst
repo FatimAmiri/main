@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 cross_vectors
 =============================
 

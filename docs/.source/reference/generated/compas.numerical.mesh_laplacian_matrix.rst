@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 mesh_laplacian_matrix
 ======================================
 

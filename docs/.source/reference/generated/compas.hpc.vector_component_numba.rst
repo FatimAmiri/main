@@ -1,3 +1,5 @@
+.. rst-class:: detail
+
 hpc.vector_component_numba
 =================================
 
