@@ -8,7 +8,6 @@ Tutorial
     :maxdepth: 1
     :glob:
 
-    tutorial/introduction
     tutorial/datastructures
     tutorial/cad
     tutorial/geomaps

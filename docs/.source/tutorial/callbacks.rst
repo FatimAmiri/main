@@ -4,7 +4,7 @@
 Using callbacks
 ********************************************************************************
 
-``compas`` implements a *callback* mechanism that provides a consistent way to
+**compas** implements a *callback* mechanism that provides a consistent way to
 customise algorithms, apply constraints, visualise progress of iterative algorithms, ...
 
 .. note::

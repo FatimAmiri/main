@@ -76,7 +76,7 @@ are named using the following pattern ``.from_xxx``.
     mesh = Mesh.from_polyhedron(...)
     mesh = Mesh.from_points(...)
 
-``compas`` also provides basic sample data that can be used together with the constructors.
+**compas** also provides basic sample data that can be used together with the constructors.
 
 .. code-block:: python
 
