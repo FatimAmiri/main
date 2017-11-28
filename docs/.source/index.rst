@@ -12,4 +12,3 @@ The main library of compas
    examples
    tutorial
    reference
-   bibliography

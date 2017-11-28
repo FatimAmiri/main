@@ -131,7 +131,7 @@
 
 
 <div class="viewcode-block" id="intersection_line_line_xy"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.intersection_line_line_xy.html#compas.geometry.intersection_line_line_xy">[docs]</a><span class="k">def</span> <span class="nf">intersection_line_line_xy</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>
-    <span class="sd">"""Compute the intersection of two lines, assuming they lie in the XY plane [wikipedia2017f]_.</span>
+    <span class="sd">"""Compute the intersection of two lines, assuming they lie in the XY plane.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -147,9 +147,14 @@
 <span class="sd">    list</span>
 <span class="sd">        XYZ coordinates of intersection point if one exists (Z = 0).</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">    Only if the lines are parallel, there is no intersection point.</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Only if the lines are parallel, there is no intersection point [1]_.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Wikipedia. *Line-line intersection*.</span>
+<span class="sd">           Available at: https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection</span>
 
 <span class="sd">    """</span>
     <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">l1</span>
@@ -220,6 +225,7 @@
 <span class="sd">        If there is no intersection point.</span>
 <span class="sd">    list</span>
 <span class="sd">        XYZ coordinates of intersection point if one exists.</span>
+
 <span class="sd">    """</span>
     <span class="n">intx_pt</span> <span class="o">=</span> <span class="n">intersection_line_line_xy</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">cd</span><span class="p">)</span>
 
@@ -242,13 +248,19 @@
 <div class="viewcode-block" id="intersection_circle_circle_xy"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.intersection_circle_circle_xy.html#compas.geometry.intersection_circle_circle_xy">[docs]</a><span class="k">def</span> <span class="nf">intersection_circle_circle_xy</span><span class="p">(</span><span class="n">circle1</span><span class="p">,</span> <span class="n">circle2</span><span class="p">):</span>
     <span class="sd">"""Calculates the intersection points of two circles in 2d lying in the XY plane.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        circle1 (tuple): center, radius of the first circle in the xy plane.</span>
-<span class="sd">        circle2 (tuple): center, radius of the second circle in the xy plane.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    circle1 : tuple</span>
+<span class="sd">        center, radius of the first circle in the xy plane.</span>
+<span class="sd">    circle2 : tuple</span>
+<span class="sd">        center, radius of the second circle in the xy plane.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        points (list of tuples): the intersection points if there are any</span>
-<span class="sd">        None: if there are no intersection points</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    points : list of tuples</span>
+<span class="sd">        the intersection points if there are any</span>
+<span class="sd">    None</span>
+<span class="sd">        if there are no intersection points</span>
 
 <span class="sd">    """</span>
     <span class="n">p1</span><span class="p">,</span> <span class="n">r1</span> <span class="o">=</span> <span class="n">circle1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">circle1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -276,19 +288,25 @@
 
 
 <div class="viewcode-block" id="intersection_line_triangle"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.intersection_line_triangle.html#compas.geometry.intersection_line_triangle">[docs]</a><span class="k">def</span> <span class="nf">intersection_line_triangle</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">triangle</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    Computes the intersection point of a line (ray) and a triangle</span>
+    <span class="sd">"""Computes the intersection point of a line (ray) and a triangle</span>
 <span class="sd">    based on the Moeller Trumbore intersection algorithm</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        line (tuple): Two points defining the line.</span>
-<span class="sd">        triangle (sequence of sequence of float): XYZ coordinates of the triangle corners.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line : tuple</span>
+<span class="sd">        Two points defining the line.</span>
+<span class="sd">    triangle : sequence of sequence of float</span>
+<span class="sd">        XYZ coordinates of the triangle corners.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        point (tuple) if the line (ray) intersects with the triangle, None otherwise.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    point : tuple</span>
+<span class="sd">        if the line (ray) intersects with the triangle, None otherwise.</span>
 
-<span class="sd">    Note:</span>
-<span class="sd">        The line is treated as continues, directed ray and not as line segment with a start and end point</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The line is treated as continues, directed ray and not as line segment with a start and end point</span>
+
 <span class="sd">    """</span>
     <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">triangle</span>
     <span class="n">v1</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -328,12 +346,17 @@
 <div class="viewcode-block" id="intersection_line_plane"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.intersection_line_plane.html#compas.geometry.intersection_line_plane">[docs]</a><span class="k">def</span> <span class="nf">intersection_line_plane</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">plane</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
     <span class="sd">"""Computes the intersection point of a line (ray) and a plane</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        line (tuple): Two points defining the line.</span>
-<span class="sd">        plane (tuple): The base point and normal defining the plane.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line : tuple</span>
+<span class="sd">        Two points defining the line.</span>
+<span class="sd">    plane : tuple</span>
+<span class="sd">        The base point and normal defining the plane.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        point (tuple) if the line (ray) intersects with the plane, None otherwise.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    point : tuple</span>
+<span class="sd">        if the line (ray) intersects with the plane, None otherwise.</span>
 
 <span class="sd">    """</span>
     <span class="n">pt1</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -356,12 +379,17 @@
 <div class="viewcode-block" id="intersection_segment_plane"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.intersection_segment_plane.html#compas.geometry.intersection_segment_plane">[docs]</a><span class="k">def</span> <span class="nf">intersection_segment_plane</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">plane</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
     <span class="sd">"""Computes the intersection point of a line segment and a plane</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        segment (tuple): Two points defining the line segment.</span>
-<span class="sd">        plane (tuple): The base point and normal defining the plane.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    segment : tuple</span>
+<span class="sd">        Two points defining the line segment.</span>
+<span class="sd">    plane : tuple</span>
+<span class="sd">        The base point and normal defining the plane.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        point (tuple) if the line segment intersects with the plane, None otherwise.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    point : tuple</span>
+<span class="sd">        if the line segment intersects with the plane, None otherwise.</span>
 
 <span class="sd">    """</span>
     <span class="n">pt1</span> <span class="o">=</span> <span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -386,12 +414,17 @@
 <div class="viewcode-block" id="intersection_plane_plane"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.intersection_plane_plane.html#compas.geometry.intersection_plane_plane">[docs]</a><span class="k">def</span> <span class="nf">intersection_plane_plane</span><span class="p">(</span><span class="n">plane1</span><span class="p">,</span> <span class="n">plane2</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
     <span class="sd">"""Computes the intersection of two planes</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        plane1 (tuple): The base point and normal (normalized) defining the 1st plane.</span>
-<span class="sd">        plane2 (tuple): The base point and normal (normalized) defining the 2nd plane.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    plane1 : tuple</span>
+<span class="sd">        The base point and normal (normalized) defining the 1st plane.</span>
+<span class="sd">    plane2 : tuple</span>
+<span class="sd">        The base point and normal (normalized) defining the 2nd plane.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        line (tuple): Two points defining the intersection line. None if planes are parallel.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    line : tuple</span>
+<span class="sd">        Two points defining the intersection line. None if planes are parallel.</span>
 
 <span class="sd">    """</span>
     <span class="c1"># check for parallelity of planes</span>
@@ -409,17 +442,26 @@
 <div class="viewcode-block" id="intersection_plane_plane_plane"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.intersection_plane_plane_plane.html#compas.geometry.intersection_plane_plane_plane">[docs]</a><span class="k">def</span> <span class="nf">intersection_plane_plane_plane</span><span class="p">(</span><span class="n">plane1</span><span class="p">,</span> <span class="n">plane2</span><span class="p">,</span> <span class="n">plane3</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
     <span class="sd">"""Computes the intersection of three planes</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        plane1 (tuple): The base point and normal (normalized) defining the 1st plane.</span>
-<span class="sd">        plane2 (tuple): The base point and normal (normalized) defining the 2nd plane.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    plane1 : tuple</span>
+<span class="sd">        The base point and normal (normalized) defining the 1st plane.</span>
+<span class="sd">    plane2 : tuple</span>
+<span class="sd">        The base point and normal (normalized) defining the 2nd plane.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        point (tuple): The intersection point. None if two (or all three) planes are parallel.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    point : tuple</span>
+<span class="sd">        The intersection point. None if two (or all three) planes are parallel.</span>
 
-<span class="sd">    Note:</span>
-<span class="sd">        Currently this only computes the intersection point. E.g.: If two planes</span>
-<span class="sd">        are parallel the intersection lines are not computed. see:</span>
-<span class="sd">        http://geomalgorithms.com/Pic_3-planes.gif</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Currently this only computes the intersection point. E.g.: If two planes</span>
+<span class="sd">    are parallel the intersection lines are not computed [1]_.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] http://geomalgorithms.com/Pic_3-planes.gif</span>
 
 <span class="sd">    """</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">intersection_plane_plane</span><span class="p">(</span><span class="n">plane1</span><span class="p">,</span> <span class="n">plane2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
@@ -491,18 +533,29 @@
 
 
 <span class="k">def</span> <span class="nf">intersection_lines_xy</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
-    <span class="sd">"""Compute the intersections of mulitple lines in the XY plane [wikipedia2017f]_.</span>
+    <span class="sd">"""Compute the intersections of mulitple lines in the XY plane.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        lines: (sequence): A list of sequences of XY(Z) coordinates of two 2D or 3D points</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lines : sequence</span>
+<span class="sd">        A list of sequences of XY(Z) coordinates of two 2D or 3D points</span>
 <span class="sd">        (Z will be ignored) representing the lines.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        None: if there is no intersection point (parallel lines).</span>
-<span class="sd">        list: XY coordinates of intersection point.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">        If there is no intersection point (parallel lines).</span>
+<span class="sd">    list</span>
+<span class="sd">        XY coordinates of intersection point.</span>
 
-<span class="sd">    Note:</span>
-<span class="sd">        If the lines are parallel, there is no intersection point.</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If the lines are parallel, there is no intersection point [1]_.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Wikipedia.*Line-line intersection*.</span>
+<span class="sd">           Available at: https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection</span>
 
 <span class="sd">    """</span>
     <span class="c1"># points = []</span>
@@ -548,7 +601,6 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../bibliography.html">Bibliography</a></li>
 </ul>
 </div>
 </div>
