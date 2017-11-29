@@ -4,7 +4,7 @@
 Citing
 ********************************************************************************
 
-If you use the **compas** library in a project, please refer to the GitHub repository.
+If you use the main library of **COMPAS** in a project, please refer to the GitHub repository.
 
 .. code-block:: latex
 
@@ -16,7 +16,7 @@ If you use the **compas** library in a project, please refer to the GitHub repos
     }
 
 
-If you use the **compas** library in academic research, please cite the following paper.
+If you use the main library of **COMPAS** in academic research, please cite the following paper.
 
 .. code-block:: latex
 
