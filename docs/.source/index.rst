@@ -13,3 +13,4 @@ The main library of compas
    tutorial
    reference
    citing
+   releases
