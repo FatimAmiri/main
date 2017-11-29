@@ -15,7 +15,6 @@ Matlab sessions from Rhino
     <div class="card-title">Downloads</div>
 
 * :download:`interface-matlab-rhino.3dm </../../examples/interface-matlab-rhino.3dm>`
-* :download:`interface-matlab-rhino.py </../../examples/interface-matlab-rhino.py>`
 
 .. raw:: html
 

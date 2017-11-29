@@ -15,7 +15,6 @@ Mesh smoothing on a surface
     <div class="card-title">Downloads</div>
 
 * :download:`mesh-smoothing-on-surface.3dm </../../examples/mesh-smoothing-on-surface.3dm>`
-* :download:`mesh-smoothing-on-surface.py </../../examples/mesh-smoothing-on-surface.py>`
 
 .. raw:: html
 

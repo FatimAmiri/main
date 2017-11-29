@@ -24,7 +24,7 @@ mesh = Mesh.from_ply(compas.get_bunny())
 # display the results in Rhino
 
 points = [mesh.vertex_coordinates(key) for key in mesh.vertices()]
-points = rotate_points(points, [1.0, 0.0, 0.0], radians(90)
+points = rotate_points(points, [1.0, 0.0, 0.0], radians(90))
 
 for index, (key, attr) in enumerate(mesh.vertices(True)):
     attr['x'] = points[index][0]

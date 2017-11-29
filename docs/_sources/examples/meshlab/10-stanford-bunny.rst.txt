@@ -8,18 +8,6 @@ The Stanford Bunny
     :figclass: figure
     :class: figure-img img-fluid
 
-.. raw:: html
-
-    <div class="card bg-light">
-    <div class="card-body">
-    <div class="card-title">Downloads</div>
-
-* :download:`mesh-stanford-bunny.py </../../examples/mesh-stanford-bunny.py>`
-
-.. raw:: html
-
-    </div>
-    </div>
 
 .. literalinclude:: /../../examples/mesh-stanford-bunny.py
 

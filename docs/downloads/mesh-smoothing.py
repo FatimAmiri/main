@@ -1,5 +1,4 @@
 """Smooth a mesh.
-
 """
 
 from compas.datastructures import Mesh
@@ -24,9 +23,9 @@ mesh = compas_rhino.mesh_from_guid(Mesh, guid)
 # extract the data needed by the smoothing algorithm
 # identify the boundary as fixed
 
-vertices  = {key: mesh.vertex_coordinates(key) for key in mesh.vertices()}
-faces     = {key: mesh.face_vertices(key) for key in mesh.faces()}
-adjacency = {key: mesh.vertex_faces(key) for key in mesh.vertices()}
+vertices  = mesh.get_vertices_attributes('xyz')
+faces     = [mesh.face_vertices(fkey) for fkey in mesh.faces()]
+adjacency = [mesh.vertex_faces(key, ordered=True) for key in mesh.vertices()]
 fixed     = mesh.vertices_on_boundary()
 
 

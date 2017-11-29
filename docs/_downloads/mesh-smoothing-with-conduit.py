@@ -34,10 +34,10 @@ mesh = compas_rhino.mesh_from_guid(Mesh, guid)
 # extract the data needed by the smoothing algorithm
 # identify the boundary as fixed
 
-vertices  = {key: mesh.vertex_coordinates(key) for key in mesh.vertices()}
-faces     = {key: mesh.face_vertices(key) for key in mesh.faces()}
-adjacency = {key: mesh.vertex_faces(key) for key in mesh.vertices()}
-fixed     = set(mesh.vertices_on_boundary())
+vertices  = mesh.get_vertices_attributes('xyz')
+faces     = [mesh.face_vertices(fkey) for fkey in mesh.faces()]
+adjacency = [mesh.vertex_faces(key, ordered=True) for key in mesh.vertices()]
+fixed     = mesh.vertices_on_boundary()
 
 
 # add two additional fixed vertices
@@ -46,7 +46,7 @@ fixed     = set(mesh.vertices_on_boundary())
 
 for key in (161, 256):
     vertices[key][2] -= dz
-    fixed.add(key)
+    fixed.append(key)
 
 
 # make a conduit for visualisation
@@ -57,7 +57,7 @@ lines = [[vertices[u], vertices[v]] for u, v in edges]
 
 conduit = LinesConduit(lines, refreshrate=5)
 
-def callback(vertices, k, args):
+def callback(k, args):
     conduit.lines = [[vertices[u], vertices[v]] for u, v in iter(edges)]
     conduit.redraw(k)
 

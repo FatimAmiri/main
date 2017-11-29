@@ -8,17 +8,5 @@ Network equilibrium
     :figclass: figure
     :class: figure-img img-fluid
 
-.. raw:: html
-
-    <div class="card bg-light">
-    <div class="card-body">
-    <div class="card-title">Downloads</div>
-
-* :download:`network-equilibrium.py </../../examples/network-equilibrium.py>`
-
-.. raw:: html
-
-    </div>
-    </div>
 
 .. literalinclude:: /../../examples/network-equilibrium.py

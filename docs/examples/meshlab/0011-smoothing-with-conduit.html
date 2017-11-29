@@ -58,7 +58,6 @@
 <div class="card-body">
 <div class="card-title">Downloads</div><ul class="simple">
 <li><p><a class="reference download internal" download="" href="../../downloads/mesh-smoothing.3dm"><code class="xref download docutils literal">mesh-smoothing.3dm</code></a></p></li>
-<li><p><a class="reference download internal" download="" href="../../downloads/mesh-smoothing-with-conduit.py"><code class="xref download docutils literal">mesh-smoothing-with-conduit.py</code></a></p></li>
 </ul>
 </div>
 </div><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="sd">"""Visualising mesh smoothing.</span>
@@ -97,10 +96,10 @@
 <span class="c1"># extract the data needed by the smoothing algorithm</span>
 <span class="c1"># identify the boundary as fixed</span>
 
-<span class="n">vertices</span>  <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
-<span class="n">faces</span>     <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()}</span>
-<span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_faces</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
-<span class="n">fixed</span>     <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">())</span>
+<span class="n">vertices</span>  <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">'xyz'</span><span class="p">)</span>
+<span class="n">faces</span>     <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()]</span>
+<span class="n">adjacency</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_faces</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
+<span class="n">fixed</span>     <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">()</span>
 
 
 <span class="c1"># add two additional fixed vertices</span>
@@ -109,7 +108,7 @@
 
 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">161</span><span class="p">,</span> <span class="mi">256</span><span class="p">):</span>
     <span class="n">vertices</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">-=</span> <span class="n">dz</span>
-    <span class="n">fixed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">fixed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
 
 <span class="c1"># make a conduit for visualisation</span>
@@ -120,7 +119,7 @@
 
 <span class="n">conduit</span> <span class="o">=</span> <span class="n">LinesConduit</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">refreshrate</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
     <span class="n">conduit</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="p">[[</span><span class="n">vertices</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">edges</span><span class="p">)]</span>
     <span class="n">conduit</span><span class="o">.</span><span class="n">redraw</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
@@ -145,6 +144,7 @@
 
 <span class="n">compas_rhino</span><span class="o">.</span><span class="n">mesh_draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </code></pre></div>
+
 </div>
 <!--<nav class="compas-sideways">
                             
@@ -183,7 +183,6 @@
 <li class="nav-item"><a class="nav-link reference internal" href="05-remeshing.html">Remeshing 2D</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="06-remeshing-on-mesh.html">Remeshing 3D</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="07-subd-modeling.html">Subd mesh modeling</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="08-skeleton-modeling.html">Skeleton mesh modeling</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="10-stanford-bunny.html">The Stanford Bunny</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="13-parameterisation.html">Mesh parametrisation</a></li>
 </ul>
@@ -195,6 +194,7 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../reference.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../releases.html">Releases</a></li>
 </ul>
 </div>
 </div>

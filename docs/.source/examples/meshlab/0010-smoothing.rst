@@ -16,7 +16,6 @@ Mesh smoothing
     <div class="card-title">Downloads</div>
 
 * :download:`mesh-smoothing.3dm </../../examples/mesh-smoothing.3dm>`
-* :download:`mesh-smoothing.py </../../examples/mesh-smoothing.py>`
 
 .. raw:: html
 

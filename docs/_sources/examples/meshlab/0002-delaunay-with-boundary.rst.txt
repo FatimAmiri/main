@@ -19,7 +19,6 @@ Delaunay triangulation with boundary
     <div class="card-title">Downloads</div>
 
 * :download:`mesh-delaunay.3dm </../../examples/mesh-delaunay.3dm>`
-* :download:`mesh-delaunay-with-boundary.py </../../examples/mesh-delaunay-with-boundary.py>`
 
 .. raw:: html
 

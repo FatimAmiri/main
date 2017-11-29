@@ -15,7 +15,6 @@ Delaunay triangulation
     <div class="card-title">Downloads</div>
 
 * :download:`mesh-delaunay.3dm </../../examples/mesh-delaunay.3dm>`
-* :download:`mesh-delaunay-from-points.py </../../examples/mesh-delaunay-from-points.py>`
 
 .. raw:: html
 

@@ -73,7 +73,7 @@ matlab.put('C', C)
 # compute edge lengths
 
 matlab.eval('uv = C * xyz;')
-matlab.eval("l = sqrt(sum(uv .^ 2, 2));")
+matlab.eval('l = sqrt(sum(uv .^ 2, 2));')
 
 # get the result back
 

@@ -38,9 +38,9 @@ surf = RhinoSurface(guid)
 # extract the input for the smoothing algorithm from the mesh
 # and identify the boundary as fixed
 
-vertices  = {key: mesh.vertex_coordinates(key) for key in mesh.vertices()}
-faces     = {key: mesh.face_vertices(key) for key in mesh.faces()}
-adjacency = {key: mesh.vertex_faces(key) for key in mesh.vertices()}
+vertices  = mesh.get_vertices_attributes('xyz')
+faces     = [mesh.face_vertices(fkey) for fkey in mesh.faces()]
+adjacency = [mesh.vertex_faces(key, ordered=True) for key in mesh.vertices()]
 fixed     = set(mesh.vertices_on_boundary())
 
 
@@ -54,12 +54,14 @@ lines = [[vertices[u], vertices[v]] for u, v in edges]
 
 conduit = LinesConduit(lines, refreshrate=5)
 
-def callback(vertices, k, args):
-    for key in set(vertices) - fixed:
-            x, y, z = surf.closest_point(vertices[key])
-            vertices[key][0] = x
-            vertices[key][1] = y
-            vertices[key][2] = z
+def callback(k, args):
+    for index in range(len(vertices)):
+        if index in fixed:
+            continue
+        x, y, z = surf.closest_point(vertices[index])
+        vertices[index][0] = x
+        vertices[index][1] = y
+        vertices[index][2] = z
 
     conduit.lines = [[vertices[u], vertices[v]] for u, v in edges]
     conduit.redraw(k)

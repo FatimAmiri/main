@@ -8,18 +8,6 @@ Network equilibrium in Blender
     :figclass: figure
     :class: figure-img img-fluid
 
-.. raw:: html
-
-    <div class="card bg-light">
-    <div class="card-body">
-    <div class="card-title">Downloads</div>
-
-* :download:`network-equilibrium-blender.py </../../examples/network-equilibrium-blender.py>`
-
-.. raw:: html
-
-    </div>
-    </div>
 
 .. literalinclude:: /../../examples/network-equilibrium-blender.py
 

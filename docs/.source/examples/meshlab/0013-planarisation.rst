@@ -15,7 +15,6 @@ Mesh planarisation
     <div class="card-title">Downloads</div>
 
 * :download:`mesh-planarization.3dm </../../examples/mesh-planarization.3dm>`
-* :download:`mesh-planarization.py </../../examples/mesh-planarization.py>`
 
 .. raw:: html
 

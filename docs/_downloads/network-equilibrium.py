@@ -22,7 +22,7 @@ import compas
 from compas.datastructures import Network
 from compas.viewers import NetworkViewer
 
-from compas.numerical import fd
+from compas.numerical import fd_numpy
 
 
 __author__    = ['Tom Van Mele', ]
@@ -62,7 +62,7 @@ fixed = network.vertices_where({'is_anchor': True})
 fixed = [key_index[key] for key in fixed]
 edges = [(key_index[u], key_index[v]) for u, v in network.edges()]
 
-res = fd(xyz, edges, fixed, q, loads, rtype='list')
+res = fd_numpy(xyz, edges, fixed, q, loads)
 xyz = res[0]
 
 
@@ -71,9 +71,9 @@ xyz = res[0]
 
 for key, attr in network.vertices(True):
     index = key_index[key]
-    attr['x'] = xyz[index][0]
-    attr['y'] = xyz[index][1]
-    attr['z'] = xyz[index][2]
+    attr['x'] = xyz[index, 0]
+    attr['y'] = xyz[index, 1]
+    attr['z'] = xyz[index, 2]
 
 viewer = NetworkViewer(network)
 viewer.setup()

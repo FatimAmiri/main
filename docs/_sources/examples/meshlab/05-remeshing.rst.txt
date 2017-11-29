@@ -15,7 +15,6 @@ Remeshing 2D
     <div class="card-title">Downloads</div>
 
 * :download:`mesh-remeshing.3dm </../../examples/mesh-remeshing.3dm>`
-* :download:`mesh-remeshing.py </../../examples/mesh-remeshing.py>`
 
 .. raw:: html
 
