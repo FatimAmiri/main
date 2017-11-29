@@ -16,18 +16,18 @@ If you use the main library of **COMPAS** in a project, please refer to the GitH
     }
 
 
-If you use the main library of **COMPAS** in academic research, please cite the following paper.
+.. If you use the main library of **COMPAS** in academic research, please cite the following paper.
 
-.. code-block:: latex
+.. .. code-block:: latex
 
-    @article{compas,
-        title   = {{compas}: A framework for computational research in architecture and structures.},
-        author  = {Tom Van Mele},
-        journal = {SoftwareX},
-        year    = {2017},
-        volume  = {},
-        number  = {},
-        pages   = {},
-        month   = {},
-        note    = {Submitted for review.}, 
-    }
+..     @article{compas,
+..         title   = {{compas}: A framework for computational research in architecture and structures.},
+..         author  = {Tom Van Mele},
+..         journal = {SoftwareX},
+..         year    = {2017},
+..         volume  = {},
+..         number  = {},
+..         pages   = {},
+..         month   = {},
+..         note    = {Submitted for review.}, 
+..     }
