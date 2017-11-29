@@ -26,6 +26,9 @@
 <li class="nav-item">
 <a class="nav-link" href="/packages/">Additional Packages</a>
 </li>
+<li class="nav-item">
+<a class="nav-link" href="http://forum.compas-framework.org">Forum</a>
+</li>
 </ul>
 </header>
 <div class="container-fluid compas-container">
@@ -116,9 +119,22 @@
                            <span class="s1">'color'</span> <span class="p">:</span> <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">),</span>
                            <span class="s1">'size'</span>  <span class="p">:</span> <span class="mf">5.0</span><span class="p">})</span>
 
+        <span class="n">normals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
+            <span class="n">n</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_normal</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="n">unitized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_centroid</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
+            <span class="n">ep</span> <span class="o">=</span> <span class="p">[</span><span class="n">sp</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">+</span> <span class="n">n</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">'start'</span> <span class="p">:</span> <span class="n">sp</span><span class="p">,</span>
+                <span class="s1">'end'</span>   <span class="p">:</span> <span class="n">ep</span><span class="p">,</span>
+                <span class="s1">'color'</span> <span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                <span class="s1">'width'</span> <span class="p">:</span> <span class="mf">2.0</span> 
+            <span class="p">})</span>
+
         <span class="n">xdraw_polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
         <span class="n">xdraw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-        <span class="n">xdraw_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
+        <span class="n">xdraw_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">xdraw_lines</span><span class="p">(</span><span class="n">normals</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MeshViewer.keypress"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.MeshViewer.keypress.html#compas.viewers.MeshViewer.keypress">[docs]</a>    <span class="k">def</span> <span class="nf">keypress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="sd">"""</span>
@@ -152,39 +168,45 @@
 <span class="k">class</span> <span class="nc">SubdMeshViewer</span><span class="p">(</span><span class="n">Viewer</span><span class="p">):</span>
     <span class="sd">"""Viewer for subdivision meshes.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        mesh (compas.datastructures.mesh.Mesh): The *control* mesh object.</span>
-<span class="sd">        subdfunc (callable): The subdivision algorithm/scheme.</span>
-<span class="sd">        width (int): Optional. Width of the viewport. Default is ``1440``.</span>
-<span class="sd">        height (int): Optional. Height of the viewport. Default is ``900``.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : Mesh</span>
+<span class="sd">        The *control* mesh object.</span>
+<span class="sd">    subdfunc :callable</span>
+<span class="sd">        The subdivision algorithm/scheme.</span>
+<span class="sd">    width : int</span>
+<span class="sd">        Optional. Width of the viewport. Default is ``1440``.</span>
+<span class="sd">    height : int</span>
+<span class="sd">        Optional. Height of the viewport. Default is ``900``.</span>
 
-<span class="sd">    Warning:</span>
-<span class="sd">        Not properly tested on meshes with a boundary.</span>
+<span class="sd">    Warning</span>
+<span class="sd">    -------</span>
+<span class="sd">    Not properly tested on meshes with a boundary.</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        .. code-block:: python</span>
+<span class="sd">        from functools import partial</span>
 
-<span class="sd">            from functools import partial</span>
-<span class="sd">        </span>
-<span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.topology import mesh_subdivide</span>
-<span class="sd">            from compas.viewers import SubdMeshViewer</span>
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas.topology import mesh_subdivide</span>
+<span class="sd">        from compas.viewers import SubdMeshViewer</span>
 
-<span class="sd">            subdivide = partial(mesh_subdivide, scheme='doosabin')</span>
+<span class="sd">        subdivide = partial(mesh_subdivide, scheme='doosabin')</span>
 
-<span class="sd">            mesh = Mesh.from_polyhedron(6)</span>
+<span class="sd">        mesh = Mesh.from_polyhedron(6)</span>
 
-<span class="sd">            viewer = SubdMeshViewer(mesh, subdfunc=subdivide, width=600, height=600)</span>
+<span class="sd">        viewer = SubdMeshViewer(mesh, subdfunc=subdivide, width=600, height=600)</span>
 
-<span class="sd">            viewer.axes_on = False</span>
-<span class="sd">            viewer.grid_on = False</span>
+<span class="sd">        viewer.axes_on = False</span>
+<span class="sd">        viewer.grid_on = False</span>
 
-<span class="sd">            for i in range(10):</span>
-<span class="sd">                viewer.camera.zoom_in()</span>
+<span class="sd">        for i in range(10):</span>
+<span class="sd">            viewer.camera.zoom_in()</span>
 
-<span class="sd">            viewer.setup()</span>
-<span class="sd">            viewer.show()</span>
+<span class="sd">        viewer.setup()</span>
+<span class="sd">        viewer.show()</span>
 
 <span class="sd">    """</span>
 
@@ -336,7 +358,7 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../bibliography.html">Bibliography</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
 </ul>
 </div>
 </div>
@@ -354,7 +376,7 @@
             
 
             
-                Last updated on Nov 28, 2017.
+                Last updated on Nov 29, 2017.
             
 
             

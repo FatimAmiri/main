@@ -26,6 +26,9 @@
 <li class="nav-item">
 <a class="nav-link" href="/packages/">Additional Packages</a>
 </li>
+<li class="nav-item">
+<a class="nav-link" href="http://forum.compas-framework.org">Forum</a>
+</li>
 </ul>
 </header>
 <div class="container-fluid compas-container">
@@ -122,12 +125,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        adjacency (list): List of lists, vertex adjacency data.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    adjacency : list</span>
+<span class="sd">        List of lists, vertex adjacency data.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed adjacency matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed adjacency matrix.</span>
+
 <span class="sd">    """</span>
     <span class="n">a</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adjacency</span><span class="p">))</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">adjacency</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
     <span class="n">data</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">)</span>
@@ -140,12 +147,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        face_vertices (list): List of lists, vertices per face.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    face_vertices : list</span>
+<span class="sd">        List of lists, vertices per face.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed face matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed face matrix.</span>
+
 <span class="sd">    """</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">array</span><span class="p">([(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">vertices</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">face_vertices</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">])</span>
     <span class="n">F</span> <span class="o">=</span> <span class="n">coo_matrix</span><span class="p">((</span><span class="n">f</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">(</span><span class="n">f</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])))</span><span class="o">.</span><span class="n">asfptype</span><span class="p">()</span>
@@ -161,12 +172,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        adjacency (list): List of lists, vertex adjacency data.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    adjacency : list</span>
+<span class="sd">        List of lists, vertex adjacency data.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed degree matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed degree matrix.</span>
+
 <span class="sd">    """</span>
     <span class="n">d</span> <span class="o">=</span> <span class="p">[(</span><span class="nb">len</span><span class="p">(</span><span class="n">adjacency</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adjacency</span><span class="p">))]</span>
     <span class="n">data</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">d</span><span class="p">)</span>
@@ -183,13 +198,18 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        edges (list): List of lists [[node_i, node_j], [node_k, node_l]].</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    edges : list</span>
+<span class="sd">        List of lists [[node_i, node_j], [node_k, node_l]].</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed connectivity matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed connectivity matrix.</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    The connectivity matrix encodes how edges in a network are connected</span>
 <span class="sd">    together. Each row represents an edge and has 1 and -1 inserted into the</span>
 <span class="sd">    columns for the start and end nodes.</span>
@@ -203,17 +223,15 @@
 <span class="sd">            0  &amp; otherwise</span>
 <span class="sd">        }</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">        A connectivity matrix is generally sparse and will perform superior</span>
-<span class="sd">        in numerical calculations as a sparse matrix.</span>
+<span class="sd">    A connectivity matrix is generally sparse and will perform superior</span>
+<span class="sd">    in numerical calculations as a sparse matrix.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">        &gt;&gt;&gt; connectivity_matrix([[0, 1], [0, 2], [0, 3]], rtype='array')</span>
-<span class="sd">        [[-1  1  0  0]</span>
-<span class="sd">         [-1  0  1  0]</span>
-<span class="sd">         [-1  0  0  1]]</span>
+<span class="sd">    &gt;&gt;&gt; connectivity_matrix([[0, 1], [0, 2], [0, 3]], rtype='array')</span>
+<span class="sd">    [[-1  1  0  0]</span>
+<span class="sd">     [-1  0  1  0]</span>
+<span class="sd">     [-1  0  0  1]]</span>
 
 <span class="sd">    """</span>
     <span class="n">m</span>    <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
@@ -235,31 +253,33 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        edges (list): List of lists [[node_i, node_j], [node_k, node_l]].</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    edges : list</span>
+<span class="sd">        List of lists [[node_i, node_j], [node_k, node_l]].</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed Laplacian matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed Laplacian matrix.</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    The laplacian matrix is defined as</span>
 
 <span class="sd">    .. math::</span>
 
 <span class="sd">        \mathbf{L} = \mathbf{C} ^ \mathrm{T} \mathbf{C}</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">        The current implementation only supports umbrella weights,</span>
-<span class="sd">        as other weighting schemes are not generally applicable.</span>
+<span class="sd">    The current implementation only supports umbrella weights.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">        &gt;&gt;&gt; laplacian_matrix([[0, 1], [0, 2], [0, 3]], rtype='array')</span>
-<span class="sd">        [[ 3 -1 -1 -1]</span>
-<span class="sd">         [-1  1  0  0]</span>
-<span class="sd">         [-1  0  1  0]</span>
-<span class="sd">         [-1  0  0  1]]</span>
+<span class="sd">    &gt;&gt;&gt; laplacian_matrix([[0, 1], [0, 2], [0, 3]], rtype='array')</span>
+<span class="sd">    [[ 3 -1 -1 -1]</span>
+<span class="sd">     [-1  1  0  0]</span>
+<span class="sd">     [-1  0  1  0]</span>
+<span class="sd">     [-1  0  0  1]]</span>
 
 <span class="sd">    """</span>
     <span class="n">C</span> <span class="o">=</span> <span class="n">connectivity_matrix</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">'csr'</span><span class="p">)</span>
@@ -279,15 +299,22 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        C (array, sparse): Connectivity matrix (m x n).</span>
-<span class="sd">        xyz (array, list): Array of vertex coordinates (n x 3).</span>
-<span class="sd">        free (list): The index values of the free vertices.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    C : array-like</span>
+<span class="sd">        Connectivity matrix (m x n).</span>
+<span class="sd">    xyz : array-like</span>
+<span class="sd">        Array of vertex coordinates (n x 3).</span>
+<span class="sd">    free : list</span>
+<span class="sd">        The index values of the free vertices.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed equilibrium matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed equilibrium matrix.</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    Analysis of the equilibrium matrix reveals some of the properties of the</span>
 <span class="sd">    structural system, its size is (2ni x m) where ni is the number of free or</span>
 <span class="sd">    internal nodes. It is calculated by</span>
@@ -304,18 +331,16 @@
 <span class="sd">            \end{array}</span>
 <span class="sd">        \right].</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">        The matrix of vertex coordinates is vectorised to speed up the</span>
-<span class="sd">        calculations.</span>
+<span class="sd">    The matrix of vertex coordinates is vectorised to speed up the</span>
+<span class="sd">    calculations.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">        &gt;&gt;&gt; C = connectivity_matrix([[0, 1], [0, 2], [0, 3]])</span>
-<span class="sd">        &gt;&gt;&gt; xyz = [[0, 0, 1], [0, 1, 0], [-1, -1, 0], [1, -1, 0]]</span>
-<span class="sd">        &gt;&gt;&gt; equilibrium_matrix(C, xyz, [0], rtype='array')</span>
-<span class="sd">            [[ 0.  1. -1.]</span>
-<span class="sd">             [-1.  1.  1.]]</span>
+<span class="sd">    &gt;&gt;&gt; C = connectivity_matrix([[0, 1], [0, 2], [0, 3]])</span>
+<span class="sd">    &gt;&gt;&gt; xyz = [[0, 0, 1], [0, 1, 0], [-1, -1, 0], [1, -1, 0]]</span>
+<span class="sd">    &gt;&gt;&gt; equilibrium_matrix(C, xyz, [0], rtype='array')</span>
+<span class="sd">        [[ 0.  1. -1.]</span>
+<span class="sd">         [-1.  1.  1.]]</span>
 
 <span class="sd">    """</span>
     <span class="n">xyz</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -335,16 +360,24 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        Ct (sparse): Sparse transpose of the connectivity matrix (n x m).</span>
-<span class="sd">        ks (array): Vector of member EA / L (m x 1).</span>
-<span class="sd">        q (array): Vector of member force densities (m x 1).</span>
-<span class="sd">        c (float): Convergence factor.</span>
-<span class="sd">        tiled (boolean): Whether to tile horizontally by 3 for x, y, z.</span>
+<span class="sd">    Ct : sparse</span>
+<span class="sd">        Sparse transpose of the connectivity matrix (n x m).</span>
+<span class="sd">    ks : array</span>
+<span class="sd">        Vector of member EA / L (m x 1).</span>
+<span class="sd">    q : array</span>
+<span class="sd">        Vector of member force densities (m x 1).</span>
+<span class="sd">    c : float</span>
+<span class="sd">        Convergence factor.</span>
+<span class="sd">    tiled : bool</span>
+<span class="sd">        Whether to tile horizontally by 3 for x, y, z.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array: Mass matrix, either (m x 1) or (m x 3).</span>
+<span class="sd">    array</span>
+<span class="sd">        Mass matrix, either (m x 1) or (m x 3).</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    The mass matrix is defined as the sum of the member axial stiffnesses</span>
 <span class="sd">    (inline) of the elements connected to each node, plus the force density.</span>
 <span class="sd">    The force density ensures a non-zero value in form-finding/pre-stress</span>
@@ -376,12 +409,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        network (obj): Network datastructure object to get data from.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    network : obj</span>
+<span class="sd">        Network datastructure object to get data from.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed adjacency matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed adjacency matrix.</span>
+
 <span class="sd">    """</span>
     <span class="n">key_index</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
     <span class="n">adjacency</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key_index</span><span class="p">[</span><span class="n">nbr</span><span class="p">]</span> <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_neighbours</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
@@ -393,12 +430,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        network (obj): Network datastructure object to get data from.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    network : obj</span>
+<span class="sd">        Network datastructure object to get data from.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed vertex degree matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed vertex degree matrix.</span>
+
 <span class="sd">    """</span>
     <span class="n">key_index</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
     <span class="n">adjacency</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key_index</span><span class="p">[</span><span class="n">nbr</span><span class="p">]</span> <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_neighbours</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
@@ -410,12 +451,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        network (obj): Network datastructure object to get data from.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    network : obj</span>
+<span class="sd">        Network datastructure object to get data from.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed connectivity matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed connectivity matrix.</span>
+
 <span class="sd">    """</span>
     <span class="n">key_index</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
     <span class="n">edges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">key_index</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">key_index</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()]</span>
@@ -427,38 +472,42 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        network (obj): Network datastructure object to get data from.</span>
-<span class="sd">        normalize (bool): Normalize the entries such that the value on the diagonal is ``1``.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    network : obj</span>
+<span class="sd">        Network datastructure object to get data from.</span>
+<span class="sd">    normalize : bool</span>
+<span class="sd">        Normalize the entries such that the value on the diagonal is ``1``.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed Laplacian matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed Laplacian matrix.</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">        ``d = L.dot(xyz)`` is currently a vector that points from the centroid to the vertex.</span>
-<span class="sd">        Therefore ``c = xyz - d``. By changing the signs in the laplacian, the dsiplacement</span>
-<span class="sd">        vectors could be used in a more natural way ``c = xyz + d``.</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    ``d = L.dot(xyz)`` is currently a vector that points from the centroid to the vertex.</span>
+<span class="sd">    Therefore ``c = xyz - d``. By changing the signs in the laplacian, the dsiplacement</span>
+<span class="sd">    vectors could be used in a more natural way ``c = xyz + d``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">        .. plot::</span>
-<span class="sd">            :include-source:</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
 
-<span class="sd">            from numpy import array</span>
+<span class="sd">        from numpy import array</span>
 
-<span class="sd">            import compas</span>
-<span class="sd">            from compas.datastructures import Network</span>
-<span class="sd">            from compas.numerical import network_laplacian_matrix</span>
+<span class="sd">        import compas</span>
+<span class="sd">        from compas.datastructures import Network</span>
+<span class="sd">        from compas.numerical import network_laplacian_matrix</span>
 
-<span class="sd">            network = Network.from_obj(compas.get('grid_irregular.obj'))</span>
+<span class="sd">        network = Network.from_obj(compas.get('grid_irregular.obj'))</span>
 
-<span class="sd">            xy = array([network.vertex_coordinates(key, 'xy') for key in network.vertices()])</span>
-<span class="sd">            L  = network_laplacian_matrix(network, normalize=True, rtype='csr')</span>
-<span class="sd">            d  = L.dot(xy)</span>
+<span class="sd">        xy = array([network.vertex_coordinates(key, 'xy') for key in network.vertices()])</span>
+<span class="sd">        L  = network_laplacian_matrix(network, normalize=True, rtype='csr')</span>
+<span class="sd">        d  = L.dot(xy)</span>
 
-<span class="sd">            lines = [{'start': xy[i], 'end': xy[i] - d[i]} for i, k in enumerate(network.vertices())]</span>
+<span class="sd">        lines = [{'start': xy[i], 'end': xy[i] - d[i]} for i, k in enumerate(network.vertices())]</span>
 
 <span class="sd">    """</span>
     <span class="n">key_index</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
@@ -471,12 +520,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        mesh (obj): Mesh datastructure object to get data from.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    mesh : obj</span>
+<span class="sd">        Mesh datastructure object to get data from.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed adjacency matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed adjacency matrix.</span>
+
 <span class="sd">    """</span>
     <span class="n">key_index</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
     <span class="n">adjacency</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key_index</span><span class="p">[</span><span class="n">nbr</span><span class="p">]</span> <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_neighbours</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
@@ -488,12 +541,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        mesh (obj): Mesh datastructure object to get data from.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    mesh : obj</span>
+<span class="sd">        Mesh datastructure object to get data from.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed connectivity matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed connectivity matrix.</span>
+
 <span class="sd">    """</span>
     <span class="n">key_index</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
     <span class="n">edges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">key_index</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">key_index</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">()]</span>
@@ -505,12 +562,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        mesh (obj): Mesh datastructure object to get data from.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    mesh : obj</span>
+<span class="sd">        Mesh datastructure object to get data from.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed vertex degree matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed vertex degree matrix.</span>
+
 <span class="sd">    """</span>
     <span class="n">key_index</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
     <span class="n">adjacency</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key_index</span><span class="p">[</span><span class="n">nbr</span><span class="p">]</span> <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_neighbours</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
@@ -522,12 +583,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        mesh (obj): Mesh datastructure object to get data from.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    mesh : obj</span>
+<span class="sd">        Mesh datastructure object to get data from.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed Laplacian matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed Laplacian matrix.</span>
+
 <span class="sd">    """</span>
     <span class="n">data</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
     <span class="n">key_index</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
@@ -554,13 +619,18 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        mesh (obj): Mesh datastructure object to get data from.</span>
-<span class="sd">        rtype (str): Format of the result, 'array', 'csc', 'csr', 'coo', 'list'.</span>
+<span class="sd">    mesh : obj</span>
+<span class="sd">        Mesh datastructure object to get data from.</span>
+<span class="sd">    rtype : {'array', 'csc', 'csr', 'coo', 'list'}</span>
+<span class="sd">        Format of the result.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array, sparse, list: Constructed mesh face matrix.</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Constructed mesh face matrix.</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    The face matrix represents the relationship between faces and vertices.</span>
 <span class="sd">    Each row of the matrix represents a face. Each column represents a vertex.</span>
 <span class="sd">    The matrix is filled with zeros except where a relationship between a vertex</span>
@@ -579,17 +649,17 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">        .. code-block:: python</span>
+<span class="sd">    .. code-block:: python</span>
 
-<span class="sd">            import compas</span>
-<span class="sd">            from compas.datastructures import Mesh</span>
-<span class="sd">            from compas.numerical import mesh_face_matrix</span>
+<span class="sd">        import compas</span>
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas.numerical import mesh_face_matrix</span>
 
-<span class="sd">            mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
+<span class="sd">        mesh = Mesh.from_obj(compas.get('faces.obj'))</span>
 
-<span class="sd">            F   = mesh_face_matrix(mesh, 'csr')</span>
-<span class="sd">            xyz = array([mesh.vertex_coordinates(key) for key in mesh.vertices()])</span>
-<span class="sd">            c   = F.dot(xyz)</span>
+<span class="sd">        F   = mesh_face_matrix(mesh, 'csr')</span>
+<span class="sd">        xyz = array([mesh.vertex_coordinates(key) for key in mesh.vertices()])</span>
+<span class="sd">        c   = F.dot(xyz)</span>
 
 <span class="sd">    """</span>
     <span class="n">key_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">())}</span>
@@ -615,30 +685,33 @@
 
 
 <div class="viewcode-block" id="trimesh_cotangent_laplacian_matrix"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.trimesh_cotangent_laplacian_matrix.html#compas.numerical.trimesh_cotangent_laplacian_matrix">[docs]</a><span class="k">def</span> <span class="nf">trimesh_cotangent_laplacian_matrix</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
-    <span class="sd">"""Construct the Laplacian of a triangular mesh with cotangent weights.</span>
+    <span class="sa">r</span><span class="sd">"""Construct the Laplacian of a triangular mesh with cotangent weights.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        mesh (obj): The triangular Mesh datastructure object.</span>
+<span class="sd">    mesh : obj</span>
+<span class="sd">        The triangular Mesh datastructure object.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        array: The Laplacian matrix with cotangent weights.</span>
+<span class="sd">    array</span>
+<span class="sd">        The Laplacian matrix with cotangent weights.</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">        The matrix is constructed such that the diagonal contains the sum of the</span>
-<span class="sd">        weights of the adjacent vertices, multiplied by `-1`.</span>
-<span class="sd">        The entries of the matrix are thus</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The matrix is constructed such that the diagonal contains the sum of the</span>
+<span class="sd">    weights of the adjacent vertices, multiplied by `-1`.</span>
+<span class="sd">    The entries of the matrix are thus</span>
 
-<span class="sd">        .. math::</span>
+<span class="sd">    .. math::</span>
 
-<span class="sd">            \mathbf{L}_{ij} =</span>
-<span class="sd">                \begin{cases}</span>
-<span class="sd">                    - \sum_{(i, k) \in \mathbf{E}_{i}} w_{ik} &amp; if i = j \\</span>
-<span class="sd">                    w_{ij} &amp; if (i, j) \in \mathbf{E} \\</span>
-<span class="sd">                    0 &amp; otherwise</span>
-<span class="sd">                \end{cases}</span>
+<span class="sd">        \mathbf{L}_{ij} =</span>
+<span class="sd">            \begin{cases}</span>
+<span class="sd">                - \sum_{(i, k) \in \mathbf{E}_{i}} w_{ik} &amp; if i = j \\</span>
+<span class="sd">                w_{ij} &amp; if (i, j) \in \mathbf{E} \\</span>
+<span class="sd">                0 &amp; otherwise</span>
+<span class="sd">            \end{cases}</span>
+
 <span class="sd">    """</span>
     <span class="c1"># minus sum of the adjacent weights on the diagonal</span>
     <span class="c1"># cotangent weights on the neighbours</span>
@@ -712,7 +785,7 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../bibliography.html">Bibliography</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
 </ul>
 </div>
 </div>
@@ -730,7 +803,7 @@
             
 
             
-                Last updated on Nov 28, 2017.
+                Last updated on Nov 29, 2017.
             
 
             

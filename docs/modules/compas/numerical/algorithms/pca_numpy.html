@@ -26,6 +26,9 @@
 <li class="nav-item">
 <a class="nav-link" href="/packages/">Additional Packages</a>
 </li>
+<li class="nav-item">
+<a class="nav-link" href="http://forum.compas-framework.org">Forum</a>
+</li>
 </ul>
 </header>
 <div class="container-fluid compas-container">
@@ -72,67 +75,71 @@
 <div class="viewcode-block" id="pca_numpy"><a class="viewcode-back" href="../../../../reference/generated/compas.numerical.pca_numpy.html#compas.numerical.pca_numpy">[docs]</a><span class="k">def</span> <span class="nf">pca_numpy</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">"""Compute the principle components of a set of data points.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : list</span>
+<span class="sd">        A list of `m` observations, measuring `n` variables.</span>
+<span class="sd">        For example, if the data are points in 2D space, the data parameter</span>
+<span class="sd">        should contain `m` nested lists of `2` variables, the `x` and `y`</span>
+<span class="sd">        coordinates.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        A list of principle directions. The number of principle directions</span>
+<span class="sd">        is equal to the dimensionality of the problem(?!).</span>
+<span class="sd">        For example, if the data points are locations in 3D space, three</span>
+<span class="sd">        principle components will be returned. If the data points are</span>
+<span class="sd">        locations in 2D space, only two principle components will be returned.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    PCA of a dataset finds the directions along which the variance of the data</span>
 <span class="sd">    is largest, i.e. the directions along which the data is most spread out.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        data (list):</span>
-<span class="sd">            A list of `m` observations, measuring `n` variables.</span>
-<span class="sd">            For example, if the data are points in 2D space, the data parameter</span>
-<span class="sd">            should contain `m` nested lists of `2` variables, the `x` and `y`</span>
-<span class="sd">            coordinates.</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        list:</span>
-<span class="sd">            A list of principle directions. The number of principle directions</span>
-<span class="sd">            is equal to the dimensionality of the problem(?!).</span>
-<span class="sd">            For example, if the data points are locations in 3D space, three</span>
-<span class="sd">            principle components will be returned. If the data points are</span>
-<span class="sd">            locations in 2D space, only two principle components will be returned.</span>
+<span class="sd">        from numpy import random</span>
 
-<span class="sd">    Examples:</span>
+<span class="sd">        import matplotlib.pyplot as plt</span>
 
-<span class="sd">        .. plot::</span>
-<span class="sd">            :include-source:</span>
+<span class="sd">        from compas.geometry import rotation_matrix</span>
+<span class="sd">        from compas.geometry import transform_numpy</span>
 
-<span class="sd">            from numpy import random</span>
+<span class="sd">        from compas.plotters import Axes3D</span>
+<span class="sd">        from compas.plotters import Cloud3D</span>
+<span class="sd">        from compas.plotters import Bounds</span>
+<span class="sd">        from compas.plotters import create_axes_3d</span>
 
-<span class="sd">            import matplotlib.pyplot as plt</span>
+<span class="sd">        from compas.numerical import pca_numpy</span>
 
-<span class="sd">            from compas.geometry import rotation_matrix</span>
-<span class="sd">            from compas.geometry import transform_numpy</span>
+<span class="sd">        data = random.rand(300, 3)</span>
+<span class="sd">        data[:, 0] *= 10.0</span>
+<span class="sd">        data[:, 1] *= 1.0</span>
+<span class="sd">        data[:, 2] *= 4.0</span>
 
-<span class="sd">            from compas.plotters import Axes3D</span>
-<span class="sd">            from compas.plotters import Cloud3D</span>
-<span class="sd">            from compas.plotters import Bounds</span>
-<span class="sd">            from compas.plotters import create_axes_3d</span>
+<span class="sd">        a = 3.14159 * 30.0 / 180</span>
+<span class="sd">        Ry = rotation_matrix(a, [0, 1.0, 0.0], rtype='array')</span>
 
-<span class="sd">            from compas.numerical import pca_numpy</span>
+<span class="sd">        a = -3.14159 * 45.0 / 180</span>
+<span class="sd">        Rz = rotation_matrix(a, [0, 0, 1.0], rtype='array')</span>
 
-<span class="sd">            data = random.rand(300, 3)</span>
-<span class="sd">            data[:, 0] *= 10.0</span>
-<span class="sd">            data[:, 1] *= 1.0</span>
-<span class="sd">            data[:, 2] *= 4.0</span>
+<span class="sd">        R = Rz.dot(Ry)</span>
 
-<span class="sd">            a = 3.14159 * 30.0 / 180</span>
-<span class="sd">            Ry = rotation_matrix(a, [0, 1.0, 0.0], rtype='array')</span>
+<span class="sd">        data = transform_numpy(data, R)</span>
 
-<span class="sd">            a = -3.14159 * 45.0 / 180</span>
-<span class="sd">            Rz = rotation_matrix(a, [0, 0, 1.0], rtype='array')</span>
+<span class="sd">        average, vectors, values = pca_numpy(data)</span>
 
-<span class="sd">            R = Rz.dot(Ry)</span>
+<span class="sd">        axes = create_axes_3d()</span>
 
-<span class="sd">            data = transform_numpy(data, R)</span>
+<span class="sd">        Bounds(data).plot(axes)</span>
+<span class="sd">        Cloud3D(data).plot(axes)</span>
+<span class="sd">        Axes3D(average, vectors).plot(axes)</span>
 
-<span class="sd">            average, vectors, values = pca_numpy(data)</span>
-
-<span class="sd">            axes = create_axes_3d()</span>
-
-<span class="sd">            Bounds(data).plot(axes)</span>
-<span class="sd">            Cloud3D(data).plot(axes)</span>
-<span class="sd">            Axes3D(average, vectors).plot(axes)</span>
-
-<span class="sd">            plt.show()</span>
+<span class="sd">        plt.show()</span>
 
 <span class="sd">    """</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -253,7 +260,7 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../bibliography.html">Bibliography</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../citing.html">Citing</a></li>
 </ul>
 </div>
 </div>
@@ -271,7 +278,7 @@
             
 
             
-                Last updated on Nov 28, 2017.
+                Last updated on Nov 29, 2017.
             
 
             

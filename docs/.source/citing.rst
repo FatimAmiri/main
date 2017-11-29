@@ -1,10 +1,10 @@
-.. _attribution:
+.. _citing:
 
 ********************************************************************************
-Attribution
+Citing
 ********************************************************************************
 
-If you..., please refer...
+If you use the **compas** library in a project, please refer to the GitHub repository.
 
 .. code-block:: latex
 
@@ -16,7 +16,7 @@ If you..., please refer...
     }
 
 
-If you..., please cite...
+If you use the **compas** library in academic research, please cite the following paper.
 
 .. code-block:: latex
 

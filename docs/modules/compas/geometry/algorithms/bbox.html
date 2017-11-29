@@ -26,6 +26,9 @@
 <li class="nav-item">
 <a class="nav-link" href="/packages/">Additional Packages</a>
 </li>
+<li class="nav-item">
+<a class="nav-link" href="http://forum.compas-framework.org">Forum</a>
+</li>
 </ul>
 </header>
 <div class="container-fluid compas-container">
@@ -57,8 +60,6 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'bounding_box'</span><span class="p">,</span>
     <span class="s1">'bounding_box_xy'</span><span class="p">,</span>
-    <span class="s1">'oriented_bounding_box_numpy'</span><span class="p">,</span>
-    <span class="s1">'oriented_bounding_box_xy_numpy'</span><span class="p">,</span>
 <span class="p">]</span>
 
 
@@ -75,8 +76,8 @@
 <span class="sd">    list</span>
 <span class="sd">        XYZ coordinates of 8 points defining a box.</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        #</span>
@@ -102,8 +103,8 @@
 <div class="viewcode-block" id="bounding_box_xy"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.bounding_box_xy.html#compas.geometry.bounding_box_xy">[docs]</a><span class="k">def</span> <span class="nf">bounding_box_xy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
     <span class="sd">"""Compute the axis-aligned minimum bounding box of a list of points in the XY-plane.</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    This function simply ignores the Z components of the points, if it is provided.</span>
 
 <span class="sd">    Parameters</span>
@@ -116,8 +117,8 @@
 <span class="sd">    list</span>
 <span class="sd">        XYZ coordinates of four points defining a rectangle in the XY plane.</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        #</span>
@@ -132,245 +133,6 @@
             <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
             <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
             <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)]</span></div>
-
-
-<div class="viewcode-block" id="oriented_bounding_box_numpy"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.oriented_bounding_box_numpy.html#compas.geometry.oriented_bounding_box_numpy">[docs]</a><span class="k">def</span> <span class="nf">oriented_bounding_box_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
-    <span class="sd">"""Compute the oriented minimum bounding box of a set of points in 3D space.</span>
-
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">    The implementation is based on the convex hull of the points.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    points : list</span>
-<span class="sd">        XYZ coordinates of the points.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    list</span>
-<span class="sd">        The XYZ coordinates of the corners of the bounding box.</span>
-
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
-<span class="sd">    .. plot::</span>
-<span class="sd">        :include-source:</span>
-
-<span class="sd">        from numpy.random import randint</span>
-<span class="sd">        from numpy.random import rand</span>
-
-<span class="sd">        import matplotlib.pyplot as plt</span>
-
-<span class="sd">        from compas.plotters import Bounds</span>
-<span class="sd">        from compas.plotters import Cloud3D</span>
-<span class="sd">        from compas.plotters import Box</span>
-<span class="sd">        from compas.plotters import create_axes_3d</span>
-<span class="sd">        from compas.geometry import rotation_matrix</span>
-<span class="sd">        from compas.geometry import transform</span>
-<span class="sd">        from compas.geometry import oriented_bounding_box_numpy</span>
-
-<span class="sd">        clouds = []</span>
-
-<span class="sd">        for i in range(8):</span>
-<span class="sd">            a = randint(1, high=8) * 10 * 3.14159 / 180</span>
-<span class="sd">            d = [1, 1, 1]</span>
-
-<span class="sd">            cloud = rand(100, 3)</span>
-
-<span class="sd">            if i in (1, 2, 5, 6):</span>
-<span class="sd">                cloud[:, 0] *= - 10.0</span>
-<span class="sd">                cloud[:, 0] -= 3.0</span>
-<span class="sd">                d[0] = -1</span>
-<span class="sd">            else:</span>
-<span class="sd">                cloud[:, 0] *= 10.0</span>
-<span class="sd">                cloud[:, 0] += 3.0</span>
-
-<span class="sd">            if i in (2, 3, 6, 7):</span>
-<span class="sd">                cloud[:, 1] *= - 3.0</span>
-<span class="sd">                cloud[:, 1] -= 3.0</span>
-<span class="sd">                d[1] = -1</span>
-<span class="sd">            else:</span>
-<span class="sd">                cloud[:, 1] *= 3.0</span>
-<span class="sd">                cloud[:, 1] += 3.0</span>
-
-<span class="sd">            if i in (4, 5, 6, 7):</span>
-<span class="sd">                cloud[:, 2] *= - 6.0</span>
-<span class="sd">                cloud[:, 2] -= 3.0</span>
-<span class="sd">                d[2] = -1</span>
-<span class="sd">            else:</span>
-<span class="sd">                cloud[:, 2] *= 6.0</span>
-<span class="sd">                cloud[:, 2] += 3.0</span>
-
-<span class="sd">            R = rotation_matrix(a, d)</span>
-<span class="sd">            cloud[:] = transform(cloud, R)</span>
-
-<span class="sd">            clouds.append(cloud.tolist())</span>
-
-<span class="sd">        axes = create_axes_3d()</span>
-
-<span class="sd">        bounds = Bounds([point for points in clouds for point in points])</span>
-<span class="sd">        bounds.plot(axes)</span>
-
-<span class="sd">        for cloud in clouds:</span>
-<span class="sd">            bbox = oriented_bounding_box_numpy(cloud)</span>
-
-<span class="sd">            Cloud3D(cloud).plot(axes)</span>
-<span class="sd">            Box(bbox[1]).plot(axes)</span>
-
-<span class="sd">        plt.show()</span>
-
-<span class="sd">    """</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">argmax</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">argmin</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">ptp</span>
-    <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">ConvexHull</span>
-
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">local_axes</span>
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">local_coords_numpy</span>
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">global_coords_numpy</span>
-
-    <span class="n">points</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-    <span class="n">n</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span>
-
-    <span class="k">assert</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">dim</span><span class="p">,</span> <span class="s2">"The point coordinates should be at least 3D: </span><span class="si">%i</span><span class="s2">"</span> <span class="o">%</span> <span class="n">dim</span>
-
-    <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
-
-    <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-    <span class="n">volume</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">bbox</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="c1"># this can be vectorised!</span>
-    <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">hull</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
-        <span class="n">abc</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">simplex</span><span class="p">]</span>
-        <span class="n">uvw</span> <span class="o">=</span> <span class="n">local_axes</span><span class="p">(</span><span class="n">abc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">abc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">abc</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-        <span class="n">xyz</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">]</span>
-        <span class="n">rst</span> <span class="o">=</span> <span class="n">local_coords_numpy</span><span class="p">(</span><span class="n">abc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
-        <span class="n">dr</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">dt</span> <span class="o">=</span> <span class="n">ptp</span><span class="p">(</span><span class="n">rst</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">dr</span> <span class="o">*</span> <span class="n">ds</span> <span class="o">*</span> <span class="n">dt</span>
-
-        <span class="k">if</span> <span class="n">volume</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">volume</span><span class="p">:</span>
-            <span class="n">rmin</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">tmin</span> <span class="o">=</span> <span class="n">argmin</span><span class="p">(</span><span class="n">rst</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">rmax</span><span class="p">,</span> <span class="n">smax</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="n">argmax</span><span class="p">(</span><span class="n">rst</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">bbox</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">[</span><span class="n">rst</span><span class="p">[</span><span class="n">rmin</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">smin</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">tmin</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
-                <span class="p">[</span><span class="n">rst</span><span class="p">[</span><span class="n">rmax</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">smin</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">tmin</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
-                <span class="p">[</span><span class="n">rst</span><span class="p">[</span><span class="n">rmax</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">smax</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">tmin</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
-                <span class="p">[</span><span class="n">rst</span><span class="p">[</span><span class="n">rmin</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">smax</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">tmin</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
-                <span class="p">[</span><span class="n">rst</span><span class="p">[</span><span class="n">rmin</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">smin</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">tmax</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
-                <span class="p">[</span><span class="n">rst</span><span class="p">[</span><span class="n">rmax</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">smin</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">tmax</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
-                <span class="p">[</span><span class="n">rst</span><span class="p">[</span><span class="n">rmax</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">smax</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">tmax</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
-                <span class="p">[</span><span class="n">rst</span><span class="p">[</span><span class="n">rmin</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">smax</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rst</span><span class="p">[</span><span class="n">tmax</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
-            <span class="p">]</span>
-            <span class="n">bbox</span> <span class="o">=</span> <span class="n">global_coords_numpy</span><span class="p">(</span><span class="n">abc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
-            <span class="n">volume</span> <span class="o">=</span> <span class="n">v</span>
-
-    <span class="k">return</span> <span class="n">hull</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">volume</span></div>
-
-
-<div class="viewcode-block" id="oriented_bounding_box_xy_numpy"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.oriented_bounding_box_xy_numpy.html#compas.geometry.oriented_bounding_box_xy_numpy">[docs]</a><span class="k">def</span> <span class="nf">oriented_bounding_box_xy_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
-    <span class="sd">"""Compute the oriented minimum bounding box of set of points in the XY plane.</span>
-
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">    The *oriented (minimum) bounding box* (OBB) is computed using the following</span>
-<span class="sd">    procedure:</span>
-
-<span class="sd">        1. Compute the convex hull of the points.</span>
-<span class="sd">        2. For each of the edges on the hull:</span>
-<span class="sd">            1. Compute the s-axis as the unit vector in the direction of the edge</span>
-<span class="sd">            2. Compute the othorgonal t-axis.</span>
-<span class="sd">            3. Use the start point of the edge as origin.</span>
-<span class="sd">            4. Compute the spread of the points along the s-axis.</span>
-<span class="sd">               (dot product of the point vecor in local coordinates and the s-axis)</span>
-<span class="sd">            5. Compute the spread along the t-axis.</span>
-<span class="sd">            6. Determine the side of s on which the points are.</span>
-<span class="sd">            7. Compute and store the corners of the bbox and its area.</span>
-<span class="sd">        3. Select the box with the smallest area.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    points : list</span>
-<span class="sd">        XY(Z) coordinates of the points.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    list</span>
-<span class="sd">        The coordinates of the corners of the bounding box.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        #</span>
-
-<span class="sd">    """</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">argmax</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">argmin</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">dot</span>
-
-    <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">ConvexHull</span>
-
-    <span class="n">points</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-    <span class="n">n</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span>
-
-    <span class="k">assert</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">dim</span><span class="p">,</span> <span class="s2">"The point coordinates should be at least 2D: </span><span class="si">%i</span><span class="s2">"</span> <span class="o">%</span> <span class="n">dim</span>
-
-    <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
-
-    <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-    <span class="n">xy_hull</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-
-    <span class="n">boxes</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">xy_hull</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
-
-    <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">hull</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
-        <span class="n">p0</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">simplex</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-        <span class="n">p1</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">simplex</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-
-        <span class="c1"># s direction</span>
-        <span class="n">s</span>  <span class="o">=</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">p0</span>
-        <span class="n">sl</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
-        <span class="n">su</span> <span class="o">=</span> <span class="n">s</span> <span class="o">/</span> <span class="n">sl</span>
-        <span class="n">vn</span> <span class="o">=</span> <span class="n">xy_hull</span> <span class="o">-</span> <span class="n">p0</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">vn</span> <span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">sl</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="n">scmax</span> <span class="o">=</span> <span class="n">argmax</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
-        <span class="n">scmin</span> <span class="o">=</span> <span class="n">argmin</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
-
-        <span class="c1"># box corners</span>
-        <span class="n">b0</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">+</span> <span class="n">sc</span><span class="p">[</span><span class="n">scmin</span><span class="p">]</span> <span class="o">*</span> <span class="n">su</span>
-        <span class="n">b1</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">+</span> <span class="n">sc</span><span class="p">[</span><span class="n">scmax</span><span class="p">]</span> <span class="o">*</span> <span class="n">su</span>
-
-        <span class="c1"># t direction</span>
-        <span class="n">t</span>  <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
-        <span class="n">tl</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">t</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
-        <span class="n">tu</span> <span class="o">=</span> <span class="n">t</span> <span class="o">/</span> <span class="n">tl</span>
-        <span class="n">vn</span> <span class="o">=</span> <span class="n">xy_hull</span> <span class="o">-</span> <span class="n">p0</span>
-        <span class="n">tc</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">vn</span> <span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">tl</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="n">tcmax</span> <span class="o">=</span> <span class="n">argmax</span><span class="p">(</span><span class="n">tc</span><span class="p">)</span>
-        <span class="n">tcmin</span> <span class="o">=</span> <span class="n">argmin</span><span class="p">(</span><span class="n">tc</span><span class="p">)</span>
-
-        <span class="c1"># area</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">sc</span><span class="p">[</span><span class="n">scmax</span><span class="p">]</span> <span class="o">-</span> <span class="n">sc</span><span class="p">[</span><span class="n">scmin</span><span class="p">]</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">tc</span><span class="p">[</span><span class="n">tcmax</span><span class="p">]</span> <span class="o">-</span> <span class="n">tc</span><span class="p">[</span><span class="n">tcmin</span><span class="p">]</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">h</span>
-
-        <span class="c1"># box corners</span>
-        <span class="k">if</span> <span class="n">dot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">m</span> <span class="o">-</span> <span class="n">p0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">b3</span> <span class="o">=</span> <span class="n">b0</span> <span class="o">-</span> <span class="n">h</span> <span class="o">*</span> <span class="n">tu</span>
-            <span class="n">b2</span> <span class="o">=</span> <span class="n">b1</span> <span class="o">-</span> <span class="n">h</span> <span class="o">*</span> <span class="n">tu</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">b3</span> <span class="o">=</span> <span class="n">b0</span> <span class="o">+</span> <span class="n">h</span> <span class="o">*</span> <span class="n">tu</span>
-            <span class="n">b2</span> <span class="o">=</span> <span class="n">b1</span> <span class="o">+</span> <span class="n">h</span> <span class="o">*</span> <span class="n">tu</span>
-
-        <span class="c1"># box</span>
-        <span class="n">boxes</span><span class="o">.</span><span class="n">append</span><span class="p">([[</span><span class="n">b0</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">b3</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
-
-    <span class="c1"># return the box with the smallest area</span>
-    <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">b</span><span class="p">:</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -403,7 +165,7 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../bibliography.html">Bibliography</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../citing.html">Citing</a></li>
 </ul>
 </div>
 </div>
@@ -421,7 +183,7 @@
             
 
             
-                Last updated on Nov 28, 2017.
+                Last updated on Nov 29, 2017.
             
 
             

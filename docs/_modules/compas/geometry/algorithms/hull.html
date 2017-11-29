@@ -67,8 +67,6 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'convex_hull'</span><span class="p">,</span>
     <span class="s1">'convex_hull_xy'</span><span class="p">,</span>
-    <span class="s1">'convex_hull_numpy'</span><span class="p">,</span>
-    <span class="s1">'convex_hull_xy_numpy'</span><span class="p">,</span>
 <span class="p">]</span>
 
 
@@ -130,7 +128,6 @@
 <span class="sd">                    show_faces = True,</span>
 <span class="sd">                    show_vertices = False,</span>
 <span class="sd">                    show_edges = False)</span>
-
 
 <span class="sd">    """</span>
     <span class="k">def</span> <span class="nf">_normal_face</span><span class="p">(</span><span class="n">face</span><span class="p">):</span>
@@ -220,87 +217,6 @@
     <span class="k">return</span> <span class="n">lower</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">upper</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="convex_hull_numpy"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.convex_hull_numpy.html#compas.geometry.convex_hull_numpy">[docs]</a><span class="k">def</span> <span class="nf">convex_hull_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
-    <span class="sd">"""Compute the convex hull of a set of points.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    points : list</span>
-<span class="sd">        XYZ coordinates of the points.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    tuple</span>
-<span class="sd">        Indices of the points on the hull.</span>
-<span class="sd">        Faces of the hull.</span>
-
-<span class="sd">    Warning</span>
-<span class="sd">    -------</span>
-<span class="sd">    This function requires Numpy ands Scipy.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        #</span>
-
-<span class="sd">    """</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
-    <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">ConvexHull</span>
-
-    <span class="n">points</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-    <span class="n">n</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span>
-
-    <span class="k">assert</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">dim</span><span class="p">,</span> <span class="s2">"The point coordinates should be at least 3D: </span><span class="si">%i</span><span class="s2">"</span> <span class="o">%</span> <span class="n">dim</span>
-
-    <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
-    <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="n">hull</span><span class="o">.</span><span class="n">simplices</span></div>
-
-
-<div class="viewcode-block" id="convex_hull_xy_numpy"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.convex_hull_xy_numpy.html#compas.geometry.convex_hull_xy_numpy">[docs]</a><span class="k">def</span> <span class="nf">convex_hull_xy_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
-    <span class="sd">"""Compute the convex hull of a set of points in the XY plane.</span>
-
-<span class="sd">    Warning</span>
-<span class="sd">    -------</span>
-<span class="sd">    This function requires Numpy ands Scipy.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    points : list</span>
-<span class="sd">        XY(Z) coordinates of the points.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    tuple</span>
-<span class="sd">        Indices of the points on the hull.</span>
-<span class="sd">        Faces of the hull.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        #</span>
-
-<span class="sd">    """</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
-    <span class="c1"># from numpy import hstack</span>
-    <span class="c1"># from numpy import zeros</span>
-    <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">ConvexHull</span>
-
-    <span class="n">points</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-    <span class="n">n</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span>
-
-    <span class="k">assert</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">dim</span><span class="p">,</span> <span class="s2">"The point coordinates should be at least 2D: </span><span class="si">%i</span><span class="s2">"</span> <span class="o">%</span> <span class="n">dim</span>
-
-    <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-    <span class="c1"># temp = zeros((hull.vertices.shape[0], 1))</span>
-    <span class="c1"># temp[:, :-1] = points[hull.vertices]</span>
-    <span class="c1"># return temp</span>
-    <span class="k">return</span> <span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="n">hull</span><span class="o">.</span><span class="n">simplices</span></div>
-
-
 <span class="c1"># ==============================================================================</span>
 <span class="c1"># Main</span>
 <span class="c1"># ==============================================================================</span>
@@ -314,6 +230,8 @@
 
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
     <span class="kn">from</span> <span class="nn">compas.viewers</span> <span class="k">import</span> <span class="n">MeshViewer</span>
+
+    <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">mesh_unify_cycles</span>
 
     <span class="n">radius</span> <span class="o">=</span> <span class="mi">5</span>
     <span class="n">origin</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
@@ -332,6 +250,8 @@
     <span class="n">faces</span> <span class="o">=</span> <span class="n">convex_hull</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+
+    <span class="n">mesh_unify_cycles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 
     <span class="n">viewer</span> <span class="o">=</span> <span class="n">MeshViewer</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 
@@ -361,7 +281,7 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../attribution.html">Attribution</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../citing.html">Citing</a></li>
 </ul>
 </div>
 </div>

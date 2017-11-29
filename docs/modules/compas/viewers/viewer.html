@@ -26,6 +26,9 @@
 <li class="nav-item">
 <a class="nav-link" href="/packages/">Additional Packages</a>
 </li>
+<li class="nav-item">
+<a class="nav-link" href="http://forum.compas-framework.org">Forum</a>
+</li>
 </ul>
 </header>
 <div class="container-fluid compas-container">
@@ -76,38 +79,63 @@
 <div class="viewcode-block" id="Viewer"><a class="viewcode-back" href="../../../reference/generated/compas.viewers.Viewer.html#compas.viewers.Viewer">[docs]</a><span class="k">class</span> <span class="nc">Viewer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">"""Base class for defining viewers.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    title : str</span>
+<span class="sd">        The title of the viewer window. Defaults to `Viewer`.</span>
+<span class="sd">    width : int</span>
+<span class="sd">        The width of the viewer window. Defaults to `800`.</span>
+<span class="sd">    height : int</span>
+<span class="sd">        The height of the viewer window. Defaults to `600`.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    title : str</span>
+<span class="sd">        The title of the viewer window.</span>
+<span class="sd">    width : int</span>
+<span class="sd">        The width of the viewer window.</span>
+<span class="sd">    height : int</span>
+<span class="sd">        The height of the viewer window.</span>
+<span class="sd">    clear_color : sequence(4)</span>
+<span class="sd">        A sequence of 4 floats defining the background color of the scene.</span>
+<span class="sd">    grid_on : bool</span>
+<span class="sd">        Grid on or off.</span>
+<span class="sd">    mouse : Mouse</span>
+<span class="sd">        A ``Mouse`` object.</span>
+<span class="sd">    camera : Camera</span>
+<span class="sd">        A ``Camera`` object.</span>
+<span class="sd">    grid : Grid</span>
+<span class="sd">        A ``Grid`` object.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    Extend this class to make a custom viewer. The class has a `setup` function</span>
 <span class="sd">    that creates a basic window and registers callback for the most common GLUT</span>
-<span class="sd">    functions: `glutDisplayFunc`, `glutReshapeFunc`, `glutTimerFunc`,</span>
-<span class="sd">    `glutKeyboardFunc`, `glutMouseFunc`, `glutMotionFunc`, `glutIdleFunc`.</span>
+<span class="sd">    functions:</span>
+
+<span class="sd">        * `glutDisplayFunc`</span>
+<span class="sd">        * `glutReshapeFunc`</span>
+<span class="sd">        * `glutTimerFunc`</span>
+<span class="sd">        * `glutKeyboardFunc`</span>
+<span class="sd">        * `glutMouseFunc`</span>
+<span class="sd">        * `glutMotionFunc`</span>
+<span class="sd">        * `glutIdleFunc`</span>
+
 <span class="sd">    The callbacks are registered using a two-step mechanism. The registration is</span>
 <span class="sd">    handled by a method `name_callback` and the implementation by a method</span>
-<span class="sd">    `name`. For example: `display_callback` is registered with</span>
-<span class="sd">    `glutDisplayFunc`, and `display_callback` calls `display` for the actual</span>
-<span class="sd">    implementation. To modify the behaviour of the `display callback`, you</span>
-<span class="sd">    should thus redefine `display`.</span>
+<span class="sd">    `name`.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        title (str): The title of the viewer window. Defaults to `Viewer`.</span>
-<span class="sd">        width (int): The width of the viewer window. Defaults to `800`.</span>
-<span class="sd">        height (int): The height of the viewer window. Defaults to `600`.</span>
+<span class="sd">    For example: `display_callback` is registered with `glutDisplayFunc`, and</span>
+<span class="sd">    `display_callback` calls `display` for the actual implementation. To modify</span>
+<span class="sd">    the behaviour of the `display callback`, you should thus redefine `display`.</span>
 
-<span class="sd">    Attributes:</span>
-<span class="sd">        title (str): The title of the viewer window.</span>
-<span class="sd">        width (int): The width of the viewer window.</span>
-<span class="sd">        height (int): The height of the viewer window.</span>
-<span class="sd">        clear_color (sequence(4)): A sequence of 4 floats defining the</span>
-<span class="sd">            background color of the scene.</span>
-<span class="sd">        grid_on (bool): Grid on or off.</span>
-<span class="sd">        mouse (Mouse): A ``Mouse`` object.</span>
-<span class="sd">        camera (Camera): A ``Camera`` object.</span>
-<span class="sd">        grid (Grid): A ``Grid`` object.</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; viewer = Viewer(width=1440, height=900)</span>
+<span class="sd">    &gt;&gt;&gt; viewer.title = 'Big window'</span>
+<span class="sd">    &gt;&gt;&gt; viewer.setup()</span>
+<span class="sd">    &gt;&gt;&gt; viewer.show()</span>
 
-<span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; viewer = Viewer(width=1440, height=900)</span>
-<span class="sd">        &gt;&gt;&gt; viewer.title = 'Big window'</span>
-<span class="sd">        &gt;&gt;&gt; viewer.setup()</span>
-<span class="sd">        &gt;&gt;&gt; viewer.show()</span>
 <span class="sd">    """</span>
 <div class="viewcode-block" id="Viewer.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas.viewers.Viewer.__init__.html#compas.viewers.Viewer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'Viewer'</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">displayfuncs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delay_setup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mod</span>         <span class="o">=</span> <span class="mi">0</span>
@@ -310,16 +338,21 @@
 <span class="sd">        method to customize what the viewer does when it is being reshaped, i.e.</span>
 <span class="sd">        resized.</span>
 
-<span class="sd">        Note:</span>
-<span class="sd">            This function is called automatically when the viewer is resized.</span>
-<span class="sd">            The parameters `w` and `h` are automatically provided by the caller</span>
-<span class="sd">            and correspond to the `live` size of the window. The function is</span>
-<span class="sd">            also called when the window is initialized ,i.e. when it is given</span>
-<span class="sd">            its initial size.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        w : int</span>
+<span class="sd">            The new width of the viewer.</span>
+<span class="sd">        h : int</span>
+<span class="sd">            The new height of the viewer.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">            w (int): The new width of the viewer.</span>
-<span class="sd">            h (int): The new height of the viewer.</span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This function is called automatically when the viewer is resized.</span>
+<span class="sd">        The parameters `w` and `h` are automatically provided by the caller</span>
+<span class="sd">        and correspond to the `live` size of the window. The function is</span>
+<span class="sd">        also called when the window is initialized ,i.e. when it is given</span>
+<span class="sd">        its initial size.</span>
+
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">w</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">h</span>
@@ -538,7 +571,7 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../bibliography.html">Bibliography</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
 </ul>
 </div>
 </div>
@@ -556,7 +589,7 @@
             
 
             
-                Last updated on Nov 28, 2017.
+                Last updated on Nov 29, 2017.
             
 
             
