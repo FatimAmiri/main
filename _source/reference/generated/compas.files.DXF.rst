@@ -1,0 +1,28 @@
+.. rst-class:: detail
+
+DXF
+================
+
+.. currentmodule:: compas.files
+
+.. .. inheritance-diagram:: DXF
+
+.. autoclass:: DXF
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree: generated/
+
+   
+      ~DXF.__init__
+      ~DXF.read
+      ~DXF.write
+   
+   
+
+   
+   
+   
