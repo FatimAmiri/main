@@ -1,10 +1,7 @@
-from __future__ import print_function
+
 from __future__ import absolute_import
 from __future__ import division
-
-import os
-
-import compas
+from __future__ import print_function
 
 from compas.datastructures import Network
 from compas.plotters import NetworkPlotter
@@ -12,11 +9,9 @@ from compas.numerical import drx_numpy
 
 from numpy import linspace
 
-HERE  = os.path.abspath(os.path.dirname(__file__))
-
 
 __author__    = ['Andrew Liew', 'Tom Van Mele']
-__copyright__ = 'Copyright 2016 - Block Research Group, ETH Zurich'
+__copyright__ = 'Copyright 2018 - Block Research Group, ETH Zurich'
 __license__   = 'MIT License'
 __email__     = 'liew@arch.ethz.ch'
 
@@ -29,7 +24,6 @@ n = 40
 EI = 0.2
 pins = [0, 5, 20, n - 5]
 
-
 # Network
 
 vertices = [[i, i, 0] for i in list(linspace(0, L0, n))]
@@ -41,11 +35,9 @@ network.update_default_edge_attributes({'E': 50, 'A': 1, 'l0': L / n})
 network.set_vertices_attributes(pins, {'B': [0, 0, 0], 'is_fixed': True})
 network.beams = {'beam': {'nodes': list(range(n))}}
 
-
 # Plotter
 
 plotter = NetworkPlotter(network, figsize=(10, 7))
-
 
 # Initial configuration
 
@@ -62,7 +54,6 @@ plotter.draw_vertices(radius=0.005, facecolor={key: '#ff0000' for key in pins})
 plotter.draw_edges()
 plotter.update()
 
-
 # Callback for dynamic visualization
 
 def plot_iterations(k, X, radius=0.005):
@@ -74,17 +65,8 @@ def plot_iterations(k, X, radius=0.005):
     plotter.update_edges()
     plotter.update(pause=0.01)
 
-
 # Solver with dynamic visualization
 
-drx_numpy(network=network,
-          tol=0.01,
-          refresh=10,
-          factor=30,
-          update=True,
-          callback=plot_iterations)
-
-
-# Keep the plot alive
+drx_numpy(network=network, tol=0.01, refresh=10, factor=30, update=True, callback=plot_iterations)
 
 plotter.show()

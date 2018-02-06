@@ -9,24 +9,21 @@ from math import cos
 import rhinoscriptsyntax as rs
 
 
-__author__     = ['Andrew Liew <liew@arch.ethz.ch>']
-__copyright__  = 'Copyright 2017, BLOCK Research Group - ETH Zurich'
-__license__    = 'MIT License'
-__email__      = 'liew@arch.ethz.ch'
+__author__    = ['Andrew Liew <liew@arch.ethz.ch>']
+__copyright__ = 'Copyright 2018, BLOCK Research Group - ETH Zurich'
+__license__   = 'MIT License'
+__email__     = 'liew@arch.ethz.ch'
 
 
 # Input
 
-guid = rs.ObjectsByLayer('Plane')[0]
-rhinomesh = RhinoMesh(guid)
+rhinomesh = RhinoMesh(rs.ObjectsByLayer('Plane')[0])
 vertices, faces = rhinomesh.get_vertices_and_faces()
 points = [[x, y, sin(x) * cos(y)] for x, y, z in vertices]
 
 # Set-up XFunc
 
-basedir = 'D:/compas-dev/examples/'
-tmpdir = 'C:/Temp/'
-xfunc = XFunc(basedir=basedir, tmpdir=tmpdir)
+xfunc = XFunc(basedir='G:/examples/', tmpdir='C:/Temp/')
 
 # Python
 

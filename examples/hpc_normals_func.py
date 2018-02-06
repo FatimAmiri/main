@@ -15,8 +15,8 @@ from numpy import tile
 from numpy import zeros
 from numpy.linalg import norm
 
-from numba import float64
-from numba import int64
+from numba import f8
+from numba import i8
 from numba import jit
 
 from compas.hpc import cross_vectors_numba
@@ -25,17 +25,17 @@ from compas.hpc import length_vector_numba
 from time import time
 
 
-__author__     = ['Andrew Liew <liew@arch.ethz.ch>']
-__copyright__  = 'Copyright 2017, BLOCK Research Group - ETH Zurich'
-__license__    = 'MIT License'
-__email__      = 'liew@arch.ethz.ch'
+__author__    = ['Andrew Liew <liew@arch.ethz.ch>']
+__copyright__ = 'Copyright 2018, BLOCK Research Group - ETH Zurich'
+__license__   = 'MIT License'
+__email__     = 'liew@arch.ethz.ch'
 
 
 def f(x, y):
     return sin(x) * cos(y)
 
 
-@jit(float64(float64, float64), nogil=True, nopython=True)
+@jit(f8(f8, f8), nogil=True, nopython=True)
 def fj(x, y):
     return sin(x) * cos(y)
 
@@ -102,7 +102,7 @@ def numba_normals(points, offset=0.1, delta=10**(-5)):
     return [list(i) for i in list(normals)], toc
 
 
-@jit(float64[:, :](float64[:, :], float64[:], float64[:], float64[:], int64, float64, float64), nogil=True, nopython=True)
+@jit(f8[:, :](f8[:, :], f8[:], f8[:], f8[:], i8, f8, f8), nogil=True, nopython=True)
 def njit(normals, X, Y, Z, n, delta, offset):
     vecx = array([delta, 0, 0])
     vecy = array([0, delta, 0])
