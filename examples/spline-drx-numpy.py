@@ -56,7 +56,7 @@ plotter.update()
 
 # Callback for dynamic visualization
 
-def plot_iterations(k, X, radius=0.005):
+def plot_iterations(X, radius=0.005):
     for i in network.vertices():
         x, y, z = X[i, :]
         network.set_vertex_attributes(i, {'x': x, 'y': y, 'z': z})
