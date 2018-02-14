@@ -69,7 +69,7 @@ For example, from :mod:`compas.geometry`, an code snippet visualising the progre
 of an iterative smoothing algorithm (:func:`compas.geometry.mesh_smooth_centroid`).
 
 .. code-block:: python
-    
+
     import compas
 
     from compas.datastructures import Mesh
@@ -98,7 +98,7 @@ of an iterative smoothing algorithm (:func:`compas.geometry.mesh_smooth_centroid
 
     plotter.update(pause=1.0)
 
-    def callback(mesh, k, args):
+    def callback(k, args):
         print(k)
         plotter.update_vertices()
         plotter.update_faces()
@@ -113,7 +113,7 @@ of an iterative smoothing algorithm (:func:`compas.geometry.mesh_smooth_centroid
 We use a mesh plotter as visualisation tool.
 
 .. code-block:: python
-    
+
     plotter = MeshPlotter(mesh, figsize=(10, 7))
 
 
@@ -121,7 +121,7 @@ First, as a reference, we plot a set of lines corresponding to the original
 configuration of the mesh.
 
 .. code-block:: python
-    
+
     lines = []
     for u, v in mesh.edges():
         lines.append({
@@ -153,13 +153,13 @@ were set by the original calls to the draw functions. With a call to the general
 update function we update the drawing.
 
 The callback is handed off to the smoothing algorithm, which will call it at every
-iteration. By default, the callback receives the mesh object and the number of the
-current iteration as firs and second parameter, and then any additional parameters
+iteration. By default, the callback receives the number of the
+current iteration and then any additional parameters
 that were passed to the algorithm.
 
 .. code-block:: python
-    
-    def callback(mesh, k, args):
+
+    def callback(k, args):
         print(k)
         plotter.update_vertices()
         plotter.update_faces()
@@ -172,7 +172,7 @@ that were passed to the algorithm.
 Finally, we make sure that the plotting window remains active and visible.
 
 .. code-block:: python
-    
+
     plotter.show()
 
 
