@@ -36,6 +36,7 @@
             
   <h1>Source code for compas_rhino.utilities.misc</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">ast</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 
@@ -84,6 +85,7 @@
     <span class="s1">&#39;screenshot_current_view&#39;</span><span class="p">,</span>
     <span class="s1">&#39;select_folder&#39;</span><span class="p">,</span>
     <span class="s1">&#39;select_file&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;unload_modules&#39;</span><span class="p">,</span>
 <span class="p">]</span>
 
 
@@ -271,6 +273,25 @@
                     <span class="k">pass</span>
                 <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
     <span class="k">return</span> <span class="n">values</span></div>
+
+<span class="k">def</span> <span class="nf">unload_modules</span><span class="p">(</span><span class="n">top_level_module_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Unloads all modules named starting with the specified string.</span>
+
+<span class="sd">    This function eases the development workflow when editing a library that is</span>
+<span class="sd">    used from Rhino/Grasshopper.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        top_level_module_name (:obj:`str`): Name of the top-level module to unload.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: List of unloaded module names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">modules</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">top_level_module_name</span><span class="p">),</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">modules</span>
 
 
 <span class="c1"># ==============================================================================</span>
