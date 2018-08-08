@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>compas.numerical.operators &#8212; COMPAS 0.2.7 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for compas.numerical.operators</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">arange</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">divide</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">hstack</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">tile</span>
+
+    <span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">cross</span>
+    <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">coo_matrix</span>
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_not_ironpython</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="nn">compas.numerical.linalg</span> <span class="k">import</span> <span class="n">normrow</span>
+<span class="kn">from</span> <span class="nn">compas.numerical.linalg</span> <span class="k">import</span> <span class="n">normalizerow</span>
+<span class="kn">from</span> <span class="nn">compas.numerical.linalg</span> <span class="k">import</span> <span class="n">rot90</span>
+
+
+<span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele &lt;vanmelet@ethz.ch&gt;&#39;</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright 2017, Block Research Group - ETH Zurich&#39;</span>
+<span class="n">__license__</span>   <span class="o">=</span> <span class="s1">&#39;MIT License&#39;</span>
+<span class="n">__email__</span>     <span class="o">=</span> <span class="s1">&#39;vanmelet@ethz.ch&#39;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;grad&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;div&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;curl&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="grad"><a class="viewcode-back" href="../../../reference/generated/compas.numerical.grad.html#compas.numerical.grad">[docs]</a><span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Construct the gradient operator of a trianglular mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    V : array</span>
+<span class="sd">        Vertex coordinates of the mesh.</span>
+<span class="sd">    F : array</span>
+<span class="sd">        Face vertex indices of the mesh.</span>
+<span class="sd">    rtype : {&#39;array&#39;, &#39;csc&#39;, &#39;csr&#39;, &#39;coo&#39;, &#39;list&#39;}</span>
+<span class="sd">        Format of the result.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array-like</span>
+<span class="sd">        Depending on rtype return type.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The gradient operator is fully determined by the connectivity of the mesh</span>
+<span class="sd">    and the coordinate difference vectors associated with the edges</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">f0</span> <span class="o">=</span> <span class="n">F</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Index of first vertex of each face</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="n">F</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Index of second vertex of each face</span>
+    <span class="n">f2</span> <span class="o">=</span> <span class="n">F</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Index of last vertex of each face</span>
+    <span class="n">v01</span> <span class="o">=</span> <span class="n">V</span><span class="p">[</span><span class="n">f1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">V</span><span class="p">[</span><span class="n">f0</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># Vector from vertex 0 to 1 for each face</span>
+    <span class="n">v12</span> <span class="o">=</span> <span class="n">V</span><span class="p">[</span><span class="n">f2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">V</span><span class="p">[</span><span class="n">f1</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># Vector from vertex 1 to 2 for each face</span>
+    <span class="n">v20</span> <span class="o">=</span> <span class="n">V</span><span class="p">[</span><span class="n">f0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">V</span><span class="p">[</span><span class="n">f2</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># Vector from vertex 2 to 0 for each face</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">cross</span><span class="p">(</span><span class="n">v12</span><span class="p">,</span> <span class="n">v20</span><span class="p">)</span>  <span class="c1"># Normal vector to each face</span>
+    <span class="n">A2</span> <span class="o">=</span> <span class="n">normrow</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># Length of normal vector is twice the area of the face</span>
+    <span class="n">A2</span> <span class="o">=</span> <span class="n">tile</span><span class="p">(</span><span class="n">A2</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">normalizerow</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># Unit normals for each face</span>
+    <span class="n">v01_</span> <span class="o">=</span> <span class="n">divide</span><span class="p">(</span><span class="n">rot90</span><span class="p">(</span><span class="n">v01</span><span class="p">,</span> <span class="n">u</span><span class="p">),</span> <span class="n">A2</span><span class="p">)</span>  <span class="c1"># Vector perpendicular to v01, normalized by A2</span>
+    <span class="n">v20_</span> <span class="o">=</span> <span class="n">divide</span><span class="p">(</span><span class="n">rot90</span><span class="p">(</span><span class="n">v20</span><span class="p">,</span> <span class="n">u</span><span class="p">),</span> <span class="n">A2</span><span class="p">)</span>  <span class="c1"># Vector perpendicular to v20, normalized by A2</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">((</span>  <span class="c1"># Nonzero rows</span>
+        <span class="mi">0</span> <span class="o">*</span> <span class="n">f</span> <span class="o">+</span> <span class="n">tile</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span>
+        <span class="mi">1</span> <span class="o">*</span> <span class="n">f</span> <span class="o">+</span> <span class="n">tile</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span>
+        <span class="mi">2</span> <span class="o">*</span> <span class="n">f</span> <span class="o">+</span> <span class="n">tile</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">tile</span><span class="p">(</span><span class="n">hstack</span><span class="p">((</span><span class="n">f1</span><span class="p">,</span> <span class="n">f0</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f0</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>  <span class="c1"># Nonzero columns</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">((</span>
+        <span class="n">hstack</span><span class="p">((</span><span class="n">v20_</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">-</span> <span class="n">v20_</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">v01_</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">-</span> <span class="n">v01_</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])),</span>
+        <span class="n">hstack</span><span class="p">((</span><span class="n">v20_</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">-</span> <span class="n">v20_</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">v01_</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">-</span> <span class="n">v01_</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])),</span>
+        <span class="n">hstack</span><span class="p">((</span><span class="n">v20_</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">-</span> <span class="n">v20_</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">v01_</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">-</span> <span class="n">v01_</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])),</span>
+    <span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">coo_matrix</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">rtype</span> <span class="o">==</span> <span class="s1">&#39;array&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">G</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">rtype</span> <span class="o">==</span> <span class="s1">&#39;csr&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">G</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">rtype</span> <span class="o">==</span> <span class="s1">&#39;csc&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">G</span><span class="o">.</span><span class="n">tocsc</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">rtype</span> <span class="o">==</span> <span class="s1">&#39;coo&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">G</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">G</span></div>
+
+
+<span class="k">def</span> <span class="nf">div</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+
+<span class="k">def</span> <span class="nf">curl</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Block Research Group - ETH Zurich.
+      Last updated on Aug 08, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>

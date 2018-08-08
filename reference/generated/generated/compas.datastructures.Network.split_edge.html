@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Network.split_edge &#8212; COMPAS 0.2.7 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Network.to_data" href="compas.datastructures.Network.to_data.html" />
+    <link rel="prev" title="Network.set_vertices_attributes" href="compas.datastructures.Network.set_vertices_attributes.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compas.datastructures.Network.to_data.html" title="Network.to_data"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="compas.datastructures.Network.set_vertices_attributes.html" title="Network.set_vertices_attributes"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../../compas.datastructures.html" >compas.datastructures</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="../compas.datastructures.Network.html" accesskey="U">Network</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="detail section" id="network-split-edge">
+<h1>Network.split_edge</h1>
+<dl class="method">
+<dt id="compas.datastructures.Network.split_edge">
+<code class="descclassname">Network.</code><code class="descname">split_edge</code><span class="sig-paren">(</span><em>u</em>, <em>v</em>, <em>t=0.5</em>, <em>allow_boundary=True</em><span class="sig-paren">)</span></dt>
+<dd><p>Split and edge by inserting a vertex along its length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>str</em>) – The key of the first vertex of the edge.</p></li>
+<li><p><strong>v</strong> (<em>str</em>) – The key of the second vertex of the edge.</p></li>
+<li><p><strong>t</strong> (<em>float</em>) – The position of the inserted vertex.</p></li>
+<li><p><strong>allow_boundary</strong> (<em>bool, optional</em>) – If <cite>True</cite>, Split boundary edges.
+Defaults is <cite>True</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>str</em> – The key of the inserted vertex.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>t</cite> is not <cite>0 &lt;= t &lt;= 1</cite>.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Exception</span></code></a> – If <cite>u</cite> and <cite>v</cite> are not neighbours.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">FaceNetwork</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">FaceNetworkPlotter</span>
+<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="kn">import</span> <span class="n">network_find_faces</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">FaceNetwork</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lines.obj&#39;</span><span class="p">))</span>
+
+<span class="n">network_find_faces</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">breakpoints</span><span class="o">=</span><span class="n">network</span><span class="o">.</span><span class="n">leaves</span><span class="p">())</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">21</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;end&#39;</span>  <span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;arrow&#39;</span><span class="p">:</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span>
+        <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;#00ff00&#39;</span>
+    <span class="p">})</span>
+
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">FaceNetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
+    <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()},</span>
+    <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)}</span>
+<span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">fkey</span><span class="p">:</span> <span class="n">fkey</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">faces</span><span class="p">()},</span>
+    <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">fkey</span><span class="p">:</span> <span class="s1">&#39;#eeeeee&#39;</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">faces</span><span class="p">()}</span>
+<span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="compas.datastructures.Network.set_vertices_attributes.html"
+                        title="previous chapter">Network.set_vertices_attributes</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="compas.datastructures.Network.to_data.html"
+                        title="next chapter">Network.to_data</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compas.datastructures.Network.to_data.html" title="Network.to_data"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="compas.datastructures.Network.set_vertices_attributes.html" title="Network.set_vertices_attributes"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../../compas.datastructures.html" >compas.datastructures</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="../compas.datastructures.Network.html" >Network</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Block Research Group - ETH Zurich.
+      Last updated on Aug 08, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>

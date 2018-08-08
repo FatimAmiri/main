@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mesh.collapse_edge_tri &#8212; COMPAS 0.2.7 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Mesh.copy" href="compas.datastructures.Mesh.copy.html" />
+    <link rel="prev" title="Mesh.collapse_edge" href="compas.datastructures.Mesh.collapse_edge.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compas.datastructures.Mesh.copy.html" title="Mesh.copy"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="compas.datastructures.Mesh.collapse_edge.html" title="Mesh.collapse_edge"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../../compas.datastructures.html" >compas.datastructures</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="../compas.datastructures.Mesh.html" accesskey="U">Mesh</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="detail section" id="mesh-collapse-edge-tri">
+<h1>Mesh.collapse_edge_tri</h1>
+<dl class="method">
+<dt id="compas.datastructures.Mesh.collapse_edge_tri">
+<code class="descclassname">Mesh.</code><code class="descname">collapse_edge_tri</code><span class="sig-paren">(</span><em>u</em>, <em>v</em>, <em>t=0.5</em>, <em>allow_boundary=False</em>, <em>fixed=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Collapse an edge to its first or second vertex, or to an intermediate
+point.</p>
+<p class="rubric">Notes</p>
+<p>An edge can only be collapsed if the collapse is <cite>legal</cite>. A collapse is
+legal if it meets the following requirements:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>any vertex <cite>w</cite> that is a neighbour of both <cite>u</cite> and <cite>v</cite> is a face
+of the mesh</p></li>
+<li><p><cite>u</cite> and <cite>v</cite> are not on the boundary</p></li>
+<li><p>…</p></li>
+</ul>
+</div></blockquote>
+<p>See [] for a detailed explanation of these requirements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>str</em>) – The first vertex of the (half-) edge.</p></li>
+<li><p><strong>v</strong> (<em>str</em>) – The second vertex of the (half-) edge.</p></li>
+<li><p><strong>t</strong> (<em>float</em>) – Determines where to collapse to.
+If <cite>t == 0.0</cite> collapse to <cite>u</cite>.
+If <cite>t == 1.0</cite> collapse to <cite>v</cite>.
+If <cite>0.0 &lt; t &lt; 1.0</cite>, collapse to a point between <cite>u</cite> and <cite>v</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>None</em></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>u</cite> and <cite>v</cite> are not neighbours.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
+
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()},</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">fkey</span><span class="p">:</span> <span class="n">fkey</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()})</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="figure">
+<img alt="../../../_images/compas-datastructures-Mesh-collapse_edge_tri-1.png" src="../../../_images/compas-datastructures-Mesh-collapse_edge_tri-1.png" />
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">centroid_points</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()):</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">split_face</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="n">mesh</span><span class="o">.</span><span class="n">swap_edge_tri</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">swap_edge_tri</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+
+<span class="n">mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+
+<span class="n">points</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_neighbours</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">centroid_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+<span class="n">attr</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="n">z</span><span class="p">}</span>
+
+<span class="n">mesh</span><span class="o">.</span><span class="n">set_vertex_attributes</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()},</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">fkey</span><span class="p">:</span> <span class="n">fkey</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()})</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="compas.datastructures.Mesh.collapse_edge.html"
+                        title="previous chapter">Mesh.collapse_edge</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="compas.datastructures.Mesh.copy.html"
+                        title="next chapter">Mesh.copy</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compas.datastructures.Mesh.copy.html" title="Mesh.copy"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="compas.datastructures.Mesh.collapse_edge.html" title="Mesh.collapse_edge"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../../compas.datastructures.html" >compas.datastructures</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="../compas.datastructures.Mesh.html" >Mesh</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Block Research Group - ETH Zurich.
+      Last updated on Aug 08, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>

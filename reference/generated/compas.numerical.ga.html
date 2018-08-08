@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ga &#8212; COMPAS 0.2.7 documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="moga" href="compas.numerical.moga.html" />
+    <link rel="prev" title="devo_numpy" href="compas.numerical.devo_numpy.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compas.numerical.moga.html" title="moga"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="compas.numerical.devo_numpy.html" title="devo_numpy"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../compas.numerical.html" accesskey="U">compas.numerical</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="detail section" id="ga">
+<h1>ga</h1>
+<dl class="function">
+<dt id="compas.numerical.ga">
+<code class="descclassname">compas.numerical.</code><code class="descname">ga</code><span class="sig-paren">(</span><em>fit_function</em>, <em>fit_type</em>, <em>num_var</em>, <em>boundaries</em>, <em>num_gen=100</em>, <em>num_pop=100</em>, <em>num_elite=10</em>, <em>mutation_probability=0.01</em>, <em>n_cross=1</em>, <em>num_bin_dig=None</em>, <em>num_pop_init=None</em>, <em>num_gen_init_pop=None</em>, <em>start_from_gen=False</em>, <em>min_fit=None</em>, <em>fit_name=None</em>, <em>fargs=None</em>, <em>fkwargs=None</em>, <em>output_path=None</em>, <em>input_path=None</em>, <em>print_refresh=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas/numerical/solvers/ga.html#ga"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Genetic Algorithm optimisation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fit_function</strong> (<em>callable</em>) – The function used by the :class’GA’ to determine the fitness value. The function
+must have as a first argument a list of variables that determine the
+fitness value. Other arguments and keyword arguments can be used to feed
+the function relevant data.</p></li>
+<li><p><strong>fit_type</strong> (<em>str</em>) – String that indicates if the fitness function is to be minimized or maximized.
+“min” for minimization and “max” for maximization.</p></li>
+<li><p><strong>num_var</strong> (<em>int</em>) – The number of variables used by the fitness function.</p></li>
+<li><p><strong>boundaries</strong> (<em>list</em>) – The minimum and vaximum values each variable is allowed to have. Must be
+a <code class="docutils literal notranslate"><span class="pre">num_var</span></code> long list of tuples in the form [(min, max),…].</p></li>
+<li><p><strong>num_gen</strong> (<em>int, optional [100]</em>) – The maximum number of generations.</p></li>
+<li><p><strong>num_pop</strong> (<em>int, optional [100]</em>) – The number of individuals in the population. Must be an even number.</p></li>
+<li><p><strong>num_elite</strong> (<em>int, optional [10]</em>) – The number of individuals in the elite population. Must be an even number.</p></li>
+<li><p><strong>mutation_probablity</strong> (<em>float, optional [0.001]</em>) – Float from 0 to 1. Percentage of genes that will be mutated.</p></li>
+<li><p><strong>n_cross</strong> (<em>int, optional [1]</em>) – Number of crossover points used in the crossover operator.</p></li>
+<li><p><strong>num_bin_dig</strong> (<em>list, optional [None]</em>) – Number of genes used to codify each variable. Must be a <code class="docutils literal notranslate"><span class="pre">num_var</span></code> long
+list of intergers. If None is given, each variable will be coded with a
+8 digit binary number, corresponding to 256 steps.</p></li>
+<li><p><strong>num_pop_init</strong> (<em>int, optional [None]</em>) – The number of individuals in the population for the first <code class="docutils literal notranslate"><span class="pre">num_gen_init_pop</span></code>
+generations.</p></li>
+<li><p><strong>num_gen_init_pop</strong> (<em>int, optional</em>) – The number of generations to keep a <code class="docutils literal notranslate"><span class="pre">num_pop_init</span></code> size population for.</p></li>
+<li><p><strong>start_from_get</strong> (<em>int, optional [None]</em>) – The generation number to restart a previous optimization process.</p></li>
+<li><p><strong>min_fit</strong> (<em>float, optional [None]</em>) – A target fitness value. If the GA finds a solution with a fitness value
+equal or better than <code class="docutils literal notranslate"><span class="pre">min_fit</span></code>, the optimization is stopped.</p></li>
+<li><p><strong>fit_name</strong> (<em>str, optional [None]</em>) – The name of the optimisation. If None is given, the name of the fitness
+function is used.</p></li>
+<li><p><strong>fargs</strong> (<em>list, optional [None]</em>) – Arguments fo be fed to the fitness function.</p></li>
+<li><p><strong>fkwargs</strong> (<em>dict, optional [None]</em>) – Keyword arguments to be fed to the fitness function.</p></li>
+<li><p><strong>output_path</strong> (<em>str, optional [None]</em>) – Path for the optimization result files.</p></li>
+<li><p><strong>input_path</strong> (<em>str, optional [None]</em>) – Path to the fitness function file.</p></li>
+<li><p><strong>print_refresh</strong> (<em>int</em>) – Print current generation summary every <code class="docutils literal notranslate"><span class="pre">print_refresh</span></code> generations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ga_</strong> (<em>object</em>) – The resulting :class’GA’ instance.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>For more info, see <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.</p>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Holland, J. H., <em>Adaptation in Natural and Artificial Systems</em>, 1st edn,
+The University of Michigan, Ann Arbor, 1975.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">from</span> <span class="nn">compas.numerical.solvers.ga</span> <span class="kn">import</span> <span class="n">ga</span>
+
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fit</span>
+
+<span class="n">fit_function</span> <span class="o">=</span> <span class="n">foo</span>
+<span class="n">fit_type</span> <span class="o">=</span> <span class="s1">&#39;min&#39;</span>
+<span class="n">num_var</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">boundaries</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">*</span> <span class="n">num_var</span>
+<span class="n">num_bin_dig</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_var</span>
+<span class="n">output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">TEMP</span><span class="p">,</span> <span class="s1">&#39;ga_out/&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_path</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+
+<span class="n">ga</span> <span class="o">=</span> <span class="n">ga</span><span class="p">(</span><span class="n">fit_function</span><span class="p">,</span>
+        <span class="n">fit_type</span><span class="p">,</span>
+        <span class="n">num_var</span><span class="p">,</span>
+        <span class="n">boundaries</span><span class="p">,</span>
+        <span class="n">num_gen</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">num_pop</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">num_elite</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+        <span class="n">num_bin_dig</span><span class="o">=</span><span class="n">num_bin_dig</span><span class="p">,</span>
+        <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">,</span>
+        <span class="n">min_fit</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>================================================================================
+GA summary
+================================================================================
+
+- fitness function name: foo
+
+- fitnes function type : min
+
+- number of generations : 100
+
+- number of individuals : 100
+
+- number of variables : 10
+
+- optimal individual : 31
+
+- optimal fitness value : 0.0705882352941
+
+================================================================================
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="compas.numerical.devo_numpy.html"
+                        title="previous chapter">devo_numpy</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="compas.numerical.moga.html"
+                        title="next chapter">moga</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compas.numerical.moga.html" title="moga"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="compas.numerical.devo_numpy.html" title="devo_numpy"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../compas.numerical.html" >compas.numerical</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Block Research Group - ETH Zurich.
+      Last updated on Aug 08, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>

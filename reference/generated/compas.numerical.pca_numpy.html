@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>pca_numpy &#8212; COMPAS 0.2.7 documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="descent" href="compas.numerical.descent.html" />
+    <link rel="prev" title="fd_numpy" href="compas.numerical.fd_numpy.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compas.numerical.descent.html" title="descent"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="compas.numerical.fd_numpy.html" title="fd_numpy"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../compas.numerical.html" accesskey="U">compas.numerical</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="detail section" id="pca-numpy">
+<h1>pca_numpy</h1>
+<dl class="function">
+<dt id="compas.numerical.pca_numpy">
+<code class="descclassname">compas.numerical.</code><code class="descname">pca_numpy</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas/numerical/algorithms/pca_numpy.html#pca_numpy"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the principle components of a set of data points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>list</em>) – A list of <cite>m</cite> observations, measuring <cite>n</cite> variables.
+For example, if the data are points in 2D space, the data parameter
+should contain <cite>m</cite> nested lists of <cite>2</cite> variables, the <cite>x</cite> and <cite>y</cite>
+coordinates.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>list</em> – A list of principle directions. The number of principle directions
+is equal to the dimensionality of the problem(?!).
+For example, if the data points are locations in 3D space, three
+principle components will be returned. If the data points are
+locations in 2D space, only two principle components will be returned.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>PCA of a dataset finds the directions along which the variance of the data
+is largest, i.e. the directions along which the data is most spread out.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">random</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">matrix_from_axis_and_angle</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">transform_numpy</span>
+
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">Cloud3D</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">Bounds</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">create_axes_3d</span>
+
+<span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="kn">import</span> <span class="n">pca_numpy</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">10.0</span>
+<span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.0</span>
+<span class="n">data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">4.0</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="mf">3.14159</span> <span class="o">*</span> <span class="mf">30.0</span> <span class="o">/</span> <span class="mi">180</span>
+<span class="n">Ry</span> <span class="o">=</span> <span class="n">matrix_from_axis_and_angle</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">a</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3.14159</span> <span class="o">*</span> <span class="mf">45.0</span> <span class="o">/</span> <span class="mi">180</span>
+<span class="n">Rz</span> <span class="o">=</span> <span class="n">matrix_from_axis_and_angle</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="n">a</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
+
+<span class="n">R</span> <span class="o">=</span> <span class="n">Rz</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Ry</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">transform_numpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+
+<span class="n">average</span><span class="p">,</span> <span class="n">vectors</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">pca_numpy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">axes</span> <span class="o">=</span> <span class="n">create_axes_3d</span><span class="p">()</span>
+
+<span class="n">Bounds</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">Cloud3D</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">Axes3D</span><span class="p">(</span><span class="n">average</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="figure">
+<img alt="../../_images/compas-numerical-pca_numpy-1.png" src="../../_images/compas-numerical-pca_numpy-1.png" />
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="compas.numerical.fd_numpy.html"
+                        title="previous chapter">fd_numpy</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="compas.numerical.descent.html"
+                        title="next chapter">descent</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compas.numerical.descent.html" title="descent"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="compas.numerical.fd_numpy.html" title="fd_numpy"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../compas.numerical.html" >compas.numerical</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Block Research Group - ETH Zurich.
+      Last updated on Aug 08, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>

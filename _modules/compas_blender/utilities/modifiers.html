@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>compas_blender.utilities.modifiers &#8212; COMPAS 0.2.7 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for compas_blender.utilities.modifiers</h1><div class="highlight"><pre>
+<span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">bpy</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Andrew Liew &lt;liew@arch.ethz.ch&gt;&#39;</span><span class="p">]</span>
+<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">&#39;Copyright 2017, Block Research Group - ETH Zurich&#39;</span>
+<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">&#39;MIT License&#39;</span>
+<span class="n">__email__</span>      <span class="o">=</span> <span class="s1">&#39;liew@arch.ethz.ch&#39;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;bevel&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;linear_array&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;subdivide&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;triangulate&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="bevel"><a class="viewcode-back" href="../../../reference/generated/compas_blender.utilities.bevel.html#compas_blender.utilities.bevel">[docs]</a><span class="k">def</span> <span class="nf">bevel</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">segments</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">only_vertices</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Bevel a Blender mesh object.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        object (obj): The Blender mesh object to bevel.</span>
+<span class="sd">        width (float): Width of the bevel.</span>
+<span class="sd">        segments (int): Number of bevel segments.</span>
+<span class="sd">        only_vertices (bool): Bevel only vertices.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">object</span><span class="o">.</span><span class="n">modifiers</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;bevel&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;BEVEL&#39;</span><span class="p">)</span>
+    <span class="nb">object</span><span class="o">.</span><span class="n">modifiers</span><span class="p">[</span><span class="s1">&#39;bevel&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+    <span class="nb">object</span><span class="o">.</span><span class="n">modifiers</span><span class="p">[</span><span class="s1">&#39;bevel&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">segments</span>
+    <span class="nb">object</span><span class="o">.</span><span class="n">modifiers</span><span class="p">[</span><span class="s1">&#39;bevel&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">use_only_vertices</span> <span class="o">=</span> <span class="n">only_vertices</span></div>
+
+
+<div class="viewcode-block" id="linear_array"><a class="viewcode-back" href="../../../reference/generated/compas_blender.utilities.linear_array.html#compas_blender.utilities.linear_array">[docs]</a><span class="k">def</span> <span class="nf">linear_array</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">displace</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot; Create a linear array from a Blender mesh object.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        object (obj): The Blender mesh object to array.</span>
+<span class="sd">        count (int): Number of array objects.</span>
+<span class="sd">        displace (list): [dx, dy, dz] displacements.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">object</span><span class="o">.</span><span class="n">modifiers</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;linear_array&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;ARRAY&#39;</span><span class="p">)</span>
+    <span class="nb">object</span><span class="o">.</span><span class="n">modifiers</span><span class="p">[</span><span class="s1">&#39;linear_array&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">count</span>
+    <span class="nb">object</span><span class="o">.</span><span class="n">modifiers</span><span class="p">[</span><span class="s1">&#39;linear_array&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">relative_offset_displace</span> <span class="o">=</span> <span class="n">displace</span></div>
+
+
+<div class="viewcode-block" id="subdivide"><a class="viewcode-back" href="../../../reference/generated/compas_blender.utilities.subdivide.html#compas_blender.utilities.subdivide">[docs]</a><span class="k">def</span> <span class="nf">subdivide</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;SIMPLE&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Subdivides a Blender mesh object.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        object (obj): The Blender mesh object to subdivide.</span>
+<span class="sd">        levels (int): Number of subdivision levels.</span>
+<span class="sd">        type (str): Subdivision type &#39;CATMULL_CLARK&#39;, &#39;SIMPLE&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">object</span><span class="o">.</span><span class="n">modifiers</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;subdivision&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;SUBSURF&#39;</span><span class="p">)</span>
+    <span class="nb">object</span><span class="o">.</span><span class="n">modifiers</span><span class="p">[</span><span class="s1">&#39;subdivision&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">levels</span> <span class="o">=</span> <span class="n">levels</span>
+    <span class="nb">object</span><span class="o">.</span><span class="n">modifiers</span><span class="p">[</span><span class="s1">&#39;subdivision&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">subdivision_type</span> <span class="o">=</span> <span class="nb">type</span></div>
+
+
+<div class="viewcode-block" id="triangulate"><a class="viewcode-back" href="../../../reference/generated/compas_blender.utilities.triangulate.html#compas_blender.utilities.triangulate">[docs]</a><span class="k">def</span> <span class="nf">triangulate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Triangulate a Blender mesh object.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        object (obj): The Blender mesh object to triangulate.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">object</span><span class="o">.</span><span class="n">modifiers</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;triangulate&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;TRIANGULATE&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="kn">from</span> <span class="nn">compas_blender.utilities</span> <span class="k">import</span> <span class="n">draw_cuboid</span>
+    <span class="kn">from</span> <span class="nn">compas_blender.utilities</span> <span class="k">import</span> <span class="n">clear_layer</span>
+
+    <span class="n">clear_layer</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">cube</span> <span class="o">=</span> <span class="n">draw_cuboid</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">subdivide</span><span class="p">(</span><span class="nb">object</span><span class="o">=</span><span class="n">cube</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;CATMULL_CLARK&#39;</span><span class="p">)</span>
+    <span class="n">triangulate</span><span class="p">(</span><span class="nb">object</span><span class="o">=</span><span class="n">cube</span><span class="p">)</span>
+    <span class="n">linear_array</span><span class="p">(</span><span class="nb">object</span><span class="o">=</span><span class="n">cube</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">displace</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">bevel</span><span class="p">(</span><span class="nb">object</span><span class="o">=</span><span class="n">cube</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">segments</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Block Research Group - ETH Zurich.
+      Last updated on Aug 08, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>

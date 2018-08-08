@@ -1,0 +1,452 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>compas.utilities.xfunc &#8212; COMPAS 0.2.7 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for compas.utilities.xfunc</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">DataEncoder</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">DataDecoder</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">Popen</span>
+    <span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">PIPE</span>
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_not_ironpython</span><span class="p">()</span>
+
+
+<span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">&#39;Copyright 2014, Block Research Group - ETH Zurich&#39;</span>
+<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">&#39;MIT License&#39;</span>
+<span class="n">__email__</span>      <span class="o">=</span> <span class="s1">&#39;vanmelet@ethz.ch&#39;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;XFunc&#39;</span><span class="p">,</span> <span class="p">]</span>
+
+
+<span class="n">WRAPPER</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">import os</span>
+<span class="s2">import sys</span>
+<span class="s2">import importlib</span>
+
+<span class="s2">import json</span>
+
+<span class="s2">try:</span>
+<span class="s2">    from cStringIO import StringIO</span>
+<span class="s2">except Exception:</span>
+<span class="s2">    from io import StringIO</span>
+
+<span class="s2">import cProfile</span>
+<span class="s2">import pstats</span>
+<span class="s2">import traceback</span>
+
+<span class="s2">from compas.utilities import DataEncoder</span>
+<span class="s2">from compas.utilities import DataDecoder</span>
+
+<span class="s2">basedir  = sys.argv[1]</span>
+<span class="s2">funcname = sys.argv[2]</span>
+<span class="s2">ipath    = sys.argv[3]</span>
+<span class="s2">opath    = sys.argv[4]</span>
+
+<span class="s2">with open(ipath, &#39;r&#39;) as fp:</span>
+<span class="s2">    idict = json.load(fp, cls=DataDecoder)</span>
+
+<span class="s2">try:</span>
+<span class="s2">    args   = idict[&#39;args&#39;]</span>
+<span class="s2">    kwargs = idict[&#39;kwargs&#39;]</span>
+
+<span class="s2">    profile = cProfile.Profile()</span>
+<span class="s2">    profile.enable()</span>
+
+<span class="s2">    sys.path.insert(0, basedir)</span>
+<span class="s2">    parts = funcname.split(&#39;.&#39;)</span>
+
+<span class="s2">    if len(parts) &gt; 1:</span>
+<span class="s2">        mname = &#39;.&#39;.join(parts[:-1])</span>
+<span class="s2">        fname = parts[-1]</span>
+<span class="s2">        m = importlib.import_module(mname)</span>
+<span class="s2">        f = getattr(m, fname)</span>
+<span class="s2">    else:</span>
+<span class="s2">        raise Exception(&#39;Cannot import the function because no module name is specified.&#39;)</span>
+
+<span class="s2">    r = f(*args, **kwargs)</span>
+
+<span class="s2">    profile.disable()</span>
+
+<span class="s2">    stream = StringIO()</span>
+<span class="s2">    stats  = pstats.Stats(profile, stream=stream)</span>
+<span class="s2">    # stats.strip_dirs()</span>
+<span class="s2">    stats.sort_stats(1)</span>
+<span class="s2">    stats.print_stats(20)</span>
+
+<span class="s2">except Exception:</span>
+<span class="s2">    odict = </span><span class="si">{}</span><span class="s2"></span>
+<span class="s2">    odict[&#39;error&#39;]      = traceback.format_exc()</span>
+<span class="s2">    odict[&#39;data&#39;]       = None</span>
+<span class="s2">    odict[&#39;profile&#39;]    = None</span>
+
+<span class="s2">else:</span>
+<span class="s2">    odict = </span><span class="si">{}</span><span class="s2"></span>
+<span class="s2">    odict[&#39;error&#39;]      = None</span>
+<span class="s2">    odict[&#39;data&#39;]       = r</span>
+<span class="s2">    odict[&#39;profile&#39;]    = stream.getvalue()</span>
+
+<span class="s2">with open(opath, &#39;w+&#39;) as fp:</span>
+<span class="s2">    json.dump(odict, fp, cls=DataEncoder)</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="XFunc"><a class="viewcode-back" href="../../../reference/generated/compas.utilities.XFunc.html#compas.utilities.XFunc">[docs]</a><span class="k">class</span> <span class="nc">XFunc</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper for functions that turns them into externally run processes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    funcname : str</span>
+<span class="sd">        The full name of the function.</span>
+<span class="sd">    basedir : str, optional</span>
+<span class="sd">        A directory that should be added to the PYTHONPATH such that the function can be found.</span>
+<span class="sd">        Default is the curent directory.</span>
+<span class="sd">    tmpdir : str, optional</span>
+<span class="sd">        A directory that should be used for storing the IO files.</span>
+<span class="sd">        Default is the current directory.</span>
+<span class="sd">    delete_files : bool, optional</span>
+<span class="sd">        Set to ``False`` if the IO files should not be deleted afterwards.</span>
+<span class="sd">        Default is ``True``.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Set to ``False`` if no information about the process should be displayed</span>
+<span class="sd">        to the user. Default is ``True``.</span>
+<span class="sd">    callback : callable, optional</span>
+<span class="sd">        A function to be called eveytime the wrapped function prints output.</span>
+<span class="sd">        The first parameter passed to this function is the line printed by the</span>
+<span class="sd">        wrapped function. Additional parameters can be defined using `callback_args`.</span>
+<span class="sd">        Default is ``None``.</span>
+<span class="sd">    callback_args : tuple, optional</span>
+<span class="sd">        Additional parameter for the callback function.</span>
+<span class="sd">        Default is ``None``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : object</span>
+<span class="sd">        The object returned by the wrapped function.</span>
+<span class="sd">        This is ``None`` if something went wrong.</span>
+<span class="sd">    profile : str</span>
+<span class="sd">        A profile of the call to the wrapped function.</span>
+<span class="sd">        This is ``None`` if something went wrong.</span>
+<span class="sd">    error : str</span>
+<span class="sd">        A traceback of the exception raised during the wrapped function call.</span>
+<span class="sd">        This is ``None`` if nothing went wrong.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    __call__(*args, **kwargs)</span>
+<span class="sd">        Call the wrapped function with the apropriate/related arguments and keyword</span>
+<span class="sd">        arguments.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    ...</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ...</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    `compas.numerical` provides an implementation of the Force Desnity Method that</span>
+<span class="sd">    is based on Numpy and Scipy. This implementation is not directly available in</span>
+<span class="sd">    Rhino because Numpy and Scipy are not available for IronPython.</span>
+
+<span class="sd">    With `compas.utilities.XFunc`, `compas.numerical.fd_numpy` can be easily</span>
+<span class="sd">    wrapped in an external process and called as if it would be directly available.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import compas</span>
+<span class="sd">        import compas_rhino</span>
+
+<span class="sd">        from compas_rhino.helpers import MeshArtist</span>
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas.utilities import XFunc</span>
+
+<span class="sd">        mesh = Mesh.from_obj(compas.get(&#39;faces.obj&#39;))</span>
+
+<span class="sd">        mesh.update_default_vertex_attributes({&#39;is_fixed&#39;: False, &#39;px&#39;: 0.0, &#39;py&#39;: 0.0, &#39;pz&#39;: 0.0})</span>
+<span class="sd">        mesh.update_default_edge_attributes({&#39;q&#39;: 1.0})</span>
+
+<span class="sd">        for key, attr in mesh.vertices(True):</span>
+<span class="sd">            attr[&#39;is_fixed&#39;] = mesh.vertex_degree(key) == 2</span>
+
+<span class="sd">        key_index = mesh.key_index()</span>
+<span class="sd">        vertices  = mesh.get_vertices_attributes(&#39;xyz&#39;)</span>
+<span class="sd">        edges     = [(key_index[u], key_index[v]) for u, v in mesh.edges()]</span>
+<span class="sd">        fixed     = [key_index[key] for key in mesh.vertices_where({&#39;is_fixed&#39;: True})]</span>
+<span class="sd">        q         = mesh.get_edges_attribute(&#39;q&#39;, 1.0)</span>
+<span class="sd">        loads     = mesh.get_vertices_attributes((&#39;px&#39;, &#39;py&#39;, &#39;pz&#39;), (0.0, 0.0, 0.0))</span>
+
+<span class="sd">        xyz, q, f, l, r = XFunc(&#39;compas.numerical.fd_numpy&#39;)(vertices, edges, fixed, q, loads)</span>
+
+<span class="sd">        for key, attr in mesh.vertices(True):</span>
+<span class="sd">            attr[&#39;x&#39;] = xyz[key][0]</span>
+<span class="sd">            attr[&#39;y&#39;] = xyz[key][1]</span>
+<span class="sd">            attr[&#39;z&#39;] = xyz[key][2]</span>
+
+<span class="sd">        artist = MeshArtist(mesh)</span>
+<span class="sd">        artist.draw_vertices()</span>
+<span class="sd">        artist.draw_edges()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="XFunc.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas.utilities.XFunc.__init__.html#compas.utilities.XFunc.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">basedir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">tmpdir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">delete_files</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callback_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">python</span><span class="o">=</span><span class="s1">&#39;pythonw&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basedir</span>      <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span>       <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span>     <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_python</span>       <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">funcname</span>      <span class="o">=</span> <span class="n">funcname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span>       <span class="o">=</span> <span class="n">basedir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span>        <span class="o">=</span> <span class="n">tmpdir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_files</span>  <span class="o">=</span> <span class="n">delete_files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span>       <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span>      <span class="o">=</span> <span class="n">callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback_args</span> <span class="o">=</span> <span class="n">callback_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">python</span>        <span class="o">=</span> <span class="n">python</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span>          <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span>       <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span>         <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="XFunc.__call__"><a class="viewcode-back" href="../../../reference/generated/compas.utilities.XFunc.html#compas.utilities.XFunc.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make a call to the wrapped function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args : list</span>
+<span class="sd">            Positional arguments to be passed to the wrapped function.</span>
+<span class="sd">            Default is ``[]``.</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            Named arguments to be passed to the wrapped function.</span>
+<span class="sd">            Default is ``{}``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        object</span>
+<span class="sd">            The data returned by the wrapped call.</span>
+<span class="sd">            This is ``None`` if something went wrong.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xecute</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">basedir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basedir</span>
+
+    <span class="nd">@basedir</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">basedir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basedir</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">basedir</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;basedir is not a directory: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">basedir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basedir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">basedir</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tmpdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span>
+
+    <span class="nd">@tmpdir</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tmpdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmpdir</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;tmpdir is not a directory: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tmpdir</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;You do not have write access to &#39;tmpdir&#39;. Please set the &#39;tmpdir&#39; attribute to a different directory.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span>
+
+    <span class="nd">@callback</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
+                <span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">python</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_python</span>
+
+    <span class="nd">@python</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">python</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">python</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_python</span> <span class="o">=</span> <span class="n">python</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ipath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.in&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">funcname</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">opath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.out&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">funcname</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_xecute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute a function with optional positional and named arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">,</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">}</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ipath</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">idict</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">DataEncoder</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opath</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="n">process_args</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">python</span><span class="p">,</span>
+                        <span class="s1">&#39;-u&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;-c&#39;</span><span class="p">,</span>
+                        <span class="n">WRAPPER</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">funcname</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ipath</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">opath</span><span class="p">]</span>
+
+        <span class="n">process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">process_args</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_args</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">odict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">DataDecoder</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span>    <span class="o">=</span> <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span>   <span class="o">=</span> <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_files</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ipath</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opath</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="kn">import</span> <span class="nn">compas</span>
+
+    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
+    <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">XFunc</span>
+
+    <span class="n">fd_numpy</span> <span class="o">=</span> <span class="n">XFunc</span><span class="p">(</span><span class="s1">&#39;compas.numerical.fd_numpy&#39;</span><span class="p">)</span>
+
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
+
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+    <span class="n">edges</span>    <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
+    <span class="n">fixed</span>    <span class="o">=</span> <span class="nb">list</span><span class="p">([</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span> <span class="k">if</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_degree</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">])</span>
+    <span class="n">q</span>        <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_edges_attribute</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">loads</span>    <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">((</span><span class="s1">&#39;px&#39;</span><span class="p">,</span> <span class="s1">&#39;py&#39;</span><span class="p">,</span> <span class="s1">&#39;pz&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+
+    <span class="n">xyz</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">fd_numpy</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">loads</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">fd_numpy</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Block Research Group - ETH Zurich.
+      Last updated on Aug 08, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>

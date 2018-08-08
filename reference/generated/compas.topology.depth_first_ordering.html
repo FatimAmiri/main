@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>depth_first_ordering &#8212; COMPAS 0.2.7 documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="depth_first_tree" href="compas.topology.depth_first_tree.html" />
+    <link rel="prev" title="mesh_subdivide_doosabin" href="compas.topology.mesh_subdivide_doosabin.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compas.topology.depth_first_tree.html" title="depth_first_tree"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="compas.topology.mesh_subdivide_doosabin.html" title="mesh_subdivide_doosabin"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../compas.topology.html" accesskey="U">compas.topology</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="detail section" id="depth-first-ordering">
+<h1>depth_first_ordering</h1>
+<dl class="function">
+<dt id="compas.topology.depth_first_ordering">
+<code class="descclassname">compas.topology.</code><code class="descname">depth_first_ordering</code><span class="sig-paren">(</span><em>adjacency</em>, <em>root</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas/topology/traversal.html#depth_first_ordering"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute depth-first ordering of connected vertices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adjacency</strong> (<em>dict</em>) – An adjacency dictionary. Each key represents a vertex
+and maps to a list of neighbouring vertex keys.</p></li>
+<li><p><strong>root</strong> (<em>str</em>) – The vertex from which to start the depth-first search.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>list</em> – A depth-first ordering of all vertices in the network.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Return all nodes of a connected component containing ‘root’ of a network
+represented by an adjacency dictionary.</p>
+<p>This implementation uses a <em>to visit</em> stack. The principle of a stack
+is LIFO. In Python, a list is a stack.</p>
+<p>Initially only the root element is on the stack. While there are still
+elements on the stack, the node on top of the stack is ‘popped off’ and if
+this node was not already visited, its neighbours are added to the stack if
+they hadn’t already been visited themselves.</p>
+<p>Since the last element on top of the stack is always popped off, the
+algorithm goes deeper and deeper in the datastructure, until it reaches a
+node without (unvisited) neighbours and then backtracks. Once a new node
+with unvisited neighbours is found, there too it will go as deep as possible
+before backtracking again, and so on. Once there are no more nodes on the
+stack, the entire structure has been traversed.</p>
+<p>Note that this returns a depth-first spanning tree of a connected component
+of the network.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">compas</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">depth_first_search</span> <span class="k">as</span> <span class="n">dfs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lines.obj&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dfs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">network</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">()))</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li></li>
+</ul>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="compas.topology.mesh_subdivide_doosabin.html"
+                        title="previous chapter">mesh_subdivide_doosabin</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="compas.topology.depth_first_tree.html"
+                        title="next chapter">depth_first_tree</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compas.topology.depth_first_tree.html" title="depth_first_tree"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="compas.topology.mesh_subdivide_doosabin.html" title="mesh_subdivide_doosabin"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../compas.topology.html" >compas.topology</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Block Research Group - ETH Zurich.
+      Last updated on Aug 08, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>

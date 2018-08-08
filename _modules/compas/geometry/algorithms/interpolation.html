@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>compas.geometry.algorithms.interpolation &#8212; COMPAS 0.2.7 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for compas.geometry.algorithms.interpolation</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">scale_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">subtract_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">sum_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">normalize_values</span>
+
+
+<span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Matthias Rippmann&#39;</span><span class="p">,</span> <span class="s1">&#39;Robin Oval&#39;</span><span class="p">]</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright 2016 - Block Research Group, ETH Zurich&#39;</span>
+<span class="n">__license__</span>   <span class="o">=</span> <span class="s1">&#39;MIT License&#39;</span>
+<span class="n">__email__</span>     <span class="o">=</span> <span class="s1">&#39;rippmann@ethz.ch&#39;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;discrete_coons_patch&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="discrete_coons_patch"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.discrete_coons_patch.html#compas.geometry.discrete_coons_patch">[docs]</a><span class="k">def</span> <span class="nf">discrete_coons_patch</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">ad</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a coons patch from a set of four or three boundary</span>
+<span class="sd">    polylines (ab, bc, dc, ad).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    polylines : sequence</span>
+<span class="sd">        The XYZ coordinates of the vertices of the polyline.</span>
+<span class="sd">        The vertices are assumed to be in order.</span>
+<span class="sd">        The polyline is assumed to be open:</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    points : list of tuples</span>
+<span class="sd">        The points of the coons patch.</span>
+<span class="sd">    faces : list of lists</span>
+<span class="sd">        List of faces (face = list of vertex indices as integers)</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Direction and order of polylines::</span>
+
+<span class="sd">        b -----&gt; c</span>
+<span class="sd">        ^        ^</span>
+<span class="sd">        |        |</span>
+<span class="sd">        |        |</span>
+<span class="sd">        |        |</span>
+<span class="sd">        a -----&gt; d</span>
+
+<span class="sd">    One polyline can be None to create a triangular patch</span>
+<span class="sd">    (Warning! This will result in duplicate vertices)</span>
+
+<span class="sd">    For more information see [1]_ and [2]_.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Wikipedia. *Coons patch*.</span>
+<span class="sd">           Available at: https://en.wikipedia.org/wiki/Coons_patch.</span>
+<span class="sd">    .. [2] Robert Ferreol. *Patch de Coons*.</span>
+<span class="sd">           Available at: https://www.mathcurve.com/surfaces/patchcoons/patchcoons.shtml</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        #</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`compas.datastructures.mesh_cull_duplicate_vertices`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ab</span><span class="p">:</span>
+        <span class="n">ab</span> <span class="o">=</span> <span class="p">[</span><span class="n">ad</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">dc</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">bc</span><span class="p">:</span>
+        <span class="n">bc</span> <span class="o">=</span> <span class="p">[</span><span class="n">ab</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ad</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dc</span><span class="p">:</span>
+        <span class="n">dc</span> <span class="o">=</span> <span class="p">[</span><span class="n">bc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ad</span><span class="p">:</span>
+        <span class="n">ad</span> <span class="o">=</span> <span class="p">[</span><span class="n">dc</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span>
+
+    <span class="n">n_norm</span> <span class="o">=</span> <span class="n">normalize_values</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+    <span class="n">m_norm</span> <span class="o">=</span> <span class="n">normalize_values</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+    <span class="n">array</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">m</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ki</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_norm</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">kj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">m_norm</span><span class="p">):</span>
+            <span class="c1"># first function: linear interpolation of first two opposite curves</span>
+            <span class="n">lin_interp_ab_dc</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">scale_vector</span><span class="p">(</span><span class="n">ab</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">kj</span><span class="p">)),</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">dc</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kj</span><span class="p">))</span>
+            <span class="c1"># second function: linear interpolation of other two opposite curves</span>
+            <span class="n">lin_interp_bc_ad</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">scale_vector</span><span class="p">(</span><span class="n">ad</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ki</span><span class="p">)),</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">bc</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">ki</span><span class="p">))</span>
+            <span class="c1"># third function: linear interpolation of four corners resulting a hypar</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">ab</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ki</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">kj</span><span class="p">))</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">bc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ki</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">kj</span><span class="p">))</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">dc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ki</span> <span class="o">*</span> <span class="n">kj</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">ad</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ki</span><span class="p">)</span> <span class="o">*</span> <span class="n">kj</span><span class="p">)</span>
+            <span class="n">lin_interp_a_b_c_d</span> <span class="o">=</span> <span class="n">sum_vectors</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">])</span>
+            <span class="c1"># coons patch = first + second - third functions</span>
+            <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">add_vectors</span><span class="p">(</span><span class="n">lin_interp_ab_dc</span><span class="p">,</span> <span class="n">lin_interp_bc_ad</span><span class="p">),</span> <span class="n">lin_interp_a_b_c_d</span><span class="p">)</span>
+
+    <span class="c1"># create vertex list</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">vertices</span> <span class="o">+=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="c1"># create face vertex list</span>
+    <span class="n">face_vertices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">face_vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span> <span class="o">*</span> <span class="n">m</span> <span class="o">+</span> <span class="n">j</span> <span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">m</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">m</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">m</span> <span class="o">+</span> <span class="n">j</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">face_vertices</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Block Research Group - ETH Zurich.
+      Last updated on Aug 08, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>
