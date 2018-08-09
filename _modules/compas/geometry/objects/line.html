@@ -41,6 +41,9 @@
 
 <span class="kn">from</span> <span class="nn">compas.geometry.objects</span> <span class="k">import</span> <span class="n">Point</span>
 
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">transform_points</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">transform_vectors</span>
+
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="p">]</span>
 <span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">&#39;Copyright 2014, Block Research Group - ETH Zurich&#39;</span>
@@ -48,76 +51,76 @@
 <span class="n">__email__</span>      <span class="o">=</span> <span class="s1">&#39;vanmelet@ethz.ch&#39;</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Line&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Line&#39;</span><span class="p">,</span> <span class="p">]</span>
 
 
 <div class="viewcode-block" id="Line"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.Line.html#compas.geometry.Line">[docs]</a><span class="k">class</span> <span class="nc">Line</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;A line object is defined by two points in three-dimensional space.</span>
+    <span class="sd">&quot;&quot;&quot;A line is defined by two points.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    p1 : tuple, list, Point</span>
-<span class="sd">        The xyz coordinates of the first point.</span>
-<span class="sd">    p2 : tuple, list, Point</span>
-<span class="sd">        The xyz coordinates of the second point.</span>
+<span class="sd">    p1 : point</span>
+<span class="sd">        The first point.</span>
+<span class="sd">    p2 : point</span>
+<span class="sd">        The second point.</span>
 
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    start : Point</span>
-<span class="sd">        The start point.</span>
-<span class="sd">    end : Point</span>
-<span class="sd">        The end point.</span>
-<span class="sd">    length : float, **read-only**</span>
-<span class="sd">        The length of the line between start and end.</span>
-<span class="sd">    midpoint : Point, **read-only**</span>
-<span class="sd">        The midpoint between start and end.</span>
-<span class="sd">    direction : Vector, **read-only**</span>
-<span class="sd">        A unit vector pointing from start to end.</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; line = Line([0, 0, 0], [1, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; line.midpoint</span>
+<span class="sd">    Point(0.500, 0.500, 0.500)</span>
+<span class="sd">    &gt;&gt;&gt; line.length</span>
+<span class="sd">    1.73205080757</span>
+<span class="sd">    &gt;&gt;&gt; line.direction</span>
+<span class="sd">    Vector(0.577, 0.577, 0.577, 1.000)</span>
+
+<span class="sd">    &gt;&gt;&gt; type(line.start)</span>
+<span class="sd">    &lt;class &#39;compas.geometry.objects.point.Point&#39;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; type(line.midpoint)</span>
+<span class="sd">    &lt;class &#39;compas.geometry.objects.point.Point&#39;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; type(line.direction)</span>
+<span class="sd">    &lt;class &#39;compas.geometry.objects.vector.Vector&#39;&gt;</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    For more info on lines and linear equations, see [1]_.</span>
-
-<span class="sd">    For convenience, this class implements the following *magic* methods:</span>
-
-<span class="sd">    * ``__repr__``</span>
-<span class="sd">    * ``__len__``</span>
-<span class="sd">    * ``__getitem__``</span>
-<span class="sd">    * ``__setitem__``</span>
-<span class="sd">    * ``__iter__``</span>
-<span class="sd">    * ``__mul__``</span>
-<span class="sd">    * ``__imul__``</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    .. [1] Wikipedia. *Linear equation*.</span>
 <span class="sd">           Available at: https://en.wikipedia.org/wiki/Linear_equation.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; line = Line([0,0,0], [1,1,1])</span>
-<span class="sd">    &gt;&gt;&gt; line.midpoint</span>
-<span class="sd">    [0.5, 0.5, 0.0]</span>
-<span class="sd">    &gt;&gt;&gt; line.length</span>
-<span class="sd">    1.73205080757</span>
-<span class="sd">    &gt;&gt;&gt; line.direction</span>
-<span class="sd">    [0.57735026919, 0.57735026919, 0.57735026919]</span>
-
-<span class="sd">    &gt;&gt;&gt; type(line.start)</span>
-<span class="sd">    &lt;class &#39;point.Point&#39;&gt;</span>
-<span class="sd">    &gt;&gt;&gt; type(line.midpoint)</span>
-<span class="sd">    &lt;class &#39;point.Point&#39;&gt;</span>
-<span class="sd">    &gt;&gt;&gt; type(line.direction)</span>
-<span class="sd">    &lt;class &#39;vector.Vector&#39;&gt;</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_start&#39;</span><span class="p">,</span> <span class="s1">&#39;_end&#39;</span><span class="p">]</span>
+
 <div class="viewcode-block" id="Line.__init__"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Line.__init__.html#compas.geometry.Line.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span> <span class="n">p1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span> <span class="n">p2</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">p1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">p2</span></div>
 
     <span class="c1"># ==========================================================================</span>
-    <span class="c1"># factory</span>
+    <span class="c1"># properties</span>
     <span class="c1"># ==========================================================================</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Point: the start point.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span>
+
+    <span class="nd">@start</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">point</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Point: the end point.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_end</span>
+
+    <span class="nd">@end</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">point</span><span class="p">)</span>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># descriptors</span>
@@ -125,47 +128,31 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A vector pointing from start to end.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Vector: The vector.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Vector: A vector pointing from start to end.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The length of the vector from start to end.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            float: The length.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;float: The length of the vector from start to end.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="o">.</span><span class="n">length</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">midpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The midpoint between start and end.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Point: The midpoint.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">v</span>
+    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Vector: A unit vector pointing from start and end.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A unit vector pointing from start and end.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Vector: The direction.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">midpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Point: The midpoint between start and end.&quot;&quot;&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">v</span>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># representation</span>
     <span class="c1"># ==========================================================================</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;(</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;Line(</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="mi">2</span>
@@ -183,10 +170,10 @@
 
     <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">value</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">value</span>
             <span class="k">return</span>
         <span class="k">raise</span> <span class="ne">KeyError</span>
 
@@ -197,31 +184,32 @@
     <span class="c1"># comparison</span>
     <span class="c1"># ==========================================================================</span>
 
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># operators</span>
     <span class="c1"># ==========================================================================</span>
-
-    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a line with the same start point and direction, but scaled</span>
-<span class="sd">        length.</span>
-
-<span class="sd">        Parameters:</span>
-<span class="sd">            n (int, float): The scaling factor.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Line: A line with the same start point and direction, but scaled length.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">v</span><span class="p">)</span>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># inplace operators</span>
     <span class="c1"># ==========================================================================</span>
 
-    <span class="k">def</span> <span class="nf">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">v</span>
-        <span class="k">return</span> <span class="bp">self</span>
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># helpers</span>
+    <span class="c1"># ==========================================================================</span>
+
+<div class="viewcode-block" id="Line.copy"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Line.copy.html#compas.geometry.Line.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make a copy of this ``Line``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Line</span>
+<span class="sd">            The copy.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># methods</span>
@@ -231,28 +219,41 @@
     <span class="c1"># transformations</span>
     <span class="c1"># ==========================================================================</span>
 
-<div class="viewcode-block" id="Line.translate"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Line.translate.html#compas.geometry.Line.translate">[docs]</a>    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Translate the line by a vector.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Line.transform"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Line.transform.html#compas.geometry.Line.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform this ``Plane`` using a given transformation matrix.</span>
 
-<div class="viewcode-block" id="Line.rotate"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Line.rotate.html#compas.geometry.Line.rotate">[docs]</a>    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Rotate the line around the origin, or around a specified origin.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">origin</span><span class="p">:</span>
-            <span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="n">origin</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span></div>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        matrix : list of list</span>
+<span class="sd">            The transformation matrix.</span>
 
-<div class="viewcode-block" id="Line.scale"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Line.scale.html#compas.geometry.Line.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Increase the distance between start and end by a factor n, while</span>
-<span class="sd">        keeping the start point fixed.</span>
-
-<span class="sd">        Parameters:</span>
-<span class="sd">            n (int, float): The scaling factor.</span>
-
-<span class="sd">        Notes:</span>
-<span class="sd">            This is an alias for self *= n</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span> <span class="o">*=</span> <span class="n">n</span></div></div>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">transform_points</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">],</span> <span class="n">matrix</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">normal</span> <span class="o">=</span> <span class="n">transform_vectors</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="p">],</span> <span class="n">matrix</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">normal</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">normal</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">normal</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Line.transformed"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Line.transformed.html#compas.geometry.Line.transformed">[docs]</a>    <span class="k">def</span> <span class="nf">transformed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a transformed copy of this ``Line`` using a given transformation matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        matrix : list of list</span>
+<span class="sd">            The transformation matrix.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Line</span>
+<span class="sd">            The transformed copy.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">line</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">line</span></div></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -263,19 +264,14 @@
 
     <span class="n">l1</span> <span class="o">=</span> <span class="n">Line</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 
+    <span class="nb">print</span><span class="p">(</span><span class="n">l1</span><span class="p">)</span>
+
     <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">start</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">midpoint</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">midpoint</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">direction</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">direction</span><span class="p">))</span>
-
-    <span class="n">l2</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">*</span> <span class="mi">2</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">l2</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">l2</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
-    <span class="n">l1</span> <span class="o">*=</span> <span class="mi">2</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -314,7 +310,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Block Research Group - ETH Zurich.
-      Last updated on Aug 08, 2018.
+      Last updated on Aug 09, 2018.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
     </div>
   </body>

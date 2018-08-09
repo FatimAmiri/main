@@ -14,8 +14,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Vector" href="generated/compas.geometry.Vector.html" />
-    <link rel="prev" title="PLYreader.read_vertices_binary_wo_numpy" href="generated/generated/compas.files.PLYreader.read_vertices_binary_wo_numpy.html" /> 
+    <link rel="next" title="add_vectors" href="generated/compas.geometry.add_vectors.html" />
+    <link rel="prev" title="URDF.parse_element" href="generated/generated/compas.files.URDF.parse_element.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -27,10 +27,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="generated/compas.geometry.Vector.html" title="Vector"
+          <a href="generated/compas.geometry.add_vectors.html" title="add_vectors"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="generated/generated/compas.files.PLYreader.read_vertices_binary_wo_numpy.html" title="PLYreader.read_vertices_binary_wo_numpy"
+          <a href="generated/generated/compas.files.URDF.parse_element.html" title="URDF.parse_element"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../api.html" >API</a> &#187;</li>
@@ -48,161 +48,69 @@
 <p>This package provides functionality for working with geometry independent of CAD software.
 The package defines geometric primitives, basic geometry functions, and an implementation
 of a wide range of geometric algorithms.</p>
-<div class="section" id="primitives">
-<h2>Primitives</h2>
-<table class="longtable docutils">
+<p>The functions, methods and algorithms of the geometry package take various geometric
+primitives and objects as input parameters. These primitives and objects may be passed
+into those functions as instances of the corresponding classes defined in <code class="xref py py-mod docutils literal notranslate"><span class="pre">compas.geometry.objects</span></code>
+or as an equivalent representation using (combinations of) built-in Python objects.
+The following table defines those representations.</p>
+<table class="docutils">
 <colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
+<col style="width: 14%" />
+<col style="width: 86%" />
 </colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>parameter</p></th>
+<th class="head"><p>representation</p></th>
+</tr>
+</thead>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.Vector.html#compas.geometry.Vector" title="compas.geometry.Vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Vector</span></code></a></p></td>
-<td><p>A vector object represents a vector in three-dimensional space.</p></td>
+<tr class="row-even"><td><p>vector</p></td>
+<td><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of XYZ coordinates.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.Point.html#compas.geometry.Point" title="compas.geometry.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Point</span></code></a></p></td>
-<td><p>A three-dimensional location in space.</p></td>
+<tr class="row-odd"><td><p>point</p></td>
+<td><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of XYZ coordinates.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.Line.html#compas.geometry.Line" title="compas.geometry.Line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Line</span></code></a></p></td>
-<td><p>A line object is defined by two points in three-dimensional space.</p></td>
+<tr class="row-even"><td><p>segment</p></td>
+<td><p>2-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of points.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.Polyline.html#compas.geometry.Polyline" title="compas.geometry.Polyline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polyline</span></code></a></p></td>
-<td><p>A polyline object represents a concatenation of lines.</p></td>
+<tr class="row-odd"><td><p>line</p></td>
+<td><p>2-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of points.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.Polygon.html#compas.geometry.Polygon" title="compas.geometry.Polygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polygon</span></code></a></p></td>
-<td><p>An object representing …</p></td>
+<tr class="row-even"><td><p>ray</p></td>
+<td><p>2-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of points.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.Polyhedron.html#compas.geometry.Polyhedron" title="compas.geometry.Polyhedron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polyhedron</span></code></a></p></td>
-<td><p>Compute the vertices and faces of one of the Platonic solids.</p></td>
+<tr class="row-odd"><td><p>polyline</p></td>
+<td><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of points.</p></td>
+</tr>
+<tr class="row-even"><td><p>polygon</p></td>
+<td><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of points.</p></td>
+</tr>
+<tr class="row-odd"><td><p>plane</p></td>
+<td><p>2-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of origin (point) and normal (vector).</p></td>
+</tr>
+<tr class="row-even"><td><p>frame</p></td>
+<td><p>3-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of origin (point), U axis (vector) and V axis (vector).</p></td>
+</tr>
+<tr class="row-odd"><td><p>circle</p></td>
+<td><p>3-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of centre (point), normal (vector) and radius (float).</p></td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Many functions have an “_xy” version. These functions also accept 2D representations
+of geometric objects. However, all functions always return 3D representations
+of geometric objects. For example, <cite>scale_vector_xy</cite> accepts both 2D and 3D
+vectors, but always returns a 3D vector with the Z-component set to zero:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v3</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scale_vector_xy</span><span class="p">(</span><span class="n">v3</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
+<span class="go">[3.0, 0.0, 0.0]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v2</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scale_vector_xy</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
+<span class="go">[3.0, 0.0, 0.0]</span>
+</pre></div>
 </div>
-<div class="section" id="xforms">
-<h2>XForms</h2>
-<table class="longtable docutils">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.Frame.html#compas.geometry.Frame" title="compas.geometry.Frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Frame</span></code></a></p></td>
-<td><p>The <code class="docutils literal notranslate"><span class="pre">Frame</span></code> consists of a point and and two orthonormal base vectors.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Transformation</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rotation</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Translation</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Scale</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Reflection</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Projection</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Shear</span></code></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="algorithms">
-<h2>Algorithms</h2>
-<table class="longtable docutils">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.bestfit_plane.html#compas.geometry.bestfit_plane" title="compas.geometry.bestfit_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bestfit_plane</span></code></a></p></td>
-<td><p>Fit a plane to a list of (more than three) points.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.bestfit_plane_numpy.html#compas.geometry.bestfit_plane_numpy" title="compas.geometry.bestfit_plane_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bestfit_plane_numpy</span></code></a></p></td>
-<td><p>Fit a plane through more than three (non-coplanar) points.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.bestfit_circle_numpy.html#compas.geometry.bestfit_circle_numpy" title="compas.geometry.bestfit_circle_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bestfit_circle_numpy</span></code></a></p></td>
-<td><p>Fit a circle through a set of points.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.bounding_box.html#compas.geometry.bounding_box" title="compas.geometry.bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box</span></code></a></p></td>
-<td><p>Computes the axis-aligned minimum bounding box of a list of points.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.bounding_box_xy.html#compas.geometry.bounding_box_xy" title="compas.geometry.bounding_box_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box_xy</span></code></a></p></td>
-<td><p>Compute the axis-aligned minimum bounding box of a list of points in the XY-plane.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.convex_hull.html#compas.geometry.convex_hull" title="compas.geometry.convex_hull"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convex_hull</span></code></a></p></td>
-<td><p>Construct convex hull for a set of points.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.convex_hull_xy.html#compas.geometry.convex_hull_xy" title="compas.geometry.convex_hull_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convex_hull_xy</span></code></a></p></td>
-<td><p>Computes the convex hull of a set of 2D points.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.convex_hull_numpy.html#compas.geometry.convex_hull_numpy" title="compas.geometry.convex_hull_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convex_hull_numpy</span></code></a></p></td>
-<td><p>Compute the convex hull of a set of points.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.convex_hull_xy_numpy.html#compas.geometry.convex_hull_xy_numpy" title="compas.geometry.convex_hull_xy_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convex_hull_xy_numpy</span></code></a></p></td>
-<td><p>Compute the convex hull of a set of points in the XY plane.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.discrete_coons_patch.html#compas.geometry.discrete_coons_patch" title="compas.geometry.discrete_coons_patch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">discrete_coons_patch</span></code></a></p></td>
-<td><p>Creates a coons patch from a set of four or three boundary polylines (ab, bc, dc, ad).</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.flatness.html#compas.geometry.flatness" title="compas.geometry.flatness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatness</span></code></a></p></td>
-<td><p>Compute mesh flatness per face.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_contours_numpy.html#compas.geometry.mesh_contours_numpy" title="compas.geometry.mesh_contours_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_contours_numpy</span></code></a></p></td>
-<td><p>Compute the contours of the mesh.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_cull_duplicate_vertices.html#compas.geometry.mesh_cull_duplicate_vertices" title="compas.geometry.mesh_cull_duplicate_vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_cull_duplicate_vertices</span></code></a></p></td>
-<td><p>Cull all duplicate vertices of a mesh and sanitize affected faces.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_flatness.html#compas.geometry.mesh_flatness" title="compas.geometry.mesh_flatness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_flatness</span></code></a></p></td>
-<td><p>Compute mesh flatness per face.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_isolines_numpy.html#compas.geometry.mesh_isolines_numpy" title="compas.geometry.mesh_isolines_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_isolines_numpy</span></code></a></p></td>
-<td><p>Compute the isolines of a specified attribute of the vertices of a mesh.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_planarize_faces.html#compas.geometry.mesh_planarize_faces" title="compas.geometry.mesh_planarize_faces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_planarize_faces</span></code></a></p></td>
-<td><p>Planarise a set of connected faces.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_planarize_faces_shapeop</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_smooth_centroid.html#compas.geometry.mesh_smooth_centroid" title="compas.geometry.mesh_smooth_centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_smooth_centroid</span></code></a></p></td>
-<td><p>Smooth a mesh by moving every free vertex to the centroid of its neighbours.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.network_parallelise_edges.html#compas.geometry.network_parallelise_edges" title="compas.geometry.network_parallelise_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">network_parallelise_edges</span></code></a></p></td>
-<td><p>Parallelise the edges of a network to given target vectors.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.network_smooth_centroid.html#compas.geometry.network_smooth_centroid" title="compas.geometry.network_smooth_centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">network_smooth_centroid</span></code></a></p></td>
-<td><p>Smooth a network by moving each vertex to the centroid of its neighbours.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.oriented_bounding_box_numpy.html#compas.geometry.oriented_bounding_box_numpy" title="compas.geometry.oriented_bounding_box_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oriented_bounding_box_numpy</span></code></a></p></td>
-<td><p>Compute the oriented minimum bounding box of a set of points in 3D space.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.oriented_bounding_box_xy_numpy.html#compas.geometry.oriented_bounding_box_xy_numpy" title="compas.geometry.oriented_bounding_box_xy_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oriented_bounding_box_xy_numpy</span></code></a></p></td>
-<td><p>Compute the oriented minimum bounding box of set of points in the XY plane.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.planarize_faces.html#compas.geometry.planarize_faces" title="compas.geometry.planarize_faces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">planarize_faces</span></code></a></p></td>
-<td><p>Planarise a set of connected faces.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.scalarfield_contours_numpy.html#compas.geometry.scalarfield_contours_numpy" title="compas.geometry.scalarfield_contours_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scalarfield_contours_numpy</span></code></a></p></td>
-<td><p>Compute the contour lines of a scalarfield.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.smooth_area.html#compas.geometry.smooth_area" title="compas.geometry.smooth_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_area</span></code></a></p></td>
-<td><p>Smooth a set of connected vertices by moving each vertex to the centroid of the surrounding faces, weighted by the area of the face.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.smooth_centroid.html#compas.geometry.smooth_centroid" title="compas.geometry.smooth_centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_centroid</span></code></a></p></td>
-<td><p>Smooth a connected set of vertices by moving each vertex to the centroid of its neighbours.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.smooth_centerofmass.html#compas.geometry.smooth_centerofmass" title="compas.geometry.smooth_centerofmass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_centerofmass</span></code></a></p></td>
-<td><p>Smooth a connected set of vertices by moving each vertex to the center of mass of the polygon formed by the neighbouring vertices.</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="section" id="functions">
 <h2>Functions</h2>
@@ -469,8 +377,8 @@ of a wide range of geometric algorithms.</p>
 </tbody>
 </table>
 </div>
-<div class="section" id="orientation">
-<h3>Orientation</h3>
+<div class="section" id="normals">
+<h3>Normals</h3>
 <table class="longtable docutils">
 <colgroup>
 <col style="width: 10%" />
@@ -498,25 +406,25 @@ of a wide range of geometric algorithms.</p>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_ccw_xy.html#compas.geometry.is_ccw_xy" title="compas.geometry.is_ccw_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_ccw_xy</span></code></a></p></td>
-<td><p>Verify if c is on the left of ab when looking from a to b, and assuming that all points lie in the XY plane.</p></td>
+<td><p>Determine if c is on the left of ab when looking from a to b, and assuming that all points lie in the XY plane.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_colinear.html#compas.geometry.is_colinear" title="compas.geometry.is_colinear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_colinear</span></code></a></p></td>
-<td><p>Verify if three points are colinear.</p></td>
+<td><p>Determine if three points are colinear.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_colinear_xy.html#compas.geometry.is_colinear_xy" title="compas.geometry.is_colinear_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_colinear_xy</span></code></a></p></td>
-<td><p>Verify if three points are colinear in the XY plane.</p></td>
+<td><p>Determine if three points are colinear in the XY plane.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_coplanar.html#compas.geometry.is_coplanar" title="compas.geometry.is_coplanar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_coplanar</span></code></a></p></td>
-<td><p>Verify if the points are coplanar.</p></td>
+<td><p>Determine if the points are coplanar.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_intersection_line_line.html#compas.geometry.is_intersection_line_line" title="compas.geometry.is_intersection_line_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_intersection_line_line</span></code></a></p></td>
 <td><p>Verifies if two lines intersection in one point.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_intersection_line_line_xy.html#compas.geometry.is_intersection_line_line_xy" title="compas.geometry.is_intersection_line_line_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_intersection_line_line_xy</span></code></a></p></td>
-<td><p>Verify if two lines intersect in 2d lying in the XY plane.</p></td>
+<td><p>Determine if two lines intersect in 2d lying in the XY plane.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_intersection_line_plane.html#compas.geometry.is_intersection_line_plane" title="compas.geometry.is_intersection_line_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_intersection_line_plane</span></code></a></p></td>
-<td><p>Verify if a line (continuous ray) intersects with a plane.</p></td>
+<td><p>Determine if a line (continuous ray) intersects with a plane.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_intersection_line_triangle.html#compas.geometry.is_intersection_line_triangle" title="compas.geometry.is_intersection_line_triangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_intersection_line_triangle</span></code></a></p></td>
 <td><p>Verifies if a line (ray) intersects with a triangle.</p></td>
@@ -525,58 +433,58 @@ of a wide range of geometric algorithms.</p>
 <td><p>Computes the intersection of two planes</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_intersection_segment_plane.html#compas.geometry.is_intersection_segment_plane" title="compas.geometry.is_intersection_segment_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_intersection_segment_plane</span></code></a></p></td>
-<td><p>Verify if a line segment intersects with a plane.</p></td>
+<td><p>Determine if a line segment intersects with a plane.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_intersection_segment_segment.html#compas.geometry.is_intersection_segment_segment" title="compas.geometry.is_intersection_segment_segment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_intersection_segment_segment</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_intersection_segment_segment_xy.html#compas.geometry.is_intersection_segment_segment_xy" title="compas.geometry.is_intersection_segment_segment_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_intersection_segment_segment_xy</span></code></a></p></td>
-<td><p>Verify if two the segments ab and cd intersect?</p></td>
+<td><p>Determine if two the segments ab and cd intersect?</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_polygon_convex.html#compas.geometry.is_polygon_convex" title="compas.geometry.is_polygon_convex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_polygon_convex</span></code></a></p></td>
-<td><p>Verify if a polygon is convex.</p></td>
+<td><p>Determine if a polygon is convex.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_polygon_convex_xy.html#compas.geometry.is_polygon_convex_xy" title="compas.geometry.is_polygon_convex_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_polygon_convex_xy</span></code></a></p></td>
-<td><p>Verify if the polygon is convex in the XY-plane.</p></td>
+<td><p>Determine if the polygon is convex in the XY-plane.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_in_circle.html#compas.geometry.is_point_in_circle" title="compas.geometry.is_point_in_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_in_circle</span></code></a></p></td>
-<td><p>Verify if a point lies in a circle.</p></td>
+<td><p>Determine if a point lies in a circle.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_in_circle_xy.html#compas.geometry.is_point_in_circle_xy" title="compas.geometry.is_point_in_circle_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_in_circle_xy</span></code></a></p></td>
-<td><p>Verify if a point lies in a circle lying in the XY plane.</p></td>
+<td><p>Determine if a point lies in a circle lying in the XY plane.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_in_convex_polygon_xy.html#compas.geometry.is_point_in_convex_polygon_xy" title="compas.geometry.is_point_in_convex_polygon_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_in_convex_polygon_xy</span></code></a></p></td>
-<td><p>Verify if a point is in the interior of a convex polygon lying in the XY-plane.</p></td>
+<td><p>Determine if a point is in the interior of a convex polygon lying in the XY-plane.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_on_line.html#compas.geometry.is_point_on_line" title="compas.geometry.is_point_on_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_on_line</span></code></a></p></td>
-<td><p>Verify if a point lies on a line.</p></td>
+<td><p>Determine if a point lies on a line.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_on_line_xy.html#compas.geometry.is_point_on_line_xy" title="compas.geometry.is_point_on_line_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_on_line_xy</span></code></a></p></td>
-<td><p>Verify if a point lies on a line in the XY-plane.</p></td>
+<td><p>Determine if a point lies on a line in the XY-plane.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_on_plane.html#compas.geometry.is_point_on_plane" title="compas.geometry.is_point_on_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_on_plane</span></code></a></p></td>
-<td><p>Verify if a point lies in a plane.</p></td>
+<td><p>Determine if a point lies in a plane.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_infront_plane.html#compas.geometry.is_point_infront_plane" title="compas.geometry.is_point_infront_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_infront_plane</span></code></a></p></td>
-<td><p>Verify if a point lies in front of a plane.</p></td>
+<td><p>Determine if a point lies in front of a plane.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_in_polygon_xy.html#compas.geometry.is_point_in_polygon_xy" title="compas.geometry.is_point_in_polygon_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_in_polygon_xy</span></code></a></p></td>
-<td><p>Verify if a point is in the interior of a polygon lying in the XY-plane.</p></td>
+<td><p>Determine if a point is in the interior of a polygon lying in the XY-plane.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_on_polyline.html#compas.geometry.is_point_on_polyline" title="compas.geometry.is_point_on_polyline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_on_polyline</span></code></a></p></td>
-<td><p>Verify if a point is on a polyline.</p></td>
+<td><p>Determine if a point is on a polyline.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_on_segment.html#compas.geometry.is_point_on_segment" title="compas.geometry.is_point_on_segment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_on_segment</span></code></a></p></td>
-<td><p>Verify if a point lies on a given line segment.</p></td>
+<td><p>Determine if a point lies on a given line segment.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_on_segment_xy.html#compas.geometry.is_point_on_segment_xy" title="compas.geometry.is_point_on_segment_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_on_segment_xy</span></code></a></p></td>
-<td><p>Verify if a point lies on a given line segment in the XY-plane.</p></td>
+<td><p>Determine if a point lies on a given line segment in the XY-plane.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_in_triangle.html#compas.geometry.is_point_in_triangle" title="compas.geometry.is_point_in_triangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_in_triangle</span></code></a></p></td>
-<td><p>Verify if a point is in the interior of a triangle.</p></td>
+<td><p>Determine if a point is in the interior of a triangle.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.is_point_in_triangle_xy.html#compas.geometry.is_point_in_triangle_xy" title="compas.geometry.is_point_in_triangle_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_point_in_triangle_xy</span></code></a></p></td>
-<td><p>Verify if a point is in the interior of a triangle lying in the XY-plane.</p></td>
+<td><p>Determine if a point is in the interior of a triangle lying in the XY-plane.</p></td>
 </tr>
 </tbody>
 </table>
@@ -653,225 +561,236 @@ of a wide range of geometric algorithms.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.transform.html#compas.geometry.transform" title="compas.geometry.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_points_line.html#compas.geometry.mirror_points_line" title="compas.geometry.mirror_points_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_points_line</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.transform_numpy.html#compas.geometry.transform_numpy" title="compas.geometry.transform_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform_numpy</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_points_line_xy.html#compas.geometry.mirror_points_line_xy" title="compas.geometry.mirror_points_line_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_points_line_xy</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-</tbody>
-</table>
-<table class="longtable docutils">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.homogenize.html#compas.geometry.homogenize" title="compas.geometry.homogenize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">homogenize</span></code></a></p></td>
-<td><p>Homogenise a list of vectors.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.dehomogenize.html#compas.geometry.dehomogenize" title="compas.geometry.dehomogenize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dehomogenize</span></code></a></p></td>
-<td><p>Dehomogenise a list of vectors.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.homogenize_numpy.html#compas.geometry.homogenize_numpy" title="compas.geometry.homogenize_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">homogenize_numpy</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.dehomogenize_numpy.html#compas.geometry.dehomogenize_numpy" title="compas.geometry.dehomogenize_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dehomogenize_numpy</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.local_axes.html#compas.geometry.local_axes" title="compas.geometry.local_axes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">local_axes</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.local_coords_numpy.html#compas.geometry.local_coords_numpy" title="compas.geometry.local_coords_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">local_coords_numpy</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.global_coords_numpy.html#compas.geometry.global_coords_numpy" title="compas.geometry.global_coords_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">global_coords_numpy</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-<table class="longtable docutils">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.determinant.html#compas.geometry.determinant" title="compas.geometry.determinant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">determinant</span></code></a></p></td>
-<td><p>Calculates the determinant of a square matrix M.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.inverse.html#compas.geometry.inverse" title="compas.geometry.inverse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inverse</span></code></a></p></td>
-<td><p>Calculates the inverse of a square matrix M.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.identity_matrix.html#compas.geometry.identity_matrix" title="compas.geometry.identity_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identity_matrix</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_frame.html#compas.geometry.matrix_from_frame" title="compas.geometry.matrix_from_frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_frame</span></code></a></p></td>
-<td><p>Computes a change of basis transformation from world XY to the frame.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_euler_angles.html#compas.geometry.matrix_from_euler_angles" title="compas.geometry.matrix_from_euler_angles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_euler_angles</span></code></a></p></td>
-<td><p>Calculates a rotation matrix from Euler angles.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.euler_angles_from_matrix.html#compas.geometry.euler_angles_from_matrix" title="compas.geometry.euler_angles_from_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">euler_angles_from_matrix</span></code></a></p></td>
-<td><p>Returns Euler angles from the rotation matrix M according to specified</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_axis_and_angle.html#compas.geometry.matrix_from_axis_and_angle" title="compas.geometry.matrix_from_axis_and_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_axis_and_angle</span></code></a></p></td>
-<td><p>Calculates a rotation matrix from an rotation axis, an angle and an</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_axis_angle_vector.html#compas.geometry.matrix_from_axis_angle_vector" title="compas.geometry.matrix_from_axis_angle_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_axis_angle_vector</span></code></a></p></td>
-<td><p>Calculates a rotation matrix from an axis-angle vector.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.axis_and_angle_from_matrix.html#compas.geometry.axis_and_angle_from_matrix" title="compas.geometry.axis_and_angle_from_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axis_and_angle_from_matrix</span></code></a></p></td>
-<td><p>Returns the axis and the angle of the rotation matrix M.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.axis_angle_vector_from_matrix.html#compas.geometry.axis_angle_vector_from_matrix" title="compas.geometry.axis_angle_vector_from_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axis_angle_vector_from_matrix</span></code></a></p></td>
-<td><p>Returns the axis-angle vector of the rotation matrix M.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_quaternion.html#compas.geometry.matrix_from_quaternion" title="compas.geometry.matrix_from_quaternion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_quaternion</span></code></a></p></td>
-<td><p>Calculates a rotation matrix from quaternion coefficients.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.quaternion_from_matrix.html#compas.geometry.quaternion_from_matrix" title="compas.geometry.quaternion_from_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quaternion_from_matrix</span></code></a></p></td>
-<td><p>Returns the 4 quaternion coefficients from a rotation matrix.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_basis_vectors.html#compas.geometry.matrix_from_basis_vectors" title="compas.geometry.matrix_from_basis_vectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_basis_vectors</span></code></a></p></td>
-<td><p>Creates a rotation matrix from basis vectors (= orthonormal vectors).</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.basis_vectors_from_matrix.html#compas.geometry.basis_vectors_from_matrix" title="compas.geometry.basis_vectors_from_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis_vectors_from_matrix</span></code></a></p></td>
-<td><p>Returns the basis vectors from the rotation matrix R.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_translation.html#compas.geometry.matrix_from_translation" title="compas.geometry.matrix_from_translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_translation</span></code></a></p></td>
-<td><p>Returns a 4x4 translation matrix in row-major order.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.translation_from_matrix.html#compas.geometry.translation_from_matrix" title="compas.geometry.translation_from_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation_from_matrix</span></code></a></p></td>
-<td><p>Returns the 3 values of translation from the matrix M.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_orthogonal_projection.html#compas.geometry.matrix_from_orthogonal_projection" title="compas.geometry.matrix_from_orthogonal_projection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_orthogonal_projection</span></code></a></p></td>
-<td><p>Returns an orthogonal projection matrix to project onto a plane         defined by point and normal.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_parallel_projection.html#compas.geometry.matrix_from_parallel_projection" title="compas.geometry.matrix_from_parallel_projection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_parallel_projection</span></code></a></p></td>
-<td><p>Returns an parallel projection matrix to project onto a plane defined         by point, normal and direction.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_perspective_projection.html#compas.geometry.matrix_from_perspective_projection" title="compas.geometry.matrix_from_perspective_projection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_perspective_projection</span></code></a></p></td>
-<td><p>Returns an perspective projection matrix to project onto a plane         defined by point, normal and perspective.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_perspective_entries.html#compas.geometry.matrix_from_perspective_entries" title="compas.geometry.matrix_from_perspective_entries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_perspective_entries</span></code></a></p></td>
-<td><p>Returns a matrix from perspective entries.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_shear_entries.html#compas.geometry.matrix_from_shear_entries" title="compas.geometry.matrix_from_shear_entries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_shear_entries</span></code></a></p></td>
-<td><p>Returns a shear matrix from the 3 factors for x-y, x-z, and y-z axes.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_shear.html#compas.geometry.matrix_from_shear" title="compas.geometry.matrix_from_shear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_shear</span></code></a></p></td>
-<td><p>Constructs a shear matrix by an angle along the direction vector on         the shear plane (defined by point and normal).</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.matrix_from_scale_factors.html#compas.geometry.matrix_from_scale_factors" title="compas.geometry.matrix_from_scale_factors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix_from_scale_factors</span></code></a></p></td>
-<td><p>Returns a 4x4 scaling transformation.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.compose_matrix.html#compas.geometry.compose_matrix" title="compas.geometry.compose_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compose_matrix</span></code></a></p></td>
-<td><p>Calculates a matrix from the components of scale, shear, euler_angles,         translation and perspective.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.decompose_matrix.html#compas.geometry.decompose_matrix" title="compas.geometry.decompose_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decompose_matrix</span></code></a></p></td>
-<td><p>Calculates the components of rotation, translation, scale, shear,         and perspective of a given transformation matrix M.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="longtable docutils">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_point_line.html#compas.geometry.mirror_point_line" title="compas.geometry.mirror_point_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_point_line</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_point_line_xy.html#compas.geometry.mirror_point_line_xy" title="compas.geometry.mirror_point_line_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_point_line_xy</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_point_plane.html#compas.geometry.mirror_point_plane" title="compas.geometry.mirror_point_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_point_plane</span></code></a></p></td>
-<td><p>Mirror a point about a plane.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_point_point.html#compas.geometry.mirror_point_point" title="compas.geometry.mirror_point_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_point_point</span></code></a></p></td>
-<td><p>Mirror a point about a point.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_point_point_xy.html#compas.geometry.mirror_point_point_xy" title="compas.geometry.mirror_point_point_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_point_point_xy</span></code></a></p></td>
-<td><p>Mirror a point about a point.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_points_line.html#compas.geometry.mirror_points_line" title="compas.geometry.mirror_points_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_points_line</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_points_line_xy.html#compas.geometry.mirror_points_line_xy" title="compas.geometry.mirror_points_line_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_points_line_xy</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_points_plane.html#compas.geometry.mirror_points_plane" title="compas.geometry.mirror_points_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_points_plane</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_points_plane.html#compas.geometry.mirror_points_plane" title="compas.geometry.mirror_points_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_points_plane</span></code></a></p></td>
 <td><p>Mirror multiple points about a plane.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_points_point.html#compas.geometry.mirror_points_point" title="compas.geometry.mirror_points_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_points_point</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_points_point.html#compas.geometry.mirror_points_point" title="compas.geometry.mirror_points_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_points_point</span></code></a></p></td>
 <td><p>Mirror multiple points about a point.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_points_point_xy.html#compas.geometry.mirror_points_point_xy" title="compas.geometry.mirror_points_point_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_points_point_xy</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_points_point_xy.html#compas.geometry.mirror_points_point_xy" title="compas.geometry.mirror_points_point_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_points_point_xy</span></code></a></p></td>
 <td><p>Mirror multiple points about a point.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mirror_vector_vector.html#compas.geometry.mirror_vector_vector" title="compas.geometry.mirror_vector_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mirror_vector_vector</span></code></a></p></td>
-<td><p>Mirrors vector about vector.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.offset_line.html#compas.geometry.offset_line" title="compas.geometry.offset_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">offset_line</span></code></a></p></td>
-<td><p>Offset a line by a distance.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.offset_polyline.html#compas.geometry.offset_polyline" title="compas.geometry.offset_polyline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">offset_polyline</span></code></a></p></td>
-<td><p>Offset a polyline by a distance.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.offset_polygon.html#compas.geometry.offset_polygon" title="compas.geometry.offset_polygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">offset_polygon</span></code></a></p></td>
-<td><p>Offset a polygon (closed) by a distance.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.orient_points.html#compas.geometry.orient_points" title="compas.geometry.orient_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orient_points</span></code></a></p></td>
-<td><p>Orient points from one plane to another.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.project_point_line.html#compas.geometry.project_point_line" title="compas.geometry.project_point_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_point_line</span></code></a></p></td>
-<td><p>Project a point onto a line.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.project_point_line_xy.html#compas.geometry.project_point_line_xy" title="compas.geometry.project_point_line_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_point_line_xy</span></code></a></p></td>
-<td><p>Project a point onto a line.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.project_point_plane.html#compas.geometry.project_point_plane" title="compas.geometry.project_point_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_point_plane</span></code></a></p></td>
-<td><p>Project a point onto a plane.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.project_points_line.html#compas.geometry.project_points_line" title="compas.geometry.project_points_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_points_line</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.project_points_line.html#compas.geometry.project_points_line" title="compas.geometry.project_points_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_points_line</span></code></a></p></td>
 <td><p>Project multiple points onto a line.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.project_points_line_xy.html#compas.geometry.project_points_line_xy" title="compas.geometry.project_points_line_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_points_line_xy</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.project_points_line_xy.html#compas.geometry.project_points_line_xy" title="compas.geometry.project_points_line_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_points_line_xy</span></code></a></p></td>
 <td><p>Project multiple points onto a line.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.project_points_plane.html#compas.geometry.project_points_plane" title="compas.geometry.project_points_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_points_plane</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.project_points_plane.html#compas.geometry.project_points_plane" title="compas.geometry.project_points_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_points_plane</span></code></a></p></td>
 <td><p>Project multiple points onto a plane.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.reflect_line_plane.html#compas.geometry.reflect_line_plane" title="compas.geometry.reflect_line_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reflect_line_plane</span></code></a></p></td>
-<td><p>Reflects a line at plane.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.rotate_points.html#compas.geometry.rotate_points" title="compas.geometry.rotate_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate_points</span></code></a></p></td>
+<td><p>Rotates points around an arbitrary axis in 3D.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.reflect_line_triangle.html#compas.geometry.reflect_line_triangle" title="compas.geometry.reflect_line_triangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reflect_line_triangle</span></code></a></p></td>
-<td><p>Reflects a line at a triangle.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.rotate_points_xy.html#compas.geometry.rotate_points_xy" title="compas.geometry.rotate_points_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate_points_xy</span></code></a></p></td>
+<td><p>Rotates points in the XY plane around the Z axis at a specific origin.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.rotate_points.html#compas.geometry.rotate_points" title="compas.geometry.rotate_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate_points</span></code></a></p></td>
-<td><p>Rotates points around an arbitrary axis in 3D (radians).</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.rotate_points_xy.html#compas.geometry.rotate_points_xy" title="compas.geometry.rotate_points_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate_points_xy</span></code></a></p></td>
-<td><p>Rotates points around an arbitrary axis in 2D.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.scale_points.html#compas.geometry.scale_points" title="compas.geometry.scale_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_points</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.scale_points.html#compas.geometry.scale_points" title="compas.geometry.scale_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_points</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.translate_lines.html#compas.geometry.translate_lines" title="compas.geometry.translate_lines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_lines</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.translate_points.html#compas.geometry.translate_points" title="compas.geometry.translate_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_points</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.translate_lines_xy.html#compas.geometry.translate_lines_xy" title="compas.geometry.translate_lines_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_lines_xy</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.translate_points.html#compas.geometry.translate_points" title="compas.geometry.translate_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_points</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.translate_points_xy.html#compas.geometry.translate_points_xy" title="compas.geometry.translate_points_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_points_xy</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.translate_points_xy.html#compas.geometry.translate_points_xy" title="compas.geometry.translate_points_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_points_xy</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
 </div>
+</div>
+<div class="section" id="objects">
+<h2>Objects</h2>
+<table class="longtable docutils">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.Vector.html#compas.geometry.Vector" title="compas.geometry.Vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Vector</span></code></a></p></td>
+<td><p>A vector is defined by XYZ components and a homogenisation factor.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.Point.html#compas.geometry.Point" title="compas.geometry.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Point</span></code></a></p></td>
+<td><p>A point is defined by XYZ coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.Line.html#compas.geometry.Line" title="compas.geometry.Line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Line</span></code></a></p></td>
+<td><p>A line is defined by two points.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Segment</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ray</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.Polyline.html#compas.geometry.Polyline" title="compas.geometry.Polyline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polyline</span></code></a></p></td>
+<td><p>A polyline is a sequence of points connected by line segments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.Polygon.html#compas.geometry.Polygon" title="compas.geometry.Polygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polygon</span></code></a></p></td>
+<td><p>An object representing …</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.Plane.html#compas.geometry.Plane" title="compas.geometry.Plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plane</span></code></a></p></td>
+<td><p>A plane is defined by a base point and a normal vector.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.Frame.html#compas.geometry.Frame" title="compas.geometry.Frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Frame</span></code></a></p></td>
+<td><p>A frame is defined by a base point and two orthonormal base vectors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.Circle.html#compas.geometry.Circle" title="compas.geometry.Circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Circle</span></code></a></p></td>
+<td><p>NOT IMPLEMENTED YET.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="xforms">
+<h2>XForms</h2>
+<table class="longtable docutils">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Transformation</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.Rotation.html#compas.geometry.Rotation" title="compas.geometry.Rotation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rotation</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Rotation</span></code> extends <code class="docutils literal notranslate"><span class="pre">Transformation</span></code> to represent a 4x4 rotation matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.Translation.html#compas.geometry.Translation" title="compas.geometry.Translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Translation</span></code></a></p></td>
+<td><p>Creates a translation transformation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.Scale.html#compas.geometry.Scale" title="compas.geometry.Scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Scale</span></code></a></p></td>
+<td><p>Creates a scaling transformation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.Reflection.html#compas.geometry.Reflection" title="compas.geometry.Reflection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Reflection</span></code></a></p></td>
+<td><p>Creates a <code class="docutils literal notranslate"><span class="pre">Reflection</span></code> that mirrors points at a plane, defined by point and normal vector.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.Projection.html#compas.geometry.Projection" title="compas.geometry.Projection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Projection</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.Shear.html#compas.geometry.Shear" title="compas.geometry.Shear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Shear</span></code></a></p></td>
+<td><p>Constructs a <code class="docutils literal notranslate"><span class="pre">Shear</span></code> transformation by an angle along the direction vector on the shear plane (defined by point and normal).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="spatial">
+<h2>Spatial</h2>
+<table class="longtable docutils">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.KDTree.html#compas.geometry.KDTree" title="compas.geometry.KDTree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KDTree</span></code></a></p></td>
+<td><p>A tree for nearest neighbor search in a k-dimensional space.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RTree</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">QuadTree</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">OcTree</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="algorithms">
+<h2>Algorithms</h2>
+<table class="longtable docutils">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.bestfit_plane.html#compas.geometry.bestfit_plane" title="compas.geometry.bestfit_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bestfit_plane</span></code></a></p></td>
+<td><p>Fit a plane to a list of (more than three) points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.bestfit_plane_numpy.html#compas.geometry.bestfit_plane_numpy" title="compas.geometry.bestfit_plane_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bestfit_plane_numpy</span></code></a></p></td>
+<td><p>Fit a plane through more than three (non-coplanar) points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.bestfit_circle_numpy.html#compas.geometry.bestfit_circle_numpy" title="compas.geometry.bestfit_circle_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bestfit_circle_numpy</span></code></a></p></td>
+<td><p>Fit a circle through a set of points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.bounding_box.html#compas.geometry.bounding_box" title="compas.geometry.bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box</span></code></a></p></td>
+<td><p>Computes the axis-aligned minimum bounding box of a list of points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.bounding_box_xy.html#compas.geometry.bounding_box_xy" title="compas.geometry.bounding_box_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box_xy</span></code></a></p></td>
+<td><p>Compute the axis-aligned minimum bounding box of a list of points in the XY-plane.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.convex_hull.html#compas.geometry.convex_hull" title="compas.geometry.convex_hull"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convex_hull</span></code></a></p></td>
+<td><p>Construct convex hull for a set of points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.convex_hull_xy.html#compas.geometry.convex_hull_xy" title="compas.geometry.convex_hull_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convex_hull_xy</span></code></a></p></td>
+<td><p>Computes the convex hull of a set of 2D points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.convex_hull_numpy.html#compas.geometry.convex_hull_numpy" title="compas.geometry.convex_hull_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convex_hull_numpy</span></code></a></p></td>
+<td><p>Compute the convex hull of a set of points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.convex_hull_xy_numpy.html#compas.geometry.convex_hull_xy_numpy" title="compas.geometry.convex_hull_xy_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convex_hull_xy_numpy</span></code></a></p></td>
+<td><p>Compute the convex hull of a set of points in the XY plane.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.discrete_coons_patch.html#compas.geometry.discrete_coons_patch" title="compas.geometry.discrete_coons_patch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">discrete_coons_patch</span></code></a></p></td>
+<td><p>Creates a coons patch from a set of four or three boundary polylines (ab, bc, dc, ad).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.flatness.html#compas.geometry.flatness" title="compas.geometry.flatness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatness</span></code></a></p></td>
+<td><p>Compute mesh flatness per face.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_contours_numpy.html#compas.geometry.mesh_contours_numpy" title="compas.geometry.mesh_contours_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_contours_numpy</span></code></a></p></td>
+<td><p>Compute the contours of the mesh.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_cull_duplicate_vertices.html#compas.geometry.mesh_cull_duplicate_vertices" title="compas.geometry.mesh_cull_duplicate_vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_cull_duplicate_vertices</span></code></a></p></td>
+<td><p>Cull all duplicate vertices of a mesh and sanitize affected faces.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_flatness.html#compas.geometry.mesh_flatness" title="compas.geometry.mesh_flatness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_flatness</span></code></a></p></td>
+<td><p>Compute mesh flatness per face.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_isolines_numpy.html#compas.geometry.mesh_isolines_numpy" title="compas.geometry.mesh_isolines_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_isolines_numpy</span></code></a></p></td>
+<td><p>Compute the isolines of a specified attribute of the vertices of a mesh.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_planarize_faces.html#compas.geometry.mesh_planarize_faces" title="compas.geometry.mesh_planarize_faces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_planarize_faces</span></code></a></p></td>
+<td><p>Planarise a set of connected faces.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_planarize_faces_shapeop</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.mesh_smooth_centroid.html#compas.geometry.mesh_smooth_centroid" title="compas.geometry.mesh_smooth_centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh_smooth_centroid</span></code></a></p></td>
+<td><p>Smooth a mesh by moving every free vertex to the centroid of its neighbours.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.network_parallelise_edges.html#compas.geometry.network_parallelise_edges" title="compas.geometry.network_parallelise_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">network_parallelise_edges</span></code></a></p></td>
+<td><p>Parallelise the edges of a network to given target vectors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.network_smooth_centroid.html#compas.geometry.network_smooth_centroid" title="compas.geometry.network_smooth_centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">network_smooth_centroid</span></code></a></p></td>
+<td><p>Smooth a network by moving each vertex to the centroid of its neighbours.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.oriented_bounding_box_numpy.html#compas.geometry.oriented_bounding_box_numpy" title="compas.geometry.oriented_bounding_box_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oriented_bounding_box_numpy</span></code></a></p></td>
+<td><p>Compute the oriented minimum bounding box of a set of points in 3D space.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.oriented_bounding_box_xy_numpy.html#compas.geometry.oriented_bounding_box_xy_numpy" title="compas.geometry.oriented_bounding_box_xy_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oriented_bounding_box_xy_numpy</span></code></a></p></td>
+<td><p>Compute the oriented minimum bounding box of set of points in the XY plane.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.planarize_faces.html#compas.geometry.planarize_faces" title="compas.geometry.planarize_faces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">planarize_faces</span></code></a></p></td>
+<td><p>Planarise a set of connected faces.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.scalarfield_contours_numpy.html#compas.geometry.scalarfield_contours_numpy" title="compas.geometry.scalarfield_contours_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scalarfield_contours_numpy</span></code></a></p></td>
+<td><p>Compute the contour lines of a scalarfield.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.smooth_area.html#compas.geometry.smooth_area" title="compas.geometry.smooth_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_area</span></code></a></p></td>
+<td><p>Smooth a set of connected vertices by moving each vertex to the centroid of the surrounding faces, weighted by the area of the face.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.smooth_centroid.html#compas.geometry.smooth_centroid" title="compas.geometry.smooth_centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_centroid</span></code></a></p></td>
+<td><p>Smooth a connected set of vertices by moving each vertex to the centroid of its neighbours.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.smooth_centerofmass.html#compas.geometry.smooth_centerofmass" title="compas.geometry.smooth_centerofmass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_centerofmass</span></code></a></p></td>
+<td><p>Smooth a connected set of vertices by moving each vertex to the center of mass of the polygon formed by the neighbouring vertices.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -884,33 +803,32 @@ of a wide range of geometric algorithms.</p>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">compas.geometry</a><ul>
-<li><a class="reference internal" href="#primitives">Primitives</a></li>
-<li><a class="reference internal" href="#xforms">XForms</a></li>
-<li><a class="reference internal" href="#algorithms">Algorithms</a></li>
 <li><a class="reference internal" href="#functions">Functions</a><ul>
 <li><a class="reference internal" href="#basic">Basic</a></li>
 <li><a class="reference internal" href="#distance">Distance</a></li>
 <li><a class="reference internal" href="#angles">Angles</a></li>
 <li><a class="reference internal" href="#average">Average</a></li>
-<li><a class="reference internal" href="#orientation">Orientation</a></li>
+<li><a class="reference internal" href="#normals">Normals</a></li>
 <li><a class="reference internal" href="#queries">Queries</a></li>
 <li><a class="reference internal" href="#intersections">Intersections</a></li>
 <li><a class="reference internal" href="#size">Size</a></li>
-<li><a class="reference internal" href="#transformations">Transformations</a><ul>
+<li><a class="reference internal" href="#transformations">Transformations</a></li>
 </ul>
 </li>
-</ul>
-</li>
+<li><a class="reference internal" href="#objects">Objects</a></li>
+<li><a class="reference internal" href="#xforms">XForms</a></li>
+<li><a class="reference internal" href="#spatial">Spatial</a></li>
+<li><a class="reference internal" href="#algorithms">Algorithms</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="generated/generated/compas.files.PLYreader.read_vertices_binary_wo_numpy.html"
-                        title="previous chapter">PLYreader.read_vertices_binary_wo_numpy</a></p>
+  <p class="topless"><a href="generated/generated/compas.files.URDF.parse_element.html"
+                        title="previous chapter">URDF.parse_element</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="generated/compas.geometry.Vector.html"
-                        title="next chapter">Vector</a></p>
+  <p class="topless"><a href="generated/compas.geometry.add_vectors.html"
+                        title="next chapter">add_vectors</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <div class="searchformwrapper">
@@ -937,10 +855,10 @@ of a wide range of geometric algorithms.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="generated/compas.geometry.Vector.html" title="Vector"
+          <a href="generated/compas.geometry.add_vectors.html" title="add_vectors"
              >next</a> |</li>
         <li class="right" >
-          <a href="generated/generated/compas.files.PLYreader.read_vertices_binary_wo_numpy.html" title="PLYreader.read_vertices_binary_wo_numpy"
+          <a href="generated/generated/compas.files.URDF.parse_element.html" title="URDF.parse_element"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../api.html" >API</a> &#187;</li>
@@ -949,7 +867,7 @@ of a wide range of geometric algorithms.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Block Research Group - ETH Zurich.
-      Last updated on Aug 08, 2018.
+      Last updated on Aug 09, 2018.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
     </div>
   </body>

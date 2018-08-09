@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>KDTree &#8212; COMPAS 0.2.7 documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="KDTree.__init__" href="generated/compas.geometry.KDTree.__init__.html" />
+    <link rel="prev" title="Shear.inverse" href="generated/compas.geometry.Shear.inverse.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/compas.geometry.KDTree.__init__.html" title="KDTree.__init__"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="generated/compas.geometry.Shear.inverse.html" title="Shear.inverse"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../compas.geometry.html" accesskey="U">compas.geometry</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="detail section" id="kdtree">
+<h1>KDTree</h1>
+<dl class="class">
+<dt id="compas.geometry.KDTree">
+<em class="property">class </em><code class="descclassname">compas.geometry.</code><code class="descname">KDTree</code><span class="sig-paren">(</span><em>objects=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas/geometry/spatial/kdtree.html#KDTree"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A tree for nearest neighbor search in a k-dimensional space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>objects</strong> (<em>list, optional</em>) – A list of objects to populate the tree with.
+If objects are provided, the tree is built automatically.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="compas.geometry.KDTree.root">
+<code class="descname">root</code></dt>
+<dd><p><em>Node</em> – The root node of the built tree.
+This is the median with respect to the different dimensions of the tree.</p>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>For more info, see <a class="footnote-reference brackets" href="#id3" id="id1">1</a> and <a class="footnote-reference brackets" href="#id4" id="id2">2</a>.</p>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Wikipedia. <em>k-d tree</em>.
+Available at: <a class="reference external" href="https://en.wikipedia.org/wiki/K-d_tree">https://en.wikipedia.org/wiki/K-d_tree</a>.</p>
+</dd>
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>Dell’Amico, M. <em>KD-Tree for nearest neighbor search in a K-dimensional space (Python recipe)</em>.
+Available at: <a class="reference external" href="http://code.activestate.com/recipes/577497-kd-tree-for-nearest-neighbor-search-in-a-k-dimensional-space/">http://code.activestate.com/recipes/577497-kd-tree-for-nearest-neighbor-search-in-a-k-dimensional-space/</a>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">KDTree</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">pointcloud_xy</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">Plotter</span>
+
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">()</span>
+
+<span class="n">cloud</span> <span class="o">=</span> <span class="n">pointcloud_xy</span><span class="p">(</span><span class="mi">999</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">))</span>
+<span class="n">point</span> <span class="o">=</span> <span class="n">cloud</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">tree</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+
+<span class="n">n</span>       <span class="o">=</span> <span class="mi">50</span>
+<span class="n">nnbrs</span>   <span class="o">=</span> <span class="p">[]</span>
+<span class="n">exclude</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">nnbr</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">nearest_neighbour</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">exclude</span><span class="p">)</span>
+    <span class="n">nnbrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nnbr</span><span class="p">)</span>
+    <span class="n">exclude</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nnbr</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">nnbr</span> <span class="ow">in</span> <span class="n">nnbrs</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">nnbr</span><span class="p">)</span>
+
+<span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cloud</span><span class="p">):</span>
+    <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;pos&#39;</span>      <span class="p">:</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span>
+        <span class="s1">&#39;facecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;edgecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;radius&#39;</span>   <span class="p">:</span> <span class="mf">1.0</span>
+    <span class="p">})</span>
+<span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+    <span class="s1">&#39;pos&#39;</span>      <span class="p">:</span> <span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span>
+    <span class="s1">&#39;facecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;edgecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;radius&#39;</span>   <span class="p">:</span> <span class="mf">5.0</span>
+<span class="p">})</span>
+
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">dist</span> <span class="ow">in</span> <span class="n">nnbrs</span><span class="p">:</span>
+    <span class="n">points</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s1">&#39;facecolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#00ff00&#39;</span>
+    <span class="n">points</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s1">&#39;edgecolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#00ff00&#39;</span>
+    <span class="n">points</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">3.0</span>
+
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;start&#39;</span> <span class="p">:</span> <span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span>
+        <span class="s1">&#39;end&#39;</span>   <span class="p">:</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span>
+        <span class="s1">&#39;color&#39;</span> <span class="p">:</span> <span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;width&#39;</span> <span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">})</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="figure">
+<img alt="../../_images/compas-geometry-KDTree-1.png" src="../../_images/compas-geometry-KDTree-1.png" />
+</div>
+<p class="rubric">Methods</p>
+<table class="longtable docutils">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.KDTree.__init__.html#compas.geometry.KDTree.__init__" title="compas.geometry.KDTree.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([objects])</p></td>
+<td><p>Initialise a KDTree object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.KDTree.build.html#compas.geometry.KDTree.build" title="compas.geometry.KDTree.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(objects[, axis])</p></td>
+<td><p>Populate a kd-tree with given objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas.geometry.KDTree.nearest_neighbour.html#compas.geometry.KDTree.nearest_neighbour" title="compas.geometry.KDTree.nearest_neighbour"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest_neighbour</span></code></a>(point[, exclude])</p></td>
+<td><p>Find the nearest neighbour to a given point, excluding neighbours that have already been found.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas.geometry.KDTree.nearest_neighbours.html#compas.geometry.KDTree.nearest_neighbours" title="compas.geometry.KDTree.nearest_neighbours"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest_neighbours</span></code></a>(point, number[, …])</p></td>
+<td><p>Find the N nearest neighbours to a given point.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="generated/compas.geometry.Shear.inverse.html"
+                        title="previous chapter">Shear.inverse</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="generated/compas.geometry.KDTree.__init__.html"
+                        title="next chapter">KDTree.__init__</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/compas.geometry.KDTree.__init__.html" title="KDTree.__init__"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="generated/compas.geometry.Shear.inverse.html" title="Shear.inverse"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../compas.html" >compas</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../compas.geometry.html" >compas.geometry</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Block Research Group - ETH Zurich.
+      Last updated on Aug 09, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>

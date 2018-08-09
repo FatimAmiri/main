@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>compas.geometry.xforms.projection &#8212; COMPAS 0.2.7 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for compas.geometry.xforms.projection</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This library for transformations partly derived and was re-implemented from the</span>
+<span class="sd">following online resources:</span>
+
+<span class="sd">    * http://www.lfd.uci.edu/~gohlke/code/transformations.py.html</span>
+<span class="sd">    * http://www.euclideanspace.com/maths/geometry/rotations/</span>
+<span class="sd">    * http://code.activestate.com/recipes/578108-determinant-of-matrix-of-any-order/</span>
+<span class="sd">    * http://blog.acipo.com/matrix-inversion-in-javascript/</span>
+
+<span class="sd">Many thanks to Christoph Gohlke, Martin John Baker, Sachin Joglekar and Andrew</span>
+<span class="sd">Ippoliti for providing code and documentation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_orthogonal_projection</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_parallel_projection</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_perspective_projection</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_perspective_entries</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Transformation</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Romana Rust &lt;rust@arch.ethz.ch&gt;&#39;</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s1">&#39;MIT License&#39;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;rust@arch.ethz.ch&#39;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Projection&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="Projection"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.Projection.html#compas.geometry.Projection">[docs]</a><span class="k">class</span> <span class="nc">Projection</span><span class="p">(</span><span class="n">Transformation</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Projection.orthogonal"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Projection.orthogonal.html#compas.geometry.Projection.orthogonal">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">orthogonal</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns an orthogonal ``Projection`` to project onto a plane</span>
+<span class="sd">        defined by point and normal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            point(:obj:`list` of :obj:`float`)</span>
+<span class="sd">            normal(:obj:`list` of :obj:`float`)</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; point = [0, 0, 0]</span>
+<span class="sd">            &gt;&gt;&gt; normal = [0, 0, 1]</span>
+<span class="sd">            &gt;&gt;&gt; P = Projection.orthogonal(point, normal)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">matrix_from_orthogonal_projection</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">M</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Projection.parallel"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Projection.parallel.html#compas.geometry.Projection.parallel">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parallel</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a parallel ``Projection`` to project onto a plane defined</span>
+<span class="sd">        by point, normal and direction.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            point(:obj:`list` of :obj:`float`)</span>
+<span class="sd">            normal(:obj:`list` of :obj:`float`)</span>
+<span class="sd">            direction(:obj:`list` of :obj:`float`)</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; point = [0, 0, 0]</span>
+<span class="sd">            &gt;&gt;&gt; normal = [0, 0, 1]</span>
+<span class="sd">            &gt;&gt;&gt; direction = [1, 1, 1]</span>
+<span class="sd">            &gt;&gt;&gt; P = Projection.parallel(point, normal, direction)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">matrix_from_parallel_projection</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">M</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Projection.perspective"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Projection.perspective.html#compas.geometry.Projection.perspective">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">perspective</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">perspective</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a perspective ``Projection`` to project onto a plane</span>
+<span class="sd">        defined by point, normal and perspective.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            point(:obj:`list` of :obj:`float`)</span>
+<span class="sd">            normal(:obj:`list` of :obj:`float`)</span>
+<span class="sd">            perspective(:obj:`list` of :obj:`float`)</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; point = [0, 0, 0]</span>
+<span class="sd">            &gt;&gt;&gt; normal = [0, 0, 1]</span>
+<span class="sd">            &gt;&gt;&gt; perspective = [1, 1, 0]</span>
+<span class="sd">            &gt;&gt;&gt; P = Projection.perspective(point, normal, perspective)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">matrix_from_perspective_projection</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">perspective</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">M</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Projection.from_entries"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Projection.from_entries.html#compas.geometry.Projection.from_entries">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_entries</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">perspective_entries</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Constructs a perspective transformation by the perspective entries</span>
+<span class="sd">        of a matrix.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            perspective_entries(:obj:`list` of :obj:`float`): The 4 perspective</span>
+<span class="sd">                entries of a matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">matrix_from_perspective_entries</span><span class="p">(</span><span class="n">perspective_entries</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">M</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Frame</span>
+
+    <span class="n">persp1</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">P1</span> <span class="o">=</span> <span class="n">Projection</span><span class="o">.</span><span class="n">from_entries</span><span class="p">(</span><span class="n">persp1</span><span class="p">)</span>
+    <span class="n">S2</span><span class="p">,</span> <span class="n">Sh</span><span class="p">,</span> <span class="n">R2</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="n">P</span> <span class="o">=</span> <span class="n">P1</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">COMPAS 0.2.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Block Research Group - ETH Zurich.
+      Last updated on Aug 09, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>
