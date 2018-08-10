@@ -90,25 +90,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">point</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">normal</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Point: The base point of the plane.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point</span>
-
-    <span class="nd">@point</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">point</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Vector: The normal vector of the plane.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span>
-
-    <span class="nd">@normal</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">vector</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span><span class="o">.</span><span class="n">unitize</span><span class="p">()</span>
-
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># factory</span>
     <span class="c1"># ==========================================================================</span>
@@ -184,6 +165,25 @@
     <span class="c1"># ==========================================================================</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Point: The base point of the plane.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point</span>
+
+    <span class="nd">@point</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">point</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Vector: The normal vector of the plane.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span>
+
+    <span class="nd">@normal</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">vector</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span><span class="o">.</span><span class="n">unitize</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">d</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;:obj:`float`: The *d* parameter of the linear equation describing the plane.&quot;&quot;&quot;</span>
         <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span>
@@ -252,6 +252,22 @@
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># inplace operators</span>
     <span class="c1"># ==========================================================================</span>
+
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># helpers</span>
+    <span class="c1"># ==========================================================================</span>
+
+<div class="viewcode-block" id="Plane.copy"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.geometry.Plane.copy.html#compas.geometry.Plane.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make a copy of this ``Plane``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Plane</span>
+<span class="sd">            The copy.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># methods</span>
@@ -330,7 +346,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Block Research Group - ETH Zurich.
-      Last updated on Aug 09, 2018.
+      Last updated on Aug 10, 2018.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
     </div>
   </body>
