@@ -20,9 +20,8 @@ mesh.collapse_edge_tri(30, 22)
 
 points = mesh.get_vertices_attributes('xyz', keys=mesh.vertex_neighbours(30))
 x, y, z = centroid_points(points)
-attr = {'x': x, 'y': y, 'z': z}
 
-mesh.set_vertex_attributes(30, attr)
+mesh.set_vertex_attributes(30, ('x', 'y', 'z'), (x, y, z))
 
 plotter = MeshPlotter(mesh)
 

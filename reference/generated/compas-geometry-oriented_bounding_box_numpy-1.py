@@ -8,7 +8,7 @@ from compas.plotters import Cloud3D
 from compas.plotters import Box
 from compas.plotters import create_axes_3d
 from compas.geometry import matrix_from_axis_and_angle
-from compas.geometry import transform
+from compas.geometry import transform_points
 from compas.geometry import oriented_bounding_box_numpy
 
 clouds = []
@@ -44,7 +44,7 @@ for i in range(8):
         cloud[:, 2] += 3.0
 
     R = matrix_from_axis_and_angle(d, a)
-    cloud[:] = transform(cloud, R)
+    cloud[:] = transform_points(cloud, R)
 
     clouds.append(cloud.tolist())
 

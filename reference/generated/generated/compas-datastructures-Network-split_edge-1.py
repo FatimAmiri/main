@@ -1,11 +1,8 @@
 import compas
-from compas.datastructures import FaceNetwork
-from compas.plotters import FaceNetworkPlotter
-from compas.topology import network_find_faces
+from compas.datastructures import Network
+from compas.plotters import NetworkPlotter
 
-network = FaceNetwork.from_obj(compas.get('lines.obj'))
-
-network_find_faces(network, breakpoints=network.leaves())
+network = Network.from_obj(compas.get('lines.obj'))
 
 a = network.split_edge(0, 22)
 b = network.split_edge(2, 30)
@@ -22,7 +19,7 @@ for u, v in network.edges():
         'color': '#00ff00'
     })
 
-plotter = FaceNetworkPlotter(network)
+plotter = NetworkPlotter(network)
 
 plotter.draw_lines(lines)
 
@@ -32,9 +29,5 @@ plotter.draw_vertices(
     facecolor={key: '#ff0000' for key in (a, b, c, d)}
 )
 plotter.draw_edges()
-plotter.draw_faces(
-    text={fkey: fkey for fkey in network.faces()},
-    facecolor={fkey: '#eeeeee' for fkey in network.faces()}
-)
 
 plotter.show()
