@@ -85,6 +85,15 @@
 <span class="k">class</span> <span class="nc">VertexArtist</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">clear_vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear all vertices previously drawn by the ``VertexArtist``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        keys : list, optional</span>
+<span class="sd">            The keys of a specific set of vertices that should be cleared.</span>
+<span class="sd">            Default is to clear all vertices.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.vertex.*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -97,6 +106,15 @@
         <span class="n">compas_rhino</span><span class="o">.</span><span class="n">delete_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">clear_vertexlabels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear all vertex labels previously drawn by the ``VertexArtist``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        keys : list, optional</span>
+<span class="sd">            The keys of a specific set of vertex labels that should be cleared.</span>
+<span class="sd">            Default is to clear all vertex labels.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.vertex.label.*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -109,7 +127,7 @@
         <span class="n">compas_rhino</span><span class="o">.</span><span class="n">delete_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">draw_vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draw a selection of vertices of the network.</span>
+        <span class="sd">&quot;&quot;&quot;Draw a selection of vertices.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -123,7 +141,7 @@
 <span class="sd">            To apply the same color to all vertices, provide a single color</span>
 <span class="sd">            specification. Individual colors can be assigned using a dictionary</span>
 <span class="sd">            of key-color pairs. Missing keys will be assigned the default vertex</span>
-<span class="sd">            color (``self.defaults[&#39;color.vertex&#39;]``).</span>
+<span class="sd">            color (``self.datastructure.attributes[&#39;color.vertex&#39;]``).</span>
 <span class="sd">            The default is ``None``, in which case all vertices are assigned the</span>
 <span class="sd">            default vertex color.</span>
 
@@ -131,15 +149,7 @@
 <span class="sd">        -----</span>
 <span class="sd">        The vertices are named using the following template:</span>
 <span class="sd">        ``&quot;{}.vertex.{}&quot;.format(self.datastructure.name], key)``.</span>
-<span class="sd">        This name is used afterwards to identify vertices of the networkin the Rhino model.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; artist.draw_vertices()</span>
-<span class="sd">        &gt;&gt;&gt; artist.draw_vertices(color=&#39;#ff0000&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; artist.draw_vertices(color=(255, 0, 0))</span>
-<span class="sd">        &gt;&gt;&gt; artist.draw_vertices(keys=self.datastructure.vertices_on_boundary())</span>
-<span class="sd">        &gt;&gt;&gt; artist.draw_vertices(color={(u, v): &#39;#00ff00&#39; for u, v in self.datastructure.vertices_on_boundary()})</span>
+<span class="sd">        This name is used afterwards to identify vertices in the Rhino model.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">vertices</span><span class="p">())</span>
@@ -159,28 +169,27 @@
         <span class="k">return</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">xdraw_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span> <span class="n">clear</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">redraw</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">draw_vertexlabels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draw labels for selected vertices of the network.</span>
+        <span class="sd">&quot;&quot;&quot;Draw labels for selected vertices.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        text : dict</span>
 <span class="sd">            A dictionary of vertex labels as key-text pairs.</span>
-<span class="sd">            The default value is ``None``, in which case every vertex of the network</span>
-<span class="sd">            will be labelled with its key.</span>
+<span class="sd">            The default value is ``None``, in which case every vertex will be labelled with its key.</span>
 <span class="sd">        color : str, tuple, dict</span>
 <span class="sd">            The color sepcification of the labels.</span>
 <span class="sd">            String values are interpreted as hex colors (e.g. ``&#39;#ff0000&#39;`` for red).</span>
 <span class="sd">            Tuples are interpreted as RGB component specifications (e.g. ``(255, 0, 0) for red``.</span>
 <span class="sd">            If a dictionary of specififcations is provided, the keys of the</span>
-<span class="sd">            should refer to vertex keys in the network and the values should be color</span>
+<span class="sd">            should refer to vertex keys and the values should be color</span>
 <span class="sd">            specifications in the form of strings or tuples.</span>
 <span class="sd">            The default value is ``None``, in which case the labels are assigned</span>
-<span class="sd">            the default vertex color (``self.defaults[&#39;color.vertex&#39;]``).</span>
+<span class="sd">            the default vertex color (``self.datastructure.attributes[&#39;color.vertex&#39;]``).</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        All labels are assigned a name using the folling template:</span>
-<span class="sd">        ``&quot;{}.vertex.{}&quot;.format(self.datastructure.name, key)``.</span>
+<span class="sd">        ``&quot;{}.vertex.label.{}&quot;.format(self.datastructure.name, key)``.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>

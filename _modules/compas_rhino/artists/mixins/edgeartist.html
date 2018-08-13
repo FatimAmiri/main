@@ -68,7 +68,11 @@
                         
 
                         <h1>Source code for compas_rhino.artists.mixins.edgeartist</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">color_to_colordict</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">color_to_colordict</span>
 
 <span class="kn">import</span> <span class="nn">compas_rhino</span>
 
@@ -85,6 +89,15 @@
 <span class="k">class</span> <span class="nc">EdgeArtist</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">clear_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear all edges previously drawn by the ``EdgeArtist``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        keys : list, optional</span>
+<span class="sd">            The keys of a specific set of edges that should be cleared.</span>
+<span class="sd">            Default is to clear all edges.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.edge.*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -97,6 +110,15 @@
         <span class="n">compas_rhino</span><span class="o">.</span><span class="n">delete_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">clear_edgelabels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear all edge labels previously drawn by the ``EdgeArtist``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        keys : list, optional</span>
+<span class="sd">            The keys of a specific set of edges of which the labels should be cleared.</span>
+<span class="sd">            Default is to clear all edge labels.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.edge.label.*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -120,26 +142,18 @@
 <span class="sd">            The color specififcation for the edges.</span>
 <span class="sd">            Colors should be specified in the form of a string (hex colors) or</span>
 <span class="sd">            as a tuple of RGB components.</span>
-<span class="sd">            To apply the same color to all faces, provide a single color</span>
+<span class="sd">            To apply the same color to all edges, provide a single color</span>
 <span class="sd">            specification. Individual colors can be assigned using a dictionary</span>
 <span class="sd">            of key-color pairs. Missing keys will be assigned the default face</span>
-<span class="sd">            color (``self.defaults[&#39;face.color&#39;]``).</span>
-<span class="sd">            The default is ``None``, in which case all faces are assigned the</span>
+<span class="sd">            color (``self.datastructure.attributes[&#39;edge.color&#39;]``).</span>
+<span class="sd">            The default is ``None``, in which case all edges are assigned the</span>
 <span class="sd">            default edge color.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        All edges are named using the following template:</span>
 <span class="sd">        ``&quot;{}.edge.{}-{}&quot;.fromat(self.datastructure.name, u, v)``.</span>
-<span class="sd">        This name is used afterwards to identify edges of the network in the Rhino model.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; artist.draw_edges()</span>
-<span class="sd">        &gt;&gt;&gt; artist.draw_edges(color=&#39;#ff0000&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; artist.draw_edges(color=(255, 0, 0))</span>
-<span class="sd">        &gt;&gt;&gt; artist.draw_edges(keys=self.datastructure.edges_xxx())</span>
-<span class="sd">        &gt;&gt;&gt; artist.draw_edges(color={(u, v): &#39;#00ff00&#39; for u, v in self.datastructure.edges_xxx()})</span>
+<span class="sd">        This name is used afterwards to identify edges in the Rhino model.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
@@ -166,17 +180,16 @@
 <span class="sd">        ----------</span>
 <span class="sd">        text : dict</span>
 <span class="sd">            A dictionary of edge labels as key-text pairs.</span>
-<span class="sd">            The default value is ``None``, in which case every edge of the network</span>
-<span class="sd">            will be labelled with its key.</span>
+<span class="sd">            The default value is ``None``, in which case every edge will be labelled with its key.</span>
 <span class="sd">        color : str, tuple, dict</span>
 <span class="sd">            The color sepcification of the labels.</span>
 <span class="sd">            String values are interpreted as hex colors (e.g. ``&#39;#ff0000&#39;`` for red).</span>
 <span class="sd">            Tuples are interpreted as RGB component specifications (e.g. ``(255, 0, 0) for red``.</span>
-<span class="sd">            If a dictionary of specififcations is provided, the keys of the</span>
-<span class="sd">            should refer to edge keys in the network and the values should be color</span>
-<span class="sd">            specifications in the form of strings or tuples.</span>
-<span class="sd">            The default value is ``None``, in which case the labels are assigned</span>
-<span class="sd">            the default edge color (``self.defaults[&#39;color.edge&#39;]``).</span>
+<span class="sd">            Individual colors can be assigned using a dictionary</span>
+<span class="sd">            of key-color pairs. Missing keys will be assigned the default face</span>
+<span class="sd">            color (``self.datastructure.attributes[&#39;edge.color&#39;]``).</span>
+<span class="sd">            The default is ``None``, in which case all edges are assigned the</span>
+<span class="sd">            default edge color.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>

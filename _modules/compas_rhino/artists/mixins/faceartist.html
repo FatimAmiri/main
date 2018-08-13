@@ -68,16 +68,20 @@
                         
 
                         <h1>Source code for compas_rhino.artists.mixins.faceartist</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">color_to_colordict</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">color_to_colordict</span>
 
 <span class="kn">import</span> <span class="nn">compas_rhino</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="k">as</span> <span class="nn">rs</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">platform</span>
-    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_implementation</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;IronPython&#39;</span><span class="p">:</span>
-        <span class="k">raise</span>
+    <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_ironpython</span><span class="p">()</span>
 
 
 <span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="p">]</span>
@@ -92,6 +96,36 @@
 <span class="k">class</span> <span class="nc">FaceArtist</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">clear_faces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear all faces previously drawn by the ``FaceArtist``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        keys : list, optional</span>
+<span class="sd">            The keys of a specific set of faces that should be cleared.</span>
+<span class="sd">            Default is to clear all faces.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.face.*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">guids</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">face_name</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">guid</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">guids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
+        <span class="n">compas_rhino</span><span class="o">.</span><span class="n">delete_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">clear_facelabels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear all face labels previously drawn by the ``FaceArtist``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        keys : list, optional</span>
+<span class="sd">            The keys of a specific set of face labels that should be cleared.</span>
+<span class="sd">            Default is to clear all face labels.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.face.*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -120,17 +154,13 @@
 <span class="sd">            of key-color pairs. Missing keys will be assigned the default face</span>
 <span class="sd">            color (``self.defaults[&#39;face.color&#39;]``).</span>
 <span class="sd">            The default is ``None``, in which case all faces are assigned the</span>
-<span class="sd">            default vertex color.</span>
+<span class="sd">            default face color.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        The faces are named using the following template:</span>
-<span class="sd">        ``&quot;{}.face.{}&quot;.format(self.datastructure.attributes[&#39;name&#39;], key)``.</span>
-<span class="sd">        This name is used afterwards to identify faces of the mesh in the Rhino model.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        ``&quot;{}.face.{}&quot;.format(self.datastructure.name, key)``.</span>
+<span class="sd">        This name is used afterwards to identify faces in the Rhino model.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">fkeys</span> <span class="o">=</span> <span class="n">fkeys</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">faces</span><span class="p">())</span>
@@ -161,12 +191,24 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        text : dict</span>
+<span class="sd">            A dictionary of face labels as key-text pairs.</span>
+<span class="sd">            The default value is ``None``, in which case every face will be labelled with its key.</span>
+<span class="sd">        color : str, tuple, dict</span>
+<span class="sd">            The color sepcification of the labels.</span>
+<span class="sd">            String values are interpreted as hex colors (e.g. ``&#39;#ff0000&#39;`` for red).</span>
+<span class="sd">            Tuples are interpreted as RGB component specifications (e.g. ``(255, 0, 0) for red``.</span>
+<span class="sd">            If a dictionary of specififcations is provided, the keys of the</span>
+<span class="sd">            should refer to face keys and the values should be color</span>
+<span class="sd">            specifications in the form of strings or tuples.</span>
+<span class="sd">            The default value is ``None``, in which case the labels are assigned</span>
+<span class="sd">            the default face color (``self.datastructure.attributes[&#39;color.face&#39;]``).</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
+<span class="sd">        The face labels are named using the following template:</span>
+<span class="sd">        ``&quot;{}.face.label.{}&quot;.format(self.datastructure.name, key)``.</span>
+<span class="sd">        This name is used afterwards to identify faces and face labels in the Rhino model.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -186,7 +228,7 @@
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">textdict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
                 <span class="s1">&#39;pos&#39;</span>   <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">face_center</span><span class="p">(</span><span class="n">key</span><span class="p">),</span>
-                <span class="s1">&#39;name&#39;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">face_name</span><span class="p">(</span><span class="n">key</span><span class="p">),</span>
+                <span class="s1">&#39;name&#39;</span>  <span class="p">:</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.face.label.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span>
                 <span class="s1">&#39;color&#39;</span> <span class="p">:</span> <span class="n">colordict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
                 <span class="s1">&#39;text&#39;</span>  <span class="p">:</span> <span class="n">textdict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
                 <span class="s1">&#39;layer&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">get_face_attribute</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
