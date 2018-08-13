@@ -109,10 +109,30 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    layer</span>
-<span class="sd">    datastructure</span>
+<span class="sd">    datastructure : compas.datastructures.Mesh</span>
+<span class="sd">        The mesh that will be painted.</span>
 <span class="sd">    defaults : dict</span>
 <span class="sd">        Default settings for color, scale, tolerance, ...</span>
+<span class="sd">    layer : str</span>
+<span class="sd">        The layer that contains the mesh.</span>
+<span class="sd">        The value of this property is stored in the ``attributes`` ``dict`` of the mesh.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        </span>
+<span class="sd">        import compas</span>
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas_rhino.artists import MeshArtist</span>
+
+<span class="sd">        mesh = Mesh.from_obj(compas.get(&#39;faces.obj&#39;))</span>
+
+<span class="sd">        artist = MeshArtist(mesh, layer=&#39;COMPAS::MeshArtist&#39;)</span>
+<span class="sd">        artist.clear_layer()</span>
+<span class="sd">        artist.draw_faces(join_faces=True)</span>
+<span class="sd">        artist.draw_vertices(color={key: &#39;#ff0000&#39; for key in mesh.vertices_on_boundary()})</span>
+<span class="sd">        artist.draw_edges()</span>
+<span class="sd">        artist.redraw()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -127,7 +147,6 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;str : The layer that contains the mesh.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span>
 
     <span class="nd">@layer</span><span class="o">.</span><span class="n">setter</span>
