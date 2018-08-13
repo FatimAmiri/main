@@ -115,7 +115,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="VolMeshArtist.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.artists.VolMeshArtist.__init__.html#compas_rhino.artists.VolMeshArtist.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volmesh</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span> <span class="o">=</span> <span class="n">volmesh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span> <span class="o">=</span> <span class="n">volmesh</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;color.vertex&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
@@ -123,8 +123,35 @@
             <span class="s1">&#39;color.edge&#39;</span>   <span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="p">}</span></div>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;str: The layer that contains the volmesh.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span>
+
+    <span class="nd">@layer</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">volmesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;compas.datastructures.VolMesh: The volmesh that should be painted.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span>
+
+    <span class="nd">@volmesh</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">volmesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volmesh</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span> <span class="o">=</span> <span class="n">volmesh</span>
+
 <div class="viewcode-block" id="VolMeshArtist.redraw"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.artists.VolMeshArtist.redraw.html#compas_rhino.artists.VolMeshArtist.redraw">[docs]</a>    <span class="k">def</span> <span class="nf">redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Redraw the Rhino view.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Redraw the Rhino view.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        timeout : float, optional</span>
+<span class="sd">            The amount of time the artist waits before updating the Rhino view.</span>
+<span class="sd">            The time should be specified in seconds.</span>
+<span class="sd">            Default is ``None``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
         <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -136,6 +163,8 @@
             <span class="n">compas_rhino</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VolMeshArtist.clear"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.artists.VolMeshArtist.clear.html#compas_rhino.artists.VolMeshArtist.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear the vertices, faces and edges of the volmesh, without clearing the</span>
+<span class="sd">        other elements in the layer.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_vertices</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_faces</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_edges</span><span class="p">()</span></div></div>

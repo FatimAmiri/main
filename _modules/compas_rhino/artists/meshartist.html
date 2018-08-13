@@ -109,13 +109,8 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    datastructure : compas.datastructures.Mesh</span>
-<span class="sd">        The mesh that will be painted.</span>
 <span class="sd">    defaults : dict</span>
 <span class="sd">        Default settings for color, scale, tolerance, ...</span>
-<span class="sd">    layer : str</span>
-<span class="sd">        The layer that contains the mesh.</span>
-<span class="sd">        The value of this property is stored in the ``attributes`` ``dict`` of the mesh.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -137,7 +132,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="MeshArtist.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.artists.MeshArtist.__init__.html#compas_rhino.artists.MeshArtist.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span> <span class="o">=</span> <span class="n">mesh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;color.vertex&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
@@ -147,11 +142,21 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;str: The layer that contains the mesh.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span>
 
     <span class="nd">@layer</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;compas.datastructures.Mesh: The mesh that should be painted.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span>
+
+    <span class="nd">@mesh</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span> <span class="o">=</span> <span class="n">mesh</span>
 
 <div class="viewcode-block" id="MeshArtist.redraw"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.artists.MeshArtist.redraw.html#compas_rhino.artists.MeshArtist.redraw">[docs]</a>    <span class="k">def</span> <span class="nf">redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Redraw the Rhino view.</span>
