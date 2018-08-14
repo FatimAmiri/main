@@ -89,7 +89,8 @@
     <span class="kn">from</span> <span class="nn">System.Windows.Forms.DataVisualization</span> <span class="k">import</span> <span class="n">Charting</span>
 
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_ironpython</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">compas</span><span class="o">.</span><span class="n">is_ironpython</span><span class="p">()</span> <span class="ow">and</span> <span class="n">compas</span><span class="o">.</span><span class="n">is_windows</span><span class="p">():</span>
+        <span class="k">raise</span>
 
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="p">]</span>
@@ -101,29 +102,96 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ChartForm&#39;</span><span class="p">,</span> <span class="p">]</span>
 
 
+<span class="k">class</span> <span class="nc">Series</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
 <div class="viewcode-block" id="ChartForm"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.forms.ChartForm.html#compas_rhino.forms.ChartForm">[docs]</a><span class="k">class</span> <span class="nc">ChartForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A windows form for displaying charts.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    </span>
+<span class="sd">    series : list of dict</span>
+<span class="sd">        A list of dictionaries with each dictionary defining the attributes of a series.</span>
+<span class="sd">        The following attributes are supported:</span>
+
+<span class="sd">        * name: The name of the series.</span>
+<span class="sd">        * data: A dictionary with x-y pairs.</span>
+<span class="sd">        * color (optional): A hex color or an RGB(255) color specification.</span>
+<span class="sd">        * linewidth (optional): The width of the series graph line.</span>
+
+<span class="sd">    xlimits : 2-tuple</span>
+<span class="sd">        Minimum and maximum values on the X-axis.</span>
+<span class="sd">    xstep : int</span>
+<span class="sd">        Size of the steps along the X-axis.</span>
+<span class="sd">    ylimits : 2-tuple, optional</span>
+<span class="sd">        Minimum and maximum values on the Y-axis.</span>
+<span class="sd">        Default is ``None``, in which case the limits will be computed from the min/max values of the data in the series.</span>
+<span class="sd">    ystep : int, optional</span>
+<span class="sd">        Size of the steps along the Y-axis.</span>
+<span class="sd">        Default is ``int((ymax - ymin) / 10.)```.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import random</span>
+<span class="sd">        from compas_rhino.forms import ChartForm</span>
+
+<span class="sd">        def fib(n, memo={}):</span>
+<span class="sd">            if n == 0:</span>
+<span class="sd">                return 0</span>
+<span class="sd">            if n == 1:</span>
+<span class="sd">                return 1</span>
+<span class="sd">            if n == 2:</span>
+<span class="sd">                return 1</span>
+<span class="sd">            if n not in memo:</span>
+<span class="sd">                memo[n] = fib(n - 2, memo) + fib(n - 1, memo)</span>
+<span class="sd">            return memo[n]</span>
+
+<span class="sd">        series = [</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;name&#39;      : &#39;series1&#39;,</span>
+<span class="sd">                &#39;color&#39;     : (255, 0, 0),</span>
+<span class="sd">                &#39;linewidth&#39; : 1,</span>
+<span class="sd">                &#39;data&#39;      : dict((str(i), random.randint(30, 70)) for i in range(10)),</span>
+<span class="sd">            },</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;name&#39;      : &#39;series2&#39;,</span>
+<span class="sd">                &#39;color&#39;     : (0, 255, 0),</span>
+<span class="sd">                &#39;linewidth&#39; : 1,</span>
+<span class="sd">                &#39;data&#39;      : dict((str(i), i ** 2) for i in range(10)),</span>
+<span class="sd">            },</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;name&#39;      : &#39;series3&#39;,</span>
+<span class="sd">                &#39;color&#39;     : (0, 0, 255),</span>
+<span class="sd">                &#39;linewidth&#39; : 1,</span>
+<span class="sd">                &#39;data&#39;      : dict((str(i), fib(i)) for i in range(10)),</span>
+<span class="sd">            },</span>
+<span class="sd">        ]</span>
+
+<span class="sd">        form = ChartForm(series, (0, 10), 1)</span>
+<span class="sd">        form.show()</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ChartForm.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.forms.ChartForm.__init__.html#compas_rhino.forms.ChartForm.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">):</span>
+<div class="viewcode-block" id="ChartForm.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.forms.ChartForm.__init__.html#compas_rhino.forms.ChartForm.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">xlimits</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span> <span class="n">ylimits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ystep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">series</span> <span class="o">=</span> <span class="n">series</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xmin</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xmax</span> <span class="o">=</span> <span class="n">xmax</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xmin</span> <span class="o">=</span> <span class="n">xlimits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xmax</span> <span class="o">=</span> <span class="n">xlimits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xstp</span> <span class="o">=</span> <span class="n">xstep</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">ymin</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ymax</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ystp</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">series</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">series</span><span class="p">:</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">attr</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
             <span class="n">y</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ymin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ymin</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ymax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ymax</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ystp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ymax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ymin</span><span class="p">)</span> <span class="o">/</span> <span class="mf">10.</span><span class="p">)</span>
+
         <span class="nb">super</span><span class="p">(</span><span class="n">ChartForm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ChartForm.init"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.forms.ChartForm.init.html#compas_rhino.forms.ChartForm.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -132,8 +200,8 @@
         <span class="n">chart</span> <span class="o">=</span> <span class="n">charting</span><span class="o">.</span><span class="n">Chart</span><span class="p">()</span>
         <span class="n">chart</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
         <span class="n">chart</span><span class="o">.</span><span class="n">Size</span> <span class="o">=</span> <span class="n">Size</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
-        <span class="n">chart</span><span class="o">.</span><span class="n">ChartAreas</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="s1">&#39;iterations&#39;</span><span class="p">)</span>
-        <span class="n">area</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">ChartAreas</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span>
+        <span class="n">chart</span><span class="o">.</span><span class="n">ChartAreas</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">)</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">ChartAreas</span><span class="p">[</span><span class="s1">&#39;series&#39;</span><span class="p">]</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">area</span><span class="o">.</span><span class="n">AxisX</span>
         <span class="n">x</span><span class="o">.</span><span class="n">Minimum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xmin</span>
         <span class="n">x</span><span class="o">.</span><span class="n">Maximum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xmax</span>
@@ -146,7 +214,8 @@
         <span class="n">y</span><span class="o">.</span><span class="n">Interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ystp</span>
         <span class="n">y</span><span class="o">.</span><span class="n">MajorGrid</span><span class="o">.</span><span class="n">LineColor</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">Black</span>
         <span class="n">y</span><span class="o">.</span><span class="n">MajorGrid</span><span class="o">.</span><span class="n">LineDashStyle</span> <span class="o">=</span> <span class="n">charting</span><span class="o">.</span><span class="n">ChartDashStyle</span><span class="o">.</span><span class="n">Dash</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">series</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">series</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
             <span class="n">color</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span>
             <span class="n">linewidth</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;linewidth&#39;</span><span class="p">]</span>
             <span class="n">chart</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -181,23 +250,26 @@
             <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
 
-    <span class="n">series</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;series1&#39;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="n">series</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span>      <span class="p">:</span> <span class="s1">&#39;series1&#39;</span><span class="p">,</span>
             <span class="s1">&#39;color&#39;</span>     <span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s1">&#39;linewidth&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
             <span class="s1">&#39;data&#39;</span>      <span class="p">:</span> <span class="nb">dict</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">70</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span>
         <span class="p">},</span>
-        <span class="s1">&#39;series2&#39;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span>      <span class="p">:</span> <span class="s1">&#39;series2&#39;</span><span class="p">,</span>
             <span class="s1">&#39;color&#39;</span>     <span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s1">&#39;linewidth&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
             <span class="s1">&#39;data&#39;</span>      <span class="p">:</span> <span class="nb">dict</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">i</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span>
         <span class="p">},</span>
-        <span class="s1">&#39;series3&#39;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span>      <span class="p">:</span> <span class="s1">&#39;series3&#39;</span><span class="p">,</span>
             <span class="s1">&#39;color&#39;</span>     <span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
             <span class="s1">&#39;linewidth&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
             <span class="s1">&#39;data&#39;</span>      <span class="p">:</span> <span class="nb">dict</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">fib</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span>
         <span class="p">},</span>
-    <span class="p">}</span>
+    <span class="p">]</span>
 
     <span class="n">form</span> <span class="o">=</span> <span class="n">ChartForm</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
