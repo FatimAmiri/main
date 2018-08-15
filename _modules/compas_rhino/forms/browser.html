@@ -91,6 +91,11 @@
     <span class="k">if</span> <span class="n">compas</span><span class="o">.</span><span class="n">is_ironpython</span><span class="p">()</span> <span class="ow">and</span> <span class="n">compas</span><span class="o">.</span><span class="n">is_windows</span><span class="p">():</span>
         <span class="k">raise</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
+
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="p">]</span>
 <span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">&#39;Copyright 2014, BLOCK Research Group - ETH Zurich&#39;</span>
@@ -128,13 +133,27 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BrowserForm.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.forms.BrowserForm.__init__.html#compas_rhino.forms.BrowserForm.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;BrowserForm&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">786</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">BrowserForm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FormBorderStyle</span> <span class="o">=</span> <span class="n">FormBorderStyle</span><span class="o">.</span><span class="n">Sizable</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FormBorderStyle</span> <span class="o">=</span> <span class="n">FormBorderStyle</span><span class="o">.</span><span class="n">Sizable</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BrowserForm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_url</span>
+
+    <span class="nd">@url</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">Uri</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="n">Uri</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="BrowserForm.init"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.forms.BrowserForm.init.html#compas_rhino.forms.BrowserForm.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">=</span> <span class="n">WebBrowser</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">Url</span> <span class="o">=</span> <span class="n">Uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">Url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">StatusTextChanged</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_statustext_changed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">Dock</span> <span class="o">=</span> <span class="n">DockStyle</span><span class="o">.</span><span class="n">Fill</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status_strip</span> <span class="o">=</span> <span class="n">StatusStrip</span><span class="p">()</span>

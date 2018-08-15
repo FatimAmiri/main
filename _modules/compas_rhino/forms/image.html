@@ -84,10 +84,17 @@
     <span class="kn">from</span> <span class="nn">System.Windows.Forms</span> <span class="k">import</span> <span class="n">PictureBoxSizeMode</span>
     <span class="kn">from</span> <span class="nn">System.Windows.Forms</span> <span class="k">import</span> <span class="n">DockStyle</span>
     <span class="kn">from</span> <span class="nn">System.Drawing</span> <span class="k">import</span> <span class="n">Image</span>
+    <span class="kn">from</span> <span class="nn">System.Net</span> <span class="k">import</span> <span class="n">WebClient</span>
+    <span class="kn">from</span> <span class="nn">System.IO</span> <span class="k">import</span> <span class="n">MemoryStream</span>
 
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">compas</span><span class="o">.</span><span class="n">is_ironpython</span><span class="p">()</span> <span class="ow">and</span> <span class="n">compas</span><span class="o">.</span><span class="n">is_windows</span><span class="p">():</span>
         <span class="k">raise</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
 
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="p">]</span>
@@ -96,7 +103,56 @@
 <span class="n">__email__</span>      <span class="o">=</span> <span class="s1">&#39;vanmelet@ethz.ch&#39;</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ImageForm&#39;</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ImageForm&#39;</span><span class="p">,</span> <span class="s1">&#39;image_from_remote&#39;</span><span class="p">,</span> <span class="s1">&#39;image_from_local&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">image_from_remote</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Construct an image from a remote source.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source : str</span>
+<span class="sd">        The url of the remote source.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    System.Drawing.Image</span>
+<span class="sd">        Representation of an miage in memory.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        image = image_from_remote(&#39;http://block.arch.ethz.ch/brg/images/cache/dsc02360_ni-2_cropped_1528706473_624x351.jpg&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">WebClient</span><span class="p">()</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">DownloadData</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">MemoryStream</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">FromStream</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">image_from_local</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Construct an image from a local source.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source : str</span>
+<span class="sd">        The path to the local source file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    System.Drawing.Image</span>
+<span class="sd">        Representation of an miage in memory.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        image = image_from_local(&#39;theblock.jpg&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">FromFile</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ImageForm"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.forms.ImageForm.html#compas_rhino.forms.ImageForm">[docs]</a><span class="k">class</span> <span class="nc">ImageForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
@@ -104,8 +160,11 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    imagepath : str</span>
-<span class="sd">        Path to the image that should be displayed.</span>
+<span class="sd">    image : {str, Image}</span>
+<span class="sd">        The image that should be displayed.</span>
+<span class="sd">        This can be a url of a remote image file,</span>
+<span class="sd">        or a local file path,</span>
+<span class="sd">        or an instance of ``System.Drawing.Image``.</span>
 <span class="sd">    title : str, optional</span>
 <span class="sd">        Title of the form.</span>
 <span class="sd">        Default is ``ImageForm``.</span>
@@ -121,21 +180,40 @@
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        from compas_rhino.forms import ImageForm</span>
-<span class="sd">        </span>
-<span class="sd">        form = ImageForm(&#39;../../../docs/source/_images/smoothing_01.jpg&#39;)</span>
+
+<span class="sd">        form = ImageForm(&#39;http://block.arch.ethz.ch/brg/images/cache/dsc02360_ni-2_cropped_1528706473_624x351.jpg&#39;)</span>
 <span class="sd">        form.show()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ImageForm.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.forms.ImageForm.__init__.html#compas_rhino.forms.ImageForm.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagepath</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;ImageForm&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">imagepath</span> <span class="o">=</span> <span class="n">imagepath</span>
+<div class="viewcode-block" id="ImageForm.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.forms.ImageForm.__init__.html#compas_rhino.forms.ImageForm.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;ImageForm&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ImageForm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;System.Drawing.Image: An instance of ``System.Drawing.Image``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image</span>
+
+    <span class="nd">@image</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="n">image_from_remote</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="n">image_from_local</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">Image</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="ImageForm.init"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.forms.ImageForm.init.html#compas_rhino.forms.ImageForm.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">PictureBox</span><span class="p">()</span>
         <span class="n">box</span><span class="o">.</span><span class="n">Dock</span> <span class="o">=</span> <span class="n">DockStyle</span><span class="o">.</span><span class="n">Fill</span>
         <span class="n">box</span><span class="o">.</span><span class="n">SizeMode</span> <span class="o">=</span> <span class="n">PictureBoxSizeMode</span><span class="o">.</span><span class="n">AutoSize</span>
-        <span class="n">box</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">FromFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imagepath</span><span class="p">)</span>
+        <span class="n">box</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">Image</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Controls</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ClientSize</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">Size</span></div>
@@ -150,7 +228,7 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
-    <span class="n">form</span> <span class="o">=</span> <span class="n">ImageForm</span><span class="p">(</span><span class="s1">&#39;../../../docs/source/_images/smoothing_01.jpg&#39;</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">ImageForm</span><span class="p">(</span><span class="s1">&#39;http://block.arch.ethz.ch/brg/images/cache/dsc02360_ni-2_cropped_1528706473_624x351.jpg&#39;</span><span class="p">)</span>
     <span class="n">form</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
                         
