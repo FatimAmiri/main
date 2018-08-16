@@ -90,21 +90,105 @@
 <span class="sd">    RhinoSurface</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">import</span> <span class="nn">compas_rhino</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino.utilities</span> <span class="k">import</span> <span class="n">select_object</span>
+
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="k">as</span> <span class="nn">rs</span>
+    <span class="kn">import</span> <span class="nn">scriptcontext</span> <span class="k">as</span> <span class="nn">sc</span>
+
+    <span class="n">find_object</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">Objects</span><span class="o">.</span><span class="n">Find</span>
 
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="k">if</span> <span class="s1">&#39;ironpython&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-        <span class="k">raise</span>
-
-<span class="kn">import</span> <span class="nn">compas_rhino</span>
+    <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_ironpython</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">RhinoGeometry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for Rhino geometry objects.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">guid</span> <span class="o">=</span> <span class="n">guid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="n">RhinoGeometry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">Geometry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">Attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">otype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">ObjectType</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_selection</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a ``RhinoGeometry`` instance of the correct type from a selected object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        RhinoPoint</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.point``.</span>
+<span class="sd">        RhinoCurve</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.curve``.</span>
+<span class="sd">        RhinoMesh</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.mesh``.</span>
+<span class="sd">        RhinoSurface</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.surface``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            #</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">select_object</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_name</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a ``RhinoGeometry`` instance of the correct type based on a given object name.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            The name of the Rhino object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        RhinoPoint</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.point``.</span>
+<span class="sd">        RhinoCurve</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.curve``.</span>
+<span class="sd">        RhinoMesh</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.mesh``.</span>
+<span class="sd">        RhinoSurface</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.surface``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            import compas</span>
+<span class="sd">            import compas_rhino</span>
+
+<span class="sd">            from compas.datastructures import Mesh</span>
+<span class="sd">            from compas_rhino.geometry import RhinoGeometry</span>
+
+<span class="sd">            mesh = Mesh.from_json(...)</span>
+
+<span class="sd">            mesh.update_default_vertex_attributes(constraint=None)</span>
+
+<span class="sd">            # interesting stuff happens here</span>
+
+<span class="sd">            for key, attr in mesh.vertices(True):</span>
+<span class="sd">                name = attr[&#39;constraint&#39;]</span>
+
+<span class="sd">                if name:</span>
+<span class="sd">                    constraint = RhinoGeometry.from_name(name)</span>
+<span class="sd">                    xyz = constraint.closest_point(mesh.get_vertex_attributes(key, &#39;xyz&#39;))</span>
+<span class="sd">                    mesh.set_vertex_attributes(key, &#39;xyz&#39;, xyz)</span>
+
+<span class="sd">            # more interesting stuff happens here</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span>
@@ -113,6 +197,51 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a ``RhinoGeometry`` instance of the correct type based on a given guid.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        guid : str or System.Guid</span>
+<span class="sd">            The *guid* of the Rhino object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        RhinoPoint</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.point``.</span>
+<span class="sd">        RhinoCurve</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.curve``.</span>
+<span class="sd">        RhinoMesh</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.mesh``.</span>
+<span class="sd">        RhinoSurface</span>
+<span class="sd">            If the type of the Rhino object is ``rs.filter.surface``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            import compas</span>
+<span class="sd">            import compas_rhino</span>
+
+<span class="sd">            from compas.datastructures import Mesh</span>
+<span class="sd">            from compas_rhino.geometry import RhinoGeometry</span>
+
+<span class="sd">            mesh = Mesh.from_json(...)</span>
+
+<span class="sd">            mesh.update_default_vertex_attributes(constraint=None)</span>
+
+<span class="sd">            # interesting stuff happens here</span>
+
+<span class="sd">            for key, attr in mesh.vertices(True):</span>
+<span class="sd">                guid = attr[&#39;constraint&#39;]</span>
+
+<span class="sd">                if guid:</span>
+<span class="sd">                    constraint = RhinoGeometry.from_guid(guid)</span>
+<span class="sd">                    xyz = constraint.closest_point(mesh.get_vertex_attributes(key, &#39;xyz&#39;))</span>
+<span class="sd">                    mesh.set_vertex_attributes(key, &#39;xyz&#39;, xyz)</span>
+
+<span class="sd">            # more interesting stuff happens here</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">otype</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">ObjectType</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">otype</span> <span class="o">==</span> <span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">point</span><span class="p">:</span>
@@ -127,8 +256,32 @@
         <span class="k">if</span> <span class="n">otype</span> <span class="o">==</span> <span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">surface</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">RhinoSurface</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find the Rhino object corresponding to a given guid.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        guid : str or System.Guid</span>
+<span class="sd">            The *guid* of the Rhino object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Rhino.DocObjects.Object</span>
+<span class="sd">            A Rhino object.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            #</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">find_object</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;str : The name of the Rhino object.&quot;&quot;&quot;</span>
         <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">Name</span>
         <span class="k">return</span> <span class="n">value</span>
 
@@ -137,6 +290,37 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">CommitChanges</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete the Rhino object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">compas_rhino</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">purge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Purge the Rhino object.&quot;&quot;&quot;</span>
+        <span class="n">compas_rhino</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guid</span><span class="p">,</span> <span class="n">purge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">hide</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Hide the Rhino object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">HideObject</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Show the Rhino object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">ShowObject</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select the Rhino object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">SelectObject</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">unselect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Unselect the Rhino object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">UnselectObject</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">closest_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">closest_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
 
 <span class="kn">from</span> <span class="nn">.point</span> <span class="k">import</span> <span class="n">RhinoPoint</span>
 <span class="kn">from</span> <span class="nn">.curve</span> <span class="k">import</span> <span class="n">RhinoCurve</span>
@@ -144,7 +328,7 @@
 <span class="kn">from</span> <span class="nn">.surface</span> <span class="k">import</span> <span class="n">RhinoSurface</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RhinoPoint&#39;</span><span class="p">,</span> <span class="s1">&#39;RhinoCurve&#39;</span><span class="p">,</span> <span class="s1">&#39;RhinoMesh&#39;</span><span class="p">,</span> <span class="s1">&#39;RhinoSurface&#39;</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RhinoGeometry&#39;</span><span class="p">,</span> <span class="s1">&#39;RhinoPoint&#39;</span><span class="p">,</span> <span class="s1">&#39;RhinoCurve&#39;</span><span class="p">,</span> <span class="s1">&#39;RhinoMesh&#39;</span><span class="p">,</span> <span class="s1">&#39;RhinoSurface&#39;</span><span class="p">,</span> <span class="p">]</span>
 </code></pre></div>
                         
                         <!-- <nav class="compas-sideways">
