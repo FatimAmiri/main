@@ -92,6 +92,11 @@
     <span class="k">if</span> <span class="n">compas</span><span class="o">.</span><span class="n">is_ironpython</span><span class="p">()</span> <span class="ow">and</span> <span class="n">compas</span><span class="o">.</span><span class="n">is_windows</span><span class="p">():</span>
         <span class="k">raise</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
+
 
 <span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="p">]</span>
 <span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">&#39;Copyright 2014, BLOCK Research Group - ETH Zurich&#39;</span>
@@ -136,7 +141,8 @@
 
 <span class="sd">    Other Parameters</span>
 <span class="sd">    ----------------</span>
-<span class="sd">    bgcolour : </span>
+<span class="sd">    bgcolour : str, tuple, System.Drawing.Color</span>
+<span class="sd">        The background color of the chart area.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -152,21 +158,21 @@
 <span class="sd">                &#39;name&#39;      : &#39;series1&#39;,</span>
 <span class="sd">                &#39;color&#39;     : (255, 0, 0),</span>
 <span class="sd">                &#39;linewidth&#39; : 1,</span>
-<span class="sd">                &#39;linetype&#39;  : &#39;dashed&#39;,</span>
+<span class="sd">                &#39;linestyle&#39; : &#39;dashed&#39;,</span>
 <span class="sd">                &#39;data&#39;      : dict((str(i), random.randint(30, 70)) for i in range(10)),</span>
 <span class="sd">            },</span>
 <span class="sd">            {</span>
 <span class="sd">                &#39;name&#39;      : &#39;series2&#39;,</span>
 <span class="sd">                &#39;color&#39;     : (0, 255, 0),</span>
 <span class="sd">                &#39;linewidth&#39; : 1,</span>
-<span class="sd">                &#39;linetype&#39;  : &#39;solid&#39;,</span>
+<span class="sd">                &#39;linestyle&#39; : &#39;solid&#39;,</span>
 <span class="sd">                &#39;data&#39;      : dict((str(i), i ** 2) for i in range(10)),</span>
 <span class="sd">            },</span>
 <span class="sd">            {</span>
 <span class="sd">                &#39;name&#39;      : &#39;series3&#39;,</span>
 <span class="sd">                &#39;color&#39;     : (0, 0, 255),</span>
 <span class="sd">                &#39;linewidth&#39; : 1,</span>
-<span class="sd">                &#39;linetype&#39;  : &#39;dotted&#39;,</span>
+<span class="sd">                &#39;linestyle&#39; : &#39;dotted&#39;,</span>
 <span class="sd">                &#39;data&#39;      : dict((str(i), fibonacci(i)) for i in range(10)),</span>
 <span class="sd">            },</span>
 <span class="sd">        ]</span>
@@ -176,11 +182,24 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ChartForm.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.forms.ChartForm.__init__.html#compas_rhino.forms.ChartForm.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">xlimits</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span> <span class="n">ylimits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ystep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;ChartForm&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ChartForm.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.forms.ChartForm.__init__.html#compas_rhino.forms.ChartForm.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span>
+                 <span class="n">xlimits</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span>
+                 <span class="n">ylimits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ystep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">chartsize</span><span class="o">=</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+                 <span class="n">bgcolour</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">title</span><span class="o">=</span><span class="s1">&#39;ChartForm&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bgcolour</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">chartsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chartwidth</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chartheight</span> <span class="o">=</span> <span class="n">h</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="n">padding</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">series</span> <span class="o">=</span> <span class="n">series</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xmin</span> <span class="o">=</span> <span class="n">xlimits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xmax</span> <span class="o">=</span> <span class="n">xlimits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xstep</span> <span class="o">=</span> <span class="n">xstep</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bgcolour</span> <span class="o">=</span> <span class="n">bgcolour</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ymin</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ymax</span> <span class="o">=</span> <span class="mi">0</span>
@@ -195,7 +214,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ystep</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ymax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ymin</span><span class="p">)</span> <span class="o">/</span> <span class="mf">10.</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">(</span><span class="n">ChartForm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ChartForm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bgcolour</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -203,15 +222,26 @@
 
     <span class="nd">@bgcolour</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">bgcolour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colour</span><span class="p">):</span>
-        <span class="k">pass</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">colour</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bgcolour</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">White</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">colour</span><span class="p">,</span> <span class="n">Color</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bgcolour</span> <span class="o">=</span> <span class="n">colour</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">colour</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">colour</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bgcolour</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">FromArgb</span><span class="p">(</span><span class="o">*</span> <span class="n">colour</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="ChartForm.init"><a class="viewcode-back" href="../../../reference/generated/generated/compas_rhino.forms.ChartForm.init.html#compas_rhino.forms.ChartForm.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># self.ClientSize = Size(820, 620)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chartwidth</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chartheight</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ClientSize</span> <span class="o">=</span> <span class="n">Size</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
 
         <span class="n">charting</span> <span class="o">=</span> <span class="n">Charting</span>
         <span class="n">chart</span> <span class="o">=</span> <span class="n">charting</span><span class="o">.</span><span class="n">Chart</span><span class="p">()</span>
-        <span class="n">chart</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="n">chart</span><span class="o">.</span><span class="n">Size</span> <span class="o">=</span> <span class="n">Size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Width</span> <span class="o">-</span> <span class="mi">40</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Height</span> <span class="o">-</span> <span class="mi">40</span><span class="p">)</span>
+        <span class="n">chart</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">chart</span><span class="o">.</span><span class="n">Size</span> <span class="o">=</span> <span class="n">Size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chartwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chartheight</span><span class="p">)</span>
         <span class="n">chart</span><span class="o">.</span><span class="n">ChartAreas</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">)</span>
         <span class="n">area</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">ChartAreas</span><span class="p">[</span><span class="s1">&#39;series&#39;</span><span class="p">]</span>
 
@@ -226,8 +256,8 @@
         <span class="n">y</span><span class="o">.</span><span class="n">Minimum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ymin</span>
         <span class="n">y</span><span class="o">.</span><span class="n">Maximum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ymax</span>
         <span class="n">y</span><span class="o">.</span><span class="n">Interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ystep</span>
-        <span class="n">y</span><span class="o">.</span><span class="n">MajorGrid</span><span class="o">.</span><span class="n">LineColor</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">Black</span>
-        <span class="n">y</span><span class="o">.</span><span class="n">MajorGrid</span><span class="o">.</span><span class="n">LineDashStyle</span> <span class="o">=</span> <span class="n">charting</span><span class="o">.</span><span class="n">ChartDashStyle</span><span class="o">.</span><span class="n">Dash</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">MajorGrid</span><span class="o">.</span><span class="n">LineColor</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">Gray</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">MajorGrid</span><span class="o">.</span><span class="n">LineDashStyle</span> <span class="o">=</span> <span class="n">charting</span><span class="o">.</span><span class="n">ChartDashStyle</span><span class="o">.</span><span class="n">Dot</span>
 
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">series</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
@@ -243,7 +273,7 @@
                 <span class="n">value</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
                 <span class="n">series</span><span class="o">.</span><span class="n">Points</span><span class="o">.</span><span class="n">AddXY</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
 
-        <span class="n">area</span><span class="o">.</span><span class="n">BackColor</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">White</span>
+        <span class="n">area</span><span class="o">.</span><span class="n">BackColor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgcolour</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">Controls</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">chart</span><span class="p">)</span></div></div>
 
@@ -278,7 +308,7 @@
         <span class="p">},</span>
     <span class="p">]</span>
 
-    <span class="n">form</span> <span class="o">=</span> <span class="n">ChartForm</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1600</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">ChartForm</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">form</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
                         
