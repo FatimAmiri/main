@@ -82,9 +82,8 @@
 <span class="kn">from</span> <span class="nn">ast</span> <span class="k">import</span> <span class="n">literal_eval</span>
 
 <span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">OBJ</span>
-<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">PLYreader</span>
-<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">STLReader</span>
-<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">parse_stl_data</span>
+<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">PLY</span>
+<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">STL</span>
 
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">window</span>
@@ -467,18 +466,12 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="n">OBJ</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
         <span class="n">vertices</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">vertices</span>
         <span class="n">faces</span>    <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">faces</span>
+        <span class="n">edges</span>    <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">lines</span>
         <span class="k">if</span> <span class="n">faces</span><span class="p">:</span>
-            <span class="n">mesh</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">:</span>
-                <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
-                <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">edges</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">lines</span>
-            <span class="k">if</span> <span class="n">edges</span><span class="p">:</span>
-                <span class="n">lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">vertices</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">]</span>
-                <span class="n">mesh</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">mesh</span></div>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">edges</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">vertices</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Mesh.from_ply"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Mesh.from_ply.html#compas.datastructures.Mesh.from_ply">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_ply</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
@@ -507,18 +500,17 @@
 <span class="sd">        &gt;&gt;&gt; mesh = Mesh.from_obj(compas.get(&#39;bunny.ply&#39;))</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">reader</span> <span class="o">=</span> <span class="n">PLYreader</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-        <span class="n">reader</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[(</span><span class="n">vertex</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">vertex</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">vertex</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">vertices</span><span class="p">]</span>
-        <span class="n">faces</span> <span class="o">=</span> <span class="p">[</span><span class="n">face</span><span class="p">[</span><span class="s1">&#39;vertex_indices&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">faces</span><span class="p">]</span>
+        <span class="n">ply</span> <span class="o">=</span> <span class="n">PLY</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">ply</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">vertices</span>
+        <span class="n">faces</span>    <span class="o">=</span> <span class="n">ply</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">faces</span>
         <span class="n">mesh</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mesh</span></div>
 
 <div class="viewcode-block" id="Mesh.from_stl"><a class="viewcode-back" href="../../../../reference/generated/generated/compas.datastructures.Mesh.from_stl.html#compas.datastructures.Mesh.from_stl">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_stl</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
-        <span class="n">reader</span> <span class="o">=</span> <span class="n">STLReader</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-        <span class="n">reader</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">parse_stl_data</span><span class="p">(</span><span class="n">reader</span><span class="o">.</span><span class="n">facets</span><span class="p">)</span>
+        <span class="n">stl</span> <span class="o">=</span> <span class="n">STL</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">stl</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">vertices</span>
+        <span class="n">faces</span> <span class="o">=</span> <span class="n">stl</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">faces</span>
         <span class="n">mesh</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mesh</span></div>
 
@@ -2763,18 +2755,20 @@
     <span class="kn">import</span> <span class="nn">compas</span>
     <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">MeshPlotter</span>
 
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="p">()</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
 
-    <span class="n">a</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-    <span class="n">e</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">f</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">g</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="c1"># mesh = Mesh()</span>
 
-    <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">])</span>
+    <span class="c1"># a = mesh.add_vertex(x=0, y=0)</span>
+    <span class="c1"># b = mesh.add_vertex(x=0.5, y=0.1)</span>
+    <span class="c1"># c = mesh.add_vertex(x=1, y=0)</span>
+    <span class="c1"># d = mesh.add_vertex(x=0.9, y=0.5)</span>
+    <span class="c1"># e = mesh.add_vertex(x=0.9, y=1)</span>
+    <span class="c1"># f = mesh.add_vertex(x=0.5, y=1)</span>
+    <span class="c1"># g = mesh.add_vertex(x=0, y=1)</span>
+    <span class="c1"># h = mesh.add_vertex(x=0, y=0.5)</span>
+
+    <span class="c1"># mesh.add_face([a, b, c, d, e, f, g, h])</span>
 
     <span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 

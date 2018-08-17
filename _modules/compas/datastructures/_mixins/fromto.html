@@ -70,7 +70,16 @@
                         
 
                         <h1>Source code for compas.datastructures._mixins.fromto</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
 
 
 <span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="p">]</span>
@@ -139,14 +148,13 @@
 <span class="k">class</span> <span class="nc">FromToJson</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Construct a datastructure from structured data contained in a json file.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        f : str, file</span>
-<span class="sd">            The json file.</span>
-<span class="sd">            This can be a file path or an open file object.</span>
+<span class="sd">        filepath : str</span>
+<span class="sd">            The path to the json file.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -163,44 +171,27 @@
 <span class="sd">        * :meth:`to_json`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
         <span class="n">graph</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">graph</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="k">return</span> <span class="n">graph</span>
 
-    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Serialise the structured data representing the data structure to json.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        f : str, file (None)</span>
-<span class="sd">            The json file.</span>
-<span class="sd">            This can be a file path or an open file object.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        str</span>
-<span class="sd">            The json string if no file path is provided.</span>
-<span class="sd">        None</span>
-<span class="sd">            Otherwise</span>
+<span class="sd">        filepath : str</span>
+<span class="sd">            The path to the json file.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        * :meth:`from_json`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
-                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-                    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
 
 
 <span class="c1"># ==============================================================================</span>

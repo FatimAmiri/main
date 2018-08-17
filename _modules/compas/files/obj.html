@@ -93,8 +93,6 @@
     <span class="s1">&#39;OBJ&#39;</span><span class="p">,</span>
     <span class="s1">&#39;OBJReader&#39;</span><span class="p">,</span>
     <span class="s1">&#39;OBJParser&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;OBJComposer&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;OBJWriter&#39;</span><span class="p">,</span>
 <span class="p">]</span>
 
 
@@ -123,12 +121,6 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    filepath : str</span>
-<span class="sd">        Path to the file.</span>
-<span class="sd">    remote : bool</span>
-<span class="sd">        Is the file on a remote location.</span>
-<span class="sd">    content : iter</span>
-<span class="sd">        The contents of the file, line by line.</span>
 <span class="sd">    vertices : list</span>
 <span class="sd">        Vertex coordinates.</span>
 <span class="sd">    weights : list</span>
@@ -163,7 +155,6 @@
 
 <div class="viewcode-block" id="OBJReader.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas.files.OBJReader.__init__.html#compas.files.OBJReader.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remote</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># vertex data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
@@ -196,7 +187,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">post</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="OBJReader.open"><a class="viewcode-back" href="../../../reference/generated/generated/compas.files.OBJReader.open.html#compas.files.OBJReader.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remote</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">):</span>
             <span class="n">resp</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -420,24 +411,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">polylines</span> <span class="o">=</span> <span class="p">[[</span><span class="n">index_index</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">line</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">lines</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">faces</span>     <span class="o">=</span> <span class="p">[[</span><span class="n">index_index</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">face</span><span class="p">]</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">faces</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">groups</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">groups</span></div></div>
-
-
-<div class="viewcode-block" id="OBJComposer"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJComposer.html#compas.files.OBJComposer">[docs]</a><span class="k">class</span> <span class="nc">OBJComposer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="OBJComposer.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas.files.OBJComposer.__init__.html#compas.files.OBJComposer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
-
-<div class="viewcode-block" id="OBJComposer.compose"><a class="viewcode-back" href="../../../reference/generated/generated/compas.files.OBJComposer.compose.html#compas.files.OBJComposer.compose">[docs]</a>    <span class="k">def</span> <span class="nf">compose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div></div>
-
-
-<div class="viewcode-block" id="OBJWriter"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJWriter.html#compas.files.OBJWriter">[docs]</a><span class="k">class</span> <span class="nc">OBJWriter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="OBJWriter.__init__"><a class="viewcode-back" href="../../../reference/generated/generated/compas.files.OBJWriter.__init__.html#compas.files.OBJWriter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
-
-<div class="viewcode-block" id="OBJWriter.write"><a class="viewcode-back" href="../../../reference/generated/generated/compas.files.OBJWriter.write.html#compas.files.OBJWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div></div>
 
 
 <span class="c1"># ==============================================================================</span>
