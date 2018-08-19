@@ -6,7 +6,7 @@ from compas.plotters import MeshPlotter
 mesh = Mesh.from_obj(compas.get('faces.obj'))
 
 vertices   = mesh.get_vertices_attributes('xyz')
-neighbours = [mesh.vertex_neighbours(key) for key in mesh.vertices()]
+neighbors = [mesh.vertex_neighbors(key) for key in mesh.vertices()]
 fixed      = [key for key in mesh.vertices() if mesh.vertex_degree(key) == 2]
 
 lines = []
@@ -18,7 +18,7 @@ for u, v in mesh.edges():
         'width': 1.0,
     })
 
-smooth_centroid(vertices, neighbours, fixed=fixed, kmax=100)
+smooth_centroid(vertices, neighbors, fixed=fixed, kmax=100)
 
 for key, attr in mesh.vertices(True):
     attr['x'] = vertices[key][0]

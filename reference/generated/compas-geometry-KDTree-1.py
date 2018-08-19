@@ -14,7 +14,7 @@ nnbrs   = []
 exclude = set()
 
 for i in range(n):
-    nnbr = tree.nearest_neighbour(point, exclude)
+    nnbr = tree.nearest_neighbor(point, exclude)
     nnbrs.append(nnbr)
     exclude.add(nnbr[1])
 

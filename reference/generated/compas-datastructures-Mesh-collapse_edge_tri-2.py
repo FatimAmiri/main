@@ -18,7 +18,7 @@ mesh.collapse_edge_tri(30, 17)
 mesh.collapse_edge_tri(30, 31)
 mesh.collapse_edge_tri(30, 22)
 
-points = mesh.get_vertices_attributes('xyz', keys=mesh.vertex_neighbours(30))
+points = mesh.get_vertices_attributes('xyz', keys=mesh.vertex_neighbors(30))
 x, y, z = centroid_points(points)
 
 mesh.set_vertex_attributes(30, ('x', 'y', 'z'), (x, y, z))

@@ -6,7 +6,7 @@ from compas.plotters import NetworkPlotter
 
 network = Network.from_obj(compas.get('grid_irregular.obj'))
 
-adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}
+adjacency = {key: network.vertex_neighbors(key) for key in network.vertices()}
 
 weight = {(u, v): network.edge_length(u, v) for u, v in network.edges()}
 weight.update({(v, u): weight[(u, v)] for u, v in network.edges()})

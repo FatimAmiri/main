@@ -104,8 +104,8 @@
     <span class="s1">&#39;center_of_mass_polygon&#39;</span><span class="p">,</span>
     <span class="s1">&#39;center_of_mass_polygon_xy&#39;</span><span class="p">,</span>
     <span class="s1">&#39;center_of_mass_polyhedron&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;tween_pts&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;tween_pts_dist&#39;</span>
+    <span class="s1">&#39;tween_points&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;tween_points_distance&#39;</span>
 <span class="p">]</span>
 
 
@@ -399,14 +399,14 @@
     <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span></div>
 
 
-<span class="k">def</span> <span class="nf">tween_pts</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">pts_</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+<div class="viewcode-block" id="tween_points"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.tween_points.html#compas.geometry.tween_points">[docs]</a><span class="k">def</span> <span class="nf">tween_points</span><span class="p">(</span><span class="n">points1</span><span class="p">,</span> <span class="n">points2</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the interpolated points between two sets of points.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    pts : list</span>
+<span class="sd">    points1 : list</span>
 <span class="sd">        The first set of points</span>
-<span class="sd">    pts_ : list</span>
+<span class="sd">    points2 : list</span>
 <span class="sd">        The second set of points</span>
 <span class="sd">    num : int</span>
 <span class="sd">        The number of interpolated sets to return</span>
@@ -416,24 +416,24 @@
 <span class="sd">        Nested list of points</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ptlist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">tweens</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">tpts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)):</span>
-            <span class="n">tpts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_vectors</span><span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">vector_from_points</span><span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pts_</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">num</span> <span class="o">/</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))))</span>
-        <span class="n">ptlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tpts</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ptlist</span>
+        <span class="n">tween</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">points1</span><span class="p">)):</span>
+            <span class="n">tween</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_vectors</span><span class="p">(</span><span class="n">points1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">vector_from_points</span><span class="p">(</span><span class="n">points1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">points2</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">num</span> <span class="o">/</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))))</span>
+        <span class="n">tweens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tween</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tweens</span></div>
 
 
-<span class="k">def</span> <span class="nf">tween_pts_dist</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">pts_</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tween_points_distance"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.tween_points_distance.html#compas.geometry.tween_points_distance">[docs]</a><span class="k">def</span> <span class="nf">tween_points_distance</span><span class="p">(</span><span class="n">points1</span><span class="p">,</span> <span class="n">points2</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute an interpolated set of points between two sets of points, at</span>
 <span class="sd">    a given distance.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    pts : list</span>
+<span class="sd">    points1 : list</span>
 <span class="sd">        The first set of points</span>
-<span class="sd">    pts_ : list</span>
+<span class="sd">    points2 : list</span>
 <span class="sd">        The second set of points</span>
 <span class="sd">    dist : float</span>
 <span class="sd">        The distance from the first set to the second at which to compute the</span>
@@ -449,12 +449,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">index</span><span class="p">:</span>
         <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">distance_point_point</span><span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">pts_</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">distance_point_point</span><span class="p">(</span><span class="n">points1</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">points2</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
     <span class="n">scale</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span> <span class="o">/</span> <span class="n">d</span>
-    <span class="n">tpts</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)):</span>
-        <span class="n">tpts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_vectors</span><span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">vector_from_points</span><span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pts_</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">scale</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="n">tpts</span>
+    <span class="n">tweens</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">points1</span><span class="p">)):</span>
+        <span class="n">tweens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_vectors</span><span class="p">(</span><span class="n">points1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">vector_from_points</span><span class="p">(</span><span class="n">points1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">points2</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">scale</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">tweens</span></div>
+
 
 <span class="c1"># ==============================================================================</span>
 <span class="c1"># Main</span>
