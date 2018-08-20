@@ -186,6 +186,16 @@
 <div class="viewcode-block" id="volume_polyhedron"><a class="viewcode-back" href="../../../reference/generated/compas.geometry.volume_polyhedron.html#compas.geometry.volume_polyhedron">[docs]</a><span class="k">def</span> <span class="nf">volume_polyhedron</span><span class="p">(</span><span class="n">polyhedron</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the volume of a polyhedron represented by a closed mesh.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    polyhedron : tuple</span>
+<span class="sd">        The vertices and faces of the polyhedron.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The volume of the polyhedron.</span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    This implementation is based on the divergence theorem, the fact that the</span>
@@ -209,19 +219,21 @@
 <span class="sd">           Available at: http://wwwf.imperial.ac.uk/~rn/centroid.pdf</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xyz</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">polyhedron</span>
+
     <span class="n">V</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">polyhedron</span><span class="o">.</span><span class="n">face</span><span class="p">:</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="n">polyhedron</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">vertices</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">faces</span> <span class="o">=</span> <span class="p">[</span><span class="n">vertices</span><span class="p">]</span>
+            <span class="n">triangles</span> <span class="o">=</span> <span class="p">[</span><span class="n">vertices</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">faces</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">triangles</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">vertices</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
-            <span class="n">a</span>  <span class="o">=</span> <span class="n">polyhedron</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">b</span>  <span class="o">=</span> <span class="n">polyhedron</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">c</span>  <span class="o">=</span> <span class="n">polyhedron</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">vertices</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">triangles</span><span class="p">:</span>
+            <span class="n">a</span>  <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
+            <span class="n">b</span>  <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+            <span class="n">c</span>  <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">w</span><span class="p">]</span>
             <span class="n">ab</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
             <span class="n">ac</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
             <span class="n">n</span>  <span class="o">=</span> <span class="n">cross_vectors</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">ac</span><span class="p">)</span>
