@@ -2443,6 +2443,49 @@
 
         <span class="k">return</span> <span class="n">vertices</span></div>
 
+<div class="viewcode-block" id="Mesh.vertices_on_boundaries"><a class="viewcode-back" href="../../../../reference/generated/compas.datastructures.Mesh.vertices_on_boundaries.html#compas.datastructures.Mesh.vertices_on_boundaries">[docs]</a>    <span class="k">def</span> <span class="nf">vertices_on_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find the vertices on all boundaries of the mesh.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of list</span>
+<span class="sd">            A list of vertex keys per boundary.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vertices_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">for</span> <span class="n">nbr</span><span class="p">,</span> <span class="n">face</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">nbrs</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="n">face</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">vertices_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                    <span class="n">vertices_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span>
+
+        <span class="n">vertices_all</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">vertices_set</span><span class="p">)</span>
+        <span class="n">boundaries</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">vertices_all</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">while</span> <span class="n">vertices_all</span><span class="p">:</span>
+            <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">nbr</span><span class="p">,</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                    <span class="k">if</span> <span class="n">fkey</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="n">nbr</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">start</span><span class="p">:</span>
+                    <span class="n">boundaries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+                    <span class="n">vertices_all</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vertices_all</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">]</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">vertices_all</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">vertices_all</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>            
+
+        <span class="k">return</span> <span class="n">boundaries</span></div>
+
 <div class="viewcode-block" id="Mesh.faces_on_boundary"><a class="viewcode-back" href="../../../../reference/generated/compas.datastructures.Mesh.faces_on_boundary.html#compas.datastructures.Mesh.faces_on_boundary">[docs]</a>    <span class="k">def</span> <span class="nf">faces_on_boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find the faces on the boundary.</span>
 
