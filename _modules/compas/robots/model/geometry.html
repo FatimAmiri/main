@@ -70,10 +70,14 @@
                         
 
                         <h1>Source code for compas.robots.model.geometry</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">URDF</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Frame</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Scale</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Transformation</span>
 
 <span class="c1"># URDF is defined in meters</span>
 <span class="c1"># so we scale it all to millimeters</span>
@@ -104,21 +108,53 @@
     <span class="k">return</span> <span class="n">result</span>
 
 
-<div class="viewcode-block" id="Origin"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Origin.html#compas.robots.Origin">[docs]</a><span class="k">class</span> <span class="nc">Origin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Origin"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Origin.html#compas.robots.Origin">[docs]</a><span class="k">class</span> <span class="nc">Origin</span><span class="p">(</span><span class="n">Frame</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reference frame represented by an instance of :class:`Frame`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Origin.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Origin.__init__.html#compas.robots.Origin.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Origin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># keep a copy to the initial, not transformed origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_transformation</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Origin.from_urdf"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Origin.from_urdf.html#compas.robots.Origin.from_urdf">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_urdf</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="s1">&#39;0 0 0&#39;</span><span class="p">),</span> <span class="n">SCALE_FACTOR</span><span class="p">)</span>
         <span class="n">rpy</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rpy&#39;</span><span class="p">,</span> <span class="s1">&#39;0 0 0&#39;</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">Frame</span><span class="o">.</span><span class="n">from_euler_angles</span><span class="p">(</span><span class="n">rpy</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="n">xyz</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_euler_angles</span><span class="p">(</span><span class="n">rpy</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="n">xyz</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Origin.create"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Origin.create.html#compas.robots.Origin.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_transformation</span> <span class="o">=</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Origin.reset_transform"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Origin.reset_transform.html#compas.robots.Origin.reset_transform">[docs]</a>    <span class="k">def</span> <span class="nf">reset_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">:</span>
+            <span class="c1"># TODO: Transform back into initial state does not always work...</span>
+            <span class="c1"># T = init_transformation * Transformation.from_frame(self).inverse()</span>
+            <span class="c1"># self.transform(T)</span>
+            <span class="n">cp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">point</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">xaxis</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">yaxis</span></div></div>
 
 
 <div class="viewcode-block" id="Box"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Box.html#compas.robots.Box">[docs]</a><span class="k">class</span> <span class="nc">Box</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;3D shape primitive representing a box.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Box.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Box.__init__.html#compas.robots.Box.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">SCALE_FACTOR</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">SCALE_FACTOR</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Box.create"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Box.create.html#compas.robots.Box.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urdf_importer</span><span class="p">,</span> <span class="n">meshcls</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Box.transform"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Box.transform.html#compas.robots.Box.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Box.draw"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Box.draw.html#compas.robots.Box.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="Cylinder"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Cylinder.html#compas.robots.Cylinder">[docs]</a><span class="k">class</span> <span class="nc">Cylinder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -126,22 +162,58 @@
 
 <div class="viewcode-block" id="Cylinder.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Cylinder.__init__.html#compas.robots.Cylinder.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span> <span class="o">*</span> <span class="n">SCALE_FACTOR</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">*</span> <span class="n">SCALE_FACTOR</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">*</span> <span class="n">SCALE_FACTOR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Cylinder.create"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Cylinder.create.html#compas.robots.Cylinder.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urdf_importer</span><span class="p">,</span> <span class="n">meshcls</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Cylinder.transform"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Cylinder.transform.html#compas.robots.Cylinder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cylinder.draw"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Cylinder.draw.html#compas.robots.Cylinder.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="Sphere"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Sphere.html#compas.robots.Sphere">[docs]</a><span class="k">class</span> <span class="nc">Sphere</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;3D shape primitive representing a sphere.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Sphere.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Sphere.__init__.html#compas.robots.Sphere.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span> <span class="o">*</span> <span class="n">SCALE_FACTOR</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span> <span class="o">*</span> <span class="n">SCALE_FACTOR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Sphere.create"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Sphere.create.html#compas.robots.Sphere.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urdf_importer</span><span class="p">,</span> <span class="n">meshcls</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Sphere.transform"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Sphere.transform.html#compas.robots.Sphere.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Sphere.draw"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Sphere.draw.html#compas.robots.Sphere.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="Capsule"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Capsule.html#compas.robots.Capsule">[docs]</a><span class="k">class</span> <span class="nc">Capsule</span><span class="p">(</span><span class="n">Cylinder</span><span class="p">):</span>
+<div class="viewcode-block" id="Capsule"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Capsule.html#compas.robots.Capsule">[docs]</a><span class="k">class</span> <span class="nc">Capsule</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;3D shape primitive representing a capsule.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Capsule.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Capsule.__init__.html#compas.robots.Capsule.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span> <span class="o">*</span> <span class="n">SCALE_FACTOR</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">*</span> <span class="n">SCALE_FACTOR</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">*</span> <span class="n">SCALE_FACTOR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Capsule.create"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Capsule.create.html#compas.robots.Capsule.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urdf_importer</span><span class="p">,</span> <span class="n">meshcls</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Capsule.transform"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Capsule.transform.html#compas.robots.Capsule.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Capsule.draw"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Capsule.draw.html#compas.robots.Capsule.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="MeshDescriptor"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.MeshDescriptor.html#compas.robots.MeshDescriptor">[docs]</a><span class="k">class</span> <span class="nc">MeshDescriptor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -149,7 +221,28 @@
 
 <div class="viewcode-block" id="MeshDescriptor.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.MeshDescriptor.__init__.html#compas.robots.MeshDescriptor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;1.0 1.0 1.0&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="MeshDescriptor.create"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.MeshDescriptor.create.html#compas.robots.MeshDescriptor.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urdf_importer</span><span class="p">,</span> <span class="n">meshcls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates the mesh geometry based on the passed urdf_importer and the</span>
+<span class="sd">        mesh class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">urdf_importer</span><span class="o">.</span><span class="n">read_mesh_from_resource_file_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">meshcls</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_scale</span><span class="p">(</span><span class="n">SCALE_FACTOR</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Created mesh from file </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="c1"># TODO: use logging?</span></div>
+
+<div class="viewcode-block" id="MeshDescriptor.transform"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.MeshDescriptor.transform.html#compas.robots.MeshDescriptor.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MeshDescriptor.set_scale"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.MeshDescriptor.set_scale.html#compas.robots.MeshDescriptor.set_scale">[docs]</a>    <span class="k">def</span> <span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">Scale</span><span class="p">([</span><span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">S</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MeshDescriptor.draw"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.MeshDescriptor.draw.html#compas.robots.MeshDescriptor.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="Color"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Color.html#compas.robots.Color">[docs]</a><span class="k">class</span> <span class="nc">Color</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -183,7 +276,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s1">&#39;Geometry must define at least one of: box, cylinder, sphere, capsule, mesh&#39;</span><span class="p">)</span></div></div>
+                <span class="s1">&#39;Geometry must define at least one of: box, cylinder, sphere, capsule, mesh&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Geometry.draw"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Geometry.draw.html#compas.robots.Geometry.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div></div>
 </code></pre></div>
                         
                         <!-- <nav class="compas-sideways">

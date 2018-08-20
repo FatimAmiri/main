@@ -70,30 +70,38 @@
                         
 
                         <h1>Source code for compas.robots.model.joint</h1><div class="highlight"><pre><code class="language-python border rounded">
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">URDF</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">transform_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Rotation</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Transformation</span>
 
-<span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">SCALE_FACTOR</span><span class="p">,</span> <span class="n">Origin</span><span class="p">,</span> <span class="n">_parse_floats</span>
+<span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">SCALE_FACTOR</span>
+<span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">Origin</span>
+<span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">_parse_floats</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Joint&#39;</span><span class="p">,</span> <span class="s1">&#39;ParentJoint&#39;</span><span class="p">,</span> <span class="s1">&#39;ChildJoint&#39;</span><span class="p">,</span> <span class="s1">&#39;Calibration&#39;</span><span class="p">,</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Joint&#39;</span><span class="p">,</span> <span class="s1">&#39;ParentLink&#39;</span><span class="p">,</span> <span class="s1">&#39;ChildLink&#39;</span><span class="p">,</span> <span class="s1">&#39;Calibration&#39;</span><span class="p">,</span>
            <span class="s1">&#39;Dynamics&#39;</span><span class="p">,</span> <span class="s1">&#39;Limit&#39;</span><span class="p">,</span> <span class="s1">&#39;Axis&#39;</span><span class="p">,</span> <span class="s1">&#39;Mimic&#39;</span><span class="p">,</span> <span class="s1">&#39;SafetyController&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="ParentJoint"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.ParentJoint.html#compas.robots.ParentJoint">[docs]</a><span class="k">class</span> <span class="nc">ParentJoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Describes a parent relation between joints.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ParentLink"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.ParentLink.html#compas.robots.ParentLink">[docs]</a><span class="k">class</span> <span class="nc">ParentLink</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes a parent relation between a joint its parent link.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ParentJoint.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.ParentJoint.__init__.html#compas.robots.ParentJoint.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+<div class="viewcode-block" id="ParentLink.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.ParentLink.__init__.html#compas.robots.ParentLink.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">link</span> <span class="o">=</span> <span class="n">link</span></div>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">link</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ChildJoint"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.ChildJoint.html#compas.robots.ChildJoint">[docs]</a><span class="k">class</span> <span class="nc">ChildJoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Describes a child relation between joints.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ChildLink"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.ChildLink.html#compas.robots.ChildLink">[docs]</a><span class="k">class</span> <span class="nc">ChildLink</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes a child relation between a joint and its child link.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ChildJoint.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.ChildJoint.__init__.html#compas.robots.ChildJoint.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+<div class="viewcode-block" id="ChildLink.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.ChildLink.__init__.html#compas.robots.ChildLink.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">link</span> <span class="o">=</span> <span class="n">link</span></div>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -160,10 +168,43 @@
 <div class="viewcode-block" id="Axis.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Axis.__init__.html#compas.robots.Axis.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xyz</span><span class="o">=</span><span class="s1">&#39;0 0 0&#39;</span><span class="p">):</span>
         <span class="c1"># We are not using Vector here because we</span>
         <span class="c1"># cannot attach _urdf_source to it due to __slots__</span>
-        <span class="n">xyz</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">SCALE_FACTOR</span><span class="p">)</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Axis.copy"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Axis.copy.html#compas.robots.Axis.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%f</span><span class="s2"> </span><span class="si">%f</span><span class="s2"> </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Axis.reset_transform"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Axis.reset_transform.html#compas.robots.Axis.reset_transform">[docs]</a>    <span class="k">def</span> <span class="nf">reset_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">:</span>
+            <span class="n">cp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">y</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">z</span></div>
+
+<div class="viewcode-block" id="Axis.transform"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Axis.transform.html#compas.robots.Axis.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">transform_vectors</span><span class="p">(</span>
+            <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">]],</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Axis.create"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Axis.create.html#compas.robots.Axis.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Stores the initial direction of the axis.</span>
+<span class="sd">         This is called when the robot is created.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;[</span><span class="si">%.3f</span><span class="s2">, </span><span class="si">%.3f</span><span class="s2">, </span><span class="si">%.3f</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Joint"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Joint.html#compas.robots.Joint">[docs]</a><span class="k">class</span> <span class="nc">Joint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -188,7 +229,7 @@
 <span class="sd">        safety_controller: Safety controller properties.</span>
 <span class="sd">        mimic: Used to specify that the defined joint mimics another existing joint.</span>
 <span class="sd">        attr: Non-standard attributes.</span>
-<span class="sd">        childlink: the joint&#39;s child link</span>
+<span class="sd">        child_link: the joint&#39;s child link</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SUPPORTED_TYPES</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;revolute&#39;</span><span class="p">,</span> <span class="s1">&#39;continuous&#39;</span><span class="p">,</span> <span class="s1">&#39;prismatic&#39;</span><span class="p">,</span>
                        <span class="s1">&#39;fixed&#39;</span><span class="p">,</span> <span class="s1">&#39;floating&#39;</span><span class="p">,</span> <span class="s1">&#39;planar&#39;</span><span class="p">)</span>
@@ -199,8 +240,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">child</span> <span class="o">=</span> <span class="n">child</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">ParentLink</span><span class="p">)</span> <span class="k">else</span> <span class="n">ParentLink</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child</span> <span class="o">=</span> <span class="n">child</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">ChildLink</span><span class="p">)</span> <span class="k">else</span> <span class="n">ChildLink</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calibration</span> <span class="o">=</span> <span class="n">calibration</span>
@@ -209,12 +250,53 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">safety_controller</span> <span class="o">=</span> <span class="n">safety_controller</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mimic</span> <span class="o">=</span> <span class="n">mimic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">childlink</span> <span class="o">=</span> <span class="kc">None</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_link</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># the position of the joint</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">current_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Transformation</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">init_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">init_transformation</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Transformation</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Joint.reset_transform"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Joint.reset_transform.html#compas.robots.Joint.reset_transform">[docs]</a>    <span class="k">def</span> <span class="nf">reset_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">reset_transform</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">reset_transform</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Joint.transform"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Joint.transform.html#compas.robots.Joint.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Joint.calculate_transformation"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Joint.calculate_transformation.html#compas.robots.Joint.calculate_transformation">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates the transformation of the joint based on the position and</span>
+<span class="sd">        its type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;revolute&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_axis_and_angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">vector</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">point</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;fixed&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Transformation</span><span class="p">()</span> <span class="c1"># identity matrix</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="Joint.calculate_reset_transformation"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Joint.calculate_reset_transformation.html#compas.robots.Joint.calculate_reset_transformation">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_reset_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_transformation</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_transformation</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span></div></div>
 
 
 <span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Joint</span><span class="p">,</span> <span class="s1">&#39;robot/joint&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">ParentJoint</span><span class="p">,</span> <span class="s1">&#39;robot/joint/parent&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">ChildJoint</span><span class="p">,</span> <span class="s1">&#39;robot/joint/child&#39;</span><span class="p">)</span>
+<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">ParentLink</span><span class="p">,</span> <span class="s1">&#39;robot/joint/parent&#39;</span><span class="p">)</span>
+<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">ChildLink</span><span class="p">,</span> <span class="s1">&#39;robot/joint/child&#39;</span><span class="p">)</span>
 <span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Calibration</span><span class="p">,</span> <span class="s1">&#39;robot/joint/calibration&#39;</span><span class="p">)</span>
 <span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Dynamics</span><span class="p">,</span> <span class="s1">&#39;robot/joint/dynamics&#39;</span><span class="p">)</span>
 <span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Limit</span><span class="p">,</span> <span class="s1">&#39;robot/joint/limit&#39;</span><span class="p">)</span>
