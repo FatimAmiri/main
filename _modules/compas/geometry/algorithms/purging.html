@@ -88,6 +88,30 @@
 <span class="p">]</span>
 
 
+<span class="c1"># def mesh_cull_duplicate_vertices(mesh, precision=&#39;3f&#39;):</span>
+<span class="c1">#     key_gkey = {key: geometric_key(mesh.vertex_coordinates(key), precision=precision) for key in mesh.vertices()}</span>
+<span class="c1">#     gkey_key = {gkey: key for key, gkey in iter(key_gkey.items())}</span>
+
+<span class="c1">#     for key in list(mesh.vertices()):</span>
+<span class="c1">#         test = gkey_key[key_gkey[key]]</span>
+<span class="c1">#         if test != key:</span>
+<span class="c1">#             del mesh.vertex[key]</span>
+<span class="c1">#             del mesh.halfedge[key]</span>
+<span class="c1">#             for u in mesh.halfedge:</span>
+<span class="c1">#                 for v in mesh.halfedge[u]:</span>
+<span class="c1">#                     if v == key:</span>
+<span class="c1">#                         del mesh.halfedge[u][v]</span>
+
+<span class="c1">#     for fkey in mesh.faces():</span>
+<span class="c1">#         face = []</span>
+<span class="c1">#         for u, v in mesh.face_halfedges(fkey):</span>
+<span class="c1">#             a = gkey_key[key_gkey[u]]</span>
+<span class="c1">#             b = gkey_key[key_gkey[v]]</span>
+<span class="c1">#             face.append(a)</span>
+<span class="c1">#             face.append(b)</span>
+<span class="c1">#             mesh.halfedge[a][b] = fkey</span>
+
+
 <div class="viewcode-block" id="mesh_cull_duplicate_vertices"><a class="viewcode-back" href="../../../../reference/generated/compas.geometry.mesh_cull_duplicate_vertices.html#compas.geometry.mesh_cull_duplicate_vertices">[docs]</a><span class="k">def</span> <span class="nf">mesh_cull_duplicate_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="s1">&#39;3f&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Cull all duplicate vertices of a mesh and sanitize affected faces.</span>
 
