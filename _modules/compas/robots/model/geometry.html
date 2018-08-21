@@ -75,6 +75,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">URDF</span>
+<span class="kn">from</span> <span class="nn">compas.utilities.colors</span> <span class="k">import</span> <span class="n">hex_to_rgb</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Frame</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Scale</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Transformation</span>
@@ -95,6 +96,25 @@
            <span class="s1">&#39;Origin&#39;</span>
 <span class="p">]</span>
 
+<span class="c1"># Copied from https://github.com/ubernostrum/webcolors/blob/master/webcolors.py</span>
+<span class="n">HTML4_NAMES_TO_HEX</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="sa">u</span><span class="s1">&#39;aqua&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#00ffff&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;black&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;blue&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#0000ff&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;fuchsia&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#ff00ff&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;green&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#008000&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;gray&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#808080&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;lime&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#00ff00&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;maroon&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#800000&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;navy&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#000080&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;olive&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#808000&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;purple&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#800080&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;red&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#ff0000&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;silver&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#c0c0c0&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;teal&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#008080&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;white&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;yellow&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;#ffff00&#39;</span><span class="p">,</span>
+<span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">_parse_floats</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">scale_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
@@ -151,6 +171,9 @@
 <div class="viewcode-block" id="Box.transform"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Box.transform.html#compas.robots.Box.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Box.set_color"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Box.set_color.html#compas.robots.Box.set_color">[docs]</a>    <span class="k">def</span> <span class="nf">set_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color_rgba</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Box.draw"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Box.draw.html#compas.robots.Box.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
@@ -171,6 +194,9 @@
 <div class="viewcode-block" id="Cylinder.transform"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Cylinder.transform.html#compas.robots.Cylinder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Cylinder.set_color"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Cylinder.set_color.html#compas.robots.Cylinder.set_color">[docs]</a>    <span class="k">def</span> <span class="nf">set_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color_rgba</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Cylinder.draw"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Cylinder.draw.html#compas.robots.Cylinder.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
@@ -190,6 +216,9 @@
 <div class="viewcode-block" id="Sphere.transform"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Sphere.transform.html#compas.robots.Sphere.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Sphere.set_color"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Sphere.set_color.html#compas.robots.Sphere.set_color">[docs]</a>    <span class="k">def</span> <span class="nf">set_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color_rgba</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Sphere.draw"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Sphere.draw.html#compas.robots.Sphere.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
@@ -210,6 +239,9 @@
 <div class="viewcode-block" id="Capsule.transform"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Capsule.transform.html#compas.robots.Capsule.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Capsule.set_color"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Capsule.set_color.html#compas.robots.Capsule.set_color">[docs]</a>    <span class="k">def</span> <span class="nf">set_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color_rgba</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Capsule.draw"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Capsule.draw.html#compas.robots.Capsule.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
@@ -235,6 +267,10 @@
 <div class="viewcode-block" id="MeshDescriptor.transform"><a class="viewcode-back" href="../../../../api/generated/compas.robots.MeshDescriptor.transform.html#compas.robots.MeshDescriptor.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="MeshDescriptor.set_color"><a class="viewcode-back" href="../../../../api/generated/compas.robots.MeshDescriptor.set_color.html#compas.robots.MeshDescriptor.set_color">[docs]</a>    <span class="k">def</span> <span class="nf">set_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color_rgba</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">color_rgba</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MeshDescriptor.set_scale"><a class="viewcode-back" href="../../../../api/generated/compas.robots.MeshDescriptor.set_scale.html#compas.robots.MeshDescriptor.set_scale">[docs]</a>    <span class="k">def</span> <span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
         <span class="n">S</span> <span class="o">=</span> <span class="n">Scale</span><span class="p">([</span><span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">])</span>
@@ -265,7 +301,16 @@
 <div class="viewcode-block" id="Material.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Material.__init__.html#compas.robots.Material.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">texture</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="n">texture</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="n">texture</span></div>
+
+<div class="viewcode-block" id="Material.get_color"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Material.get_color.html#compas.robots.Material.get_color">[docs]</a>    <span class="k">def</span> <span class="nf">get_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">HTML4_NAMES_TO_HEX</span><span class="p">:</span>
+                <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">hex_to_rgb</span><span class="p">(</span><span class="n">HTML4_NAMES_TO_HEX</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="o">/</span><span class="mf">255.</span><span class="p">,</span> <span class="n">g</span><span class="o">/</span><span class="mf">255.</span><span class="p">,</span> <span class="n">b</span><span class="o">/</span><span class="mf">255.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">rgba</span>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
 
 
 <div class="viewcode-block" id="Geometry"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Geometry.html#compas.robots.Geometry">[docs]</a><span class="k">class</span> <span class="nc">Geometry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>

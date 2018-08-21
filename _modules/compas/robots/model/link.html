@@ -158,7 +158,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="n">kwargs</span></div>
 
 <div class="viewcode-block" id="Visual.draw"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Visual.draw.html#compas.robots.Visual.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="Visual.get_color"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Visual.get_color.html#compas.robots.Visual.get_color">[docs]</a>    <span class="k">def</span> <span class="nf">get_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">material</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div></div>
 
 <div class="viewcode-block" id="Collision"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Collision.html#compas.robots.Collision">[docs]</a><span class="k">class</span> <span class="nc">Collision</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Collidable description of a link.</span>
@@ -223,6 +229,11 @@
         <span class="n">transformation_dae</span> <span class="o">=</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_frame</span><span class="p">(</span><span class="n">fx</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">:</span>
+            <span class="c1"># set color</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">color</span><span class="p">:</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+            <span class="c1"># transform</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="n">MeshDescriptor</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;.dae&quot;</span><span class="p">:</span>
                     <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation_dae</span><span class="p">)</span>
@@ -303,6 +314,8 @@
 <span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Material</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/material&#39;</span><span class="p">)</span>
 <span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Color</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/material/color&#39;</span><span class="p">)</span>
 <span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Texture</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/material/texture&#39;</span><span class="p">)</span>
+
+
 </code></pre></div>
                         
                         <!-- <nav class="compas-sideways">
