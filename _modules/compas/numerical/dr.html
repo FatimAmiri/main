@@ -82,6 +82,100 @@
 
 
 <div class="viewcode-block" id="DynamicRelaxation"><a class="viewcode-back" href="../../../api/generated/compas.numerical.DynamicRelaxation.html#compas.numerical.DynamicRelaxation">[docs]</a><span class="k">class</span> <span class="nc">DynamicRelaxation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dynamic relaxation algorithm with different backends.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    backend : {&#39;python&#39;, &#39;numpy&#39;}, optional</span>
+<span class="sd">        The backend to use for the algorithm.</span>
+<span class="sd">        Default is ``&#39;python&#39;``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import random</span>
+<span class="sd">        import compas</span>
+
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas.plotters import MeshPlotter</span>
+<span class="sd">        from compas.utilities import i_to_rgb</span>
+<span class="sd">        from compas.numerical import DynamicRelaxation</span>
+
+<span class="sd">        dva = {</span>
+<span class="sd">            &#39;is_fixed&#39;: False,</span>
+<span class="sd">            &#39;px&#39;: 0.0,</span>
+<span class="sd">            &#39;py&#39;: 0.0,</span>
+<span class="sd">            &#39;pz&#39;: 0.0,</span>
+<span class="sd">            &#39;rx&#39;: 0.0,</span>
+<span class="sd">            &#39;ry&#39;: 0.0,</span>
+<span class="sd">            &#39;rz&#39;: 0.0,</span>
+<span class="sd">        }</span>
+
+<span class="sd">        dea = {</span>
+<span class="sd">            &#39;qpre&#39;: 1.0,</span>
+<span class="sd">            &#39;fpre&#39;: 0.0,</span>
+<span class="sd">            &#39;lpre&#39;: 0.0,</span>
+<span class="sd">            &#39;linit&#39;: 0.0,</span>
+<span class="sd">            &#39;E&#39;: 0.0,</span>
+<span class="sd">            &#39;radius&#39;: 0.0,</span>
+<span class="sd">        }</span>
+
+<span class="sd">        mesh = Mesh.from_obj(compas.get(&#39;faces.obj&#39;))</span>
+
+<span class="sd">        mesh.update_default_vertex_attributes(dva)</span>
+<span class="sd">        mesh.update_default_edge_attributes(dea)</span>
+
+<span class="sd">        for key, attr in mesh.vertices(True):</span>
+<span class="sd">            attr[&#39;is_fixed&#39;] = mesh.vertex_degree(key) == 2</span>
+
+<span class="sd">        for u, v, attr in mesh.edges(True):</span>
+<span class="sd">            attr[&#39;qpre&#39;] = 1.0 * random.randint(1, 7)</span>
+
+<span class="sd">        k_i = mesh.key_index()</span>
+
+<span class="sd">        vertices = mesh.get_vertices_attributes((&#39;x&#39;, &#39;y&#39;, &#39;z&#39;))</span>
+<span class="sd">        edges    = [(k_i[u], k_i[v]) for u, v in mesh.edges()]</span>
+<span class="sd">        fixed    = [k_i[key] for key in mesh.vertices_where({&#39;is_fixed&#39;: True})]</span>
+<span class="sd">        loads    = mesh.get_vertices_attributes((&#39;px&#39;, &#39;py&#39;, &#39;pz&#39;))</span>
+<span class="sd">        qpre     = mesh.get_edges_attribute(&#39;qpre&#39;)</span>
+<span class="sd">        fpre     = mesh.get_edges_attribute(&#39;fpre&#39;)</span>
+<span class="sd">        lpre     = mesh.get_edges_attribute(&#39;lpre&#39;)</span>
+<span class="sd">        linit    = mesh.get_edges_attribute(&#39;linit&#39;)</span>
+<span class="sd">        E        = mesh.get_edges_attribute(&#39;E&#39;)</span>
+<span class="sd">        radius   = mesh.get_edges_attribute(&#39;radius&#39;)</span>
+
+<span class="sd">        dr = DynamicRelaxation()</span>
+
+<span class="sd">        xyz, q, f, l, r = dr(vertices, edges, fixed, loads, qpre, fpre, lpre, linit, E, radius, kmax=100)</span>
+
+<span class="sd">        for key, attr in mesh.vertices(True):</span>
+<span class="sd">            index = k_i[key]</span>
+<span class="sd">            attr[&#39;x&#39;] = xyz[index, 0]</span>
+<span class="sd">            attr[&#39;y&#39;] = xyz[index, 1]</span>
+<span class="sd">            attr[&#39;z&#39;] = xyz[index, 2]</span>
+
+<span class="sd">        for index, (u, v, attr) in enumerate(mesh.edges(True)):</span>
+<span class="sd">            attr[&#39;f&#39;] = f[index, 0]</span>
+<span class="sd">            attr[&#39;l&#39;] = l[index, 0]</span>
+
+<span class="sd">        fmax = max(mesh.get_edges_attribute(&#39;f&#39;))</span>
+
+<span class="sd">        plotter = MeshPlotter(mesh, figsize=(10, 7), fontsize=6)</span>
+
+<span class="sd">        plotter.draw_vertices(</span>
+<span class="sd">            facecolor={key: &#39;#000000&#39; for key in mesh.vertices_where({&#39;is_fixed&#39;: True})}</span>
+<span class="sd">        )</span>
+
+<span class="sd">        plotter.draw_edges(</span>
+<span class="sd">            text={(u, v): &#39;{:.0f}&#39;.format(attr[&#39;f&#39;]) for u, v, attr in mesh.edges(True)},</span>
+<span class="sd">            color={(u, v): i_to_rgb(attr[&#39;f&#39;] / fmax) for u, v, attr in mesh.edges(True)},</span>
+<span class="sd">            width={(u, v): 10 * attr[&#39;f&#39;] / fmax for u, v, attr in mesh.edges(True)}</span>
+<span class="sd">        )</span>
+
+<span class="sd">        plotter.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">backends</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;python&#39;</span> <span class="p">:</span> <span class="n">dr_python</span><span class="p">,</span>
