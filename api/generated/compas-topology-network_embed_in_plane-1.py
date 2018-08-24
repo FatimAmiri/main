@@ -8,7 +8,7 @@ network = Network.from_obj(compas.get('fink.obj'))
 
 embedding = network.copy()
 
-fix = (1, 12)
+fix = (9, 6)
 
 if network_embed_in_plane(embedding, fix=fix):
 
