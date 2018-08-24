@@ -76,22 +76,30 @@
 <p>Under construction…</p>
 </div>
 <p>The core functionality of <strong>COMPAS</strong> is completely independent of CAD tools and
-can be used from the terminal, in standalone scripts, apps, or with the plotters
+can be used from the terminal, in standalone scripts, or with the plotters
 and viewers that are shipped with the main library.</p>
 <p>In addition, <strong>COMPAS</strong> can be easily used in CAD software using the corresponding
 CAD packages. Currently, Rhino, Blender, and Grasshopper are supported.
-The Blender Python API is based on CPython. <strong>COMPAS</strong> is thus (almost) natively
-supported. Rhino and Grasshopper, on the other hand, are based on DotNet and IronPython.
-Therefore, even though most of <strong>COMPAS</strong> is compatible with IronPython,
-a few more configuration steps are required to get started there.</p>
+Since most CAD packages ship with their own version of Python which is different
+from the Python on your system in which <strong>COMPAS</strong> is installed, you need to let
+the CAD software know where <strong>COMPAS</strong> is before you can use it.</p>
 <div class="section" id="working-in-rhino">
 <h2>Working in Rhino</h2>
+<p><em>Installing</em> <strong>COMPAS</strong> for Rhino is very simple. Just open the <em>command prompt</em>
+and type the following</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><code class="language-python border rounded"><span></span>$ python -m compas_rhino.install
+</code></pre></div>
+</div>
+<p>Optionally, you could provide a Rhino version number (<code class="docutils literal notranslate"><span class="pre">'5.0',</span> <span class="pre">'6.0'</span></code>).
+The default is <code class="docutils literal notranslate"><span class="pre">'5.0'</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><code class="language-python border rounded"><span></span>$ python -m compas_rhino.install &#39;6.0&#39;
+</code></pre></div>
+</div>
 <div class="section" id="ironpython">
 <h3>IronPython</h3>
-<p>Unfortunately, Rhino 5 ships with a beta version of IronPython, which results in
-a few errors here and there. We recommend that you install your own version of
-IronPython such that everything works properly.</p>
-<p>To check your IronPython version in Rhino, go to the PythonScript Editor:</p>
+<p>If you are using Rhino 5.0, you may also want to <em>replace</em> the version of IronPython
+that comes with it, such that everything works properly.</p>
+<p>To check your IronPython version in Rhino, go to the PythonScript Editor</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">Tools</span> <span class="o">&gt;</span> <span class="n">PythonScript</span> <span class="o">&gt;</span> <span class="n">Edit</span>
 </code></pre></div>
 </div>
@@ -103,7 +111,7 @@ IronPython such that everything works properly.</p>
 <span class="k">print</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span>
 </code></pre></div>
 </div>
-<p>This will display something like:</p>
+<p>This will display something like</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">(</span><span class="n">major</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">micro</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">releaselevel</span><span class="o">=</span><span class="s1">&#39;final&#39;</span><span class="p">,</span> <span class="n">serial</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
 </div>
@@ -116,11 +124,11 @@ and let Rhino know where it is by adding it to the Rhino Python Editor search pa
 and not the latest version of IronPython.
 Rhino doesn’t like it…</p>
 </div>
-<p>In the Rhino Python Editor, go to:</p>
+<p>In the Rhino Python Editor, go to</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">Tools</span> <span class="o">&gt;</span> <span class="n">Options</span>
 </code></pre></div>
 </div>
-<p>And add:</p>
+<p>And add</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">C</span><span class="p">:</span>\<span class="n">path</span>\<span class="n">to</span>\<span class="n">IronPython275</span>
 <span class="n">C</span><span class="p">:</span>\<span class="n">path</span>\<span class="n">to</span>\<span class="n">IronPython275</span>\<span class="n">Lib</span>
 <span class="n">C</span><span class="p">:</span>\<span class="n">path</span>\<span class="n">to</span>\<span class="n">IronPython275</span>\<span class="n">DLLs</span>
@@ -129,37 +137,6 @@ Rhino doesn’t like it…</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Restart Rhino and check the version info as before.</p>
-</div>
-</div>
-<div class="section" id="compas">
-<h3>COMPAS</h3>
-<p>Rhino has its own environment settings.
-Therefore, you will have to tell Rhino where to find <code class="docutils literal notranslate"><span class="pre">compas</span></code> as well.
-In the Rhino Python Editor, go to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="n">Tools</span> <span class="o">&gt;</span> <span class="n">Options</span>
-</code></pre></div>
-</div>
-<p>and add the path to <code class="docutils literal notranslate"><span class="pre">compas</span></code>.</p>
-<div class="figure">
-<img alt="_images/rhino_compaspath.png" class="figure-img img-fluid" src="_images/rhino_compaspath.png" />
-</div>
-<p>Restart Rhino and un the following script in the PythonScript editor to see if everything works.
-There should obviously not be any errors, and the script should generate a mesh
-the shape of a droplet.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">compas</span>
-<span class="kn">import</span> <span class="nn">compas_rhino</span>
-
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
-<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="kn">import</span> <span class="n">mesh_subdivide</span>
-<span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="kn">import</span> <span class="n">MeshArtist</span>
-
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_polyhedron</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
-<span class="n">subd</span> <span class="o">=</span> <span class="n">mesh_subdivide</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s1">&#39;catmullclark&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">()])</span>
-
-<span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">subd</span><span class="p">)</span>
-
-<span class="n">artist</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span><span class="n">join_faces</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-</code></pre></div>
 </div>
 </div>
 </div>
@@ -243,7 +220,6 @@ the shape of a droplet.</p>
 <li class="nav-item"><a class="nav-link reference internal" href="#">Environments</a><ul class="nav">
 <li class="nav-item"><a class="nav-link reference internal" href="#working-in-rhino">Working in Rhino</a><ul class="nav">
 <li class="nav-item"><a class="nav-link reference internal" href="#ironpython">IronPython</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#compas">COMPAS</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="#working-in-blender">Working in Blender</a></li>
