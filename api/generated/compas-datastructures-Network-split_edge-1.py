@@ -4,10 +4,9 @@ from compas.plotters import NetworkPlotter
 
 network = Network.from_obj(compas.get('lines.obj'))
 
-a = network.split_edge(0, 22)
-b = network.split_edge(2, 30)
-c = network.split_edge(17, 21)
-d = network.split_edge(28, 16)
+u, v = network.get_any_edge()
+
+a = network.split_edge(u, v)
 
 lines = []
 for u, v in network.edges():
@@ -26,7 +25,7 @@ plotter.draw_lines(lines)
 plotter.draw_vertices(
     radius=0.2,
     text={key: key for key in network.vertices()},
-    facecolor={key: '#ff0000' for key in (a, b, c, d)}
+    facecolor={key: '#ff0000' for key in (a,)}
 )
 plotter.draw_edges()
 

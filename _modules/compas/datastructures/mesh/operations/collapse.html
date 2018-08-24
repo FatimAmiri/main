@@ -365,26 +365,15 @@
 
 <span class="sd">        from compas.datastructures import Mesh</span>
 <span class="sd">        from compas.plotters import MeshPlotter</span>
-
-<span class="sd">        from compas.geometry import centroid_points</span>
+<span class="sd">        from compas.topology import mesh_quads_to_triangles</span>
 
 <span class="sd">        mesh = Mesh.from_obj(compas.get(&#39;faces.obj&#39;))</span>
 
-<span class="sd">        for fkey in list(mesh.faces()):</span>
-<span class="sd">            vertices = mesh.face_vertices(fkey)</span>
-<span class="sd">            mesh.split_face(fkey, vertices[0], vertices[2])</span>
+<span class="sd">        mesh_quads_to_triangles(mesh)</span>
 
-<span class="sd">        mesh.swap_edge_tri(14, 16)</span>
-<span class="sd">        mesh.swap_edge_tri(31, 22)</span>
+<span class="sd">        u, v = mesh.get_any_edge()</span>
 
-<span class="sd">        mesh.collapse_edge_tri(30, 17)</span>
-<span class="sd">        mesh.collapse_edge_tri(30, 31)</span>
-<span class="sd">        mesh.collapse_edge_tri(30, 22)</span>
-
-<span class="sd">        points = mesh.get_vertices_attributes(&#39;xyz&#39;, keys=mesh.vertex_neighbors(30))</span>
-<span class="sd">        x, y, z = centroid_points(points)</span>
-
-<span class="sd">        mesh.set_vertex_attributes(30, (&#39;x&#39;, &#39;y&#39;, &#39;z&#39;), (x, y, z))</span>
+<span class="sd">        mesh.collapse_edge_tri(u, v)</span>
 
 <span class="sd">        plotter = MeshPlotter(mesh)</span>
 

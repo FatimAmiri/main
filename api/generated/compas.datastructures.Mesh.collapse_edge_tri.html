@@ -132,30 +132,22 @@ If <cite>0.0 &lt; t &lt; 1.0</cite>, collapse to a point between <cite>u</cite> 
 <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
+<div class="figure">
+<img alt="../../_images/compas-datastructures-Mesh-collapse_edge_tri-1.png" class="figure-img img-fluid" src="../../_images/compas-datastructures-Mesh-collapse_edge_tri-1.png" />
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">compas</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
 <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
-
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">centroid_points</span>
+<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="kn">import</span> <span class="n">mesh_quads_to_triangles</span>
 
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
 
-<span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()):</span>
-    <span class="n">vertices</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">split_face</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">mesh_quads_to_triangles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 
-<span class="n">mesh</span><span class="o">.</span><span class="n">swap_edge_tri</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
-<span class="n">mesh</span><span class="o">.</span><span class="n">swap_edge_tri</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+<span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_any_edge</span><span class="p">()</span>
 
-<span class="n">mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>
-<span class="n">mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
-<span class="n">mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
-
-<span class="n">points</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_neighbors</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
-<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">centroid_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-
-<span class="n">mesh</span><span class="o">.</span><span class="n">set_vertex_attributes</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
 <span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 
@@ -164,6 +156,9 @@ If <cite>0.0 &lt; t &lt; 1.0</cite>, collapse to a point between <cite>u</cite> 
 
 <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
+</div>
+<div class="figure">
+<img alt="../../_images/compas-datastructures-Mesh-collapse_edge_tri-2.png" class="figure-img img-fluid" src="../../_images/compas-datastructures-Mesh-collapse_edge_tri-2.png" />
 </div>
 </dd></dl>
 

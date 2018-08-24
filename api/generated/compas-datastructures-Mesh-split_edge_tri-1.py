@@ -7,7 +7,9 @@ mesh = Mesh.from_obj(compas.get('faces.obj'))
 
 mesh_quads_to_triangles(mesh)
 
-split = mesh.split_edge_tri(17, 30)
+u, v = mesh.get_any_edge()
+
+split = mesh.split_edge_tri(u, v)
 
 facecolor = {key: '#cccccc' if key != split else '#ff0000' for key in mesh.vertices()}
 
