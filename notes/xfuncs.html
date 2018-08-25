@@ -75,30 +75,32 @@
 
                         <div class="section" id="cpython-in-rhino">
 <h1>CPython in Rhino</h1>
-<p>In Rhino, Python scripts can be used to</p>
-<p>(from the docs <a class="reference external" href="http://developer.rhino3d.com/guides/rhinopython/what-is-rhinopython/#what-is-python">what is python</a>)</p>
-<ul class="simple">
-<li><p>Automate a repetitive task in Rhino much faster than you could do manually.</p></li>
-<li><p>Perform tasks in Rhino or Grasshopper that you don’t have access to in the standard set of Rhino commands or Grasshopper components.</p></li>
-<li><p>Generate geometry using algorithms.</p></li>
-<li><p>Many, many other things. It is a programming language after all.</p></li>
-</ul>
-<p>Or, create</p>
-<p>(also from the docs <a class="reference external" href="http://developer.rhino3d.com/guides/rhinopython/what-is-rhinopython/#where-can-you-use-python-in-rhino">where can you use python in rhino</a>)</p>
-<ul class="simple">
-<li><p>Interactive scripts.</p></li>
-<li><p>New custom commands.</p></li>
-<li><p>Create new plug-ins.</p></li>
-<li><p>Read and Write customized file formats.</p></li>
-<li><p>Interact with cloud applications.</p></li>
-<li><p>Create realtime links to other applications</p></li>
-<li><p>Create customer Grasshopper components</p></li>
-<li><p>Store and display project specific information beyond what basic Rhino can store.</p></li>
-</ul>
 <p>Rhino runs Python scripts using IronPython 2.7.
 This is great because it provides access to the .NET framework.
 However, this also means that many (C)Python libraries are not available.
 For example Numpy, Scipy, Matplotlib, SimPy, Numba, NetworkX, CVXPY, Shapely, PyOpenGL, PySide, …</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="c1"># IronPython provides access to the .NET framework</span>
+
+<span class="kn">import</span> <span class="nn">System</span>
+
+<span class="kn">import</span> <span class="nn">clr</span>
+<span class="n">clr</span><span class="o">.</span><span class="n">AddReference</span><span class="p">(</span><span class="s2">&quot;System.Windows.Forms.DataVisualization&quot;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">System.Windows.Forms.DataVisualization</span> <span class="kn">import</span> <span class="n">Charting</span>
+<span class="kn">from</span> <span class="nn">System.Windows.Forms</span> <span class="kn">import</span> <span class="n">WebBrowser</span>
+<span class="kn">from</span> <span class="nn">System.Windows.Forms</span> <span class="kn">import</span> <span class="n">TextBox</span>
+
+<span class="kn">from</span> <span class="nn">System.Drawing</span> <span class="kn">import</span> <span class="n">Size</span>
+<span class="kn">from</span> <span class="nn">System.Drawing</span> <span class="kn">import</span> <span class="n">Point</span>
+<span class="kn">from</span> <span class="nn">System.Drawing</span> <span class="kn">import</span> <span class="n">Color</span>
+<span class="kn">from</span> <span class="nn">System.Drawing</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="kn">from</span> <span class="nn">System.Net</span> <span class="kn">import</span> <span class="n">WebClient</span>
+<span class="kn">from</span> <span class="nn">System.IO</span> <span class="kn">import</span> <span class="n">MemoryStream</span>
+
+<span class="c1"># ...</span>
+</code></pre></div>
+</div>
 <p>With <cite>compas.utilities.XFunc</cite> this limitation can be partly removed.
 Below is an example from the API reference.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><code class="language-python border rounded"><span></span><span class="kn">import</span> <span class="nn">compas</span>
@@ -108,7 +110,15 @@ Below is an example from the API reference.</p>
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">XFunc</span>
 <span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="kn">import</span> <span class="n">MeshArtist</span>
 
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="s1">&#39;https://u.nu/faces&#39;</span><span class="p">)</span>
+
+<span class="c1"># importing fd_numpy directly does not work</span>
+<span class="c1"># because Numpy &amp; Scipy are not available for IronPython</span>
+<span class="c1"># however we can construct an *XFunc* to replace the original function</span>
+
+<span class="n">fd_numpy</span> <span class="o">=</span> <span class="n">XFunc</span><span class="p">(</span><span class="s1">&#39;compas.numerical.fd_numpy&#39;</span><span class="p">)</span>
+
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
 
 <span class="n">vertices</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
 <span class="n">edges</span>    <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
@@ -116,7 +126,11 @@ Below is an example from the API reference.</p>
 <span class="n">q</span>        <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_edges_attribute</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 <span class="n">loads</span>    <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">((</span><span class="s1">&#39;px&#39;</span><span class="p">,</span> <span class="s1">&#39;py&#39;</span><span class="p">,</span> <span class="s1">&#39;pz&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
 
-<span class="n">xyz</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">XFunc</span><span class="p">(</span><span class="s1">&#39;compas.numerical.fd_numpy&#39;</span><span class="p">)(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">loads</span><span class="p">)</span>
+
+<span class="c1"># the *XFunc* can be called in the same way as the original</span>
+
+<span class="n">xyz</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">fd_numpy</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">loads</span><span class="p">)</span>
+
 
 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>
     <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
