@@ -134,6 +134,17 @@
 <span class="n">TEMP</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../../temp&#39;</span><span class="p">))</span>
 
 
+<span class="c1"># install the app dirs during general install</span>
+<span class="c1"># add data files</span>
+<span class="c1"># add config files?</span>
+<span class="c1"># download all data to user data dir, unless otherwise specified with localstorage</span>
+<span class="c1"># add example scripts from/for docs</span>
+<span class="c1"># add template files</span>
+<span class="c1"># add other stuff that doesn&#39;t go into site packages folder</span>
+<span class="k">def</span> <span class="nf">install_appdirs</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+
 <div class="viewcode-block" id="get"><a class="viewcode-back" href="../api/generated/compas.get.html#compas.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Get the full path to one of the sample data files.</span>
 
@@ -213,17 +224,29 @@
 <span class="sd">        mesh = Mesh.from_ply(compas.get_bunny())</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">urllib</span>
+    <span class="kn">import</span> <span class="nn">requests</span>
     <span class="kn">import</span> <span class="nn">tarfile</span>
     <span class="kn">import</span> <span class="nn">appdirs</span>
+
+    <span class="k">def</span> <span class="nf">absjoin</span><span class="p">(</span><span class="o">*</span><span class="n">paths</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">paths</span><span class="p">))</span>
 
     <span class="c1"># bunny.tar.gz, when extracted contains the folders bunny/reconstruction/bun_zipper.ply</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">localstorage</span><span class="p">:</span>
         <span class="n">localstorage</span> <span class="o">=</span> <span class="n">appdirs</span><span class="o">.</span><span class="n">user_data_dir</span><span class="p">(</span><span class="s1">&#39;COMPAS&#39;</span><span class="p">,</span> <span class="s1">&#39;compas-dev&#39;</span><span class="p">,</span> <span class="n">roaming</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="n">bunny</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">localstorage</span><span class="p">,</span> <span class="s1">&#39;bunny/reconstruction/bun_zipper.ply&#39;</span><span class="p">))</span>
-    <span class="n">destination</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">localstorage</span><span class="p">,</span> <span class="s1">&#39;bunny.tar.gz&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">localstorage</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">localstorage</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">localstorage</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Local storage location does not exist: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">localstorage</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">localstorage</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Local storage location is not writable: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">localstorage</span><span class="p">))</span>
+
+    <span class="n">bunny</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">localstorage</span><span class="p">,</span> <span class="s1">&#39;bunny/reconstruction/bun_zipper.ply&#39;</span><span class="p">)</span>
+    <span class="n">destination</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">localstorage</span><span class="p">,</span> <span class="s1">&#39;bunny.tar.gz&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">bunny</span><span class="p">):</span>
         <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://graphics.stanford.edu/pub/3Dscanrep/bunny.tar.gz&#39;</span>
@@ -231,7 +254,12 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Getting the bunny from </span><span class="si">{}</span><span class="s1"> ...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This will take a few seconds...&#39;</span><span class="p">)</span>
 
-        <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>
+        <span class="c1"># urllib.urlretrieve(url, destination)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="s1">&#39;wb+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>
+            <span class="n">fo</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">file</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">localstorage</span><span class="p">)</span>
