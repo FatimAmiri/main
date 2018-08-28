@@ -3,7 +3,7 @@ from compas.topology import mesh_subdivide_catmullclark
 from compas.plotters import MeshPlotter
 
 vertices = [[0., 0., 0.], [1., 0., 0.], [1., 1., 0.], [0., 1.0, 0.]]
-faces = [[0, 1, 2, 3], ]
+faces = [[0, 1, 2, 3]]
 
 mesh = Mesh.from_vertices_and_faces(vertices, faces)
 subd = mesh_subdivide_catmullclark(mesh, k=3, fixed=mesh.vertices())
