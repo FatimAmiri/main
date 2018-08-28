@@ -118,6 +118,8 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
+<span class="kn">import</span> <span class="nn">appdirs</span>
+
 
 <span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="p">]</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright 2017 - Block Research Group, ETH Zurich&#39;</span>
@@ -128,11 +130,18 @@
 
 <span class="n">PY3</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span> <span class="o">==</span> <span class="mi">3</span>
 
-<span class="n">HERE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
-<span class="n">HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../..&#39;</span><span class="p">))</span>
-<span class="n">DATA</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../../data&#39;</span><span class="p">))</span>
-<span class="n">TEMP</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../../temp&#39;</span><span class="p">))</span>
 
+<span class="k">def</span> <span class="nf">absjoin</span><span class="p">(</span><span class="o">*</span><span class="n">parts</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">parts</span><span class="p">))</span>
+
+
+<span class="n">HERE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+<span class="n">HOME</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../..&#39;</span><span class="p">)</span>
+<span class="n">DATA</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../../data&#39;</span><span class="p">)</span>
+<span class="n">TEMP</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../../temp&#39;</span><span class="p">)</span>
+
+<span class="n">APPDATA</span> <span class="o">=</span> <span class="n">appdirs</span><span class="o">.</span><span class="n">user_data_dir</span><span class="p">(</span><span class="s1">&#39;COMPAS&#39;</span><span class="p">,</span> <span class="s1">&#39;compas-dev&#39;</span><span class="p">,</span> <span class="n">roaming</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">APPTEMP</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">APPDATA</span><span class="p">,</span> <span class="s1">&#39;temp&#39;</span><span class="p">)</span>
 
 <span class="c1"># install the app dirs during general install</span>
 <span class="c1"># add data files</span>
@@ -189,6 +198,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
     <span class="n">localpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">localpath</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">localpath</span>
     <span class="k">else</span><span class="p">:</span>
@@ -224,9 +234,13 @@
 <span class="sd">        mesh = Mesh.from_ply(compas.get_bunny())</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">requests</span>
     <span class="kn">import</span> <span class="nn">tarfile</span>
-    <span class="kn">import</span> <span class="nn">appdirs</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">urllib.requests</span> <span class="k">import</span> <span class="n">urlretrieve</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">urllib</span> <span class="k">import</span> <span class="n">urlretrieve</span>
+
 
     <span class="k">def</span> <span class="nf">absjoin</span><span class="p">(</span><span class="o">*</span><span class="n">paths</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">paths</span><span class="p">))</span>
@@ -254,12 +268,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Getting the bunny from </span><span class="si">{}</span><span class="s1"> ...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This will take a few seconds...&#39;</span><span class="p">)</span>
 
-        <span class="c1"># urllib.urlretrieve(url, destination)</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="s1">&#39;wb+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>
-            <span class="n">fo</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">file</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">localstorage</span><span class="p">)</span>
@@ -271,22 +280,24 @@
     <span class="k">return</span> <span class="n">bunny</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_armadillo</span><span class="p">():</span>
-    <span class="kn">import</span> <span class="nn">urllib</span>
-    <span class="kn">import</span> <span class="nn">gzip</span>
-    <span class="kn">import</span> <span class="nn">shutil</span>
-    <span class="n">armadillo</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA</span><span class="p">,</span> <span class="s1">&#39;armadillo/Armadillo.ply&#39;</span><span class="p">))</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">armadillo</span><span class="p">):</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://graphics.stanford.edu/pub/3Dscanrep/armadillo/Armadillo.ply.gz&#39;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Getting the armadillo from </span><span class="si">{}</span><span class="s1"> ...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This will take a few seconds...&#39;</span><span class="p">)</span>
-        <span class="n">destination</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA</span><span class="p">,</span> <span class="s1">&#39;Armadillo.ply.gz&#39;</span><span class="p">))</span>
-        <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ifile</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">armadillo</span><span class="p">,</span> <span class="s1">&#39;wb+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">ofile</span><span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Got it!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">armadillo</span>
+<span class="c1"># def get_armadillo():</span>
+<span class="c1">#     import urllib</span>
+<span class="c1">#     import gzip</span>
+<span class="c1">#     import shutil</span>
+
+<span class="c1">#     armadillo = os.path.abspath(os.path.join(DATA, &#39;armadillo/Armadillo.ply&#39;))</span>
+
+<span class="c1">#     if not os.path.exists(armadillo):</span>
+<span class="c1">#         url = &#39;http://graphics.stanford.edu/pub/3Dscanrep/armadillo/Armadillo.ply.gz&#39;</span>
+<span class="c1">#         print(&#39;Getting the armadillo from {} ...&#39;.format(url))</span>
+<span class="c1">#         print(&#39;This will take a few seconds...&#39;)</span>
+<span class="c1">#         destination = os.path.abspath(os.path.join(DATA, &#39;Armadillo.ply.gz&#39;))</span>
+<span class="c1">#         urllib.urlretrieve(url, destination)</span>
+<span class="c1">#         with gzip.open(destination, &#39;rb&#39;) as ifile, open(armadillo, &#39;wb+&#39;) as ofile:</span>
+<span class="c1">#             shutil.copyfileobj(ifile, ofile)</span>
+<span class="c1">#         os.remove(destination)</span>
+<span class="c1">#         print(&#39;Got it!\n&#39;)</span>
+<span class="c1">#     return armadillo</span>
 
 
 <div class="viewcode-block" id="is_windows"><a class="viewcode-back" href="../api/generated/compas.is_windows.html#compas.is_windows">[docs]</a><span class="k">def</span> <span class="nf">is_windows</span><span class="p">():</span>
