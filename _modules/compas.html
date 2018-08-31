@@ -117,8 +117,7 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-
-<span class="kn">import</span> <span class="nn">appdirs</span>
+<span class="kn">import</span> <span class="nn">compas._os</span>
 
 
 <span class="n">__author__</span>    <span class="o">=</span> <span class="s1">&#39;Tom Van Mele and many others (see CONTRIBUTORS.md)&#39;</span>
@@ -129,19 +128,13 @@
 
 
 <span class="n">PY3</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span> <span class="o">==</span> <span class="mi">3</span>
-
-
-<span class="k">def</span> <span class="nf">absjoin</span><span class="p">(</span><span class="o">*</span><span class="n">parts</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">parts</span><span class="p">))</span>
-
-
 <span class="n">HERE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
-<span class="n">HOME</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../..&#39;</span><span class="p">)</span>
-<span class="n">DATA</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../../data&#39;</span><span class="p">)</span>
-<span class="n">TEMP</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../../temp&#39;</span><span class="p">)</span>
+<span class="n">HOME</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">_os</span><span class="o">.</span><span class="n">absjoin</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../..&#39;</span><span class="p">)</span>
+<span class="n">DATA</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">_os</span><span class="o">.</span><span class="n">absjoin</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../../data&#39;</span><span class="p">)</span>
+<span class="n">TEMP</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">_os</span><span class="o">.</span><span class="n">absjoin</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;../../temp&#39;</span><span class="p">)</span>
 
-<span class="n">APPDATA</span> <span class="o">=</span> <span class="n">appdirs</span><span class="o">.</span><span class="n">user_data_dir</span><span class="p">(</span><span class="s1">&#39;COMPAS&#39;</span><span class="p">,</span> <span class="s1">&#39;compas-dev&#39;</span><span class="p">,</span> <span class="n">roaming</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">APPTEMP</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">APPDATA</span><span class="p">,</span> <span class="s1">&#39;temp&#39;</span><span class="p">)</span>
+<span class="n">APPDATA</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">_os</span><span class="o">.</span><span class="n">user_data_dir</span><span class="p">(</span><span class="s1">&#39;COMPAS&#39;</span><span class="p">,</span> <span class="s1">&#39;compas-dev&#39;</span><span class="p">,</span> <span class="n">roaming</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">APPTEMP</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">_os</span><span class="o">.</span><span class="n">absjoin</span><span class="p">(</span><span class="n">APPDATA</span><span class="p">,</span> <span class="s1">&#39;temp&#39;</span><span class="p">)</span>
 
 
 <span class="c1"># install the app dirs during general install</span>
@@ -243,7 +236,7 @@
         <span class="kn">from</span> <span class="nn">urllib</span> <span class="k">import</span> <span class="n">urlretrieve</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">localstorage</span><span class="p">:</span>
-        <span class="n">localstorage</span> <span class="o">=</span> <span class="n">appdirs</span><span class="o">.</span><span class="n">user_data_dir</span><span class="p">(</span><span class="s1">&#39;COMPAS&#39;</span><span class="p">,</span> <span class="s1">&#39;compas-dev&#39;</span><span class="p">,</span> <span class="n">roaming</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">localstorage</span> <span class="o">=</span> <span class="n">APPDATA</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">localstorage</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">localstorage</span><span class="p">)</span>
@@ -254,8 +247,8 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">localstorage</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Local storage location is not writable: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">localstorage</span><span class="p">))</span>
 
-    <span class="n">bunny</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">localstorage</span><span class="p">,</span> <span class="s1">&#39;bunny/reconstruction/bun_zipper.ply&#39;</span><span class="p">)</span>
-    <span class="n">destination</span> <span class="o">=</span> <span class="n">absjoin</span><span class="p">(</span><span class="n">localstorage</span><span class="p">,</span> <span class="s1">&#39;bunny.tar.gz&#39;</span><span class="p">)</span>
+    <span class="n">bunny</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">_os</span><span class="o">.</span><span class="n">absjoin</span><span class="p">(</span><span class="n">localstorage</span><span class="p">,</span> <span class="s1">&#39;bunny/reconstruction/bun_zipper.ply&#39;</span><span class="p">)</span>
+    <span class="n">destination</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">_os</span><span class="o">.</span><span class="n">absjoin</span><span class="p">(</span><span class="n">localstorage</span><span class="p">,</span> <span class="s1">&#39;bunny.tar.gz&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">bunny</span><span class="p">):</span>
         <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://graphics.stanford.edu/pub/3Dscanrep/bunny.tar.gz&#39;</span>
@@ -405,7 +398,6 @@
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span></div>
 
-
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;get&#39;</span><span class="p">,</span>
     <span class="s1">&#39;license&#39;</span><span class="p">,</span>
@@ -504,7 +496,7 @@
             
 
             
-                Last updated on Aug 30, 2018.
+                Last updated on Aug 31, 2018.
             
 
             
