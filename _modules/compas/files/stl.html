@@ -265,7 +265,7 @@
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="STLParser.__init__"><a class="viewcode-back" href="../../../api/generated/compas.files.STLParser.__init__.html#compas.files.STLParser.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reader</span><span class="p">,</span> <span class="n">precision</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">=</span> <span class="n">precision</span> <span class="k">if</span> <span class="n">precision</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;3f&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">=</span> <span class="n">precision</span> <span class="k">if</span> <span class="n">precision</span> <span class="k">else</span> <span class="s1">&#39;3f&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reader</span>    <span class="o">=</span> <span class="n">reader</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span>  <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">faces</span>     <span class="o">=</span> <span class="kc">None</span>
@@ -283,6 +283,8 @@
                     <span class="n">gkey_index</span><span class="p">[</span><span class="n">gkey</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
                     <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
                 <span class="n">face</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gkey_index</span><span class="p">[</span><span class="n">gkey</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">face</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">face</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">face</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">face</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+                <span class="k">continue</span>
             <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="n">faces</span></div></div>
@@ -298,24 +300,27 @@
     <span class="kn">import</span> <span class="nn">compas</span>
 
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
-    <span class="kn">from</span> <span class="nn">compas.viewers</span> <span class="k">import</span> <span class="n">MeshViewer</span>
-    <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">MeshPlotter</span>
+    <span class="c1"># from compas.viewers import MeshViewer</span>
+    <span class="c1"># from compas.plotters import MeshPlotter</span>
+    <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">download_file_from_remote</span>
 
-    <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">DATA</span><span class="p">,</span> <span class="s1">&#39;cube_ascii.stl&#39;</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">compas_rhino</span>
+    <span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="k">import</span> <span class="n">MeshArtist</span>
+
+
+    <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/ros-industrial/abb/kinetic-devel/abb_irb6600_support/meshes/irb6640/visual/link_1.stl&#39;</span>
+    <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">APPDATA</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;meshes&#39;</span><span class="p">,</span> <span class="s1">&#39;ros&#39;</span><span class="p">,</span> <span class="s1">&#39;link_1.stl&#39;</span><span class="p">)</span>
+    <span class="c1"># download_file_from_remote(source, filepath)</span>
+
+    <span class="c1"># filepath = os.path.join(compas.DATA, &#39;cube_ascii.stl&#39;)</span>
 
     <span class="n">stl</span> <span class="o">=</span> <span class="n">STL</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
 
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">stl</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="n">stl</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
 
-    <span class="n">viewer</span> <span class="o">=</span> <span class="n">MeshViewer</span><span class="p">()</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 
-    <span class="c1"># plotter = MeshPlotter(mesh)</span>
-    <span class="c1"># # plotter.draw_vertices()</span>
-    <span class="c1"># plotter.draw_edges()</span>
-    <span class="c1"># plotter.draw_faces()</span>
-    <span class="c1"># plotter.show()</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </code></pre></div>
                         
                     
@@ -395,7 +400,7 @@
             
 
             
-                Last updated on Sep 01, 2018.
+                Last updated on Sep 03, 2018.
             
 
             
