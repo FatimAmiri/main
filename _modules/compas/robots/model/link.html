@@ -60,10 +60,8 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-
 <span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">URDF</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Frame</span>
+<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">URDFParser</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Transformation</span>
 
 <span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">Box</span>
@@ -76,7 +74,6 @@
 <span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">Origin</span>
 <span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">Sphere</span>
 <span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">Texture</span>
-
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Link&#39;</span><span class="p">,</span> <span class="s1">&#39;Inertial&#39;</span><span class="p">,</span> <span class="s1">&#39;Visual&#39;</span><span class="p">,</span> <span class="s1">&#39;Collision&#39;</span><span class="p">,</span> <span class="s1">&#39;Mass&#39;</span><span class="p">,</span> <span class="s1">&#39;Inertia&#39;</span><span class="p">]</span>
 
@@ -100,7 +97,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Inertia.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Inertia.__init__.html#compas.robots.Inertia.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ixx</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ixy</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ixz</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">iyy</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">iyz</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">izz</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
-        <span class="c1"># TODO: Check if we need unit conversion here (m to mm?)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ixx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ixx</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ixy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ixy</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ixz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ixz</span><span class="p">)</span>
@@ -146,12 +142,13 @@
 
 <div class="viewcode-block" id="Visual.draw"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Visual.draw.html#compas.robots.Visual.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div>
-    
+
 <div class="viewcode-block" id="Visual.get_color"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Visual.get_color.html#compas.robots.Visual.get_color">[docs]</a>    <span class="k">def</span> <span class="nf">get_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">material</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div></div>
+
 
 <div class="viewcode-block" id="Collision"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Collision.html#compas.robots.Collision">[docs]</a><span class="k">class</span> <span class="nc">Collision</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Collidable description of a link.</span>
@@ -199,74 +196,41 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">joints</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_joint</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Link.create"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Link.create.html#compas.robots.Link.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urdf_importer</span><span class="p">,</span> <span class="n">meshcls</span><span class="p">,</span> <span class="n">parent_origin</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Recursive function to create all geometry shapes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">:</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">urdf_importer</span><span class="p">,</span> <span class="n">meshcls</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision</span><span class="p">:</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">urdf_importer</span><span class="p">,</span> <span class="n">meshcls</span><span class="p">)</span>
-
-        <span class="n">transformation</span> <span class="o">=</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_frame</span><span class="p">(</span><span class="n">parent_origin</span><span class="p">)</span>
-
-        <span class="c1"># former DAE files have yaxis and zaxis swapped</span>
-        <span class="c1"># TODO: already fix in conversion to obj or in import</span>
-        <span class="c1"># TODO: move to mesh importer!</span>
-        <span class="n">fx</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">(</span><span class="n">parent_origin</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="n">parent_origin</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">parent_origin</span><span class="o">.</span><span class="n">zaxis</span><span class="p">)</span>
-        <span class="n">transformation_dae</span> <span class="o">=</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_frame</span><span class="p">(</span><span class="n">fx</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">:</span>
-            <span class="c1"># set color</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">color</span><span class="p">:</span>
-                <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-            <span class="c1"># transform</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="n">MeshDescriptor</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;.dae&quot;</span><span class="p">:</span>
-                    <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation_dae</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="n">MeshDescriptor</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;.dae&quot;</span><span class="p">:</span>
-                    <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation_dae</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">cjoint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
-            <span class="n">cjoint</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">cjoint</span><span class="o">.</span><span class="n">axis</span><span class="p">:</span>
-                <span class="n">cjoint</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
-            <span class="n">clink</span> <span class="o">=</span> <span class="n">cjoint</span><span class="o">.</span><span class="n">child_link</span>
-            <span class="n">clink</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">urdf_importer</span><span class="p">,</span> <span class="n">meshcls</span><span class="p">,</span> <span class="n">cjoint</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Link.update"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Link.update.html#compas.robots.Link.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_state</span><span class="p">,</span> <span class="n">parent_transformation</span><span class="p">,</span> <span class="n">reset_transformation</span><span class="p">):</span>
+    <span class="c1"># TODO: Check</span>
+<div class="viewcode-block" id="Link.update"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Link.update.html#compas.robots.Link.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_state</span><span class="p">,</span> <span class="n">parent_transformation</span><span class="p">,</span> <span class="n">reset_transformation</span><span class="p">,</span> <span class="n">collision</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursive function to apply the transformations given by the joint</span>
 <span class="sd">            state.</span>
 
 <span class="sd">        Joint_states are given absolute, so it is necessary to reset the current</span>
 <span class="sd">        transformation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            joint_state (dict): A dictionary with the joint names as keys and</span>
+<span class="sd">                values in radians and m (depending on the joint type)</span>
+<span class="sd">            parent_transformation (:class:`Transformation`): The transfomation</span>
+<span class="sd">                of the parent joint</span>
+<span class="sd">            reset_transformation (:class:`Transformation`): The transfomation</span>
+<span class="sd">                to reset the current transformation of the link&#39;s geometry.</span>
+<span class="sd">            collision (bool): If collision geometry should be transformed as</span>
+<span class="sd">                well. Defaults to True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">relative_transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span> <span class="o">*</span> <span class="n">reset_transformation</span>
 
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">:</span>
             <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">relative_transformation</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision</span><span class="p">:</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">relative_transformation</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">collision</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision</span><span class="p">:</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">relative_transformation</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
             <span class="c1"># 1. Get reset transformation</span>
             <span class="n">reset_transformation</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">calculate_reset_transformation</span><span class="p">()</span>
             <span class="c1"># 2. Reset</span>
             <span class="n">joint</span><span class="o">.</span><span class="n">reset_transform</span><span class="p">()</span>
-            <span class="c1">#joint.transform(reset_transformation) # why does this not work properly....</span>
+            <span class="c1"># joint.transform(reset_transformation) # why does this not work properly....</span>
 
-            <span class="c1"># 3. Calculate transformation</span>
+            <span class="c1"># 3. Calculate transformation for next joints in the chain</span>
             <span class="k">if</span> <span class="n">joint</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">joint_state</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">position</span> <span class="o">=</span> <span class="n">joint_state</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
                 <span class="n">transformation</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">calculate_transformation</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
@@ -277,32 +241,42 @@
 
             <span class="c1"># 4. Apply on joint</span>
             <span class="n">joint</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
-            <span class="c1"># 4. Apply function to all children</span>
-            <span class="n">joint</span><span class="o">.</span><span class="n">child_link</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">joint_state</span><span class="p">,</span> <span class="n">transformation</span><span class="p">,</span> <span class="n">reset_transformation</span><span class="p">)</span></div></div>
+            <span class="c1"># 4. Apply function to all children in the chain</span>
+            <span class="n">joint</span><span class="o">.</span><span class="n">child_link</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">joint_state</span><span class="p">,</span> <span class="n">transformation</span><span class="p">,</span> <span class="n">reset_transformation</span><span class="p">,</span> <span class="n">collision</span><span class="p">)</span></div>
+
+    <span class="c1"># TODO: Check</span>
+<div class="viewcode-block" id="Link.scale"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Link.scale.html#compas.robots.Link.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Scale</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">Scale</span><span class="p">([</span><span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">:</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision</span><span class="p">:</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+            <span class="n">joint</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+            <span class="n">joint</span><span class="o">.</span><span class="n">child_link</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span></div></div>
 
 
 
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Link</span><span class="p">,</span> <span class="s1">&#39;robot/link&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Inertial</span><span class="p">,</span> <span class="s1">&#39;robot/link/inertial&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Mass</span><span class="p">,</span> <span class="s1">&#39;robot/link/inertial/mass&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Inertia</span><span class="p">,</span> <span class="s1">&#39;robot/link/inertial/inertia&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Link</span><span class="p">,</span> <span class="s1">&#39;robot/link&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Inertial</span><span class="p">,</span> <span class="s1">&#39;robot/link/inertial&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Mass</span><span class="p">,</span> <span class="s1">&#39;robot/link/inertial/mass&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Inertia</span><span class="p">,</span> <span class="s1">&#39;robot/link/inertial/inertia&#39;</span><span class="p">)</span>
 
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Visual</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Collision</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Visual</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Collision</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision&#39;</span><span class="p">)</span>
 
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Origin</span><span class="p">,</span> <span class="s1">&#39;robot/link/inertial/origin&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/origin&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/origin&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Geometry</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">MeshDescriptor</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry/mesh&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry/mesh&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Box</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry/box&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry/box&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Cylinder</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry/cylinder&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry/cylinder&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Sphere</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry/sphere&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry/sphere&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Capsule</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry/capsule&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry/capsule&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Origin</span><span class="p">,</span> <span class="s1">&#39;robot/link/inertial/origin&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/origin&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/origin&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Geometry</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">MeshDescriptor</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry/mesh&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry/mesh&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Box</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry/box&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry/box&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Cylinder</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry/cylinder&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry/cylinder&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Sphere</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry/sphere&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry/sphere&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Capsule</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/geometry/capsule&#39;</span><span class="p">,</span> <span class="s1">&#39;robot/link/collision/geometry/capsule&#39;</span><span class="p">)</span>
 
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Material</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/material&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Color</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/material/color&#39;</span><span class="p">)</span>
-<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Texture</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/material/texture&#39;</span><span class="p">)</span>
-
-
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Material</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/material&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Color</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/material/color&#39;</span><span class="p">)</span>
+<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Texture</span><span class="p">,</span> <span class="s1">&#39;robot/link/visual/material/texture&#39;</span><span class="p">)</span>
 </code></pre></div>
                         
                     
