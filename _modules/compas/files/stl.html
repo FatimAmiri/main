@@ -283,7 +283,7 @@
                     <span class="n">gkey_index</span><span class="p">[</span><span class="n">gkey</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
                     <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
                 <span class="n">face</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gkey_index</span><span class="p">[</span><span class="n">gkey</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">face</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">face</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">face</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">face</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">face</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">face</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">face</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">face</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">or</span> <span class="n">face</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">face</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="k">continue</span>
             <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
@@ -301,26 +301,72 @@
 
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
     <span class="c1"># from compas.viewers import MeshViewer</span>
-    <span class="c1"># from compas.plotters import MeshPlotter</span>
     <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">download_file_from_remote</span>
+    <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">connected_components</span>
 
-    <span class="kn">import</span> <span class="nn">compas_rhino</span>
     <span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="k">import</span> <span class="n">MeshArtist</span>
+
+    <span class="kn">import</span> <span class="nn">Rhino.Geometry.Mesh</span>
+    <span class="kn">import</span> <span class="nn">scriptcontext</span> <span class="k">as</span> <span class="nn">sc</span>
+    <span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="k">as</span> <span class="nn">rs</span>
 
 
     <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/ros-industrial/abb/kinetic-devel/abb_irb6600_support/meshes/irb6640/visual/link_1.stl&#39;</span>
     <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">APPDATA</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;meshes&#39;</span><span class="p">,</span> <span class="s1">&#39;ros&#39;</span><span class="p">,</span> <span class="s1">&#39;link_1.stl&#39;</span><span class="p">)</span>
-    <span class="c1"># download_file_from_remote(source, filepath)</span>
 
-    <span class="c1"># filepath = os.path.join(compas.DATA, &#39;cube_ascii.stl&#39;)</span>
+    <span class="n">download_file_from_remote</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="n">stl</span> <span class="o">=</span> <span class="n">STL</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+    <span class="n">stl</span> <span class="o">=</span> <span class="n">STL</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="s1">&#39;12f&#39;</span><span class="p">)</span>
 
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">stl</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="n">stl</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
 
-    <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">vertexgroups</span> <span class="o">=</span> <span class="n">connected_components</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">halfedge</span><span class="p">)</span>
+    <span class="n">facegroups</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vertexgroups</span><span class="p">))]</span>
 
-    <span class="n">artist</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+    <span class="n">vertexsets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="n">vertexgroups</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">vertexset</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vertexsets</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">vertices</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">vertexset</span><span class="p">):</span>
+                <span class="n">facegroups</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
+                <span class="k">break</span>
+
+    <span class="n">meshes</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">vertexgroup</span><span class="p">,</span> <span class="n">facegroup</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">vertexgroups</span><span class="p">,</span> <span class="n">facegroups</span><span class="p">):</span>
+        <span class="n">key_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vertexgroup</span><span class="p">)}</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">vertexgroup</span><span class="p">)</span>
+        <span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)]</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">facegroup</span><span class="p">]</span>
+
+        <span class="n">meshes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">))</span>
+
+    <span class="c1"># viewer = MeshViewer()</span>
+    <span class="c1"># viewer.mesh = meshes[0]</span>
+    <span class="c1"># viewer.show()</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mesh</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">meshes</span><span class="p">):</span>
+        <span class="n">mesh</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="c1"># artist = MeshArtist(mesh, layer=mesh.name)</span>
+        <span class="c1"># artist.clear_layer()</span>
+        <span class="c1"># artist.draw()</span>
+        <span class="n">rmesh</span> <span class="o">=</span> <span class="n">Rhino</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Mesh</span><span class="p">()</span>
+        <span class="c1"># rmesh.Vertices.UseDoublePrecisionVertices = True</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">rmesh</span><span class="o">.</span><span class="n">Vertices</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">attr</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
+            <span class="n">vertices</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
+            <span class="n">rmesh</span><span class="o">.</span><span class="n">Faces</span><span class="o">.</span><span class="n">AddFace</span><span class="p">(</span><span class="o">*</span><span class="n">vertices</span><span class="p">)</span>
+
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">Objects</span><span class="o">.</span><span class="n">AddMesh</span><span class="p">(</span><span class="n">rmesh</span><span class="p">)</span>
+        
+        <span class="n">rs</span><span class="o">.</span><span class="n">AddLayer</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">rs</span><span class="o">.</span><span class="n">ObjectName</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">rs</span><span class="o">.</span><span class="n">ObjectLayer</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div>
                         
                     
