@@ -206,7 +206,6 @@
 
 
 <div class="viewcode-block" id="xdraw_pipes"><a class="viewcode-back" href="../../../api/generated/compas_ghpython.xdraw_pipes.html#compas_ghpython.xdraw_pipes">[docs]</a><span class="k">def</span> <span class="nf">xdraw_pipes</span><span class="p">(</span><span class="n">pipes</span><span class="p">,</span> <span class="n">cap</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
-    <span class="n">rg_pipes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">abs_tol</span> <span class="o">=</span> <span class="n">TOL</span>
     <span class="n">ang_tol</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">ModelAngleToleranceRadians</span>
     <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pipes</span><span class="p">:</span>
@@ -217,12 +216,12 @@
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="n">radius</span> <span class="o">=</span> <span class="p">[</span><span class="n">radius</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
         <span class="n">radius</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">radius</span><span class="p">]</span>
+
         <span class="n">rail</span> <span class="o">=</span> <span class="n">Curve</span><span class="o">.</span><span class="n">CreateControlPointCurve</span><span class="p">([</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">)</span> <span class="k">for</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="n">points</span><span class="p">])</span>
         <span class="n">breps</span> <span class="o">=</span> <span class="n">Brep</span><span class="o">.</span><span class="n">CreatePipe</span><span class="p">(</span><span class="n">rail</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">abs_tol</span><span class="p">,</span>
                                 <span class="n">ang_tol</span><span class="p">)</span>
-        <span class="n">rg_pipes</span> <span class="o">+=</span> <span class="n">breps</span>
-    <span class="k">return</span> <span class="n">rg_pipes</span></div>
-
+        <span class="k">for</span> <span class="n">brep</span> <span class="ow">in</span> <span class="n">breps</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">brep</span></div>
 
 <div class="viewcode-block" id="xdraw_spheres"><a class="viewcode-back" href="../../../api/generated/compas_ghpython.xdraw_spheres.html#compas_ghpython.xdraw_spheres">[docs]</a><span class="k">def</span> <span class="nf">xdraw_spheres</span><span class="p">(</span><span class="n">spheres</span><span class="p">):</span>
     <span class="n">rg_sheres</span> <span class="o">=</span> <span class="p">[]</span>
