@@ -197,54 +197,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_joint</span> <span class="o">=</span> <span class="kc">None</span></div>
 
     <span class="c1"># TODO: Check</span>
-<div class="viewcode-block" id="Link.update"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Link.update.html#compas.robots.Link.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_state</span><span class="p">,</span> <span class="n">parent_transformation</span><span class="p">,</span> <span class="n">reset_transformation</span><span class="p">,</span> <span class="n">collision</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Recursive function to apply the transformations given by the joint</span>
-<span class="sd">            state.</span>
-
-<span class="sd">        Joint_states are given absolute, so it is necessary to reset the current</span>
-<span class="sd">        transformation.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            joint_state (dict): A dictionary with the joint names as keys and</span>
-<span class="sd">                values in radians and m (depending on the joint type)</span>
-<span class="sd">            parent_transformation (:class:`Transformation`): The transfomation</span>
-<span class="sd">                of the parent joint</span>
-<span class="sd">            reset_transformation (:class:`Transformation`): The transfomation</span>
-<span class="sd">                to reset the current transformation of the link&#39;s geometry.</span>
-<span class="sd">            collision (bool): If collision geometry should be transformed as</span>
-<span class="sd">                well. Defaults to True.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">relative_transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span> <span class="o">*</span> <span class="n">reset_transformation</span>
-
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">:</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">relative_transformation</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">collision</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision</span><span class="p">:</span>
-                <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">relative_transformation</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
-            <span class="c1"># 1. Get reset transformation</span>
-            <span class="n">reset_transformation</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">calculate_reset_transformation</span><span class="p">()</span>
-            <span class="c1"># 2. Reset</span>
-            <span class="n">joint</span><span class="o">.</span><span class="n">reset_transform</span><span class="p">()</span>
-            <span class="c1"># joint.transform(reset_transformation) # why does this not work properly....</span>
-
-            <span class="c1"># 3. Calculate transformation for next joints in the chain</span>
-            <span class="k">if</span> <span class="n">joint</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">joint_state</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">position</span> <span class="o">=</span> <span class="n">joint_state</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
-                <span class="n">transformation</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">calculate_transformation</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
-                <span class="n">transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span> <span class="o">*</span> <span class="n">transformation</span>
-                <span class="n">joint</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span>
-
-            <span class="c1"># 4. Apply on joint</span>
-            <span class="n">joint</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
-            <span class="c1"># 4. Apply function to all children in the chain</span>
-            <span class="n">joint</span><span class="o">.</span><span class="n">child_link</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">joint_state</span><span class="p">,</span> <span class="n">transformation</span><span class="p">,</span> <span class="n">reset_transformation</span><span class="p">,</span> <span class="n">collision</span><span class="p">)</span></div>
-
-    <span class="c1"># TODO: Check</span>
 <div class="viewcode-block" id="Link.scale"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Link.scale.html#compas.robots.Link.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Scale</span>
         <span class="n">S</span> <span class="o">=</span> <span class="n">Scale</span><span class="p">([</span><span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">])</span>

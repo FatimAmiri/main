@@ -105,8 +105,7 @@
     <span class="sd">&quot;&quot;&quot;Reference frame represented by an instance of :class:`Frame`.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Origin.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Origin.__init__.html#compas.robots.Origin.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Origin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># keep a copy to the initial, not transformed origin</span></div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Origin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Origin.from_urdf"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Origin.from_urdf.html#compas.robots.Origin.from_urdf">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_urdf</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
@@ -114,27 +113,8 @@
         <span class="n">rpy</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rpy&#39;</span><span class="p">,</span> <span class="s1">&#39;0 0 0&#39;</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_euler_angles</span><span class="p">(</span><span class="n">rpy</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="n">xyz</span><span class="p">)</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">init_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Origin.create"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Origin.create.html#compas.robots.Origin.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="Origin.reset_transform"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Origin.reset_transform.html#compas.robots.Origin.reset_transform">[docs]</a>    <span class="k">def</span> <span class="nf">reset_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">:</span>
-            <span class="c1"># TODO: Transform back into initial state does not always work...</span>
-            <span class="c1"># T = init_transformation * Transformation.from_frame(self).inverse()</span>
-            <span class="c1"># self.transform(T)</span>
-            <span class="n">cp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">point</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">xaxis</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">yaxis</span></div>
-
 <div class="viewcode-block" id="Origin.scale"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Origin.scale.html#compas.robots.Origin.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">*</span> <span class="n">factor</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">*</span> <span class="n">factor</span></div></div>
 
 
 <span class="k">class</span> <span class="nc">BaseShape</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
