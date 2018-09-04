@@ -12,6 +12,7 @@
 
         <link rel="shortcut icon" href="/_static/images/compas.ico" type="image/x-icon">
 
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
         <link rel="stylesheet" type="text/css" href="/_static/css/github.css" />
         <link rel="stylesheet" type="text/css" href="/_static/css/compas.css" />
@@ -53,9 +54,7 @@
 
                     
 
-                        
-
-                        <h1>Source code for compas.geometry.xforms.transformation</h1><div class="highlight"><pre><code class="language-python border rounded">
+                        <h1>Source code for compas.geometry.xforms.transformation</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This library for transformations partly derived and was re-implemented from the</span>
 <span class="sd">following online resources:</span>
@@ -401,7 +400,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">allclose</span><span class="p">(</span><span class="n">scale1</span><span class="p">,</span> <span class="n">scale2</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">allclose</span><span class="p">(</span><span class="n">angle1</span><span class="p">,</span> <span class="n">angle2</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">allclose</span><span class="p">(</span><span class="n">trans1</span><span class="p">,</span> <span class="n">trans2</span><span class="p">))</span>
-</code></pre></div>
+</pre></div>
                         
                     
 
@@ -507,7 +506,7 @@ var DOCUMENTATION_OPTIONS = {
 
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
             
-            <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 
@@ -516,8 +515,27 @@ var DOCUMENTATION_OPTIONS = {
             <script src="/_static/js/searchtools_.js"></script>
 
             <script>
-hljs.initHighlightingOnLoad();
-anchors.add();
+
+$(document).ready(function() {
+    $("div.highlight pre").each(function(i, block) {
+        hljs.highlightBlock(block);
+    });
+
+    $("div.highlight-python div.highlight pre").before('<button class="btn copy-code"><i class="far fa-copy"></i></button>');
+
+    var copy_code = new Clipboard('.copy-code', {
+        target: function(trigger) {
+            return trigger.nextElementSibling;
+        }
+    });
+
+    copy_code.on('success', function(event) {
+        event.clearSelection();
+    });
+
+    anchors.add();
+   
+});
 
 // var pre = document.getElementsByTagName('pre');
 
