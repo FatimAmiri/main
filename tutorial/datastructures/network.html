@@ -102,7 +102,101 @@ By default, keys are integers, and every vertex is assigned a number correspondi
 The number is always the highest number used so far, plus one.</p>
 <p>Other types keys may be specified as well, as long as their value is <em>hashable</em>.</p>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+
+<span class="c1"># 0 &lt;class &#39;int&#39;&gt;</span>
 </code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">b</span> <span class="o">==</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="c1"># True</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">==</span> <span class="n">e</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="c1"># False</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">()</span>
+<span class="n">g</span> <span class="o">==</span> <span class="n">f</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="c1"># True</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;compas&#39;</span><span class="p">)</span>
+
+<span class="c1"># &#39;compas&#39;</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">()</span>
+
+<span class="c1"># 9</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="data">
+<h2>Data</h2>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span>
+
+<span class="c1"># &lt;dict_keyiterator object at 0x1104280e8&gt;</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+
+<span class="c1"># &lt;generator object Network.edges at 0x112fc1990&gt;</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
+    <span class="c1"># do stuff</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="c1"># do stuff</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">vertices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">())</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="attributes">
+<h2>Attributes</h2>
+<p>All vertices and edges automatically have the default attributes.
+The default vertex attributes are xyz coordinates, with <code class="docutils literal notranslate"><span class="pre">x=0</span></code>, <code class="docutils literal notranslate"><span class="pre">y=0</span></code> and <code class="docutils literal notranslate"><span class="pre">z=0</span></code>.
+Edges have no defaults.</p>
+<p>To change the default attributes associated with vertices and edges, do:</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">update_default_vertex_attributes</span><span class="p">({</span><span class="s1">&#39;z&#39;</span> <span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span> <span class="p">:</span> <span class="bp">False</span><span class="p">})</span>
+
+<span class="c1"># or network.update_default_vertex_attributes({z=10, is_fixed=False)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">update_default_edge_attributes</span><span class="p">({</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">})</span>
+
+<span class="c1"># or network.update_default_edge_attributes(weight=0.0)</span>
+</code></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Other attributes then the ones specified in the defaults can also be added.
+However, these attributes then only exist on the vertices or edges where they have been specified.
+To prevent this and only allow the registered attributes to be added, set <code class="docutils literal notranslate"><span class="pre">Network.strict_attributes</span> <span class="pre">=</span> <span class="pre">True</span></code>.</p>
+<p>When a vertex or edge is added to the network, the default attributes are copied and the values of the specified attributes are modified.
+To only store the modified values, set <code class="docutils literal notranslate"><span class="pre">Network.copy_defaults</span> <span class="pre">=</span> <span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="getting-attributes">
+<h3>Getting attributes</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">get_vertex_attribute</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">)</span>
+
+<span class="c1"># False</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">get_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+
+<span class="c1"># [0.0, 1.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0]</span>
+</code></pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -180,6 +274,11 @@ The number is always the highest number used so far, plus one.</p>
 <li class="nav-item"><a class="nav-link reference internal" href="#making-a-network">Making a network</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#adding-vertices-and-edges">Adding vertices and edges</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#identifiers">Identifiers</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#data">Data</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#attributes">Attributes</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#getting-attributes">Getting attributes</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
