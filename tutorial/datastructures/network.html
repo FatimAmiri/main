@@ -20,7 +20,7 @@
         <link rel="stylesheet" type="text/css" href="/_static/css/compas-reference.css" />
 
         
-            <link rel="next" title="COMPAS networks" href="network2.html" />
+            <link rel="next" title="Notes" href="../../notes.html" />
         
         
         
@@ -63,17 +63,19 @@
 
                         <div class="section" id="networks">
 <h1>Networks</h1>
-<p><strong>COMPAS</strong> networks are simple edge graphs: they consist of vertices connected by edges.
-Not all vertices have to be connected by edges.
-A network without edges is a valid network.
-In fact, even a network without vertices is a valid network, albeit a quite pointless one.</p>
-<p>Edges have a direction.
-There can only be one edge between two vertices in a particular direction.
-However, there can be two edges between two vertices in opposite direction.
-Vertices can be connected to themseleves.</p>
+<p><strong>COMPAS</strong> networks are simple edge graphs: they consist of vertices
+connected by edges. Not all vertices have to be connected by edges. A
+network without edges is a valid network. In fact, even a network
+without vertices and edges is a valid network, albeit a quite pointless
+one.</p>
+<p>Edges have a direction. There can only be one edge between two vertices
+in a particular direction. However, there can be two edges between two
+vertices in opposite direction. Vertices can be connected to
+themseleves.</p>
 <div class="section" id="making-a-network">
 <h2>Making a network</h2>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Network</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="p">()</span>
 </code></pre></div>
@@ -94,80 +96,131 @@ Vertices can be connected to themseleves.</p>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
 </code></pre></div>
 </div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</code></pre></div>
+</div>
 </div>
 <div class="section" id="identifiers">
 <h2>Identifiers</h2>
-<p>All vertices in a network have a unique id, the <em>key</em> of the vertex.
-By default, keys are integers, and every vertex is assigned a number corresponding to the order in which they are added.
-The number is always the highest number used so far, plus one.</p>
-<p>Other types keys may be specified as well, as long as their value is <em>hashable</em>.</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-
-<span class="c1"># 0 &lt;class &#39;int&#39;&gt;</span>
+<p>All vertices in a network have a unique id, the <em>key</em> of the vertex. By
+default, keys are integers, and every vertex is assigned a number
+corresponding to the order in which they are added. The number is always
+the highest number used so far, plus one.</p>
+<p>Other types keys may be specified as well, as long as their value is
+<em>hashable</em>.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span>0 &lt;class &#39;int&#39;&gt;
 </code></pre></div>
 </div>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">b</span> <span class="o">==</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
-
-<span class="c1"># True</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="kc">True</span>
 </code></pre></div>
 </div>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
 <span class="n">f</span> <span class="o">==</span> <span class="n">e</span> <span class="o">+</span> <span class="mi">1</span>
-
-<span class="c1"># False</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="kc">False</span>
 </code></pre></div>
 </div>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">()</span>
 <span class="n">g</span> <span class="o">==</span> <span class="n">f</span> <span class="o">+</span> <span class="mi">1</span>
-
-<span class="c1"># True</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="kc">True</span>
 </code></pre></div>
 </div>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;compas&#39;</span><span class="p">)</span>
-
-<span class="c1"># &#39;compas&#39;</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="s1">&#39;compas&#39;</span>
 </code></pre></div>
 </div>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">()</span>
-
-<span class="c1"># 9</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="mi">9</span>
 </code></pre></div>
 </div>
 </div>
 <div class="section" id="data">
 <h2>Data</h2>
+<div class="section" id="iteration">
+<h3>Iteration</h3>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span>
-
-<span class="c1"># &lt;dict_keyiterator object at 0x1104280e8&gt;</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="o">&lt;</span><span class="n">dict_keyiterator</span> <span class="n">at</span> <span class="mh">0x6193a2958</span><span class="o">&gt;</span>
 </code></pre></div>
 </div>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
-
-<span class="c1"># &lt;generator object Network.edges at 0x112fc1990&gt;</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="o">&lt;</span><span class="n">generator</span> <span class="nb">object</span> <span class="n">Network</span><span class="o">.</span><span class="n">edges</span> <span class="n">at</span> <span class="mh">0x61560f678</span><span class="o">&gt;</span>
 </code></pre></div>
 </div>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
-    <span class="c1"># do stuff</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="mi">0</span>
+<span class="mi">1</span>
+<span class="mi">2</span>
+<span class="mi">3</span>
+<span class="mi">4</span>
+<span class="mi">7</span>
+<span class="mi">8</span>
+<span class="n">compas</span>
+<span class="mi">9</span>
 </code></pre></div>
 </div>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
-    <span class="c1"># do stuff</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">vertices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">())</span>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="mi">0</span> <span class="mi">1</span>
+<span class="mi">0</span> <span class="mi">2</span>
+<span class="mi">0</span> <span class="mi">3</span>
+<span class="mi">0</span> <span class="mi">4</span>
 </code></pre></div>
 </div>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
+</div>
+<div class="section" id="lists">
+<h3>Lists</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">())</span>
 </code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;compas&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="filtering">
+<h3>Filtering</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">})</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="o">&lt;</span><span class="n">generator</span> <span class="nb">object</span> <span class="n">VertexFilter</span><span class="o">.</span><span class="n">vertices_where</span> <span class="n">at</span> <span class="mh">0x61560f468</span><span class="o">&gt;</span>
+</code></pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="attributes">
 <h2>Attributes</h2>
-<p>All vertices and edges automatically have the default attributes.
-The default vertex attributes are xyz coordinates, with <code class="docutils literal notranslate"><span class="pre">x=0</span></code>, <code class="docutils literal notranslate"><span class="pre">y=0</span></code> and <code class="docutils literal notranslate"><span class="pre">z=0</span></code>.
-Edges have no defaults.</p>
+<p>All vertices and edges automatically have the default attributes. The
+default vertex attributes are xyz coordinates, with <code class="docutils literal notranslate"><span class="pre">x=0</span></code>, <code class="docutils literal notranslate"><span class="pre">y=0</span></code> and
+<code class="docutils literal notranslate"><span class="pre">z=0</span></code>. Edges have no defaults.</p>
 <p>To change the default attributes associated with vertices and edges, do:</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">update_default_vertex_attributes</span><span class="p">({</span><span class="s1">&#39;z&#39;</span> <span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span> <span class="p">:</span> <span class="bp">False</span><span class="p">})</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">update_default_vertex_attributes</span><span class="p">({</span><span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span> <span class="n">is_fixed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># or network.update_default_vertex_attributes(z=10, is_fixed=False)</span>
 </code></pre></div>
@@ -177,26 +230,87 @@ Edges have no defaults.</p>
 <span class="c1"># or network.update_default_edge_attributes(weight=0.0)</span>
 </code></pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Other attributes then the ones specified in the defaults can also be added.
-However, these attributes then only exist on the vertices or edges where they have been specified.
-To prevent this and only allow the registered attributes to be added, set <code class="docutils literal notranslate"><span class="pre">Network.strict_attributes</span> <span class="pre">=</span> <span class="pre">True</span></code>.</p>
-<p>When a vertex or edge is added to the network, the default attributes are copied and the values of the specified attributes are modified.
-To only store the modified values, set <code class="docutils literal notranslate"><span class="pre">Network.copy_defaults</span> <span class="pre">=</span> <span class="pre">False</span></code>.</p>
-</div>
+<p><strong>Note</strong></p>
+<p>Other attributes then the ones specified in the defaults can also be
+added. However, these attributes then only exist on the vertices or
+edges where they have been specified. To prevent this and only allow the
+registered attributes to be added, set
+<code class="docutils literal notranslate"><span class="pre">Network.strict_attributes</span> <span class="pre">=</span> <span class="pre">True</span></code>.</p>
+<p>When a vertex or edge is added to the network, the default attributes
+are copied and the values of the specified attributes are modified. To
+only store the modified values, set <code class="docutils literal notranslate"><span class="pre">Network.copy_defaults</span> <span class="pre">=</span> <span class="pre">False</span></code>.</p>
 <div class="section" id="getting-attributes">
 <h3>Getting attributes</h3>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">get_vertex_attribute</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">)</span>
-
-<span class="c1"># False</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="kc">False</span>
 </code></pre></div>
 </div>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">get_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-
-<span class="c1"># [0.0, 1.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0]</span>
 </code></pre></div>
 </div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]]</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="setting-attributes">
+<h3>Setting attributes</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">set_vertex_attribute</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">set_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">set_vertices_attributes</span><span class="p">((</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="using-constructors">
+<h2>Using constructors</h2>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># network = Network.from_data(data)</span>
+<span class="c1"># network = Network.from_lines([([], []), ([], [])])</span>
+<span class="c1"># network = Network.from_json(&#39;network.json&#39;)</span>
+<span class="c1"># network = Network.from_pickle(&#39;network.pickle&#39;)</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lines.obj&#39;</span><span class="p">))</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="queries">
+<h2>Queries</h2>
+<p>under construction…</p>
+</div>
+<div class="section" id="visualisation">
+<h2>Visualisation</h2>
+<p>To create a 2D representation of a network, use a plotter.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
+    <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">&#39;vertex_degree&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})},</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">&#39;vertex_degree&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">})},</span>
+    <span class="n">radius</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mf">0.3</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">&#39;vertex_degree&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">})}</span>
+<span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
 </div>
 </div>
 </div>
@@ -237,7 +351,6 @@ To only store the modified values, set <code class="docutils literal notranslate
 <li class="nav-item active"><a class="nav-link reference internal" href="../../tutorial.html">Tutorial</a><ul class="nav active">
 <li class="nav-item active"><a class="nav-link reference internal" href="../datastructures.html">Working with datastructures</a><ul class="nav active">
 <li class="nav-item active"><a class="nav-link active current reference internal" href="#">Networks</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="network2.html">COMPAS networks</a></li>
 </ul>
 </li>
 </ul>
@@ -275,11 +388,20 @@ To only store the modified values, set <code class="docutils literal notranslate
 <li class="nav-item"><a class="nav-link reference internal" href="#making-a-network">Making a network</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#adding-vertices-and-edges">Adding vertices and edges</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#identifiers">Identifiers</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#data">Data</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#attributes">Attributes</a><ul class="nav">
-<li class="nav-item"><a class="nav-link reference internal" href="#getting-attributes">Getting attributes</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#data">Data</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#iteration">Iteration</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#lists">Lists</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#filtering">Filtering</a></li>
 </ul>
 </li>
+<li class="nav-item"><a class="nav-link reference internal" href="#attributes">Attributes</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#getting-attributes">Getting attributes</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#setting-attributes">Setting attributes</a></li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="#using-constructors">Using constructors</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#queries">Queries</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#visualisation">Visualisation</a></li>
 </ul>
 </li>
 </ul>
