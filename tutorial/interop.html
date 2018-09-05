@@ -14,7 +14,8 @@
 
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
-        <link rel="stylesheet" type="text/css" href="/_static/css/monokai-sublime.css" />
+
+        <link rel="stylesheet" type="text/css" href="/_static/css/prism.css" />
         <link rel="stylesheet" type="text/css" href="/_static/css/compas.css" />
         <link rel="stylesheet" type="text/css" href="/_static/css/compas-reference.css" />
 
@@ -54,6 +55,8 @@
 
                     
 
+                        
+
                         <div class="section" id="using-c-c-code">
 <h1>Using C/C++ code</h1>
 <div class="section" id="summary">
@@ -75,12 +78,12 @@ implementation of the code in this tutorial is available in the geometry package
 <div class="section" id="setup">
 <h2>Setup</h2>
 <p>For this tutorial, we will use the following files and folders:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+</span> <span class="n">smoothing_cpp</span>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span><span class="o">+</span> <span class="n">smoothing_cpp</span>
     <span class="o">+</span> <span class="n">src</span>
         <span class="o">-</span> <span class="n">main</span><span class="o">.</span><span class="n">cpp</span>
     <span class="o">-</span> <span class="n">smoothing</span><span class="o">.</span><span class="n">so</span>
     <span class="o">-</span> <span class="n">smoothing</span><span class="o">.</span><span class="n">py</span>
-</pre></div>
+</code></pre></div>
 </div>
 </div>
 <div class="section" id="the-smoothing-function">
@@ -91,7 +94,7 @@ barycentre of its neighbours.</p>
 <p>By the way, I have no real experience in writing C++ code, so i am sure that this
 can be done a lot more elegantly and efficiently.
 I would be happy to hear about any and all suggestions (<a class="reference external" href="mailto:vanmelet&#37;&#52;&#48;ethz&#46;ch">vanmelet<span>&#64;</span>ethz<span>&#46;</span>ch</a>).</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span>
+<div class="language-cpp notranslate"><div class="highlight"><pre><code><span></span><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span>
 
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 
@@ -153,7 +156,7 @@ I would be happy to hear about any and all suggestions (<a class="reference exte
         <span class="n">func</span><span class="p">(</span><span class="n">k</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 </div>
 </div>
 <div class="section" id="the-ctypes-wrapper">
@@ -189,7 +192,7 @@ My understanding of this is based on whatever google spat out and a few SO posts
 </ul>
 <p>We want to be able to call the function from Python, which essentially boils down
 to something like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctypes</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">ctypes</span>
 <span class="kn">import</span> <span class="nn">compas</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
 <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
@@ -270,29 +273,29 @@ to something like this:</p>
 <span class="n">smoothing</span><span class="o">.</span><span class="n">smooth_centroid</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 
 <span class="c1"># ==============================================================================</span>
-</pre></div>
+</code></pre></div>
 </div>
 <div class="section" id="c-compatible-types-and-data">
 <h3>C-compatible types and data</h3>
 <p>Some of these conversion are quite trivial. For example, converting an integer is simply:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c_v</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-</pre></div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">c_v</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</code></pre></div>
 </div>
 <p>Also the 1D arrays are not too complicated. For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c_fixed_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span> <span class="o">*</span> <span class="n">v</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">c_fixed_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span> <span class="o">*</span> <span class="n">v</span>
 <span class="n">c_fixed_data</span> <span class="o">=</span> <span class="n">c_fixed_type</span><span class="p">(</span><span class="o">*</span><span class="n">fixed</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>The 2D arrays are already a bit trickier. For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c_vertex_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span> <span class="o">*</span> <span class="mi">3</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">c_vertex_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span> <span class="o">*</span> <span class="mi">3</span>
 <span class="n">c_vertices_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span>
 <span class="n">c_vertices_data</span> <span class="o">=</span> <span class="n">c_vertices_type</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">c_vertex_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">])</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>Converting the callback is also quite straightforward:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c_callback_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">c_int</span><span class="p">)</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">c_callback_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">c_int</span><span class="p">)</span>
 <span class="n">c_callback</span> <span class="o">=</span> <span class="n">c_callback_type</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>To simplify the construction of C-compatible types, and C-compatible data,
 there are a few helper classes in <a class="reference internal" href="../api/compas.interop.html#module-compas.interop" title="compas.interop"><code class="xref py py-mod docutils literal notranslate"><span class="pre">compas.interop</span></code></a>:</p>
@@ -302,7 +305,7 @@ there are a few helper classes in <a class="reference internal" href="../api/com
 <li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">compas.interop.core.cpp.xdarray.Array3D</span></code></p></li>
 </ul>
 <p>With these helpers, the code for the conversion becomes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ==============================================================================</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># ==============================================================================</span>
 <span class="c1"># convert the python data to C-compatible types</span>
 <span class="c1"># ==============================================================================</span>
 
@@ -313,11 +316,11 @@ there are a few helper classes in <a class="reference internal" href="../api/com
 <span class="n">c_callback</span>   <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">)</span>
 
 <span class="c1"># ==============================================================================</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>Then we let the smoothing function what it can expect in terms of types by setting
 the argument types of the callable:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ==============================================================================</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># ==============================================================================</span>
 <span class="c1"># set the argument types for the smoothing function</span>
 <span class="c1"># and call it with C-compatible data</span>
 <span class="c1"># ==============================================================================</span>
@@ -343,13 +346,13 @@ the argument types of the callable:</p>
 <span class="p">)</span>
 
 <span class="c1"># ==============================================================================</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>The last step is to define the functionality of the callback.
 The goal is to visualise the changing geometry
 and to change the location of the fixed points
 during the smoothing process; in C++, but from Python.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ==============================================================================</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># ==============================================================================</span>
 <span class="c1"># define the callback function</span>
 <span class="c1"># ==============================================================================</span>
 
@@ -375,14 +378,14 @@ during the smoothing process; in C++, but from Python.</p>
         <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
 
 <span class="c1"># ==============================================================================</span>
-</pre></div>
+</code></pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="the-result">
 <h2>The result</h2>
 <p>Putting it all together, we get the following script. Simply copy-paste it and run…</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctypes</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">ctypes</span>
 <span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">compas</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
@@ -499,7 +502,7 @@ during the smoothing process; in C++, but from Python.</p>
 <span class="c1"># keep the plotting window alive</span>
 
 <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
+</code></pre></div>
 </div>
 </div>
 <div class="section" id="cad-environments">
@@ -508,7 +511,7 @@ during the smoothing process; in C++, but from Python.</p>
 Assuming that “<em>if it works in RhinoPython, it works everywhere</em>”, here is a script for Rhino
 that does the same as the one above,
 but uses <code class="xref py py-func docutils literal notranslate"><span class="pre">compas.geometry.smooth_centroid_cpp()</span></code> to make things a bit simpler.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
@@ -576,7 +579,7 @@ but uses <code class="xref py py-func docutils literal notranslate"><span class=
 <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">()</span>
 <span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
 <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
-</pre></div>
+</code></pre></div>
 </div>
 </div>
 </div>
@@ -701,32 +704,33 @@ var DOCUMENTATION_OPTIONS = {
 
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
             
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+            <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script> -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 
             <script src="/_static/underscore.js"></script>
             <script src="/_static/doctools.js"></script>
             <script src="/_static/js/searchtools_.js"></script>
+            <script src="/_static/js/prism.js"></script>
 
             <script>
 
 $(document).ready(function() {
-    $("div.highlight pre").each(function(i, block) {
-        hljs.highlightBlock(block);
-    });
+    // $("div.highlight pre").each(function(i, block) {
+    //     hljs.highlightBlock(block);
+    // });
 
-    $("div.highlight-python div.highlight pre").before('<button class="btn copy-code"><i class="far fa-copy"></i></button>');
+    // $("div.highlight-python pre").before('<button class="btn copy-code"><i class="far fa-copy"></i></button>');
 
-    var copy_code = new Clipboard('.copy-code', {
-        target: function(trigger) {
-            return trigger.nextElementSibling;
-        }
-    });
+    // var copy_code = new Clipboard('.copy-code', {
+    //     target: function(trigger) {
+    //         return trigger.nextElementSibling;
+    //     }
+    // });
 
-    copy_code.on('success', function(event) {
-        event.clearSelection();
-    });
+    // copy_code.on('success', function(event) {
+    //     event.clearSelection();
+    // });
 
     anchors.add();
 });
