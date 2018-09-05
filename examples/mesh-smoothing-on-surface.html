@@ -69,7 +69,7 @@
 <li><p><a class="reference download internal" href="../_downloads/mesh-smoothing-on-surface.3dm" download=""><code class="xref download docutils literal notranslate"><span class="pre">mesh-smoothing-on-surface.3dm</span></code></a></p></li>
 </ul>
 </div>
-</div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Smooth a mesh on a NURBS surface.</span>
+</div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Smooth a mesh on a NURBS surface.</span>
 
 <span class="sd">- make a mesh datastructure form a given Rhino mesh</span>
 <span class="sd">- define a target surface</span>
@@ -77,26 +77,22 @@
 <span class="sd">- use a callback to pull the mesh back onto the surface at every iteration</span>
 <span class="sd">- visualize the process with a conduit</span>
 
+<span class="sd">author : Tom Van Mele, Matthias Rippmann</span>
+<span class="sd">email  : van.mele@arch.ethz.ch</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">smooth_area</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">smooth_area</span>
 
 <span class="kn">import</span> <span class="nn">compas_rhino</span>
 
-<span class="kn">from</span> <span class="nn">compas_rhino.helpers</span> <span class="k">import</span> <span class="n">mesh_from_guid</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.helpers</span> <span class="kn">import</span> <span class="n">mesh_from_guid</span>
 
-<span class="kn">from</span> <span class="nn">compas_rhino.conduits</span> <span class="k">import</span> <span class="n">LinesConduit</span>
-<span class="kn">from</span> <span class="nn">compas_rhino.geometry</span> <span class="k">import</span> <span class="n">RhinoSurface</span>
-<span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="k">import</span> <span class="n">MeshArtist</span>
-
-
-<span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="s1">&#39;Matthias Rippmann&#39;</span><span class="p">]</span>
-<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright 2017, BRG - ETH Zurich&#39;</span><span class="p">,</span>
-<span class="n">__license__</span>   <span class="o">=</span> <span class="s1">&#39;MIT&#39;</span>
-<span class="n">__email__</span>     <span class="o">=</span> <span class="s1">&#39;van.mele@arch.ethz.ch&#39;</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.conduits</span> <span class="kn">import</span> <span class="n">LinesConduit</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.geometry</span> <span class="kn">import</span> <span class="n">RhinoSurface</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="kn">import</span> <span class="n">MeshArtist</span>
 
 
 <span class="c1"># make a mesh datastructure from a Rhino mesh object</span>
@@ -114,7 +110,7 @@
 
 <span class="n">vertices</span>  <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
 <span class="n">faces</span>     <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()]</span>
-<span class="n">adjacency</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_faces</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
+<span class="n">adjacency</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_faces</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
 <span class="n">fixed</span>     <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">())</span>
 
 
@@ -155,13 +151,13 @@
         <span class="n">kmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>
     <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
 
 <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;mesh-out&#39;</span><span class="p">)</span>
-<span class="n">artist</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span><span class="n">join_faces</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">artist</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span><span class="n">join_faces</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
