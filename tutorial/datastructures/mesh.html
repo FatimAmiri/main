@@ -361,13 +361,78 @@ default attributes.</p>
 </div>
 <div class="section" id="setting-attributes">
 <h3>Setting attributes</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertex_attribute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertex_attributes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertices_attributes</span><span class="p">((</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+</code></pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="serialisation">
 <h2>Serialisation</h2>
+<div class="section" id="raw-data">
+<h3>Raw data</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">to_data</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="json">
+<h3>Json</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="s1">&#39;mesh.json&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s1">&#39;mesh.json&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="pickle">
+<h3>Pickle</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="s1">&#39;mesh.pickle&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">dumps</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mesh.pickle&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="visualisation">
 <h2>Visualisation</h2>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
+
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
+    <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">()},</span>
+    <span class="n">radius</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mf">0.3</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">()},</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">()}</span>
+<span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#00ff00&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">edges_on_boundary</span><span class="p">()},</span>
+    <span class="n">width</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mi">3</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">edges_on_boundary</span><span class="p">()}</span>
+<span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces_on_boundary</span><span class="p">()}</span>
+<span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
 </div>
 </div>
 
@@ -457,7 +522,12 @@ default attributes.</p>
 <li class="nav-item"><a class="nav-link reference internal" href="#setting-attributes">Setting attributes</a></li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="#serialisation">Serialisation</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#serialisation">Serialisation</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#raw-data">Raw data</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#json">Json</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#pickle">Pickle</a></li>
+</ul>
+</li>
 <li class="nav-item"><a class="nav-link reference internal" href="#visualisation">Visualisation</a></li>
 </ul>
 </li>
