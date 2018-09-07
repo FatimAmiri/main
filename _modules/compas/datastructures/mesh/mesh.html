@@ -107,6 +107,7 @@
 
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FromToData</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FromToJson</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FromToPickle</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexMappings</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">EdgeMappings</span>
@@ -138,7 +139,8 @@
 <span class="s2">&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="Mesh"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.html#compas.datastructures.Mesh">[docs]</a><span class="k">class</span> <span class="nc">Mesh</span><span class="p">(</span><span class="n">FromToJson</span><span class="p">,</span>
+<div class="viewcode-block" id="Mesh"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.html#compas.datastructures.Mesh">[docs]</a><span class="k">class</span> <span class="nc">Mesh</span><span class="p">(</span><span class="n">FromToPickle</span><span class="p">,</span>
+           <span class="n">FromToJson</span><span class="p">,</span>
            <span class="n">FromToData</span><span class="p">,</span>
            <span class="n">EdgeGeometry</span><span class="p">,</span>
            <span class="n">FaceHelpers</span><span class="p">,</span>
@@ -174,6 +176,16 @@
 <span class="sd">        A dictionary of general mesh attributes.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">collapse_edge</span>   <span class="o">=</span> <span class="n">mesh_collapse_edge</span>
+    <span class="n">split_face</span>      <span class="o">=</span> <span class="n">mesh_split_face</span>
+    <span class="n">split_edge</span>      <span class="o">=</span> <span class="n">mesh_split_edge</span>
+    <span class="n">unweld_vertices</span> <span class="o">=</span> <span class="n">mesh_unweld_vertices</span>
+
+    <span class="n">collapse_edge_tri</span> <span class="o">=</span> <span class="n">trimesh_collapse_edge</span>
+    <span class="n">split_edge_tri</span>    <span class="o">=</span> <span class="n">trimesh_split_edge</span>
+    <span class="n">swap_edge_tri</span>     <span class="o">=</span> <span class="n">trimesh_swap_edge</span>
+
 
 <div class="viewcode-block" id="Mesh.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.__init__.html#compas.datastructures.Mesh.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -224,10 +236,6 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;str : The name of the data structure.</span>
 
@@ -239,6 +247,10 @@
     <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -438,7 +450,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Mesh :</span>
+<span class="sd">        Mesh</span>
 <span class="sd">            A mesh object.</span>
 
 <span class="sd">        Note</span>
@@ -570,7 +582,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Mesh :</span>
+<span class="sd">        Mesh</span>
 <span class="sd">            A mesh object.</span>
 
 <span class="sd">        Examples</span>
@@ -2844,14 +2856,14 @@
         <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div></div>
 
 
-<span class="n">Mesh</span><span class="o">.</span><span class="n">collapse_edge</span> <span class="o">=</span> <span class="n">mesh_collapse_edge</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
-<span class="n">Mesh</span><span class="o">.</span><span class="n">split_face</span> <span class="o">=</span> <span class="n">mesh_split_face</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
-<span class="n">Mesh</span><span class="o">.</span><span class="n">split_edge</span> <span class="o">=</span> <span class="n">mesh_split_edge</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
-<span class="n">Mesh</span><span class="o">.</span><span class="n">unweld_vertices</span> <span class="o">=</span> <span class="n">mesh_unweld_vertices</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+<span class="c1"># Mesh.collapse_edge = mesh_collapse_edge.__get__(None, Mesh)</span>
+<span class="c1"># Mesh.split_face = mesh_split_face.__get__(None, Mesh)</span>
+<span class="c1"># Mesh.split_edge = mesh_split_edge.__get__(None, Mesh)</span>
+<span class="c1"># Mesh.unweld_vertices = mesh_unweld_vertices.__get__(None, Mesh)</span>
 
-<span class="n">Mesh</span><span class="o">.</span><span class="n">collapse_edge_tri</span> <span class="o">=</span> <span class="n">trimesh_collapse_edge</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
-<span class="n">Mesh</span><span class="o">.</span><span class="n">split_edge_tri</span> <span class="o">=</span> <span class="n">trimesh_split_edge</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
-<span class="n">Mesh</span><span class="o">.</span><span class="n">swap_edge_tri</span> <span class="o">=</span> <span class="n">trimesh_swap_edge</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">)</span>
+<span class="c1"># Mesh.collapse_edge_tri = trimesh_collapse_edge.__get__(None, Mesh)</span>
+<span class="c1"># Mesh.split_edge_tri = trimesh_split_edge.__get__(None, Mesh)</span>
+<span class="c1"># Mesh.swap_edge_tri = trimesh_swap_edge.__get__(None, Mesh)</span>
 
 
 <span class="c1"># ==============================================================================</span>

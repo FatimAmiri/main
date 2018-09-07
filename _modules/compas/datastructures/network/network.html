@@ -167,7 +167,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Network</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_key_to_str</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_key_to_str</span> <span class="o">=</span> <span class="kc">False</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;name&#39;</span>         <span class="p">:</span> <span class="s1">&#39;Network&#39;</span><span class="p">,</span>
             <span class="s1">&#39;color.vertex&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
@@ -208,7 +208,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;:obj:`str` : The name of the data structure.</span>
+        <span class="sd">&quot;&quot;&quot;str : The name of the data structure.</span>
 
 <span class="sd">        Any value assigned to this property will be stored in the attribute dict</span>
 <span class="sd">        of the data structure instance.</span>
@@ -237,8 +237,7 @@
                 <span class="s1">&#39;max_int_key&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span><span class="p">,</span> <span class="p">}</span>
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
-            <span class="n">rkey</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;vertex&#39;</span><span class="p">][</span><span class="n">rkey</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;vertex&#39;</span><span class="p">][</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">:</span>
             <span class="n">ru</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
@@ -316,11 +315,127 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span> <span class="o">=</span> <span class="n">max_int_key</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># serialisation</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Network.dump"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Network.dump.html#compas.datastructures.Network.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Dump the data representing the network to a file using Python&#39;s built-in</span>
+<span class="sd">        object serialisation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : str</span>
+<span class="sd">            Path to the dump file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;attributes&#39;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span>
+            <span class="s1">&#39;dva&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span><span class="p">,</span>
+            <span class="s1">&#39;dea&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span><span class="p">,</span>
+            <span class="s1">&#39;vertex&#39;</span>      <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">,</span>
+            <span class="s1">&#39;edge&#39;</span>        <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">,</span>
+            <span class="s1">&#39;halfedge&#39;</span>    <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">,</span>
+            <span class="s1">&#39;max_int_key&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;wb+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fo</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Network.dumps"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Network.dumps.html#compas.datastructures.Network.dumps">[docs]</a>    <span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Dump the data representing the network to a string using Python&#39;s built-in</span>
+<span class="sd">        object serialisation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The pickled string representation of the data.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;attributes&#39;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span>
+            <span class="s1">&#39;dva&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span><span class="p">,</span>
+            <span class="s1">&#39;dea&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span><span class="p">,</span>
+            <span class="s1">&#39;vertex&#39;</span>      <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">,</span>
+            <span class="s1">&#39;edge&#39;</span>        <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">,</span>
+            <span class="s1">&#39;halfedge&#39;</span>    <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">,</span>
+            <span class="s1">&#39;max_int_key&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Network.load"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Network.load.html#compas.datastructures.Network.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load serialised network data from a pickle file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : str</span>
+<span class="sd">            The path to the pickle file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fo</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;attributes&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dva&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dea&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;vertex&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;edge&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;halfedge&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;max_int_key&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Network.loads"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Network.loads.html#compas.datastructures.Network.loads">[docs]</a>    <span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load serialised network data from a pickle string.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        s : str</span>
+<span class="sd">            The pickled string.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;attributes&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dva&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dea&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;vertex&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;edge&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;halfedge&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;max_int_key&#39;</span><span class="p">]</span></div>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># constructors</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="Network.from_obj"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Network.from_obj.html#compas.datastructures.Network.from_obj">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_obj</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="s1">&#39;3f&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_obj</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a network from the data contained in an OBJ file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : str</span>
+<span class="sd">            Path to the OBJ file.</span>
+<span class="sd">        precision: str, optional</span>
+<span class="sd">            The precision of the geometric map that is used to connect the lines.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Network</span>
+<span class="sd">            A network object.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        There are a few sample files available for testing and debugging:</span>
+
+<span class="sd">        * lines.obj</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            import compas</span>
+<span class="sd">            from compas.datastructures import Network</span>
+<span class="sd">            </span>
+<span class="sd">            network = Network.from_obj(compas.get(&#39;lines.obj&#39;))</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">network</span>  <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">obj</span>      <span class="o">=</span> <span class="n">OBJ</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">)</span>
         <span class="n">vertices</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">vertices</span>
@@ -332,7 +447,36 @@
         <span class="k">return</span> <span class="n">network</span></div>
 
 <div class="viewcode-block" id="Network.from_lines"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Network.from_lines.html#compas.datastructures.Network.from_lines">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_lines</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="s1">&#39;3f&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_lines</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a network from a set of lines represented by their start and end point coordinates.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lines : list</span>
+<span class="sd">            A list of pairs of point coordinates.</span>
+<span class="sd">        precision: str, optional</span>
+<span class="sd">            The precision of the geometric map that is used to connect the lines.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Network</span>
+<span class="sd">            A network object.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            </span>
+<span class="sd">            import json</span>
+
+<span class="sd">            import compas</span>
+<span class="sd">            from compas.datastructures import Network</span>
+
+<span class="sd">            with open(compas.get(&#39;lines.json&#39;), &#39;r&#39;) as fo:</span>
+<span class="sd">                lines = json.load(fo)</span>
+
+<span class="sd">            network = Network.from_lines(lines)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">network</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">edges</span>   <span class="o">=</span> <span class="p">[]</span>
         <span class="n">vertex</span>  <span class="o">=</span> <span class="p">{}</span>
@@ -356,6 +500,16 @@
 
 <div class="viewcode-block" id="Network.from_vertices_and_edges"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Network.from_vertices_and_edges.html#compas.datastructures.Network.from_vertices_and_edges">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_vertices_and_edges</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">edges</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a network from vertices and edges.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vertices : list of list of float</span>
+<span class="sd">            A list of vertex coordinates.</span>
+<span class="sd">        edges : list of tuple of int</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">network</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">:</span>
             <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
