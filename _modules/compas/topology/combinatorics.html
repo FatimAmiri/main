@@ -56,7 +56,7 @@
 
                         
 
-                        <h1>Source code for compas.topology.combinatorial</h1><div class="highlight"><pre><code>
+                        <h1>Source code for compas.topology.combinatorics</h1><div class="highlight"><pre><code>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
@@ -68,8 +68,8 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;vertex_coloring&#39;</span><span class="p">,</span>
     <span class="s1">&#39;connected_components&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_is_connected&#39;</span><span class="p">,</span>
     <span class="s1">&#39;network_is_connected&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;mesh_is_connected&#39;</span>
 <span class="p">]</span>
 
 
@@ -136,7 +136,7 @@
     <span class="k">return</span> <span class="n">key_to_color</span></div>
 
 
-<span class="k">def</span> <span class="nf">connected_components</span><span class="p">(</span><span class="n">adjacency</span><span class="p">):</span>
+<div class="viewcode-block" id="connected_components"><a class="viewcode-back" href="../../../api/generated/compas.topology.connected_components.html#compas.topology.connected_components">[docs]</a><span class="k">def</span> <span class="nf">connected_components</span><span class="p">(</span><span class="n">adjacency</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Identify the vertices of connected components.</span>
 
 <span class="sd">    Parameters</span>
@@ -163,11 +163,16 @@
         <span class="n">visited</span> <span class="o">=</span> <span class="n">breadth_first_traverse</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
         <span class="n">tovisit</span> <span class="o">-=</span> <span class="n">visited</span>
         <span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">visited</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">components</span>
+    <span class="k">return</span> <span class="n">components</span></div>
 
 
-<span class="k">def</span> <span class="nf">network_is_connected</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<div class="viewcode-block" id="mesh_is_connected"><a class="viewcode-back" href="../../../api/generated/compas.topology.mesh_is_connected.html#compas.topology.mesh_is_connected">[docs]</a><span class="k">def</span> <span class="nf">mesh_is_connected</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Verify that the mesh is connected.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh data structure.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -177,33 +182,7 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    A network is connected if the following conditions are fulfilled:</span>
-
-<span class="sd">    * For every two vertices a path exists connecting them.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="n">nodes</span> <span class="o">=</span> <span class="n">breadth_first_traverse</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">network</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">())</span>
-
-    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="n">network</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span>
-
-
-<span class="k">def</span> <span class="nf">mesh_is_connected</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Verify that the mesh is connected.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    bool</span>
-<span class="sd">        True, if the mesh is connected.</span>
-<span class="sd">        False, otherwise.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    A mesh is connected if the following conditions are fulfilled:</span>
-
-<span class="sd">    * For every two vertices a path exists connecting them.</span>
+<span class="sd">    A mesh is connected if for every two vertices a path exists connecting them.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
@@ -211,7 +190,29 @@
 
     <span class="n">nodes</span> <span class="o">=</span> <span class="n">breadth_first_traverse</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">())</span>
 
-    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="n">mesh</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="n">mesh</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="network_is_connected"><a class="viewcode-back" href="../../../api/generated/compas.topology.network_is_connected.html#compas.topology.network_is_connected">[docs]</a><span class="k">def</span> <span class="nf">network_is_connected</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Verify that the network is connected.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        True, if the network is connected.</span>
+<span class="sd">        False, otherwise.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    A network is connected if for every two vertices a path exists connecting them.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">nodes</span> <span class="o">=</span> <span class="n">breadth_first_traverse</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">network</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="n">network</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -227,9 +228,6 @@
     <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grid_irregular.obj&#39;</span><span class="p">))</span>
 
     <span class="n">components</span> <span class="o">=</span> <span class="n">connected_components</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">network_is_connected</span><span class="p">(</span><span class="n">network</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
 
     <span class="n">key_color</span> <span class="o">=</span> <span class="n">vertex_coloring</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">)</span>
 
