@@ -1,4 +1,9 @@
+import compas
+
+from compas.datastructures import Mesh
 from compas.plotters import MeshPlotter
+
+mesh = Mesh.from_obj(compas.get('faces.obj'))
 
 plotter = MeshPlotter(mesh)
 
