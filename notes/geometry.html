@@ -60,14 +60,13 @@
 
                         
 
-                        <div class="section" id="geometry">
-<h1>Geometry</h1>
-<p>This package provides functionality for working with geometry independent of CAD software.
-The package defines geometric primitives, basic geometry functions, and an implementation
-of a wide range of geometric algorithms.</p>
+                        <div class="section" id="geometry-processing">
+<h1>Geometry processing</h1>
+<div class="section" id="object-representations">
+<h2>Object representations</h2>
 <p>The functions, methods and algorithms of the geometry package take various geometric
 primitives and objects as input parameters. These primitives and objects may be passed
-into those functions as instances of the corresponding classes defined in <code class="xref py py-mod docutils literal notranslate"><span class="pre">compas.geometry.objects</span></code>
+into those functions as instances of the corresponding classes defined in <a class="reference internal" href="../api/compas.geometry.html#module-compas.geometry" title="compas.geometry"><code class="xref py py-mod docutils literal notranslate"><span class="pre">compas.geometry</span></code></a>
 or as an equivalent representation using (combinations of) built-in Python objects.
 The following table defines those representations.</p>
 <table class="table table-responsive table-bordered docutils">
@@ -82,52 +81,93 @@ The following table defines those representations.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>vector</p></td>
-<td><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of XYZ coordinates.</p></td>
+<td><p>list of XYZ coordinates.</p></td>
 </tr>
 <tr class="row-odd"><td><p>point</p></td>
-<td><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of XYZ coordinates.</p></td>
+<td><p>list of XYZ coordinates.</p></td>
 </tr>
 <tr class="row-even"><td><p>segment</p></td>
-<td><p>2-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of points.</p></td>
+<td><p>2-tuple of points.</p></td>
 </tr>
 <tr class="row-odd"><td><p>line</p></td>
-<td><p>2-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of points.</p></td>
+<td><p>2-tuple of points.</p></td>
 </tr>
 <tr class="row-even"><td><p>ray</p></td>
-<td><p>2-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of points.</p></td>
+<td><p>2-tuple of points.</p></td>
 </tr>
 <tr class="row-odd"><td><p>polyline</p></td>
-<td><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of points.</p></td>
+<td><p>list of points.</p></td>
 </tr>
 <tr class="row-even"><td><p>polygon</p></td>
-<td><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of points.</p></td>
+<td><p>list of points.</p></td>
 </tr>
 <tr class="row-odd"><td><p>plane</p></td>
-<td><p>2-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of origin (point) and normal (vector).</p></td>
+<td><p>2-tuple of origin (point) and normal (vector).</p></td>
 </tr>
 <tr class="row-even"><td><p>frame</p></td>
-<td><p>3-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of origin (point), U axis (vector) and V axis (vector).</p></td>
+<td><p>3-tuple of origin (point), U axis (vector) and V axis (vector).</p></td>
 </tr>
 <tr class="row-odd"><td><p>circle</p></td>
-<td><p>3-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of center (point), normal (vector) and radius (float).</p></td>
+<td><p>3-tuple of center (point), normal (vector) and radius (float).</p></td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Many functions have an “_xy” version. These functions also accept 2D representations
-of geometric objects. However, all functions always return 3D representations
-of geometric objects. For example, <cite>scale_vector_xy</cite> accepts both 2D and 3D
-vectors, but always returns a 3D vector with the Z-component set to zero:</p>
-</div>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v3</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scale_vector_xy</span><span class="p">(</span><span class="n">v3</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
-<span class="go">[3.0, 0.0, 0.0]</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">distance_point_plane</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v2</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scale_vector_xy</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
-<span class="go">[3.0, 0.0, 0.0]</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Point</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Plane</span>
+
+<span class="n">point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">plane</span> <span class="o">=</span> <span class="n">Plane</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="n">distance_point_plane</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">plane</span><span class="p">)</span>
 </code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="mf">2.0</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">distance_point_plane</span>
+
+<span class="n">point</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">plane</span> <span class="o">=</span> <span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="n">distance_point_plane</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">plane</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="mf">2.0</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="xy-variations">
+<h2>XY variations</h2>
+<p>Many functions have an “_xy” version. These functions also accept 2D representations
+of geometric objects.
+However, they always return 3D objects.
+For example, <code class="docutils literal notranslate"><span class="pre">scale_vector_xy</span></code> accepts both 2D and 3D vectors,
+but always returns a 3D vector with the Z-component set to zero.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">scale_vector</span>
+
+<span class="n">vector</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+<span class="n">scale_vector</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">scale_vector_xy</span>
+
+<span class="n">v2</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">v3</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">]</span>
+
+<span class="n">v2</span> <span class="o">=</span> <span class="n">scale_vector_xy</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
+<span class="n">v3</span> <span class="o">=</span> <span class="n">scale_vector_xy</span><span class="p">(</span><span class="n">v3</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
+
+<span class="n">v2</span> <span class="o">==</span> <span class="n">v3</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="kc">True</span>
+</code></pre></div>
+</div>
 </div>
 </div>
 
@@ -168,7 +208,7 @@ vectors, but always returns a 3D vector with the Z-component set to zero:</p>
 <li class="nav-item active"><a class="nav-link reference internal" href="../notes.html">Notes</a><ul class="nav active">
 <li class="nav-item"><a class="nav-link reference internal" href="callbacks.html">Callbacks</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="geomaps.html">Geometric maps</a></li>
-<li class="nav-item active"><a class="nav-link active current reference internal" href="#">Geometry</a></li>
+<li class="nav-item active"><a class="nav-link active current reference internal" href="#">Geometry processing</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="interop.html">Using C/C++ code</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="xfuncs.html">CPython in Rhino</a></li>
 </ul>
@@ -201,7 +241,11 @@ vectors, but always returns a 3D vector with the Z-component set to zero:</p>
                     
 
                     <ul class="nav flex-column" id="compas-localnav">
-<li class="nav-item"><a class="nav-link reference internal" href="#">Geometry</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#">Geometry processing</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#object-representations">Object representations</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#xy-variations">XY variations</a></li>
+</ul>
+</li>
 </ul>
 
 

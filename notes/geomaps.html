@@ -19,7 +19,7 @@
         <link rel="stylesheet" type="text/css" href="../_static/css/compas-reference.css" />
 
         
-            <link rel="next" title="Geometry" href="geometry.html" />
+            <link rel="next" title="Geometry processing" href="geometry.html" />
         
         
         
@@ -74,18 +74,14 @@ The keys of a dictionary form a set. Therefore the keys are unique and lookups i
 a dictionary are very fast.</p>
 <div class="section" id="comparing-distances">
 <h2>Comparing distances</h2>
-<ul class="simple">
-<li><p><code class="xref download docutils literal notranslate"><span class="pre">lines.json</span></code></p></li>
-<li><p><code class="xref download docutils literal notranslate"><span class="pre">lines_big.json</span></code></p></li>
-<li><p><code class="xref download docutils literal notranslate"><span class="pre">lines_bigger.json</span></code></p></li>
-</ul>
 <p>The concept is best explained with an example. Consider a set of line segments defined
 by their start and end point coordinates. To determine how the lines are connected,
 we could compute the distance between each point and all other points, identifying
 a match as soon as the distance is below a tolerance value.</p>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">compas</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;lines.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lines.json&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 <span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
@@ -148,7 +144,7 @@ a match as soon as the distance is below a tolerance value.</p>
 <p>We are not really comparing distances between points, but rather the distance
 per coordinate axis. This has the advantage that when the points don’t match
 the calculation gets interrupted faster than when calculating the full spatial
-distance. The result is not entirely the same.</p>
+distance.</p>
 </div>
 </div>
 <div class="section" id="geometric-mapping">
@@ -158,8 +154,9 @@ However, computation time grows exponentially when the number of lines increases
 Therefore, things slow down pretty quickly…</p>
 <p>A better way is to use a geometric map.</p>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">compas</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;lines.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lines.json&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 <span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
@@ -230,7 +227,7 @@ Therefore, things slow down pretty quickly…</p>
 <li class="nav-item active"><a class="nav-link reference internal" href="../notes.html">Notes</a><ul class="nav active">
 <li class="nav-item"><a class="nav-link reference internal" href="callbacks.html">Callbacks</a></li>
 <li class="nav-item active"><a class="nav-link active current reference internal" href="#">Geometric maps</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="geometry.html">Geometry</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="geometry.html">Geometry processing</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="interop.html">Using C/C++ code</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="xfuncs.html">CPython in Rhino</a></li>
 </ul>
