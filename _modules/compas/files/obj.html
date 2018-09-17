@@ -69,11 +69,18 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+    <span class="kn">import</span> <span class="nn">urllib.request</span> <span class="k">as</span> <span class="nn">urllib2</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">urllib2</span> <span class="k">import</span> <span class="n">urlopen</span>
+    <span class="kn">import</span> <span class="nn">urllib2</span>
 
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">geometric_key</span>
+
+
+<span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele &lt;vanmelet@ethz.ch&gt;&#39;</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">&#39;Copyright 2014, Block Research Group - ETH Zurich&#39;</span>
+<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">&#39;MIT License&#39;</span>
+<span class="n">__version__</span>    <span class="o">=</span> <span class="s1">&#39;0.2.7&#39;</span>
+<span class="n">__date__</span>       <span class="o">=</span> <span class="s1">&#39;Mar 31, 2015&#39;</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -83,7 +90,7 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="OBJ"><a class="viewcode-back" href="../../../api/generated/compas.files.OBJ.html#compas.files.OBJ">[docs]</a><span class="k">class</span> <span class="nc">OBJ</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="OBJ"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJ.html#compas.files.OBJ">[docs]</a><span class="k">class</span> <span class="nc">OBJ</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read and write files in OBJ format.</span>
 
 <span class="sd">    See Also</span>
@@ -91,18 +98,20 @@
 <span class="sd">    * http://paulbourke.net/dataformats/obj/</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="OBJ.__init__"><a class="viewcode-back" href="../../../api/generated/compas.files.OBJ.__init__.html#compas.files.OBJ.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="OBJ.__init__"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJ.__init__.html#compas.files.OBJ.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reader</span> <span class="o">=</span> <span class="n">OBJReader</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">OBJParser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="OBJReader"><a class="viewcode-back" href="../../../api/generated/compas.files.OBJReader.html#compas.files.OBJReader">[docs]</a><span class="k">class</span> <span class="nc">OBJReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="OBJReader"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJReader.html#compas.files.OBJReader">[docs]</a><span class="k">class</span> <span class="nc">OBJReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read the contents of an *obj* file.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filepath : str</span>
 <span class="sd">        Path to the file.</span>
+<span class="sd">    remote : bool</span>
+<span class="sd">        Optional. Is the file on a remote location? Default is ``False``.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -138,7 +147,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="OBJReader.__init__"><a class="viewcode-back" href="../../../api/generated/compas.files.OBJReader.__init__.html#compas.files.OBJReader.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="OBJReader.__init__"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJReader.__init__.html#compas.files.OBJReader.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># vertex data</span>
@@ -171,15 +180,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">post</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="OBJReader.open"><a class="viewcode-back" href="../../../api/generated/compas.files.OBJReader.open.html#compas.files.OBJReader.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="OBJReader.open"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJReader.open.html#compas.files.OBJReader.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">):</span>
-            <span class="n">resp</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="OBJReader.pre"><a class="viewcode-back" href="../../../api/generated/compas.files.OBJReader.pre.html#compas.files.OBJReader.pre">[docs]</a>    <span class="k">def</span> <span class="nf">pre</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="OBJReader.pre"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJReader.pre.html#compas.files.OBJReader.pre">[docs]</a>    <span class="k">def</span> <span class="nf">pre</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">is_continuation</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
@@ -196,10 +205,10 @@
                 <span class="n">is_continuation</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="OBJReader.post"><a class="viewcode-back" href="../../../api/generated/compas.files.OBJReader.post.html#compas.files.OBJReader.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="OBJReader.post"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJReader.post.html#compas.files.OBJReader.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="OBJReader.read"><a class="viewcode-back" href="../../../api/generated/compas.files.OBJReader.read.html#compas.files.OBJReader.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="OBJReader.read"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJReader.read.html#compas.files.OBJReader.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read the contents of the file, line by line.</span>
 
 <span class="sd">        Every line is split into a *head* and a *tail*.</span>
@@ -358,10 +367,10 @@
             <span class="k">return</span></div>
 
 
-<div class="viewcode-block" id="OBJParser"><a class="viewcode-back" href="../../../api/generated/compas.files.OBJParser.html#compas.files.OBJParser">[docs]</a><span class="k">class</span> <span class="nc">OBJParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="OBJParser"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJParser.html#compas.files.OBJParser">[docs]</a><span class="k">class</span> <span class="nc">OBJParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="OBJParser.__init__"><a class="viewcode-back" href="../../../api/generated/compas.files.OBJParser.__init__.html#compas.files.OBJParser.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reader</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">=</span> <span class="n">precision</span>
+<div class="viewcode-block" id="OBJParser.__init__"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJParser.__init__.html#compas.files.OBJParser.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reader</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">=</span> <span class="n">precision</span> <span class="k">if</span> <span class="n">precision</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;3f&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reader</span>    <span class="o">=</span> <span class="n">reader</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span>  <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>   <span class="o">=</span> <span class="kc">None</span>
@@ -378,7 +387,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">objects</span>   <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="OBJParser.parse"><a class="viewcode-back" href="../../../api/generated/compas.files.OBJParser.parse.html#compas.files.OBJParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="OBJParser.parse"><a class="viewcode-back" href="../../../reference/generated/compas.files.OBJParser.parse.html#compas.files.OBJParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">index_key</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">vertex</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -443,12 +452,10 @@
 
                                 <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../environments.html">Environments</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../notes.html">Notes</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../devguide.html">Developer Guide</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
@@ -490,7 +497,7 @@
             
 
             
-                Last updated on Sep 14, 2018.
+                Last updated on Sep 17, 2018.
             
 
             
@@ -503,7 +510,7 @@
             <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.3.2',
+    VERSION           : '0.2.7',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

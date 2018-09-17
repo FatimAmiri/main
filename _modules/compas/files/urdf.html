@@ -65,215 +65,15 @@
 
                         <h1>Source code for compas.files.urdf</h1><div class="highlight"><pre><code>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 
 <span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
 
-<span class="kn">from</span> <span class="nn">compas.files.xml</span> <span class="k">import</span> <span class="n">XML</span>
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">memoize</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;URDF&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;URDFParser&#39;</span>
 <span class="p">]</span>
-
-
-<div class="viewcode-block" id="URDF"><a class="viewcode-back" href="../../../api/generated/compas.files.URDF.html#compas.files.URDF">[docs]</a><span class="k">class</span> <span class="nc">URDF</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Parse URDF files.</span>
-
-<span class="sd">    This class abstracts away the underlying XML of the Unified Robot</span>
-<span class="sd">    Description Format (`URDF`_) and represents its as an object graph.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    xml : :class:`XML`</span>
-<span class="sd">        Instance of the XML reader/parser class.</span>
-<span class="sd">    robot : object</span>
-<span class="sd">        Root element of the URDF model, i.e. a robot instance.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-
-<span class="sd">    A detailed description of the model is available on the `URDF Model wiki`_.</span>
-<span class="sd">    This package parses URDF v1.0 according to the `URDF XSD Schema`_.</span>
-
-<span class="sd">    * `URDF`_</span>
-<span class="sd">    * `URDF Model wiki`_</span>
-<span class="sd">    * `URDF XSD Schema`_</span>
-
-<span class="sd">    .. _URDF: http://wiki.ros.org/urdf</span>
-<span class="sd">    .. _URDF Model wiki: http://wiki.ros.org/urdf/XML/model</span>
-<span class="sd">    .. _URDF XSD Schema: https://github.com/ros/urdfdom/blob/master/xsd/urdf.xsd</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="URDF.__init__"><a class="viewcode-back" href="../../../api/generated/compas.files.URDF.__init__.html#compas.files.URDF.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">robot</span> <span class="o">=</span> <span class="n">URDFParser</span><span class="o">.</span><span class="n">parse_element</span><span class="p">(</span><span class="n">xml</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">xml</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="URDF.from_file"><a class="viewcode-back" href="../../../api/generated/compas.files.URDF.from_file.html#compas.files.URDF.from_file">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parse a URDF file from a file path or file-like object.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        source : str or file</span>
-<span class="sd">            File path or file-like object.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-
-<span class="sd">        &gt;&gt;&gt; from compas.files import URDF</span>
-<span class="sd">        &gt;&gt;&gt; urdf = URDF.from_file(&#39;/urdf/ur5.urdf&#39;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">XML</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">source</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="URDF.from_string"><a class="viewcode-back" href="../../../api/generated/compas.files.URDF.from_string.html#compas.files.URDF.from_string">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parse URDF from a string.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        text : :obj:`str`</span>
-<span class="sd">            XML string.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-
-<span class="sd">        &gt;&gt;&gt; from compas.files import URDF</span>
-<span class="sd">        &gt;&gt;&gt; urdf = URDF.from_string(&#39;&lt;robot name=&quot;panda&quot;/&gt;&#39;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">XML</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">text</span><span class="p">))</span></div></div>
-
-
-<div class="viewcode-block" id="URDFParser"><a class="viewcode-back" href="../../../api/generated/compas.files.URDFParser.html#compas.files.URDFParser">[docs]</a><span class="k">class</span> <span class="nc">URDFParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Parse URDF elements into an object graph.&quot;&quot;&quot;</span>
-    <span class="n">_parsers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-
-<div class="viewcode-block" id="URDFParser.install_parser"><a class="viewcode-back" href="../../../api/generated/compas.files.URDFParser.install_parser.html#compas.files.URDFParser.install_parser">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">install_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser_type</span><span class="p">,</span> <span class="o">*</span><span class="n">tags</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Installs an URDF parser type for a defined tag.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parser_type : type</span>
-<span class="sd">            Python class handling URDF parsing of the tag.</span>
-<span class="sd">        tags : str</span>
-<span class="sd">            One or more URDF string tag that the parser can parse.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must define at least one tag&#39;</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">_parsers</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">parser_type</span></div>
-
-<div class="viewcode-block" id="URDFParser.parse_element"><a class="viewcode-back" href="../../../api/generated/compas.files.URDFParser.parse_element.html#compas.files.URDFParser.parse_element">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">parse_element</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Recursively parse URDF element and its children.</span>
-
-<span class="sd">        If the parser type implements a class method ``from_urdf``,</span>
-<span class="sd">        it will use it to parse the elemenet, otherwise</span>
-<span class="sd">        a generic implementation that relies on conventions</span>
-<span class="sd">        will be used.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        element :</span>
-<span class="sd">            XML Element node.</span>
-<span class="sd">        path : str</span>
-<span class="sd">            Full path to the element.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        object</span>
-<span class="sd">            An instance of the model object represented by the given element.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">parse_element</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">path</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">tag</span><span class="p">]))</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">element</span><span class="p">]</span>
-        <span class="n">parser_type</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_parsers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">URDFGenericElement</span>
-
-        <span class="n">metadata</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">parser_type</span><span class="p">)</span>
-
-        <span class="n">attributes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span> <span class="k">else</span> <span class="kc">None</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;from_urdf&#39;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-                <span class="n">obj</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;from_urdf&#39;</span><span class="p">](</span><span class="n">attributes</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_generic_urdf</span><span class="p">(</span>
-                    <span class="n">parser_type</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Cannot create instance of </span><span class="si">%s</span><span class="s1">. Message=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">parser_type</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
-
-        <span class="n">obj</span><span class="o">.</span><span class="n">_urdf_source</span> <span class="o">=</span> <span class="n">element</span>
-
-        <span class="k">return</span> <span class="n">obj</span></div>
-
-<div class="viewcode-block" id="URDFParser.from_generic_urdf"><a class="viewcode-back" href="../../../api/generated/compas.files.URDFParser.from_generic_urdf.html#compas.files.URDFParser.from_generic_urdf">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_generic_urdf</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser_type</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">attributes</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">build_kwargs_by_type</span><span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">parser_type</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="n">parser_type</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="URDFParser.filter_elements"><a class="viewcode-back" href="../../../api/generated/compas.files.URDFParser.filter_elements.html#compas.files.URDFParser.filter_elements">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">filter_elements</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="n">elements</span><span class="p">)</span></div>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_argname_from_element</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">metadata</span><span class="p">):</span>
-        <span class="n">init_args</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;init_args&#39;</span><span class="p">]</span>
-
-        <span class="c1"># Match URDF tag to an argument name in the constructor</span>
-        <span class="n">urdf_tag</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">_urdf_source</span><span class="o">.</span><span class="n">tag</span>
-        <span class="k">if</span> <span class="n">urdf_tag</span> <span class="ow">in</span> <span class="n">init_args</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">urdf_tag</span>
-
-        <span class="c1"># Simplistic sequence matching based on pluralization</span>
-        <span class="n">plural_tag</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">urdf_tag</span>
-        <span class="k">if</span> <span class="n">plural_tag</span> <span class="ow">in</span> <span class="n">init_args</span><span class="p">:</span>
-            <span class="n">init_args</span><span class="p">[</span><span class="s1">&#39;sequence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">return</span> <span class="n">plural_tag</span>
-
-        <span class="n">argument_name</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;argument_map&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">urdf_tag</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">argument_name</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">argument_name</span>
-
-        <span class="k">if</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;keywords&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">urdf_tag</span>
-
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot find a matching argument for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">urdf_tag</span><span class="p">)</span>
-
-<div class="viewcode-block" id="URDFParser.build_kwargs_by_type"><a class="viewcode-back" href="../../../api/generated/compas.files.URDFParser.build_kwargs_by_type.html#compas.files.URDFParser.build_kwargs_by_type">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">build_kwargs_by_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">parser_type</span><span class="p">):</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="n">metadata</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">parser_type</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_argname_from_element</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;init_args&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;init_args&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sequence&#39;</span><span class="p">]:</span>
-                <span class="n">itemlist</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span>
-                <span class="n">itemlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">itemlist</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">child</span>
-
-        <span class="k">return</span> <span class="n">result</span></div></div>
-
-
-<span class="k">class</span> <span class="nc">URDFGenericElement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generic representation for all URDF elements that</span>
-<span class="sd">    are not explicitely supported.&quot;&quot;&quot;</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_urdf</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="n">el</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-        <span class="n">el</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="n">attributes</span>
-        <span class="n">el</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span>
-        <span class="n">el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
-        <span class="k">return</span> <span class="n">el</span>
 
 
 <span class="nd">@memoize</span>
@@ -309,6 +109,170 @@
     <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;argument_map&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="s1">&#39;argument_map&#39;</span><span class="p">,</span> <span class="p">{})</span>
 
     <span class="k">return</span> <span class="n">metadata</span>
+
+
+<span class="k">class</span> <span class="nc">GenericUrdfElement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generic parser for all URDF elements that are not explicitely supported.&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_urdf</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="n">el</span> <span class="o">=</span> <span class="n">GenericUrdfElement</span><span class="p">()</span>
+        <span class="n">el</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="n">attributes</span>
+        <span class="n">el</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span>
+        <span class="n">el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="k">return</span> <span class="n">el</span>
+
+
+<div class="viewcode-block" id="URDF"><a class="viewcode-back" href="../../../reference/generated/compas.files.URDF.html#compas.files.URDF">[docs]</a><span class="k">class</span> <span class="nc">URDF</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parse and generate URDF files.</span>
+
+<span class="sd">    This class abstracts away the underlying XML of the URDF</span>
+<span class="sd">    model and represents its as an object graph.&quot;&quot;&quot;</span>
+    <span class="n">_parsers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<div class="viewcode-block" id="URDF.add_parser"><a class="viewcode-back" href="../../../reference/generated/compas.files.URDF.add_parser.html#compas.files.URDF.add_parser">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">add_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser_type</span><span class="p">,</span> <span class="o">*</span><span class="n">tags</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append an URDF parser type for a defined tag.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parser_type: Python class handling URDF parsing of the tag.</span>
+<span class="sd">            tags (:obj:`str`): One or more URDF string tag that the parser can parse.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must define at least one tag&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_parsers</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">parser_type</span></div>
+
+<div class="viewcode-block" id="URDF.parse"><a class="viewcode-back" href="../../../reference/generated/compas.files.URDF.parse.html#compas.files.URDF.parse">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a Robot model from a URDF file model description.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source: file name or file object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A robot model instance.</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">        &gt;&gt;&gt; import compas</span>
+<span class="sd">        &gt;&gt;&gt; from compas.files import URDF</span>
+<span class="sd">        &gt;&gt;&gt; robot = URDF.parse(compas.get(&#39;ur5.urdf&#39;))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_element</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="URDF.from_string"><a class="viewcode-back" href="../../../reference/generated/compas.files.URDF.from_string.html#compas.files.URDF.from_string">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a Robot model from a URDF description as string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text: string containing the XML URDF model.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A robot model instance.</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">        &gt;&gt;&gt; import compas</span>
+<span class="sd">        &gt;&gt;&gt; from compas.files import URDF</span>
+<span class="sd">        &gt;&gt;&gt; robot = URDF.from_string(&#39;&lt;robot name=&quot;panda&quot;/&gt;&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_element</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="URDF.parse_element"><a class="viewcode-back" href="../../../reference/generated/compas.files.URDF.parse_element.html#compas.files.URDF.parse_element">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse_element</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Recursively parse URDF element and its children.</span>
+
+<span class="sd">        If the parser type implements a class method ``from_urdf``,</span>
+<span class="sd">        it will use it to parse the elemenet, otherwise</span>
+<span class="sd">        a generic implementation that relies on conventions</span>
+<span class="sd">        will be used.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element: XML Element node.</span>
+<span class="sd">            path: Full path to the element.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An instance of the model object represented by the given element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">parse_element</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">path</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">tag</span><span class="p">]))</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">element</span><span class="p">]</span>
+
+        <span class="n">parser_type</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_parsers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">GenericUrdfElement</span>
+
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">parser_type</span><span class="p">)</span>
+
+        <span class="n">attributes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;from_urdf&#39;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;from_urdf&#39;</span><span class="p">](</span><span class="n">attributes</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_generic_urdf</span><span class="p">(</span>
+                    <span class="n">parser_type</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Cannot create instance of </span><span class="si">%s</span><span class="s1">. Message=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">parser_type</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+
+        <span class="n">obj</span><span class="o">.</span><span class="n">_urdf_source</span> <span class="o">=</span> <span class="n">element</span>
+
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+<div class="viewcode-block" id="URDF.from_generic_urdf"><a class="viewcode-back" href="../../../reference/generated/compas.files.URDF.from_generic_urdf.html#compas.files.URDF.from_generic_urdf">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_generic_urdf</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser_type</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">attributes</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">build_kwargs_by_type</span><span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">parser_type</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">parser_type</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="URDF.filter_elements"><a class="viewcode-back" href="../../../reference/generated/compas.files.URDF.filter_elements.html#compas.files.URDF.filter_elements">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">filter_elements</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="n">elements</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_argname_from_element</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">metadata</span><span class="p">):</span>
+        <span class="n">init_args</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;init_args&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Match URDF tag to an argument name in the constructor</span>
+        <span class="n">urdf_tag</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">_urdf_source</span><span class="o">.</span><span class="n">tag</span>
+        <span class="k">if</span> <span class="n">urdf_tag</span> <span class="ow">in</span> <span class="n">init_args</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">urdf_tag</span>
+
+        <span class="c1"># Simplistic sequence matching based on pluralization</span>
+        <span class="n">plural_tag</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">urdf_tag</span>
+        <span class="k">if</span> <span class="n">plural_tag</span> <span class="ow">in</span> <span class="n">init_args</span><span class="p">:</span>
+            <span class="n">init_args</span><span class="p">[</span><span class="s1">&#39;sequence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="n">plural_tag</span>
+
+        <span class="n">argument_name</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;argument_map&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">urdf_tag</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">argument_name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">argument_name</span>
+
+        <span class="k">if</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;keywords&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">urdf_tag</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot find a matching argument for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">urdf_tag</span><span class="p">)</span>
+
+<div class="viewcode-block" id="URDF.build_kwargs_by_type"><a class="viewcode-back" href="../../../reference/generated/compas.files.URDF.build_kwargs_by_type.html#compas.files.URDF.build_kwargs_by_type">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">build_kwargs_by_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">parser_type</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">parser_type</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_argname_from_element</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;init_args&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;init_args&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sequence&#39;</span><span class="p">]:</span>
+                <span class="n">itemlist</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="n">itemlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">itemlist</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">child</span>
+
+        <span class="k">return</span> <span class="n">result</span></div></div>
 </code></pre></div>
                         
                     
@@ -340,12 +304,10 @@
 
                                 <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../environments.html">Environments</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../notes.html">Notes</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../devguide.html">Developer Guide</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
@@ -387,7 +349,7 @@
             
 
             
-                Last updated on Sep 14, 2018.
+                Last updated on Sep 17, 2018.
             
 
             
@@ -400,7 +362,7 @@
             <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.3.2',
+    VERSION           : '0.2.7',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',
