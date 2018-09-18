@@ -66,19 +66,13 @@
                         <h1>Source code for compas_rhino.utilities.geometry</h1><div class="highlight"><pre><code>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
+<span class="kn">import</span> <span class="nn">compas</span>
+
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="k">as</span> <span class="nn">rs</span>
 
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">platform</span>
-    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_implementation</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;IronPython&#39;</span><span class="p">:</span>
-        <span class="k">raise</span>
-
-
-<span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Matthias Rippmann&#39;</span><span class="p">,</span> <span class="p">]</span>
-<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">&#39;Copyright 2017, BLOCK Research Group - ETH Zurich&#39;</span>
-<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">&#39;MIT License&#39;</span>
-<span class="n">__email__</span>      <span class="o">=</span> <span class="s1">&#39;rippmann@ethz.ch&#39;</span>
+    <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_ironpython</span><span class="p">()</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -86,12 +80,7 @@
 <span class="p">]</span>
 
 
-<span class="c1"># ==============================================================================</span>
-<span class="c1"># Functions</span>
-<span class="c1"># ==============================================================================</span>
-
-
-<div class="viewcode-block" id="uv_points_from_surface"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.uv_points_from_surface.html#compas_rhino.utilities.uv_points_from_surface">[docs]</a><span class="k">def</span> <span class="nf">uv_points_from_surface</span><span class="p">(</span><span class="n">srf</span><span class="p">,</span> <span class="n">u_div</span><span class="p">,</span> <span class="n">v_div</span><span class="p">):</span>
+<div class="viewcode-block" id="uv_points_from_surface"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.uv_points_from_surface.html#compas_rhino.utilities.uv_points_from_surface">[docs]</a><span class="k">def</span> <span class="nf">uv_points_from_surface</span><span class="p">(</span><span class="n">srf</span><span class="p">,</span> <span class="n">u_div</span><span class="p">,</span> <span class="n">v_div</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Creates a nested uv point list from a surface.</span>
 
 <span class="sd">    Parameters</span>
@@ -122,6 +111,14 @@
             <span class="n">uv_points</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">EvaluateSurface</span><span class="p">(</span><span class="n">srf</span><span class="p">,</span> <span class="n">uv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="n">uv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">uv_points</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">pass</span>
 </code></pre></div>
                         
                     
@@ -153,10 +150,12 @@
 
                                 <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../environments.html">Environments</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../notes.html">Notes</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../devguide.html">Developer Guide</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
@@ -211,7 +210,7 @@
             <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.2.7',
+    VERSION           : '0.3.2',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

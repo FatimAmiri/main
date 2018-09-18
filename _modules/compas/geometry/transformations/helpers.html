@@ -1,0 +1,775 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>COMPAS</title>
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    
+        <meta name="author" content="Tom Van Mele" />
+        <meta name="description" content="compas is a computational framework for research in architecture and structures." />
+
+        <link rel="shortcut icon" href="../../../../_static/images/compas.ico" type="image/x-icon">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
+
+        <link rel="stylesheet" type="text/css" href="../../../../_static/css/prism.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../_static/css/compas.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../_static/css/compas-reference.css" />
+
+        
+        
+        
+
+        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    </head>
+    <body data-spy="scroll" data-target="#compas-localnav">
+
+        <header class="navbar navbar-expand compas-navbar">
+            <a class="navbar-brand" href="/">
+                <img src="/_static/images/compas_icon_white.png" width="36px" height="36px" alt="compas" />
+            </a>
+
+            <ul class="navbar-nav">
+                <li class="nav-item ">
+                    <a class="nav-link " href="/">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link active" href="/main/">Main library</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link " href="/packages/">Additional Packages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="http://forum.compas-framework.org">Forum</a>
+                </li>
+            </ul>
+        </header>
+        
+        <div class="container-fluid compas-container">
+            <div class="row flex-xl-nowrap">
+
+                <!-- main content -->
+
+                
+
+                <main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+
+                
+
+                    
+
+                        
+
+                        <h1>Source code for compas.geometry.transformations.helpers</h1><div class="highlight"><pre><code>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">normalize_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">normalize_vector_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">cross_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">dot_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">multiply_matrix_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">multiply_matrices</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">transpose_matrix</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">norm_vector</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">_EPS</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;transform_points&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;transform_points_numpy&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;transform_vectors&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;transform_vectors_numpy&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;homogenize&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dehomogenize&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;homogenize_numpy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dehomogenize_numpy&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;local_axes&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;local_coords_numpy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;global_coords_numpy&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;determinant&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;inverse&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;identity_matrix&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;compose_matrix&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;decompose_matrix&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;mesh_transform&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_transformed&#39;</span><span class="p">,</span>
+
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">transform_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dehomogenize</span><span class="p">(</span><span class="n">multiply_matrices</span><span class="p">(</span><span class="n">homogenize</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">transpose_matrix</span><span class="p">(</span><span class="n">T</span><span class="p">)))</span>
+
+
+<span class="k">def</span> <span class="nf">transform_vectors</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dehomogenize</span><span class="p">(</span><span class="n">multiply_matrices</span><span class="p">(</span><span class="n">homogenize</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">transpose_matrix</span><span class="p">(</span><span class="n">T</span><span class="p">)))</span>
+
+
+<span class="k">def</span> <span class="nf">transform_points_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">homogenize_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dehomogenize_numpy</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">transform_vectors_numpy</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">vectors</span> <span class="o">=</span> <span class="n">homogenize_numpy</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dehomogenize_numpy</span><span class="p">(</span><span class="n">vectors</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># helping helpers</span>
+<span class="c1"># ==============================================================================</span>
+
+
+<span class="k">def</span> <span class="nf">homogenize</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Homogenise a list of vectors.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vectors : list</span>
+<span class="sd">        A list of vectors.</span>
+<span class="sd">    w : float, optional</span>
+<span class="sd">        Homogenisation parameter.</span>
+<span class="sd">        Defaults to ``1.0``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        Homogenised vectors.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Vectors described by XYZ components are homogenised by appending a homogenisation</span>
+<span class="sd">    parameter to the components, and by dividing each component by that parameter.</span>
+<span class="sd">    Homogenisatioon of vectors is often used in relation to transformations.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; vectors = [[1.0, 0.0, 0.0]]</span>
+<span class="sd">    &gt;&gt;&gt; homogenize(vectors)</span>
+<span class="sd">    [[1.0, 0.0, 0.0, 1.0]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="n">x</span> <span class="o">*</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span> <span class="o">*</span> <span class="n">w</span><span class="p">,</span> <span class="n">z</span> <span class="o">*</span> <span class="n">w</span><span class="p">,</span> <span class="n">w</span><span class="p">]</span> <span class="k">if</span> <span class="n">w</span> <span class="k">else</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">dehomogenize</span><span class="p">(</span><span class="n">vectors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dehomogenise a list of vectors.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vectors : list</span>
+<span class="sd">        A list of vectors.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        Dehomogenised vectors.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="n">x</span> <span class="o">/</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span> <span class="o">/</span> <span class="n">w</span><span class="p">,</span> <span class="n">z</span> <span class="o">/</span> <span class="n">w</span><span class="p">]</span> <span class="k">if</span> <span class="n">w</span> <span class="k">else</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">homogenize_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">hstack</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">ones</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">((</span><span class="n">points</span><span class="p">,</span> <span class="n">w</span> <span class="o">*</span> <span class="n">ones</span><span class="p">((</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))))</span>
+    <span class="k">return</span> <span class="n">points</span>
+
+
+<span class="k">def</span> <span class="nf">dehomogenize_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">points</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">points</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+
+<span class="c1"># this function will not always work</span>
+<span class="c1"># it is also a duplicate of stuff found in matrices and frame</span>
+<span class="k">def</span> <span class="nf">local_axes</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">a</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">c</span> <span class="o">-</span> <span class="n">a</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">cross_vectors</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">cross_vectors</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+
+<span class="c1"># this should be defined somewhere else</span>
+<span class="c1"># and should have a python equivalent</span>
+<span class="c1"># there is an implementation available in frame</span>
+<span class="k">def</span> <span class="nf">local_coords_numpy</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">xyz</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+    <span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="k">import</span> <span class="n">solve</span>
+
+    <span class="n">uvw</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">uvw</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="n">asarray</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">rst</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">uvw</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rst</span><span class="o">.</span><span class="n">T</span>
+
+
+<span class="c1"># this should be defined somewhere else</span>
+<span class="c1"># and should have a python equivalent</span>
+<span class="c1"># there is an implementation available in frame</span>
+<span class="k">def</span> <span class="nf">global_coords_numpy</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">rst</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+
+    <span class="n">uvw</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">uvw</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">rst</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">rst</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">uvw</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rst</span><span class="p">)</span> <span class="o">+</span> <span class="n">asarray</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">xyz</span><span class="o">.</span><span class="n">T</span>
+
+
+<span class="k">def</span> <span class="nf">identity_matrix</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="mf">1.</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">determinant</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the determinant of a square matrix M.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    M : :obj:`list` of :obj:`list` of :obj:`float`</span>
+<span class="sd">        The square matrix of any dimension.</span>
+<span class="sd">    check : bool</span>
+<span class="sd">        If true checks if matrix is squared. Defaults to True.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If matrix is not a square matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :obj:`float`</span>
+<span class="sd">        The determinant.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">M</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">!=</span> <span class="n">dim</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not a square matrix&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="nb">sum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">t1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">t1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">m</span> <span class="o">!=</span> <span class="n">t</span><span class="p">):</span>
+                        <span class="n">d</span><span class="p">[</span><span class="n">t1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="n">t1</span><span class="p">][</span><span class="n">m</span><span class="p">])</span>
+            <span class="n">M1</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">d</span><span class="p">]</span>
+            <span class="nb">sum</span> <span class="o">=</span> <span class="nb">sum</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span> <span class="n">determinant</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sum</span>
+
+
+<span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the inverse of a square matrix M.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    M : :obj:`list` of :obj:`list` of :obj:`float`</span>
+<span class="sd">        The square matrix of any dimension.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the matrix is not squared</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the matrix is singular.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the matrix is not invertible.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :obj:`list` of :obj:`list` of :obj:`float`</span>
+<span class="sd">        The inverted matrix.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import Frame</span>
+<span class="sd">    &gt;&gt;&gt; f = Frame([1, 1, 1], [0.68, 0.68, 0.27], [-0.67, 0.73, -0.15])</span>
+<span class="sd">    &gt;&gt;&gt; T = matrix_from_frame(f)</span>
+<span class="sd">    &gt;&gt;&gt; I = multiply_matrices(T, inverse(T))</span>
+<span class="sd">    &gt;&gt;&gt; I2 = identity_matrix(4)</span>
+<span class="sd">    &gt;&gt;&gt; allclose(I[0], I2[0])</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; allclose(I[1], I2[1])</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; allclose(I[2], I2[2])</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; allclose(I[3], I2[3])</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">matrix_minor</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">row</span><span class="p">[:</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">row</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="p">(</span><span class="n">m</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:])]</span>
+
+    <span class="n">detM</span> <span class="o">=</span> <span class="n">determinant</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>  <span class="c1"># raises ValueError if matrix is not squared</span>
+
+    <span class="k">if</span> <span class="n">detM</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The matrix is singular.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[[</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">detM</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">detM</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">detM</span><span class="p">,</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">detM</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cofactors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">)):</span>
+            <span class="n">cofactor_row</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">)):</span>
+                <span class="n">minor</span> <span class="o">=</span> <span class="n">matrix_minor</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+                <span class="n">cofactor_row</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">c</span><span class="p">))</span> <span class="o">*</span> <span class="n">determinant</span><span class="p">(</span><span class="n">minor</span><span class="p">))</span>
+            <span class="n">cofactors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cofactor_row</span><span class="p">)</span>
+        <span class="n">cofactors</span> <span class="o">=</span> <span class="n">transpose_matrix</span><span class="p">(</span><span class="n">cofactors</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cofactors</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cofactors</span><span class="p">)):</span>
+                <span class="n">cofactors</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">cofactors</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">/</span> <span class="n">detM</span>
+        <span class="k">return</span> <span class="n">cofactors</span>
+
+
+<span class="k">def</span> <span class="nf">decompose_matrix</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the components of rotation, translation, scale, shear, and</span>
+<span class="sd">    perspective of a given transformation matrix M.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    M : :obj:`list` of :obj:`list` of :obj:`float`</span>
+<span class="sd">        The square matrix of any dimension.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If matrix is singular or degenerative.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    scale : :obj:`list` of :obj:`float`</span>
+<span class="sd">        The 3 scale factors in x-, y-, and z-direction.</span>
+<span class="sd">    shear : :obj:`list` of :obj:`float`</span>
+<span class="sd">        The 3 shear factors for x-y, x-z, and y-z axes.</span>
+<span class="sd">    angles : :obj:`list` of :obj:`float`</span>
+<span class="sd">        The rotation specified through the 3 Euler angles about static x, y, z axes.</span>
+<span class="sd">    translation : :obj:`list` of :obj:`float`</span>
+<span class="sd">        The 3 values of translation.</span>
+<span class="sd">    perspective : :obj:`list` of :obj:`float`</span>
+<span class="sd">        The 4 perspective entries of the matrix.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; trans1 = [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; angle1 = [-2.142, 1.141, -0.142]</span>
+<span class="sd">    &gt;&gt;&gt; scale1 = [0.123, 2, 0.5]</span>
+<span class="sd">    &gt;&gt;&gt; T = matrix_from_translation(trans1)</span>
+<span class="sd">    &gt;&gt;&gt; R = matrix_from_euler_angles(angle1)</span>
+<span class="sd">    &gt;&gt;&gt; S = matrix_from_scale_factors(scale1)</span>
+<span class="sd">    &gt;&gt;&gt; M = multiply_matrices(multiply_matrices(T, R), S)</span>
+<span class="sd">    &gt;&gt;&gt; # M = compose_matrix(scale1, None, angle1, trans1, None)</span>
+<span class="sd">    &gt;&gt;&gt; scale2, shear2, angle2, trans2, persp2 = decompose_matrix(M)</span>
+<span class="sd">    &gt;&gt;&gt; allclose(scale1, scale2)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; allclose(angle1, angle2)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; allclose(trans1, trans2)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">detM</span> <span class="o">=</span> <span class="n">determinant</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>  <span class="c1"># raises ValueError if matrix is not squared</span>
+
+    <span class="k">if</span> <span class="n">detM</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The matrix is singular.&quot;</span><span class="p">)</span>
+
+    <span class="n">Mt</span> <span class="o">=</span> <span class="n">transpose_matrix</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">Mt</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">_EPS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The element [3,3] of the matrix is zero.&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">Mt</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">/=</span> <span class="n">Mt</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="n">translation</span> <span class="o">=</span> <span class="p">[</span><span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">M</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">]]</span>
+
+    <span class="c1"># scale, shear, rotation</span>
+    <span class="c1"># copy Mt[:3, :3] into row</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+    <span class="n">shear</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+
+    <span class="n">row</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">Mt</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+
+    <span class="n">scale</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm_vector</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="n">scale</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">shear</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">dot_vectors</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">shear</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">scale</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm_vector</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="n">scale</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">shear</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/=</span> <span class="n">scale</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">shear</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dot_vectors</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">shear</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">shear</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dot_vectors</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">shear</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">scale</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm_vector</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="n">scale</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">shear</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/=</span> <span class="n">scale</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">shear</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/=</span> <span class="n">scale</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">dot_vectors</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cross_vectors</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">scale</span><span class="p">]</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span>
+
+    <span class="c1"># use base vectors??</span>
+    <span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="o">-</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="o">-</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># perspective</span>
+    <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">Mt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">_EPS</span> <span class="ow">and</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">Mt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">_EPS</span> <span class="ow">and</span> \
+            <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">Mt</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">_EPS</span><span class="p">:</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">Mt</span><span class="p">)</span>
+        <span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">P</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">P</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">P</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span>
+        <span class="n">Ptinv</span> <span class="o">=</span> <span class="n">inverse</span><span class="p">(</span><span class="n">transpose_matrix</span><span class="p">(</span><span class="n">P</span><span class="p">))</span>
+        <span class="n">perspective</span> <span class="o">=</span> <span class="n">multiply_matrix_vector</span><span class="p">(</span><span class="n">Ptinv</span><span class="p">,</span> <span class="p">[</span><span class="n">Mt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">Mt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span>
+                                                     <span class="n">Mt</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">Mt</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">3</span><span class="p">]])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">perspective</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">translation</span><span class="p">,</span> <span class="n">perspective</span>
+
+
+<span class="k">def</span> <span class="nf">compose_matrix</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shear</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">translation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">perspective</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates a matrix from the components of scale, shear, euler_angles,</span>
+<span class="sd">    translation and perspective.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scale : :obj:`list` of :obj:`float`</span>
+<span class="sd">        The 3 scale factors in x-, y-, and z-direction.</span>
+<span class="sd">    shear : :obj:`list` of :obj:`float`</span>
+<span class="sd">        The 3 shear factors for x-y, x-z, and y-z axes.</span>
+<span class="sd">    angles : :obj:`list` of :obj:`float`</span>
+<span class="sd">        The rotation specified through the 3 Euler angles about static x, y, z axes.</span>
+<span class="sd">    translation : :obj:`list` of :obj:`float`</span>
+<span class="sd">        The 3 values of translation.</span>
+<span class="sd">    perspective : :obj:`list` of :obj:`float`</span>
+<span class="sd">        The 4 perspective entries of the matrix.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; trans1 = [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; angle1 = [-2.142, 1.141, -0.142]</span>
+<span class="sd">    &gt;&gt;&gt; scale1 = [0.123, 2, 0.5]</span>
+<span class="sd">    &gt;&gt;&gt; M = compose_matrix(scale1, None, angle1, trans1, None)</span>
+<span class="sd">    &gt;&gt;&gt; scale2, shear2, angle2, trans2, persp2 = decompose_matrix(M)</span>
+<span class="sd">    &gt;&gt;&gt; allclose(scale1, scale2)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; allclose(angle1, angle2)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; allclose(trans1, trans2)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">1.</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">perspective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">matrix_from_perspective_entries</span><span class="p">(</span><span class="n">perspective</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">multiply_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">translation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">matrix_from_translation</span><span class="p">(</span><span class="n">translation</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">multiply_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">matrix_from_euler_angles</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">multiply_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shear</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Sh</span> <span class="o">=</span> <span class="n">matrix_from_shear_entries</span><span class="p">(</span><span class="n">shear</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">multiply_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">Sh</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Sc</span> <span class="o">=</span> <span class="n">matrix_from_scale_factors</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">multiply_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">Sc</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">/=</span> <span class="n">M</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">M</span>
+
+
+<span class="c1"># TODO: this is really slow</span>
+<div class="viewcode-block" id="mesh_transform"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.mesh_transform.html#compas.geometry.mesh_transform">[docs]</a><span class="k">def</span> <span class="nf">mesh_transform</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform a mesh.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : Mesh</span>
+<span class="sd">        The mesh.</span>
+<span class="sd">    transformation : Transformation</span>
+<span class="sd">        The transformation.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The mesh is modified in-place.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; mesh = Mesh.from_obj(compas.get(&#39;cube.obj&#39;))</span>
+<span class="sd">    &gt;&gt;&gt; T = matrix_from_axis_and_angle([0, 0, 1], pi / 4)</span>
+<span class="sd">    &gt;&gt;&gt; tmesh = mesh.copy()</span>
+<span class="sd">    &gt;&gt;&gt; mesh_transform(tmesh, T)</span>
+<span class="sd">    &gt;&gt;&gt; viewer.mesh = tmesh  # this should be a list of meshes</span>
+<span class="sd">    &gt;&gt;&gt; viewer.show()</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`mesh_transformed`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">transform_points</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xyz</span><span class="p">)):</span>
+        <span class="n">mesh</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">xyz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">xyz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="n">xyz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]})</span></div>
+
+
+<span class="c1"># TODO: this is really slow</span>
+<div class="viewcode-block" id="mesh_transformed"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.mesh_transformed.html#compas.geometry.mesh_transformed">[docs]</a><span class="k">def</span> <span class="nf">mesh_transformed</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform a copy of ``mesh``.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : Mesh</span>
+<span class="sd">        The mesh.</span>
+<span class="sd">    transformation : Transformation</span>
+<span class="sd">        The transformation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        A transformed independent copy of ``mesh``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The original mesh is not modified.</span>
+<span class="sd">    Instead a transformed independent copy is returned.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; mesh = Mesh.from_obj(compas.get(&#39;cube.obj&#39;))</span>
+<span class="sd">    &gt;&gt;&gt; T = matrix_from_axis_and_angle([0, 0, 1], pi / 4)</span>
+<span class="sd">    &gt;&gt;&gt; tmesh = mesh_transformed(mesh, T)</span>
+<span class="sd">    &gt;&gt;&gt; viewer.mesh = tmesh  # this should be a list of meshes</span>
+<span class="sd">    &gt;&gt;&gt; viewer.show()</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`mesh_transform`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mesh_copy</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">mesh_transform</span><span class="p">(</span><span class="n">mesh_copy</span><span class="p">,</span> <span class="n">transformation</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mesh_copy</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="k">pass</span>
+</code></pre></div>
+                        
+                    
+
+                </main>
+
+                <!-- site navigation sidebar -->
+
+                
+
+                <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation"> 
+                    <div class="navbar-light">
+
+                        <form id="" class="d-flex compas-searchbox" action="../../../../search.html" method="get">
+                            <input class="form-control" type="text" name="q" placeholder="Search docs" />
+                            <input type="hidden" name="check_keywords" value="yes" />
+                            <input type="hidden" name="area" value="default" />
+
+                            <button class="navbar-toggler d-md-none compas-navigation-toggler" type="button" data-toggle="collapse" data-target="#compas-navigation" aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                        </form>
+
+                        
+                        
+
+                            <div class="navbar-expand-md">
+                                <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
+
+                                <ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../environments.html">Environments</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorial.html">Tutorial</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../notes.html">Notes</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../devguide.html">Developer Guide</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../license.html">License</a></li>
+</ul>
+
+
+                                </div>
+                            </div>
+
+                        
+
+                    </div>
+                </div>
+
+                
+
+                <!-- table of contents of main content -->
+                
+                
+
+                <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+
+                    
+
+                    
+
+                </div>
+
+                
+
+            </div>
+        </div>
+
+        <footer class="compas-footer">
+            
+                
+                    &#169; Copyright 2017, Block Research Group - ETH Zurich.
+                
+            
+
+            
+                Last updated on Sep 18, 2018.
+            
+
+            
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+            
+        </footer>
+
+        
+
+            <script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT          : '',
+    VERSION           : '0.3.2',
+    COLLAPSE_INDEX    : false,
+    FILE_SUFFIX       : '.html',
+    HAS_SOURCE        : 'false',
+    SOURCELINK_SUFFIX : '.txt'
+};
+            </script>
+
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+            
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
+            <script src="../../../../_static/underscore.js"></script>
+            <script src="../../../../_static/doctools.js"></script>
+            <script src="../../../../_static/js/searchtools_.js"></script>
+            <script src="../../../../_static/js/prism.js"></script>
+
+            <script>
+$(document).ready(function() {
+
+    // $(".language-default pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-bash pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-python pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-c pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-cpp pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-fortran pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-markdown pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-rest pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    anchors.add();
+});
+            </script>
+
+        
+    </body>
+</html>
