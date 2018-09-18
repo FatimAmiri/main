@@ -64,13 +64,7 @@
                         
 
                         <h1>Source code for compas_rhino.utilities.objects</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
-
-<span class="kn">from</span> <span class="nn">ast</span> <span class="k">import</span> <span class="n">literal_eval</span>
-
-<span class="kn">import</span> <span class="nn">compas</span>
+<span></span><span class="kn">from</span> <span class="nn">ast</span> <span class="k">import</span> <span class="n">literal_eval</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">System</span>
@@ -81,13 +75,21 @@
     <span class="n">find_object</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">Objects</span><span class="o">.</span><span class="n">Find</span>
 
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_ironpython</span><span class="p">()</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="k">if</span> <span class="s1">&#39;ironpython&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+        <span class="k">raise</span>
 
 <span class="k">else</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">purge_object</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">Objects</span><span class="o">.</span><span class="n">Purge</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="n">purge_object</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="n">__author__</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__copyright__</span>  <span class="o">=</span> <span class="s1">&#39;Copyright 2014, BLOCK Research Group - ETH Zurich&#39;</span>
+<span class="n">__license__</span>    <span class="o">=</span> <span class="s1">&#39;MIT License&#39;</span>
+<span class="n">__email__</span>      <span class="o">=</span> <span class="s1">&#39;vanmelet@ethz.ch&#39;</span>
 
 
 <span class="c1"># get_point_coordinates =&gt; get_coordinates_points</span>
@@ -153,7 +155,7 @@
 <span class="c1"># ==============================================================================</span>
 
 
-<div class="viewcode-block" id="get_objects"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_objects.html#compas_rhino.utilities.get_objects">[docs]</a><span class="k">def</span> <span class="nf">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_objects"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_objects.html#compas_rhino.utilities.get_objects">[docs]</a><span class="k">def</span> <span class="nf">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">guids</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">AllObjects</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
         <span class="n">guids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">ObjectsByName</span><span class="p">(</span><span class="n">name</span><span class="p">)))</span>
@@ -166,14 +168,14 @@
     <span class="k">return</span> <span class="n">guids</span></div>
 
 
-<div class="viewcode-block" id="delete_object"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.delete_object.html#compas_rhino.utilities.delete_object">[docs]</a><span class="k">def</span> <span class="nf">delete_object</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">purge</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="delete_object"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.delete_object.html#compas_rhino.utilities.delete_object">[docs]</a><span class="k">def</span> <span class="nf">delete_object</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">purge</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">purge</span> <span class="ow">and</span> <span class="n">purge_object</span><span class="p">:</span>
         <span class="n">purge_objects</span><span class="p">([</span><span class="n">guid</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">delete_objects</span><span class="p">([</span><span class="n">guid</span><span class="p">],</span> <span class="n">purge</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="delete_objects"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.delete_objects.html#compas_rhino.utilities.delete_objects">[docs]</a><span class="k">def</span> <span class="nf">delete_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">,</span> <span class="n">purge</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="delete_objects"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.delete_objects.html#compas_rhino.utilities.delete_objects">[docs]</a><span class="k">def</span> <span class="nf">delete_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">,</span> <span class="n">purge</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">purge</span> <span class="ow">and</span> <span class="n">purge_object</span><span class="p">:</span>
         <span class="n">purge_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -188,7 +190,7 @@
     <span class="n">delete_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">,</span> <span class="n">purge</span><span class="o">=</span><span class="n">purge</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="purge_objects"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.purge_objects.html#compas_rhino.utilities.purge_objects">[docs]</a><span class="k">def</span> <span class="nf">purge_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
+<div class="viewcode-block" id="purge_objects"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.purge_objects.html#compas_rhino.utilities.purge_objects">[docs]</a><span class="k">def</span> <span class="nf">purge_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">purge_object</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Cannot purge outside Rhino script context&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">guid</span> <span class="ow">in</span> <span class="n">guids</span><span class="p">:</span>
@@ -207,7 +209,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">rs</span><span class="o">.</span><span class="n">ObjectType</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="k">for</span> <span class="n">guid</span> <span class="ow">in</span> <span class="n">guids</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_object_names"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_object_names.html#compas_rhino.utilities.get_object_names">[docs]</a><span class="k">def</span> <span class="nf">get_object_names</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
+<div class="viewcode-block" id="get_object_names"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_object_names.html#compas_rhino.utilities.get_object_names">[docs]</a><span class="k">def</span> <span class="nf">get_object_names</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">rs</span><span class="o">.</span><span class="n">ObjectName</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="k">for</span> <span class="n">guid</span> <span class="ow">in</span> <span class="n">guids</span><span class="p">]</span></div>
 
 
@@ -215,7 +217,7 @@
     <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">ObjectName</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_object_attributes"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_object_attributes.html#compas_rhino.utilities.get_object_attributes">[docs]</a><span class="k">def</span> <span class="nf">get_object_attributes</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
+<div class="viewcode-block" id="get_object_attributes"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_object_attributes.html#compas_rhino.utilities.get_object_attributes">[docs]</a><span class="k">def</span> <span class="nf">get_object_attributes</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">guid</span> <span class="ow">in</span> <span class="n">guids</span><span class="p">:</span>
         <span class="n">o</span> <span class="o">=</span> <span class="n">find_object</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
@@ -228,7 +230,7 @@
     <span class="k">return</span> <span class="n">attrs</span></div>
 
 
-<div class="viewcode-block" id="get_object_attributes_from_name"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_object_attributes_from_name.html#compas_rhino.utilities.get_object_attributes_from_name">[docs]</a><span class="k">def</span> <span class="nf">get_object_attributes_from_name</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
+<div class="viewcode-block" id="get_object_attributes_from_name"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_object_attributes_from_name.html#compas_rhino.utilities.get_object_attributes_from_name">[docs]</a><span class="k">def</span> <span class="nf">get_object_attributes_from_name</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">get_object_names</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -256,11 +258,11 @@
 <span class="c1"># ==============================================================================</span>
 
 
-<div class="viewcode-block" id="select_point"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_point.html#compas_rhino.utilities.select_point">[docs]</a><span class="k">def</span> <span class="nf">select_point</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select a point.&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_point"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_point.html#compas_rhino.utilities.select_point">[docs]</a><span class="k">def</span> <span class="nf">select_point</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select a point.&#39;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">point</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="select_points"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_points.html#compas_rhino.utilities.select_points">[docs]</a><span class="k">def</span> <span class="nf">select_points</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select points.&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_points"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_points.html#compas_rhino.utilities.select_points">[docs]</a><span class="k">def</span> <span class="nf">select_points</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select points.&#39;</span><span class="p">):</span>
     <span class="n">guids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">point</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">temp</span><span class="p">:</span>
@@ -268,7 +270,7 @@
     <span class="k">return</span> <span class="n">guids</span></div>
 
 
-<div class="viewcode-block" id="get_points"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_points.html#compas_rhino.utilities.get_points">[docs]</a><span class="k">def</span> <span class="nf">get_points</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_points"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_points.html#compas_rhino.utilities.get_points">[docs]</a><span class="k">def</span> <span class="nf">get_points</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">layer</span><span class="p">:</span>
         <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">visible</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">LayerVisible</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -281,7 +283,7 @@
     <span class="k">return</span> <span class="n">guids</span></div>
 
 
-<div class="viewcode-block" id="get_point_coordinates"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_point_coordinates.html#compas_rhino.utilities.get_point_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_point_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
+<div class="viewcode-block" id="get_point_coordinates"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_point_coordinates.html#compas_rhino.utilities.get_point_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_point_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
     <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">guid</span> <span class="ow">in</span> <span class="n">guids</span><span class="p">:</span>
         <span class="n">point</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">PointCoordinates</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
@@ -295,23 +297,23 @@
 <span class="c1"># ==============================================================================</span>
 
 
-<div class="viewcode-block" id="is_curve_line"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.is_curve_line.html#compas_rhino.utilities.is_curve_line">[docs]</a><span class="k">def</span> <span class="nf">is_curve_line</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+<div class="viewcode-block" id="is_curve_line"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.is_curve_line.html#compas_rhino.utilities.is_curve_line">[docs]</a><span class="k">def</span> <span class="nf">is_curve_line</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">IsCurve</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rs</span><span class="o">.</span><span class="n">IsLine</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rs</span><span class="o">.</span><span class="n">CurveDegree</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">CurvePoints</span><span class="p">(</span><span class="n">guid</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span></div>
 
 
-<div class="viewcode-block" id="is_curve_polyline"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.is_curve_polyline.html#compas_rhino.utilities.is_curve_polyline">[docs]</a><span class="k">def</span> <span class="nf">is_curve_polyline</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+<div class="viewcode-block" id="is_curve_polyline"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.is_curve_polyline.html#compas_rhino.utilities.is_curve_polyline">[docs]</a><span class="k">def</span> <span class="nf">is_curve_polyline</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">IsCurve</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rs</span><span class="o">.</span><span class="n">IsPolyline</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rs</span><span class="o">.</span><span class="n">CurveDegree</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">CurvePoints</span><span class="p">(</span><span class="n">guid</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">2</span></div>
 
 
-<div class="viewcode-block" id="is_curve_polygon"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.is_curve_polygon.html#compas_rhino.utilities.is_curve_polygon">[docs]</a><span class="k">def</span> <span class="nf">is_curve_polygon</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+<div class="viewcode-block" id="is_curve_polygon"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.is_curve_polygon.html#compas_rhino.utilities.is_curve_polygon">[docs]</a><span class="k">def</span> <span class="nf">is_curve_polygon</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">IsCurve</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rs</span><span class="o">.</span><span class="n">IsCurveClosed</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rs</span><span class="o">.</span><span class="n">CurveDegree</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">CurvePoints</span><span class="p">(</span><span class="n">guid</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">2</span></div>
 
 
-<div class="viewcode-block" id="select_curve"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_curve.html#compas_rhino.utilities.select_curve">[docs]</a><span class="k">def</span> <span class="nf">select_curve</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select curve.&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_curve"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_curve.html#compas_rhino.utilities.select_curve">[docs]</a><span class="k">def</span> <span class="nf">select_curve</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select curve.&#39;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">curve</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="select_curves"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_curves.html#compas_rhino.utilities.select_curves">[docs]</a><span class="k">def</span> <span class="nf">select_curves</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select curves.&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_curves"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_curves.html#compas_rhino.utilities.select_curves">[docs]</a><span class="k">def</span> <span class="nf">select_curves</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select curves.&#39;</span><span class="p">):</span>
     <span class="n">guids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">curve</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">temp</span><span class="p">:</span>
@@ -319,14 +321,14 @@
     <span class="k">return</span> <span class="n">guids</span></div>
 
 
-<div class="viewcode-block" id="select_line"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_line.html#compas_rhino.utilities.select_line">[docs]</a><span class="k">def</span> <span class="nf">select_line</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select line.&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_line"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_line.html#compas_rhino.utilities.select_line">[docs]</a><span class="k">def</span> <span class="nf">select_line</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select line.&#39;</span><span class="p">):</span>
     <span class="n">guid</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">curve</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_curve_line</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">guid</span>
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="select_lines"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_lines.html#compas_rhino.utilities.select_lines">[docs]</a><span class="k">def</span> <span class="nf">select_lines</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select lines.&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_lines"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_lines.html#compas_rhino.utilities.select_lines">[docs]</a><span class="k">def</span> <span class="nf">select_lines</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select lines.&#39;</span><span class="p">):</span>
     <span class="n">guids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">curve</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">temp</span><span class="p">:</span>
@@ -336,14 +338,14 @@
     <span class="k">return</span> <span class="n">guids</span></div>
 
 
-<div class="viewcode-block" id="select_polyline"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_polyline.html#compas_rhino.utilities.select_polyline">[docs]</a><span class="k">def</span> <span class="nf">select_polyline</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select a polyline (curve with degree = 1, and multiple segments).&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_polyline"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_polyline.html#compas_rhino.utilities.select_polyline">[docs]</a><span class="k">def</span> <span class="nf">select_polyline</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select a polyline (curve with degree = 1, and multiple segments).&#39;</span><span class="p">):</span>
     <span class="n">guid</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">curve</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_curve_polyline</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">guid</span>
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="select_polylines"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_polylines.html#compas_rhino.utilities.select_polylines">[docs]</a><span class="k">def</span> <span class="nf">select_polylines</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select polylines (curves with degree = 1, and multiple segments).&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_polylines"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_polylines.html#compas_rhino.utilities.select_polylines">[docs]</a><span class="k">def</span> <span class="nf">select_polylines</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select polylines (curves with degree = 1, and multiple segments).&#39;</span><span class="p">):</span>
     <span class="n">guids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">curve</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">temp</span><span class="p">:</span>
@@ -353,14 +355,14 @@
     <span class="k">return</span> <span class="n">guids</span></div>
 
 
-<div class="viewcode-block" id="select_polygon"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_polygon.html#compas_rhino.utilities.select_polygon">[docs]</a><span class="k">def</span> <span class="nf">select_polygon</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select a polygon (closed curve with degree = 1)&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_polygon"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_polygon.html#compas_rhino.utilities.select_polygon">[docs]</a><span class="k">def</span> <span class="nf">select_polygon</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select a polygon (closed curve with degree = 1)&#39;</span><span class="p">):</span>
     <span class="n">guid</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">curve</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_curve_polygon</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">guid</span>
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="select_polygons"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_polygons.html#compas_rhino.utilities.select_polygons">[docs]</a><span class="k">def</span> <span class="nf">select_polygons</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select polygons (closed curves with degree = 1)&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_polygons"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_polygons.html#compas_rhino.utilities.select_polygons">[docs]</a><span class="k">def</span> <span class="nf">select_polygons</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select polygons (closed curves with degree = 1)&#39;</span><span class="p">):</span>
     <span class="n">guids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">curve</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">temp</span><span class="p">:</span>
@@ -370,7 +372,7 @@
     <span class="k">return</span> <span class="n">guids</span></div>
 
 
-<div class="viewcode-block" id="get_curves"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_curves.html#compas_rhino.utilities.get_curves">[docs]</a><span class="k">def</span> <span class="nf">get_curves</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_curves"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_curves.html#compas_rhino.utilities.get_curves">[docs]</a><span class="k">def</span> <span class="nf">get_curves</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">layer</span><span class="p">:</span>
         <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">visible</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">LayerVisible</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -383,7 +385,7 @@
     <span class="k">return</span> <span class="n">guids</span></div>
 
 
-<div class="viewcode-block" id="get_lines"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_lines.html#compas_rhino.utilities.get_lines">[docs]</a><span class="k">def</span> <span class="nf">get_lines</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_lines"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_lines.html#compas_rhino.utilities.get_lines">[docs]</a><span class="k">def</span> <span class="nf">get_lines</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">layer</span><span class="p">:</span>
         <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">visible</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">LayerVisible</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -398,7 +400,7 @@
     <span class="k">return</span> <span class="n">guids</span></div>
 
 
-<div class="viewcode-block" id="get_polylines"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_polylines.html#compas_rhino.utilities.get_polylines">[docs]</a><span class="k">def</span> <span class="nf">get_polylines</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_polylines"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_polylines.html#compas_rhino.utilities.get_polylines">[docs]</a><span class="k">def</span> <span class="nf">get_polylines</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">layer</span><span class="p">:</span>
         <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">visible</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">LayerVisible</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -413,7 +415,7 @@
     <span class="k">return</span> <span class="n">guids</span></div>
 
 
-<div class="viewcode-block" id="get_polygons"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_polygons.html#compas_rhino.utilities.get_polygons">[docs]</a><span class="k">def</span> <span class="nf">get_polygons</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_polygons"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_polygons.html#compas_rhino.utilities.get_polygons">[docs]</a><span class="k">def</span> <span class="nf">get_polygons</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">layer</span><span class="p">:</span>
         <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">visible</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">LayerVisible</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -432,7 +434,7 @@
     <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="get_line_coordinates"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_line_coordinates.html#compas_rhino.utilities.get_line_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_line_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
+<div class="viewcode-block" id="get_line_coordinates"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_line_coordinates.html#compas_rhino.utilities.get_line_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_line_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guids</span><span class="p">,</span> <span class="n">System</span><span class="o">.</span><span class="n">Guid</span><span class="p">):</span>
         <span class="n">sp</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">CurveStartPoint</span><span class="p">(</span><span class="n">guids</span><span class="p">))</span>
         <span class="n">ep</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">CurveEndPoint</span><span class="p">(</span><span class="n">guids</span><span class="p">))</span>
@@ -449,7 +451,7 @@
     <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="get_polyline_coordinates"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_polyline_coordinates.html#compas_rhino.utilities.get_polyline_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_polyline_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
+<div class="viewcode-block" id="get_polyline_coordinates"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_polyline_coordinates.html#compas_rhino.utilities.get_polyline_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_polyline_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guids</span><span class="p">,</span> <span class="n">System</span><span class="o">.</span><span class="n">Guid</span><span class="p">):</span>
         <span class="n">points</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">PolylineVertices</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
         <span class="n">coords</span> <span class="o">=</span> <span class="p">[]</span>
@@ -466,7 +468,7 @@
     <span class="k">return</span> <span class="n">polylines</span></div>
 
 
-<div class="viewcode-block" id="get_polygon_coordinates"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_polygon_coordinates.html#compas_rhino.utilities.get_polygon_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_polygon_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
+<div class="viewcode-block" id="get_polygon_coordinates"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_polygon_coordinates.html#compas_rhino.utilities.get_polygon_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_polygon_coordinates</span><span class="p">(</span><span class="n">guids</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guids</span><span class="p">,</span> <span class="n">System</span><span class="o">.</span><span class="n">Guid</span><span class="p">):</span>
         <span class="n">points</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">CurvePoints</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span>
         <span class="n">coords</span> <span class="o">=</span> <span class="p">[]</span>
@@ -489,14 +491,14 @@
 <span class="c1"># ==============================================================================</span>
 
 
-<div class="viewcode-block" id="select_surface"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_surface.html#compas_rhino.utilities.select_surface">[docs]</a><span class="k">def</span> <span class="nf">select_surface</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select a surface.&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_surface"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_surface.html#compas_rhino.utilities.select_surface">[docs]</a><span class="k">def</span> <span class="nf">select_surface</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select a surface.&#39;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span>
         <span class="n">message</span><span class="p">,</span>
         <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">surface</span> <span class="o">|</span> <span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">polysurface</span>
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="select_surfaces"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_surfaces.html#compas_rhino.utilities.select_surfaces">[docs]</a><span class="k">def</span> <span class="nf">select_surfaces</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select surfaces.&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_surfaces"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_surfaces.html#compas_rhino.utilities.select_surfaces">[docs]</a><span class="k">def</span> <span class="nf">select_surfaces</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select surfaces.&#39;</span><span class="p">):</span>
     <span class="n">guids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">surface</span> <span class="o">|</span> <span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">polysurface</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">temp</span><span class="p">:</span>
@@ -509,14 +511,14 @@
 <span class="c1"># ==============================================================================</span>
 
 
-<div class="viewcode-block" id="select_mesh"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_mesh.html#compas_rhino.utilities.select_mesh">[docs]</a><span class="k">def</span> <span class="nf">select_mesh</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select a mesh.&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_mesh"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_mesh.html#compas_rhino.utilities.select_mesh">[docs]</a><span class="k">def</span> <span class="nf">select_mesh</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select a mesh.&#39;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObject</span><span class="p">(</span>
         <span class="n">message</span><span class="p">,</span>
         <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">mesh</span>
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="select_meshes"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.select_meshes.html#compas_rhino.utilities.select_meshes">[docs]</a><span class="k">def</span> <span class="nf">select_meshes</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select meshes.&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="select_meshes"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.select_meshes.html#compas_rhino.utilities.select_meshes">[docs]</a><span class="k">def</span> <span class="nf">select_meshes</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select meshes.&#39;</span><span class="p">):</span>
     <span class="n">guids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">GetObjects</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">rs</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">temp</span><span class="p">:</span>
@@ -524,7 +526,7 @@
     <span class="k">return</span> <span class="n">guids</span></div>
 
 
-<div class="viewcode-block" id="get_meshes"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_meshes.html#compas_rhino.utilities.get_meshes">[docs]</a><span class="k">def</span> <span class="nf">get_meshes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_meshes"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_meshes.html#compas_rhino.utilities.get_meshes">[docs]</a><span class="k">def</span> <span class="nf">get_meshes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">layer</span><span class="p">:</span>
         <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">visible</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">LayerVisible</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -541,7 +543,7 @@
     <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">DuplicateMeshBorder</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_mesh_face_vertices"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_mesh_face_vertices.html#compas_rhino.utilities.get_mesh_face_vertices">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_face_vertices</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+<div class="viewcode-block" id="get_mesh_face_vertices"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_mesh_face_vertices.html#compas_rhino.utilities.get_mesh_face_vertices">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_face_vertices</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
     <span class="n">faces</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">guid</span><span class="p">:</span>
         <span class="n">temp</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">MeshFaceVertices</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
@@ -549,14 +551,14 @@
     <span class="k">return</span> <span class="n">faces</span></div>
 
 
-<div class="viewcode-block" id="get_mesh_vertex_coordinates"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_mesh_vertex_coordinates.html#compas_rhino.utilities.get_mesh_vertex_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_vertex_coordinates</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+<div class="viewcode-block" id="get_mesh_vertex_coordinates"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_mesh_vertex_coordinates.html#compas_rhino.utilities.get_mesh_vertex_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_vertex_coordinates</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
     <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">guid</span><span class="p">:</span>
         <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">vertex</span><span class="p">)</span> <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">rs</span><span class="o">.</span><span class="n">MeshVertices</span><span class="p">(</span><span class="n">guid</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">vertices</span></div>
 
 
-<div class="viewcode-block" id="get_mesh_vertex_colors"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_mesh_vertex_colors.html#compas_rhino.utilities.get_mesh_vertex_colors">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_vertex_colors</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+<div class="viewcode-block" id="get_mesh_vertex_colors"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_mesh_vertex_colors.html#compas_rhino.utilities.get_mesh_vertex_colors">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_vertex_colors</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
     <span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">guid</span><span class="p">:</span>
         <span class="n">temp</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">MeshVertexColors</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
@@ -565,13 +567,13 @@
     <span class="k">return</span> <span class="n">colors</span></div>
 
 
-<div class="viewcode-block" id="set_mesh_vertex_colors"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.set_mesh_vertex_colors.html#compas_rhino.utilities.set_mesh_vertex_colors">[docs]</a><span class="k">def</span> <span class="nf">set_mesh_vertex_colors</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+<div class="viewcode-block" id="set_mesh_vertex_colors"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.set_mesh_vertex_colors.html#compas_rhino.utilities.set_mesh_vertex_colors">[docs]</a><span class="k">def</span> <span class="nf">set_mesh_vertex_colors</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">guid</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="k">return</span> <span class="n">rs</span><span class="o">.</span><span class="n">MeshVertexColors</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">colors</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_mesh_vertices_and_faces"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_mesh_vertices_and_faces.html#compas_rhino.utilities.get_mesh_vertices_and_faces">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_vertices_and_faces</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+<div class="viewcode-block" id="get_mesh_vertices_and_faces"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_mesh_vertices_and_faces.html#compas_rhino.utilities.get_mesh_vertices_and_faces">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_vertices_and_faces</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">guid</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">vertex</span><span class="p">)</span> <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">rs</span><span class="o">.</span><span class="n">MeshVertices</span><span class="p">(</span><span class="n">guid</span><span class="p">)]</span>
@@ -579,7 +581,7 @@
     <span class="k">return</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span></div>
 
 
-<div class="viewcode-block" id="get_mesh_vertex_index"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_mesh_vertex_index.html#compas_rhino.utilities.get_mesh_vertex_index">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_vertex_index</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+<div class="viewcode-block" id="get_mesh_vertex_index"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_mesh_vertex_index.html#compas_rhino.utilities.get_mesh_vertex_index">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_vertex_index</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">CustomGetObject</span><span class="p">(</span><span class="n">Rhino</span><span class="o">.</span><span class="n">Input</span><span class="o">.</span><span class="n">Custom</span><span class="o">.</span><span class="n">GetObject</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">CustomGeometryFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhino_object</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">component_index</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">guid</span> <span class="o">==</span> <span class="n">rhino_object</span><span class="o">.</span><span class="n">Id</span>
@@ -601,7 +603,7 @@
     <span class="k">return</span> <span class="n">vindex</span></div>
 
 
-<div class="viewcode-block" id="get_mesh_face_index"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_mesh_face_index.html#compas_rhino.utilities.get_mesh_face_index">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_face_index</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+<div class="viewcode-block" id="get_mesh_face_index"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_mesh_face_index.html#compas_rhino.utilities.get_mesh_face_index">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_face_index</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">CustomGetObject</span><span class="p">(</span><span class="n">Rhino</span><span class="o">.</span><span class="n">Input</span><span class="o">.</span><span class="n">Custom</span><span class="o">.</span><span class="n">GetObject</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">CustomGeometryFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhino_object</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">component_index</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">guid</span> <span class="o">==</span> <span class="n">rhino_object</span><span class="o">.</span><span class="n">Id</span>
@@ -619,7 +621,7 @@
     <span class="k">return</span> <span class="n">findex</span></div>
 
 
-<div class="viewcode-block" id="get_mesh_edge_index"><a class="viewcode-back" href="../../../api/generated/compas_rhino.utilities.get_mesh_edge_index.html#compas_rhino.utilities.get_mesh_edge_index">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_edge_index</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
+<div class="viewcode-block" id="get_mesh_edge_index"><a class="viewcode-back" href="../../../reference/generated/compas_rhino.utilities.get_mesh_edge_index.html#compas_rhino.utilities.get_mesh_edge_index">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_edge_index</span><span class="p">(</span><span class="n">guid</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">CustomGetObject</span><span class="p">(</span><span class="n">Rhino</span><span class="o">.</span><span class="n">Input</span><span class="o">.</span><span class="n">Custom</span><span class="o">.</span><span class="n">GetObject</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">CustomGeometryFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhino_object</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">component_index</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">guid</span> <span class="o">==</span> <span class="n">rhino_object</span><span class="o">.</span><span class="n">Id</span>
@@ -698,6 +700,7 @@
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
     <span class="k">pass</span>
 </code></pre></div>
                         
@@ -730,12 +733,10 @@
 
                                 <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../environments.html">Environments</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../notes.html">Notes</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../devguide.html">Developer Guide</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
@@ -790,7 +791,7 @@
             <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.3.2',
+    VERSION           : '0.2.7',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

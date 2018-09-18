@@ -1,7 +1,4 @@
-"""Shortest path in a network
-
-author : Tom Van Mele
-email  : van.mele@arch.ethz.ch
+"""Network 01: Shortest path
 
 """
 
@@ -11,6 +8,12 @@ from compas.utilities import pairwise
 from compas.datastructures import Network
 from compas.topology import dijkstra_path
 from compas.plotters import NetworkPlotter
+
+
+__author__    = ['Tom Van Mele', ]
+__copyright__ = 'Copyright 2017, BRG - ETH Zurich',
+__license__   = 'MIT'
+__email__     = 'van.mele@arch.ethz.ch'
 
 
 start, end = 21, 22
@@ -25,7 +28,7 @@ network = Network.from_obj(compas.get('grid_irregular.obj'))
 # add weight to the edges corresponding to their length
 # compute the shortest path
 
-adjacency = {key: network.vertex_neighbors(key) for key in network.vertices()}
+adjacency = {key: network.vertex_neighbours(key) for key in network.vertices()}
 
 weight = {(u, v): network.edge_length(u, v) for u, v in network.edges()}
 weight.update({(v, u): weight[(u, v)] for u, v in network.edges()})

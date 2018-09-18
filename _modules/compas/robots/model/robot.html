@@ -64,79 +64,51 @@
                         
 
                         <h1>Source code for compas.robots.model.robot</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-
-<span class="kn">import</span> <span class="nn">itertools</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">URDF</span>
-<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">URDFParser</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Frame</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Transformation</span>
-<span class="kn">from</span> <span class="nn">compas.robots.resources</span> <span class="k">import</span> <span class="n">DefaultMeshLoader</span>
-<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">shortest_path</span>
 
-<span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">Color</span>
-<span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">Material</span>
-<span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">Texture</span>
-<span class="kn">from</span> <span class="nn">.joint</span> <span class="k">import</span> <span class="n">Joint</span>
+<span class="kn">from</span> <span class="nn">.geometry</span> <span class="k">import</span> <span class="n">SCALE_FACTOR</span><span class="p">,</span> <span class="n">Color</span><span class="p">,</span> <span class="n">Material</span><span class="p">,</span> <span class="n">Texture</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Robot&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="Robot"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.html#compas.robots.Robot">[docs]</a><span class="k">class</span> <span class="nc">Robot</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Robot is the root element of the model.</span>
+<div class="viewcode-block" id="Robot"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Robot.html#compas.robots.Robot">[docs]</a><span class="k">class</span> <span class="nc">Robot</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Robot is the root of the model.</span>
 
-<span class="sd">    Instances of this class represent an entire robot as defined in an URDF</span>
-<span class="sd">    structure.</span>
+<span class="sd">    Robot instances are the root node in a urdf structure representing an entire robot.</span>
 
-<span class="sd">    In line with URDF limitations, only tree structures can be represented by</span>
-<span class="sd">    this model, ruling out all parallel robots.</span>
+<span class="sd">    In line with URDF limitations, only urdf structures can be represented by this</span>
+<span class="sd">    model, ruling out all parallel robots.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        name: Unique name of the robot.</span>
 <span class="sd">        joints: List of joint elements.</span>
 <span class="sd">        links: List of links of the robot.</span>
 <span class="sd">        materials: List of global materials.</span>
-<span class="sd">        root: Root link of the model.</span>
 <span class="sd">        attr: Non-standard attributes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Robot.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.__init__.html#compas.robots.Robot.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">joints</span><span class="o">=</span><span class="p">[],</span> <span class="n">links</span><span class="o">=</span><span class="p">[],</span> <span class="n">materials</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Robot.__init__"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Robot.__init__.html#compas.robots.Robot.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">joints</span><span class="o">=</span><span class="p">[],</span> <span class="n">links</span><span class="o">=</span><span class="p">[],</span> <span class="n">materials</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">joints</span> <span class="o">=</span> <span class="n">joints</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">links</span> <span class="o">=</span> <span class="n">links</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">materials</span> <span class="o">=</span> <span class="n">materials</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="mf">1.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_tree</span><span class="p">()</span></div>
-
-    <span class="k">def</span> <span class="nf">_rebuild_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Store tree structure from link and joint lists.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_adjacency</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_links</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-
+        <span class="c1"># save tree structure from link and joint lists</span>
         <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
             <span class="n">link</span><span class="o">.</span><span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_children_joints</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
-            <span class="n">link</span><span class="o">.</span><span class="n">parent_joint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_parent_joint</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">_links</span><span class="p">[</span><span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">link</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_adjacency</span><span class="p">[</span><span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">joints</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">link</span><span class="o">.</span><span class="n">parent_joint</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">link</span>
-
         <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
-            <span class="n">child_name</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">child</span><span class="o">.</span><span class="n">link</span>
-            <span class="n">joint</span><span class="o">.</span><span class="n">child_link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_link_by_name</span><span class="p">(</span><span class="n">child_name</span><span class="p">)</span>
+            <span class="n">joint</span><span class="o">.</span><span class="n">childlink</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_child_link</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span></div>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">joint</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_adjacency</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">child_name</span><span class="p">]</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">root</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_root_link</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Robot.from_urdf_file"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.from_urdf_file.html#compas.robots.Robot.from_urdf_file">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Robot.from_urdf_file"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Robot.from_urdf_file.html#compas.robots.Robot.from_urdf_file">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_urdf_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Construct a Robot model from a URDF file model description.</span>
 
@@ -146,10 +118,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A robot model instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">urdf</span> <span class="o">=</span> <span class="n">URDF</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">urdf</span><span class="o">.</span><span class="n">robot</span></div>
+        <span class="k">return</span> <span class="n">URDF</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Robot.from_urdf_string"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.from_urdf_string.html#compas.robots.Robot.from_urdf_string">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Robot.from_urdf_string"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Robot.from_urdf_string.html#compas.robots.Robot.from_urdf_string">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_urdf_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Construct a Robot model from a URDF description as string.</span>
 
@@ -159,10 +130,26 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A robot model instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">urdf</span> <span class="o">=</span> <span class="n">URDF</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">urdf</span><span class="o">.</span><span class="n">robot</span></div>
+        <span class="k">return</span> <span class="n">URDF</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Robot.find_children_joints"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.find_children_joints.html#compas.robots.Robot.find_children_joints">[docs]</a>    <span class="k">def</span> <span class="nf">find_children_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+<div class="viewcode-block" id="Robot.find_root_link"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Robot.find_root_link.html#compas.robots.Robot.find_root_link">[docs]</a>    <span class="k">def</span> <span class="nf">find_root_link</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the robot&#39;s root link.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: If the root link of the robot could not be found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># search the link, which is never child for a joint</span>
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="o">.</span><span class="n">child</span><span class="p">)</span> <span class="o">==</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                    <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">link</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Root link not found. Something wrong with URDF?&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Robot.find_children_joints"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Robot.find_children_joints.html#compas.robots.Robot.find_children_joints">[docs]</a>    <span class="k">def</span> <span class="nf">find_children_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a list of all children joints of the link.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">joints</span> <span class="o">=</span> <span class="p">[]</span>
@@ -171,7 +158,15 @@
                 <span class="n">joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">joints</span></div>
 
-<div class="viewcode-block" id="Robot.find_parent_joint"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.find_parent_joint.html#compas.robots.Robot.find_parent_joint">[docs]</a>    <span class="k">def</span> <span class="nf">find_parent_joint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+<div class="viewcode-block" id="Robot.find_child_link"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Robot.find_child_link.html#compas.robots.Robot.find_child_link">[docs]</a>    <span class="k">def</span> <span class="nf">find_child_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the child link of the joint or None if not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">joint</span><span class="o">.</span><span class="n">child</span><span class="o">.</span><span class="n">link</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">link</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Robot.find_parent_joint"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Robot.find_parent_joint.html#compas.robots.Robot.find_parent_joint">[docs]</a>    <span class="k">def</span> <span class="nf">find_parent_joint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the parent joint of the link or None if not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
@@ -179,221 +174,39 @@
                 <span class="k">return</span> <span class="n">joint</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Robot.get_link_by_name"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.get_link_by_name.html#compas.robots.Robot.get_link_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_link_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a link in a robot model matching by its name.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            name: link name.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A link instance.</span>
+<div class="viewcode-block" id="Robot.iter_links"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Robot.iter_links.html#compas.robots.Robot.iter_links">[docs]</a>    <span class="k">def</span> <span class="nf">iter_links</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns an iterator over the links that starts with the root link.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_links</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Robot.get_joint_by_name"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.get_joint_by_name.html#compas.robots.Robot.get_joint_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a joint in a robot model matching by its name.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            name: joint name.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A joint instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Robot.iter_links"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.iter_links.html#compas.robots.Robot.iter_links">[docs]</a>    <span class="k">def</span> <span class="nf">iter_links</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Iterator over the links that starts with the root link.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Iterator of all links starting at root.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
 
         <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">cjoints</span><span class="p">,</span> <span class="n">links</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">cjoints</span><span class="p">:</span>
-                <span class="n">link</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">child_link</span>
+                <span class="n">link</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">childlink</span>
                 <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
                 <span class="n">links</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">joints</span><span class="p">,</span> <span class="p">[])</span>
             <span class="k">return</span> <span class="n">links</span>
 
-        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">joints</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">]))</span></div>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">joints</span><span class="p">,</span> <span class="p">[</span><span class="n">root</span><span class="p">]))</span></div>
 
-<div class="viewcode-block" id="Robot.iter_joints"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.iter_joints.html#compas.robots.Robot.iter_joints">[docs]</a>    <span class="k">def</span> <span class="nf">iter_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Iterator over the joints that starts with the root link&#39;s</span>
+<div class="viewcode-block" id="Robot.iter_joints"><a class="viewcode-back" href="../../../../reference/generated/compas.robots.Robot.iter_joints.html#compas.robots.Robot.iter_joints">[docs]</a>    <span class="k">def</span> <span class="nf">iter_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns an iterator over the joints that starts with the root link&#39;s</span>
 <span class="sd">            children joints.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Iterator of all joints starting at root.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">clink</span><span class="p">,</span> <span class="n">joints</span><span class="p">):</span>
             <span class="n">cjoints</span> <span class="o">=</span> <span class="n">clink</span><span class="o">.</span><span class="n">joints</span>
             <span class="n">joints</span> <span class="o">+=</span> <span class="n">cjoints</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">cjoints</span><span class="p">:</span>
-                <span class="n">joints</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">child_link</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="n">joints</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">childlink</span><span class="p">,</span> <span class="p">[])</span>
             <span class="k">return</span> <span class="n">joints</span>
 
-        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="p">[]))</span></div>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="p">[]))</span></div></div>
 
-<div class="viewcode-block" id="Robot.iter_link_chain"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.iter_link_chain.html#compas.robots.Robot.iter_link_chain">[docs]</a>    <span class="k">def</span> <span class="nf">iter_link_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_start_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">link_end_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Iterator over the chain of links between a pair of start and end links.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            link_start_name: Name of the starting link of the chain,</span>
-<span class="sd">                or ``None`` to start at root.</span>
-<span class="sd">            link_end_name: Name of the final link of the chain,</span>
-<span class="sd">                or ``None`` to try to identify the last link.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Iterator of the chain of links.</span>
-
-<span class="sd">        .. note::</span>
-<span class="sd">            This method differs from :meth:`iter_links` in that it returns the chain respecting</span>
-<span class="sd">            the tree structure, hence if one link branches into two or more joints, only the</span>
-<span class="sd">            branch matching the end link will be returned.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_chain</span><span class="p">(</span><span class="n">link_start_name</span><span class="p">,</span> <span class="n">link_end_name</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_link_by_name</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
-            <span class="c1"># If None, it&#39;s not a link</span>
-            <span class="k">if</span> <span class="n">link</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="n">link</span></div>
-
-<div class="viewcode-block" id="Robot.iter_chain"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.iter_chain.html#compas.robots.Robot.iter_chain">[docs]</a>    <span class="k">def</span> <span class="nf">iter_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Iterator over the chain of all elements between a pair of start and end elements.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            start: Name of the starting element of the chain,</span>
-<span class="sd">                or ``None`` to start at the root link.</span>
-<span class="sd">            end: Name of the final element of the chain,</span>
-<span class="sd">                or ``None`` to try to identify the last element.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Iterator of the chain of links and joints.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">start</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;No root link found&#39;</span><span class="p">)</span>
-
-            <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">name</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">end</span><span class="p">:</span>
-            <span class="c1"># Normally URDF will contain the end links at the end</span>
-            <span class="c1"># so we break out faster by reversing the list</span>
-            <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">link</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
-                    <span class="n">end</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span>
-                    <span class="k">break</span>
-
-        <span class="n">shortest_chain</span> <span class="o">=</span> <span class="n">shortest_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_adjacency</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">shortest_chain</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;No chain found between the specified element&#39;</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">shortest_chain</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">name</span></div>
-
-<div class="viewcode-block" id="Robot.get_configurable_joints"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.get_configurable_joints.html#compas.robots.Robot.get_configurable_joints">[docs]</a>    <span class="k">def</span> <span class="nf">get_configurable_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_joints</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">joint</span> <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">joints</span> <span class="k">if</span> <span class="n">joint</span><span class="o">.</span><span class="n">is_configurable</span><span class="p">()]</span></div>
-
-<div class="viewcode-block" id="Robot.get_joint_types"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.get_joint_types.html#compas.robots.Robot.get_joint_types">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="Robot.get_positions"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.get_positions.html#compas.robots.Robot.get_positions">[docs]</a>    <span class="k">def</span> <span class="nf">get_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">position</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="Robot.get_configurable_joint_names"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.get_configurable_joint_names.html#compas.robots.Robot.get_configurable_joint_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_configurable_joint_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="Robot.get_end_effector_link_name"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.get_end_effector_link_name.html#compas.robots.Robot.get_end_effector_link_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_end_effector_link_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
-        <span class="n">clink</span> <span class="o">=</span> <span class="n">joints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">child_link</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">clink</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">Joint</span><span class="o">.</span><span class="n">FIXED</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">j</span><span class="o">.</span><span class="n">child</span>
-        <span class="k">return</span> <span class="n">clink</span><span class="o">.</span><span class="n">name</span></div>
-
-<div class="viewcode-block" id="Robot.get_base_link_name"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.get_base_link_name.html#compas.robots.Robot.get_base_link_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_base_link_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">link</span></div>
-
-<div class="viewcode-block" id="Robot.load_geometry"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.load_geometry.html#compas.robots.Robot.load_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">load_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">resource_loaders</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load external geometry resources, such as meshes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            resource_loaders: List of objects that implement the</span>
-<span class="sd">                resource loading interface (:class:`compas.robots.AbstractMeshLoader`)</span>
-<span class="sd">                and can retrieve external geometry.</span>
-<span class="sd">            force: True if it should force reloading even if the geometry</span>
-<span class="sd">                has been loaded already, otherwise False.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">force</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
-        <span class="n">loaders</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">resource_loaders</span><span class="p">)</span>
-        <span class="n">loaders</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">DefaultMeshLoader</span><span class="p">())</span>
-
-        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">collision</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">visual</span><span class="p">):</span>
-                <span class="n">shape</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">shape</span>
-                <span class="n">needs_reload</span> <span class="o">=</span> <span class="n">force</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">shape</span><span class="o">.</span><span class="n">geometry</span>
-                <span class="k">if</span> <span class="s1">&#39;filename&#39;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="ow">and</span> <span class="n">needs_reload</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">loader</span> <span class="ow">in</span> <span class="n">loaders</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">loader</span><span class="o">.</span><span class="n">can_load_mesh</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">filename</span><span class="p">):</span>
-                            <span class="n">shape</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_mesh</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-                            <span class="k">break</span>
-
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">shape</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Unable to load geometry for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the frames of links that have a visual node.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            list: List of :class:`compas.geometry.Frame` of all links with a visual representation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_links</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">visual</span><span class="p">)</span> <span class="ow">and</span> <span class="n">link</span><span class="o">.</span><span class="n">parent_joint</span><span class="p">:</span>
-                <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">parent_joint</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">frames</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">axes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the joints&#39; axes.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            list: Axis vectors of all joints.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_joints</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">joint</span><span class="o">.</span><span class="n">axis</span><span class="p">:</span>
-                <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">joint</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">axes</span>
-
-    <span class="c1"># TODO: Check</span>
-<div class="viewcode-block" id="Robot.scale"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Robot.scale.html#compas.robots.Robot.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
-        <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joint_names</span><span class="p">()</span>
-        <span class="c1"># bring to init configuration</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">),</span> <span class="n">collision</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">*=</span> <span class="n">factor</span></div>
-
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate a readable representation of the robot.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s1">&#39;Robot name=</span><span class="si">{}</span><span class="s1">, Links=</span><span class="si">{}</span><span class="s1">, Joints=</span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1"> configurable)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">),</span>
-            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">),</span>
-            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()),</span>
-        <span class="p">)</span></div>
-
-<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Robot</span><span class="p">,</span> <span class="s1">&#39;robot&#39;</span><span class="p">)</span>
-<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Material</span><span class="p">,</span> <span class="s1">&#39;robot/material&#39;</span><span class="p">)</span>
-<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Color</span><span class="p">,</span> <span class="s1">&#39;robot/material/color&#39;</span><span class="p">)</span>
-<span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Texture</span><span class="p">,</span> <span class="s1">&#39;robot/material/texture&#39;</span><span class="p">)</span>
+<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Robot</span><span class="p">,</span> <span class="s1">&#39;robot&#39;</span><span class="p">)</span>
+<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Material</span><span class="p">,</span> <span class="s1">&#39;robot/material&#39;</span><span class="p">)</span>
+<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Color</span><span class="p">,</span> <span class="s1">&#39;robot/material/color&#39;</span><span class="p">)</span>
+<span class="n">URDF</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">Texture</span><span class="p">,</span> <span class="s1">&#39;robot/material/texture&#39;</span><span class="p">)</span>
 </code></pre></div>
                         
                     
@@ -425,12 +238,10 @@
 
                                 <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../overview.html">Overview</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../environments.html">Environments</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorial.html">Tutorial</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../notes.html">Notes</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../reference.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../devguide.html">Developer Guide</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../citing.html">Citing</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../license.html">License</a></li>
@@ -485,7 +296,7 @@
             <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.3.2',
+    VERSION           : '0.2.7',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',
