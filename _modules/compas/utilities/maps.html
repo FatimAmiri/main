@@ -69,68 +69,49 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 
 
-<span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="s1">&#39;Matthias Rippmann&#39;</span><span class="p">]</span>
-<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright 2016 - Block Research Group, ETH Zurich&#39;</span>
-<span class="n">__license__</span>   <span class="o">=</span> <span class="s1">&#39;MIT License&#39;</span>
-<span class="n">__email__</span>     <span class="o">=</span> <span class="s1">&#39;vanmelet@ethz.ch&#39;</span>
+<span class="kn">import</span> <span class="nn">compas</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;geometric_key&#39;</span><span class="p">,</span> <span class="s1">&#39;geometric_key2&#39;</span><span class="p">,</span> <span class="s1">&#39;normalize_values&#39;</span>
-<span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;geometric_key&#39;</span><span class="p">,</span> <span class="s1">&#39;geometric_key2&#39;</span><span class="p">,</span> <span class="s1">&#39;normalize_values&#39;</span><span class="p">,</span> <span class="s1">&#39;remap_values&#39;</span><span class="p">]</span>
 
 
-<span class="c1"># class GeometricKey(object):</span>
-
-<span class="c1">#     __instance = None</span>
-
-<span class="c1">#     def __new__(cls, precision=&#39;3f&#39;, tolerance=1e-9, sanitize=True):</span>
-<span class="c1">#         if GeometricKey.__instance is None:</span>
-<span class="c1">#             GeometricKey.__instance = object.__new__(cls)</span>
-<span class="c1">#             GeometricKey.__instance.precision = precision</span>
-<span class="c1">#             GeometricKey.__instance.tolerance = tolerance</span>
-<span class="c1">#             GeometricKey.__instance.sanitize = sanitize</span>
-
-<span class="c1">#         return GeometricKey.__instance</span>
-
-<span class="c1">#     def __call__(self, xyz):</span>
-<span class="c1">#         return geometric_key(xyz, self.precision, self.tolerance, self.sanitize)</span>
-
-<span class="c1">#     @staticmethod</span>
-<span class="c1">#     def set_precision(precision):</span>
-<span class="c1">#         GeometricKey.__instance.precision = precision</span>
-
-
-<div class="viewcode-block" id="geometric_key"><a class="viewcode-back" href="../../../reference/generated/compas.utilities.geometric_key.html#compas.utilities.geometric_key">[docs]</a><span class="k">def</span> <span class="nf">geometric_key</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="s1">&#39;3f&#39;</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="geometric_key"><a class="viewcode-back" href="../../../api/generated/compas.utilities.geometric_key.html#compas.utilities.geometric_key">[docs]</a><span class="k">def</span> <span class="nf">geometric_key</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert XYZ coordinates to a string that can be used as a dict key.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        xyz (sequence of float): The XYZ coordinates.</span>
-<span class="sd">        precision (str): Optional.</span>
-<span class="sd">            A formatting option that specifies the precision of the</span>
-<span class="sd">            individual numbers in the string.</span>
-<span class="sd">            Supported values are any float precision, or decimal integer (``&#39;d&#39;``).</span>
-<span class="sd">            Default is ``&#39;3f&#39;``.</span>
-<span class="sd">        sanitize (bool): Optional.</span>
-<span class="sd">            Flag that indicates whether or not the input should be cleaned up.</span>
-<span class="sd">            Default is ``True``.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xyz : list of float</span>
+<span class="sd">        The XYZ coordinates.</span>
+<span class="sd">    precision : str, optional</span>
+<span class="sd">        A formatting option that specifies the precision of the</span>
+<span class="sd">        individual numbers in the string.</span>
+<span class="sd">        Supported values are any float precision, or decimal integer (``&#39;d&#39;``).</span>
+<span class="sd">        Default is ``None``, inwhich case the global precision setting will be used (``compas.PRECISION``).</span>
+<span class="sd">    sanitize : {True, False}, optional</span>
+<span class="sd">        Flag that indicates whether or not the input should be cleaned up.</span>
+<span class="sd">        Default is ``True``.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        str: the string representation of the given coordinates.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        The string representation of the given coordinates.</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        .. code-block:: python</span>
+<span class="sd">        from math import pi</span>
+<span class="sd">        from compas.utilities import geometric_key</span>
 
-<span class="sd">            from math import pi</span>
-<span class="sd">            from compas.utilities import geometric_key</span>
+<span class="sd">        print(geometric_key([pi, pi / 2.0, 2.0 * pi]))</span>
 
-<span class="sd">            print(geometric_key([pi, pi / 2.0, 2.0 * pi], &#39;3f&#39;))</span>
-
-<span class="sd">            # 3.142,3.142,3.142</span>
+<span class="sd">        # 3.142,3.142,3.142</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">precision</span><span class="p">:</span>
+        <span class="n">precision</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">PRECISION</span>
 
     <span class="k">if</span> <span class="n">precision</span> <span class="o">==</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1">,</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
@@ -148,9 +129,12 @@
     <span class="k">return</span> <span class="s1">&#39;{0:.</span><span class="si">{3}</span><span class="s1">},{1:.</span><span class="si">{3}</span><span class="s1">},{2:.</span><span class="si">{3}</span><span class="s1">}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="geometric_key2"><a class="viewcode-back" href="../../../reference/generated/compas.utilities.geometric_key2.html#compas.utilities.geometric_key2">[docs]</a><span class="k">def</span> <span class="nf">geometric_key2</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="s1">&#39;3f&#39;</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="geometric_key2"><a class="viewcode-back" href="../../../api/generated/compas.utilities.geometric_key2.html#compas.utilities.geometric_key2">[docs]</a><span class="k">def</span> <span class="nf">geometric_key2</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert XY coordinates to a string that can be used as a dict key.&quot;&quot;&quot;</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">xy</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">precision</span><span class="p">:</span>
+        <span class="n">precision</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">PRECISION</span>
 
     <span class="k">if</span> <span class="n">precision</span> <span class="o">==</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
@@ -166,7 +150,7 @@
     <span class="k">return</span> <span class="s1">&#39;{0:.</span><span class="si">{2}</span><span class="s1">},{1:.</span><span class="si">{2}</span><span class="s1">}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="normalize_values"><a class="viewcode-back" href="../../../reference/generated/compas.utilities.normalize_values.html#compas.utilities.normalize_values">[docs]</a><span class="k">def</span> <span class="nf">normalize_values</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">new_min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">new_max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="normalize_values"><a class="viewcode-back" href="../../../api/generated/compas.utilities.normalize_values.html#compas.utilities.normalize_values">[docs]</a><span class="k">def</span> <span class="nf">normalize_values</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">new_min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">new_max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Normalize a list of numbers to the range between new_min and new_max.&quot;&quot;&quot;</span>
     <span class="n">old_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
     <span class="n">old_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
@@ -229,7 +213,7 @@
 
     <span class="c1"># GeometricKey.set_precision(&#39;3f&#39;)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">geometric_key</span><span class="p">([</span><span class="n">pi</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">pi</span><span class="p">],</span> <span class="s1">&#39;3f&#39;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">geometric_key</span><span class="p">([</span><span class="n">pi</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">pi</span><span class="p">]))</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">geometric_key</span><span class="p">([</span><span class="o">-</span><span class="mf">0.00001</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.00001</span><span class="p">,</span> <span class="mf">0.00001</span><span class="p">],</span> <span class="s1">&#39;3f&#39;</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">geometric_key2</span><span class="p">([</span><span class="o">-</span><span class="mf">0.00001</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.00001</span><span class="p">],</span> <span class="s1">&#39;3f&#39;</span><span class="p">))</span>
 
@@ -272,10 +256,12 @@
 
                                 <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../reference.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../environments.html">Environments</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../notes.html">Notes</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../devguide.html">Developer Guide</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
@@ -317,7 +303,7 @@
             
 
             
-                Last updated on Sep 18, 2018.
+                Last updated on Sep 19, 2018.
             
 
             
@@ -330,7 +316,7 @@
             <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.2.7',
+    VERSION           : '0.3.2',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',
