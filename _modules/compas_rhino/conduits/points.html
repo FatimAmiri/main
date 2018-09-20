@@ -69,6 +69,8 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 
 <span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">color_to_rgb</span>
 <span class="kn">from</span> <span class="nn">compas_rhino.conduits</span> <span class="k">import</span> <span class="n">Conduit</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -80,6 +82,11 @@
 
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_ironpython</span><span class="p">()</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PointsConduit&#39;</span><span class="p">]</span>
@@ -155,12 +162,16 @@
 <span class="sd">            The size of each point.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
 
     <span class="nd">@size</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">size</span><span class="p">:</span>
             <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="n">size</span><span class="p">]</span>
             <span class="n">s</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">p</span><span class="p">:</span>
                 <span class="n">size</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_size</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">s</span><span class="p">)]</span>
@@ -183,37 +194,46 @@
     <span class="nd">@color</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">color</span><span class="p">:</span>
-            <span class="n">color</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">FromArgb</span><span class="p">(</span><span class="o">*</span> <span class="n">color_to_rgb</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">color</span><span class="p">]</span>
             <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="p">(</span><span class="n">basestring</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                <span class="c1"># if a single color was provided</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="n">color</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">)]</span>
+            <span class="c1"># convert to windows system colors</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="n">FromArgb</span><span class="p">(</span><span class="o">*</span> <span class="n">color_to_rgb</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">color</span><span class="p">]</span>
+            <span class="c1"># pad the color specification</span>
             <span class="n">c</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">color</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_color</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">f</span> <span class="o">-</span> <span class="n">c</span><span class="p">)]</span>
-            <span class="k">elif</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">color</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">color</span><span class="p">[:</span><span class="n">f</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">p</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_color</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">c</span><span class="p">)]</span>
+            <span class="k">elif</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">:</span>
+                <span class="n">color</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">color</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
+            <span class="c1"># assign to the protected value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">color</span>
 
 <div class="viewcode-block" id="PointsConduit.DrawForeground"><a class="viewcode-back" href="../../../api/generated/compas_rhino.conduits.PointsConduit.DrawForeground.html#compas_rhino.conduits.PointsConduit.DrawForeground">[docs]</a>    <span class="k">def</span> <span class="nf">DrawForeground</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">:</span>
-            <span class="n">draw</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">Display</span><span class="o">.</span><span class="n">DrawPoint</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">):</span>
-                    <span class="n">draw</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">),</span> <span class="n">Simple</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">):</span>
-                    <span class="n">draw</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">),</span> <span class="n">Simple</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_size</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-            <span class="n">draw</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">Display</span><span class="o">.</span><span class="n">DrawPoint</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">):</span>
-                    <span class="n">draw</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">),</span> <span class="n">Simple</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+                <span class="n">draw</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">Display</span><span class="o">.</span><span class="n">DrawPoint</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">):</span>
+                        <span class="n">draw</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">),</span> <span class="n">Simple</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">):</span>
+                        <span class="n">draw</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">),</span> <span class="n">Simple</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_size</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                <span class="n">draw</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">Display</span><span class="o">.</span><span class="n">DrawPoint</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">):</span>
+                        <span class="n">draw</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">),</span> <span class="n">Simple</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+                        <span class="n">draw</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">),</span> <span class="n">Simple</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_color</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
-                    <span class="n">draw</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">),</span> <span class="n">Simple</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_color</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">points</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">Point3d</span><span class="p">](</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">))</span>
-            <span class="k">for</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">:</span>
-                <span class="n">points</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">))</span>
-            <span class="n">e</span><span class="o">.</span><span class="n">Display</span><span class="o">.</span><span class="n">DrawPoints</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">Simple</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_color</span><span class="p">)</span></div></div>
+                <span class="n">points</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">Point3d</span><span class="p">](</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">:</span>
+                    <span class="n">points</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">))</span>
+                <span class="n">e</span><span class="o">.</span><span class="n">Display</span><span class="o">.</span><span class="n">DrawPoints</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">Simple</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_color</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -223,27 +243,15 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
     <span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">randint</span>
-    <span class="kn">import</span> <span class="nn">time</span>
 
     <span class="n">points</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">conduit</span> <span class="o">=</span> <span class="n">PointsConduit</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-        <span class="n">conduit</span><span class="o">.</span><span class="n">Enabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">conduit</span> <span class="o">=</span> <span class="n">PointsConduit</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)])</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">conduit</span><span class="o">.</span><span class="n">enabled</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
             <span class="n">conduit</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span>
-
-            <span class="n">conduit</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
-
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="n">conduit</span><span class="o">.</span><span class="n">Enabled</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">del</span> <span class="n">conduit</span>
+            <span class="n">conduit</span><span class="o">.</span><span class="n">redraw</span><span class="p">(</span><span class="n">pause</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 </code></pre></div>
                         
                     
@@ -322,7 +330,7 @@
             
 
             
-                Last updated on Sep 19, 2018.
+                Last updated on Sep 20, 2018.
             
 
             
