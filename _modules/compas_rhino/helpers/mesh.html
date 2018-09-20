@@ -1088,15 +1088,107 @@
 <span class="c1"># ==============================================================================</span>
 
 
-<div class="viewcode-block" id="mesh_identify_vertices"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_identify_vertices.html#compas_rhino.helpers.mesh_identify_vertices">[docs]</a><span class="k">def</span> <span class="nf">mesh_identify_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">precision</span><span class="p">):</span>
+<div class="viewcode-block" id="mesh_identify_vertices"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_identify_vertices.html#compas_rhino.helpers.mesh_identify_vertices">[docs]</a><span class="k">def</span> <span class="nf">mesh_identify_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">gkey_key</span> <span class="o">=</span> <span class="p">{</span><span class="n">geometric_key</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">precision</span><span class="p">):</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
     <span class="k">for</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
-        <span class="n">gkey</span> <span class="o">=</span> <span class="n">geometric_key</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="s1">&#39;1f&#39;</span><span class="p">)</span>
+        <span class="n">gkey</span> <span class="o">=</span> <span class="n">geometric_key</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">gkey</span> <span class="ow">in</span> <span class="n">gkey_key</span><span class="p">:</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">gkey_key</span><span class="p">[</span><span class="n">gkey</span><span class="p">]</span>
             <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">keys</span></div>
+
+
+<span class="c1"># def mesh_identify_edges(mesh, curves, precision=None):</span>
+<span class="c1">#     pass</span>
+
+
+<span class="c1"># def mesh_identify_points(mesh, keys):</span>
+<span class="c1">#     pass</span>
+
+
+<span class="c1"># def mesh_identify_curves(mesh, keys):</span>
+<span class="c1">#     pass</span>
+
+
+<span class="c1"># def mesh_get_continuous_edges(mesh, uv, stop=None):</span>
+<span class="c1">#         edges = [uv]</span>
+
+<span class="c1">#         a, b = uv</span>
+<span class="c1">#         end = b</span>
+<span class="c1">#         while True:</span>
+<span class="c1">#             if mesh.vertex_degree(a) != 4:</span>
+<span class="c1">#                 break</span>
+<span class="c1">#             if a == end:</span>
+<span class="c1">#                 break</span>
+<span class="c1">#             if stop is not None and a == stop:</span>
+<span class="c1">#                 break </span>
+<span class="c1">#             if mesh.get_vertex_attribute(a, &#39;is_anchor&#39;, False):</span>
+<span class="c1">#                 break</span>
+<span class="c1">#             nbrs = mesh.vertex_neighbors(a, ordered=True)</span>
+<span class="c1">#             i = nbrs.index(b)</span>
+<span class="c1">#             b = nbrs[i - 2]</span>
+<span class="c1">#             edges.append((a, b))</span>
+<span class="c1">#             a, b = b, a</span>
+
+<span class="c1">#         b, a = uv</span>
+<span class="c1">#         end = b</span>
+<span class="c1">#         while True:</span>
+<span class="c1">#             if mesh.vertex_degree(a) != 4:</span>
+<span class="c1">#                 break</span>
+<span class="c1">#             if a == end:</span>
+<span class="c1">#                 break</span>
+<span class="c1">#             if stop is not None and a == stop:</span>
+<span class="c1">#                 break </span>
+<span class="c1">#             if mesh.get_vertex_attribute(a, &#39;is_anchor&#39;, False):</span>
+<span class="c1">#                 break</span>
+<span class="c1">#             nbrs = mesh.vertex_neighbors(a, ordered=True)</span>
+<span class="c1">#             i = nbrs.index(b)</span>
+<span class="c1">#             b = nbrs[i - 2]</span>
+<span class="c1">#             edges.append((a, b))</span>
+<span class="c1">#             a, b = b, a</span>
+
+<span class="c1">#         edgeset = set(list(mesh.edges()))</span>
+<span class="c1">#         return [(u, v) if (u, v) in edgeset else (v, u) for u, v in edges]</span>
+
+
+<span class="c1"># def mesh_get_parallel_edges(mesh, uv):</span>
+<span class="c1">#     edges = [uv]</span>
+
+<span class="c1">#     a, b = a0, b0 = uv</span>
+<span class="c1">#     while True:</span>
+<span class="c1">#         f = mesh.halfedge[a][b]</span>
+<span class="c1">#         if f is None:</span>
+<span class="c1">#             break</span>
+<span class="c1">#         vertices = mesh.face_vertices(f)</span>
+<span class="c1">#         if len(vertices) != 4:</span>
+<span class="c1">#             break</span>
+<span class="c1">#         i = vertices.index(a)</span>
+<span class="c1">#         a = vertices[i - 1]</span>
+<span class="c1">#         b = vertices[i - 2]</span>
+<span class="c1">#         if a in (a0, b0) and b in (a0, b0):</span>
+<span class="c1">#             break</span>
+<span class="c1">#         edges.append((a, b))</span>
+
+<span class="c1">#     edges[:] = edges[::-1]</span>
+
+<span class="c1">#     b, a = b0, a0 = uv</span>
+<span class="c1">#     while True:</span>
+<span class="c1">#         f = mesh.halfedge[a][b]</span>
+<span class="c1">#         if f is None:</span>
+<span class="c1">#             break</span>
+<span class="c1">#         vertices = mesh.face_vertices(f)</span>
+<span class="c1">#         if len(vertices) != 4:</span>
+<span class="c1">#             break</span>
+<span class="c1">#         i = vertices.index(a)</span>
+<span class="c1">#         a = vertices[i - 1]</span>
+<span class="c1">#         b = vertices[i - 2]</span>
+<span class="c1">#         if a in (a0, b0) and b in (a0, b0):</span>
+<span class="c1">#             break</span>
+<span class="c1">#         edges.append((a, b))</span>
+
+<span class="c1">#     edgeset = set(list(mesh.edges()))</span>
+<span class="c1">#     return [(u, v) if (u, v) in edgeset else (v, u) for u, v in edges]</span>
 
 
 <span class="c1"># ==============================================================================</span>
