@@ -82,6 +82,7 @@
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexAttributesManagement</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexHelpers</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexCoordinatesDescriptors</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexFilter</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">EdgeAttributesManagement</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">EdgeHelpers</span>
@@ -121,7 +122,8 @@
               <span class="n">FaceAttributesManagement</span><span class="p">,</span>
               <span class="n">EdgeAttributesManagement</span><span class="p">,</span>
               <span class="n">VertexAttributesManagement</span><span class="p">,</span>
-              <span class="n">Datastructure</span><span class="p">):</span>
+              <span class="n">Datastructure</span><span class="p">,</span>
+              <span class="n">VertexFilter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class for working with volumetric meshes.</span>
 
 <span class="sd">    Attributes</span>
@@ -924,7 +926,8 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
     <span class="kn">import</span> <span class="nn">compas</span>
-    <span class="kn">from</span> <span class="nn">compas.viewers</span> <span class="k">import</span> <span class="n">VolMeshViewer</span>
+    <span class="c1"># from compas.viewers import VolMeshViewer</span>
+    <span class="kn">from</span> <span class="nn">compas.viewers</span> <span class="k">import</span> <span class="n">Viewer</span>
 
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">VolMesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;boxes.obj&#39;</span><span class="p">))</span>
 
@@ -932,19 +935,26 @@
 
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">VolMesh</span><span class="o">.</span><span class="n">from_data</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">to_data</span><span class="p">())</span>
 
-    <span class="n">viewer</span> <span class="o">=</span> <span class="n">VolMeshViewer</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="n">grid_on</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mf">5.</span><span class="p">)</span>
+    <span class="n">viewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">()</span>
 
-    <span class="n">viewer</span><span class="o">.</span><span class="n">grid_on</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">axes_on</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
 
-    <span class="n">viewer</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">x_color</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">y_color</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">z_color</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-
-    <span class="n">viewer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
-
-    <span class="n">viewer</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">zoom_out</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
     <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+    <span class="c1"># viewer = VolMeshViewer(mesh, 600, 600, grid_on=False, zoom=5.)</span>
+
+    <span class="c1"># viewer.grid_on = False</span>
+    <span class="c1"># viewer.axes_on = False</span>
+
+    <span class="c1"># viewer.axes.x_color = (0.1, 0.1, 0.1)</span>
+    <span class="c1"># viewer.axes.y_color = (0.1, 0.1, 0.1)</span>
+    <span class="c1"># viewer.axes.z_color = (0.1, 0.1, 0.1)</span>
+
+    <span class="c1"># viewer.setup()</span>
+
+    <span class="c1"># viewer.camera.zoom_out(5)</span>
+    <span class="c1"># viewer.show()</span>
 </code></pre></div>
                         
                     
@@ -1023,7 +1033,7 @@
             
 
             
-                Last updated on Sep 20, 2018.
+                Last updated on Sep 21, 2018.
             
 
             
