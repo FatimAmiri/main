@@ -96,9 +96,7 @@
 
 <span class="c1"># make a *stanford bunny* mesh</span>
 
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_ply</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_bunny</span><span class="p">())</span>
-
-<span class="n">mesh</span><span class="o">.</span><span class="n">cull_vertices</span><span class="p">()</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_ply</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bunny.ply&#39;</span><span class="p">))</span>
 
 <span class="c1"># get any vertex of the mesh</span>
 <span class="c1"># and its neighbors</span>
@@ -136,7 +134,11 @@
     <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">anchors</span><span class="p">:</span>
         <span class="n">nbrs</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_neighbors</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="n">w</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nbrs</span><span class="p">)</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="o">-</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">w</span>
+
+        <span class="k">if</span> <span class="n">w</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="o">-</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">w</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">nbrs</span><span class="p">:</span>
             <span class="n">c</span> <span class="o">=</span> <span class="n">key_index</span><span class="p">[</span><span class="n">nbr</span><span class="p">]</span>
@@ -305,7 +307,7 @@ of the laplacian mesh editing framework described in
             
 
             
-                Last updated on Sep 23, 2018.
+                Last updated on Sep 24, 2018.
             
 
             
