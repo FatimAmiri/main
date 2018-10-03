@@ -2209,6 +2209,26 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="o">==</span> <span class="n">f2</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span></div>
 
+<div class="viewcode-block" id="Mesh.is_face_on_boundary"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.is_face_on_boundary.html#compas.datastructures.Mesh.is_face_on_boundary">[docs]</a>    <span class="k">def</span> <span class="nf">is_face_on_boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Verify that a face is on a boundary.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key : hashable</span>
+<span class="sd">            The identifier of the face.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the face is on the boundary.</span>
+<span class="sd">            False otherwise.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_halfedges</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># vertex geometry</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
@@ -2931,19 +2951,24 @@
 
     <span class="c1"># # mesh.add_face([a, b, c, d, e, f, g, h])</span>
 
-    <span class="c1"># plotter = MeshPlotter(mesh)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">is_face_on_boundary</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
 
-    <span class="c1"># plotter.draw_vertices()</span>
-    <span class="c1"># plotter.draw_edges()</span>
-    <span class="c1"># plotter.draw_faces()</span>
 
-    <span class="c1"># plotter.show()</span>
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xy&#39;</span><span class="p">))</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">()</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;key&#39;</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_edges_attribute</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_edges_attributes</span><span class="p">(</span><span class="s1">&#39;qf&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)))</span>
+    <span class="c1"># print(mesh.get_vertices_attribute(&#39;x&#39;))</span>
+    <span class="c1"># print(mesh.get_vertices_attributes(&#39;xy&#39;))</span>
+
+    <span class="c1"># print(mesh.get_edges_attribute(&#39;q&#39;, 1.0))</span>
+    <span class="c1"># print(mesh.get_edges_attributes(&#39;qf&#39;, (1.0, 2.0)))</span>
+
+
 </code></pre></div>
                         
                     
