@@ -75,6 +75,8 @@
 
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">color_to_colordict</span>
 
+<span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="k">import</span> <span class="n">Artist</span>
+
 <span class="kn">from</span> <span class="nn">compas_rhino.artists.mixins</span> <span class="k">import</span> <span class="n">VertexArtist</span>
 <span class="kn">from</span> <span class="nn">compas_rhino.artists.mixins</span> <span class="k">import</span> <span class="n">EdgeArtist</span>
 
@@ -88,7 +90,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NetworkArtist&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="NetworkArtist"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.NetworkArtist.html#compas_rhino.artists.NetworkArtist">[docs]</a><span class="k">class</span> <span class="nc">NetworkArtist</span><span class="p">(</span><span class="n">EdgeArtist</span><span class="p">,</span> <span class="n">VertexArtist</span><span class="p">):</span>
+<div class="viewcode-block" id="NetworkArtist"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.NetworkArtist.html#compas_rhino.artists.NetworkArtist">[docs]</a><span class="k">class</span> <span class="nc">NetworkArtist</span><span class="p">(</span><span class="n">EdgeArtist</span><span class="p">,</span> <span class="n">VertexArtist</span><span class="p">,</span> <span class="n">Artist</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A network artist defines functionality for visualising COMPAS networks in Rhino.</span>
 
 <span class="sd">    Parameters</span>
@@ -106,21 +108,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="NetworkArtist.__init__"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.NetworkArtist.__init__.html#compas_rhino.artists.NetworkArtist.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NetworkArtist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;color.vertex&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
             <span class="s1">&#39;color.edge&#39;</span>   <span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-        <span class="p">}</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;str: The layer that contains the network.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span>
-
-    <span class="nd">@layer</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="p">})</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -130,29 +123,6 @@
     <span class="nd">@network</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span> <span class="o">=</span> <span class="n">network</span>
-
-<div class="viewcode-block" id="NetworkArtist.redraw"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.NetworkArtist.redraw.html#compas_rhino.artists.NetworkArtist.redraw">[docs]</a>    <span class="k">def</span> <span class="nf">redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Redraw the Rhino view.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        timeout : float, optional</span>
-<span class="sd">            The amount of time the artist waits before updating the Rhino view.</span>
-<span class="sd">            The time should be specified in seconds.</span>
-<span class="sd">            Default is ``None``.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
-        <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">rs</span><span class="o">.</span><span class="n">Redraw</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="NetworkArtist.clear_layer"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.NetworkArtist.clear_layer.html#compas_rhino.artists.NetworkArtist.clear_layer">[docs]</a>    <span class="k">def</span> <span class="nf">clear_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Clear the main layer of the artist.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">:</span>
-            <span class="n">compas_rhino</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">compas_rhino</span><span class="o">.</span><span class="n">clear_current_layer</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="NetworkArtist.clear"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.NetworkArtist.clear.html#compas_rhino.artists.NetworkArtist.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear the vertices and edges of the network, without clearing the</span>
@@ -266,7 +236,7 @@
             
 
             
-                Last updated on Oct 04, 2018.
+                Last updated on Oct 05, 2018.
             
 
             

@@ -73,6 +73,8 @@
 <span class="kn">import</span> <span class="nn">compas</span>
 <span class="kn">import</span> <span class="nn">compas_rhino</span>
 
+<span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="k">import</span> <span class="n">Artist</span>
+
 <span class="kn">from</span> <span class="nn">compas_rhino.artists.mixins</span> <span class="k">import</span> <span class="n">VertexArtist</span>
 <span class="kn">from</span> <span class="nn">compas_rhino.artists.mixins</span> <span class="k">import</span> <span class="n">EdgeArtist</span>
 <span class="kn">from</span> <span class="nn">compas_rhino.artists.mixins</span> <span class="k">import</span> <span class="n">FaceArtist</span>
@@ -87,7 +89,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;VolMeshArtist&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="VolMeshArtist"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.VolMeshArtist.html#compas_rhino.artists.VolMeshArtist">[docs]</a><span class="k">class</span> <span class="nc">VolMeshArtist</span><span class="p">(</span><span class="n">FaceArtist</span><span class="p">,</span> <span class="n">EdgeArtist</span><span class="p">,</span> <span class="n">VertexArtist</span><span class="p">):</span>
+<div class="viewcode-block" id="VolMeshArtist"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.VolMeshArtist.html#compas_rhino.artists.VolMeshArtist">[docs]</a><span class="k">class</span> <span class="nc">VolMeshArtist</span><span class="p">(</span><span class="n">FaceArtist</span><span class="p">,</span> <span class="n">EdgeArtist</span><span class="p">,</span> <span class="n">VertexArtist</span><span class="p">,</span> <span class="n">Artist</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A volmesh artist defines functionality for visualising COMPAS volmeshes in Rhino.</span>
 
 <span class="sd">    Parameters</span>
@@ -105,17 +107,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="VolMeshArtist.__init__"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.VolMeshArtist.__init__.html#compas_rhino.artists.VolMeshArtist.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volmesh</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">VolMeshArtist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span> <span class="o">=</span> <span class="n">volmesh</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;str: The layer that contains the volmesh.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span>
-
-    <span class="nd">@layer</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">volmesh</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="p">})</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">volmesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -125,27 +121,6 @@
     <span class="nd">@volmesh</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">volmesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volmesh</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span> <span class="o">=</span> <span class="n">volmesh</span>
-
-<div class="viewcode-block" id="VolMeshArtist.redraw"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.VolMeshArtist.redraw.html#compas_rhino.artists.VolMeshArtist.redraw">[docs]</a>    <span class="k">def</span> <span class="nf">redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Redraw the Rhino view.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        timeout : float, optional</span>
-<span class="sd">            The amount of time the artist waits before updating the Rhino view.</span>
-<span class="sd">            The time should be specified in seconds.</span>
-<span class="sd">            Default is ``None``.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
-        <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">rs</span><span class="o">.</span><span class="n">Redraw</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="VolMeshArtist.clear_layer"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.VolMeshArtist.clear_layer.html#compas_rhino.artists.VolMeshArtist.clear_layer">[docs]</a>    <span class="k">def</span> <span class="nf">clear_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Clear the main layer of the artist.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">:</span>
-            <span class="n">compas_rhino</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VolMeshArtist.clear"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.VolMeshArtist.clear.html#compas_rhino.artists.VolMeshArtist.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear the vertices, faces and edges of the volmesh, without clearing the</span>
@@ -267,7 +242,7 @@
             
 
             
-                Last updated on Oct 04, 2018.
+                Last updated on Oct 05, 2018.
             
 
             

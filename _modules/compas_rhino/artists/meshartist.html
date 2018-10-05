@@ -73,6 +73,8 @@
 <span class="kn">import</span> <span class="nn">compas</span>
 <span class="kn">import</span> <span class="nn">compas_rhino</span>
 
+<span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="k">import</span> <span class="n">Artist</span>
+
 <span class="kn">from</span> <span class="nn">compas_rhino.artists.mixins</span> <span class="k">import</span> <span class="n">VertexArtist</span>
 <span class="kn">from</span> <span class="nn">compas_rhino.artists.mixins</span> <span class="k">import</span> <span class="n">EdgeArtist</span>
 <span class="kn">from</span> <span class="nn">compas_rhino.artists.mixins</span> <span class="k">import</span> <span class="n">FaceArtist</span>
@@ -87,7 +89,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;MeshArtist&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="MeshArtist"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.html#compas_rhino.artists.MeshArtist">[docs]</a><span class="k">class</span> <span class="nc">MeshArtist</span><span class="p">(</span><span class="n">FaceArtist</span><span class="p">,</span> <span class="n">EdgeArtist</span><span class="p">,</span> <span class="n">VertexArtist</span><span class="p">):</span>
+<div class="viewcode-block" id="MeshArtist"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.html#compas_rhino.artists.MeshArtist">[docs]</a><span class="k">class</span> <span class="nc">MeshArtist</span><span class="p">(</span><span class="n">FaceArtist</span><span class="p">,</span> <span class="n">EdgeArtist</span><span class="p">,</span> <span class="n">VertexArtist</span><span class="p">,</span> <span class="n">Artist</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A mesh artist defines functionality for visualising COMPAS meshes in Rhino.</span>
 
 <span class="sd">    Parameters</span>
@@ -122,27 +124,17 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="MeshArtist.__init__"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.__init__.html#compas_rhino.artists.MeshArtist.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MeshArtist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;color.vertex&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
             <span class="s1">&#39;color.edge&#39;</span>   <span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s1">&#39;color.face&#39;</span>   <span class="p">:</span> <span class="p">(</span><span class="mi">210</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">210</span><span class="p">),</span>
-        <span class="p">}</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;str: The layer that contains the mesh.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span>
-
-    <span class="nd">@layer</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="p">})</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;compas.datastructures.Mesh: The mesh that should be painted.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Mesh: The mesh that should be painted.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span>
 
     <span class="nd">@mesh</span><span class="o">.</span><span class="n">setter</span>
@@ -150,6 +142,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span> <span class="o">=</span> <span class="n">mesh</span>
 
 <div class="viewcode-block" id="MeshArtist.draw"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.draw.html#compas_rhino.artists.MeshArtist.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Draw the mesh as a consolidated RhinoMesh.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The mesh should be a valid Rhino Mesh object, which means it should have</span>
+<span class="sd">        only triangular or quadrilateral faces.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">key_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
         <span class="n">vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
         <span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)]</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()]</span>
@@ -157,39 +157,18 @@
         <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
             <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="n">new_faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span> <span class="o">+</span> <span class="p">[</span><span class="n">face</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+                <span class="n">new_faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span> <span class="o">+</span> <span class="n">face</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
             <span class="k">elif</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
                 <span class="n">new_faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
         <span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span>
         <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.mesh&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">xdraw_mesh</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">new_faces</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MeshArtist.redraw"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.redraw.html#compas_rhino.artists.MeshArtist.redraw">[docs]</a>    <span class="k">def</span> <span class="nf">redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Redraw the Rhino view.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        timeout : float, optional</span>
-<span class="sd">            The amount of time the artist waits before updating the Rhino view.</span>
-<span class="sd">            The time should be specified in seconds.</span>
-<span class="sd">            Default is ``None``.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
-        <span class="n">rs</span><span class="o">.</span><span class="n">EnableRedraw</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">rs</span><span class="o">.</span><span class="n">Redraw</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="MeshArtist.clear_layer"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.clear_layer.html#compas_rhino.artists.MeshArtist.clear_layer">[docs]</a>    <span class="k">def</span> <span class="nf">clear_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Clear the main layer of the artist.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">:</span>
-            <span class="n">compas_rhino</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">compas_rhino</span><span class="o">.</span><span class="n">clear_current_layer</span><span class="p">()</span></div>
-
 <div class="viewcode-block" id="MeshArtist.clear"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.clear.html#compas_rhino.artists.MeshArtist.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear the vertices, faces and edges of the mesh, without clearing the</span>
-<span class="sd">        other elements in the layer.&quot;&quot;&quot;</span>
+<span class="sd">        other elements in the layer.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_vertices</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_faces</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_edges</span><span class="p">()</span></div></div>
@@ -200,6 +179,8 @@
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    
+    <span class="kn">import</span> <span class="nn">os</span>
 
     <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
     <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Polyhedron</span>
@@ -231,6 +212,8 @@
 
     <span class="n">artist</span><span class="o">.</span><span class="n">draw_edgelabels</span><span class="p">()</span>
     <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">artist</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">TEMP</span><span class="p">,</span> <span class="s1">&#39;test4.png&#39;</span><span class="p">)))</span>
 </code></pre></div>
                         
                     
@@ -309,7 +292,7 @@
             
 
             
-                Last updated on Oct 04, 2018.
+                Last updated on Oct 05, 2018.
             
 
             
