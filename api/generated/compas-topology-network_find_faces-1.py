@@ -1,26 +1,27 @@
-# no breakpoints
-
 import compas
-from compas.topology import FaceNetwork
+
 from compas.topology import network_find_faces
-from compas.plotters import FaceNetworkPlotter
+from compas.datastructures import Network
+from compas.datastructures import Mesh
+from compas.plotters import MeshPlotter
 
-network = FaceNetwork.from_obj(compas.get('grid_irregular.obj'))
+network = Network.from_obj(compas.get('lines.obj'))
 
-network_find_faces(network)
+mesh = Mesh()
 
-plotter = FaceNetworkPlotter(network)
+for key, attr in network.vertices(True):
+    mesh.add_vertex(key, x=attr['x'], y=attr['y'], z=attr['z'])
 
-plotter.draw_vertices(
-    radius=0.075,
-    facecolor={key: '#cccccc' for key in network.leaves()}
-)
-plotter.draw_edges(
-    color={(u, v): '#cccccc' for u, v in network.edges()}
-)
-plotter.draw_faces(
-    facecolor={fkey: '#eeeeee' for fkey in network.faces()},
-    text={fkey: fkey for fkey in network.faces()}
-)
+mesh.halfedge = network.halfedge
+
+network_find_faces(mesh)
+
+mesh.delete_face(0)
+
+plotter = MeshPlotter(mesh)
+
+plotter.draw_vertices()
+plotter.draw_edges()
+plotter.draw_faces()
 
 plotter.show()
