@@ -88,13 +88,12 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-
-<span class="kn">import</span> <span class="nn">compas_rhino</span>
-
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
 <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="kn">import</span> <span class="n">mesh_subdivide</span>
 
+<span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="kn">import</span> <span class="n">MeshArtist</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.selectors</span> <span class="kn">import</span> <span class="n">VertexSelector</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.modifiers</span> <span class="kn">import</span> <span class="n">VertexModifier</span>
 
 <span class="c1"># make a control mesh</span>
 
@@ -108,24 +107,20 @@
 <span class="n">mesh</span><span class="o">.</span><span class="n">update_default_vertex_attributes</span><span class="p">({</span><span class="s1">&#39;is_fixed&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">})</span>
 
 
-<span class="c1"># make a partial function out of compas_rhino.mesh_draw</span>
-<span class="c1"># (a function with some of the parameters already filled in)</span>
-<span class="c1"># that can be used more easily to redraw the mesh</span>
-<span class="c1"># with the same settings in the update loop</span>
+<span class="c1"># make a drawing function for the control mesh</span>
 
-<span class="n">draw</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
-    <span class="n">compas_rhino</span><span class="o">.</span><span class="n">mesh_draw</span><span class="p">,</span>
-    <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;SubdModeling::Control&#39;</span><span class="p">,</span>
-    <span class="n">clear_layer</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-    <span class="n">show_faces</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-    <span class="n">show_vertices</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-    <span class="n">show_edges</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;SubdModeling::Control&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">draw</span><span class="p">():</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">()</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">&#39;is_fixed&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">})})</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
 
 
 <span class="c1"># draw the control mesh</span>
-<span class="c1"># with showing the faces</span>
 
-<span class="n">draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">draw</span><span class="p">()</span>
 
 
 <span class="c1"># allow the user to change the attributes of the vertices</span>
@@ -133,11 +128,11 @@
 <span class="c1">#       when the user cancels the selection of mesh vertices</span>
 
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="n">keys</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">mesh_select_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">VertexSelector</span><span class="o">.</span><span class="n">select_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
         <span class="k">break</span>
-    <span class="n">compas_rhino</span><span class="o">.</span><span class="n">mesh_update_vertex_attributes</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span>
-    <span class="n">draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">vertexcolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">&#39;is_fixed&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">})})</span>
+    <span class="n">VertexModifier</span><span class="o">.</span><span class="n">update_vertex_attributes</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span>
+    <span class="n">draw</span><span class="p">()</span>
 
 
 <span class="c1"># make a subd mesh (using catmullclark)</span>
@@ -155,12 +150,11 @@
 
 <span class="c1"># draw the result</span>
 
-<span class="n">compas_rhino</span><span class="o">.</span><span class="n">mesh_draw_faces</span><span class="p">(</span>
-    <span class="n">subd</span><span class="p">,</span>
-    <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;SubdModeling::Mesh&#39;</span><span class="p">,</span>
-    <span class="n">clear_layer</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-    <span class="n">join_faces</span><span class="o">=</span><span class="bp">True</span>
-<span class="p">)</span>
+<span class="n">artist</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">subd</span>
+<span class="n">artist</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="s1">&#39;SubdModeling::Mesh&#39;</span>
+
+<span class="n">artist</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">()</span>
+<span class="n">artist</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
