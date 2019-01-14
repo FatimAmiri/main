@@ -1,7 +1,7 @@
 import compas
 from compas.datastructures import Mesh
+from compas.datastructures import mesh_quads_to_triangles
 from compas.plotters import MeshPlotter
-from compas.topology import mesh_quads_to_triangles
 
 mesh = Mesh.from_obj(compas.get('faces.obj'))
 
