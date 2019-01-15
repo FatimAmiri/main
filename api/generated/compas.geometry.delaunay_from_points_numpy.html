@@ -41,7 +41,7 @@
                     <a class="nav-link " href="/">Home</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link active" href="/main/">Main library</a>
+                    <a class="nav-link active" href="/main/">Documentation</a>
                 </li>
                 <li class="nav-item ">
                     <a class="nav-link " href="/packages/">Packages</a>
@@ -78,7 +78,41 @@
 <dl class="function">
 <dt id="compas.geometry.delaunay_from_points_numpy">
 <code class="descclassname">compas.geometry.</code><code class="descname">delaunay_from_points_numpy</code><span class="sig-paren">(</span><em>points</em><span class="sig-paren">)</span></dt>
-<dd></dd></dl>
+<dd><p>Computes the delaunay triangulation for a list of points using Numpy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>sequence of tuple</em>) – XYZ coordinates of the original points.</p></li>
+<li><p><strong>boundary</strong> (<em>sequence of tuples</em>) – list of ordered points describing the outer boundary (optional)</p></li>
+<li><p><strong>holes</strong> (<em>list of sequences of tuples</em>) – list of polygons (ordered points describing internal holes (optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>list</em> – The faces of the triangulation.
+Each face is a triplet of indices referring to the list of point coordinates.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">pointcloud_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">delaunay_from_points_numpy</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
+
+<span class="n">points</span> <span class="o">=</span> <span class="n">pointcloud_xy</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+<span class="n">faces</span> <span class="o">=</span> <span class="n">delaunay_from_points_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+<span class="n">delaunay</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">delaunay</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="figure">
+<img alt="../../_images/compas-geometry-delaunay_from_points_numpy-1.png" class="figure-img img-fluid" src="../../_images/compas-geometry-delaunay_from_points_numpy-1.png" />
+</div>
+</dd></dl>
 
 </div>
 
@@ -178,7 +212,7 @@
             
 
             
-                Last updated on Jan 14, 2019.
+                Last updated on Jan 15, 2019.
             
 
             
@@ -191,7 +225,7 @@
             <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.3.6',
+    VERSION           : '0.4.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

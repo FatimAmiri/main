@@ -3,14 +3,12 @@ from compas.geometry import pointcloud_xy
 from compas.geometry import delaunay_from_points
 from compas.plotters import MeshPlotter
 
-points = pointcloud_xy(10, (0, 10))
+points = pointcloud_xy(20, (0, 50))
 faces = delaunay_from_points(points)
 
 delaunay = Mesh.from_vertices_and_faces(points, faces)
 
 plotter = MeshPlotter(delaunay)
-
 plotter.draw_vertices(radius=0.1)
 plotter.draw_faces()
-
 plotter.show()

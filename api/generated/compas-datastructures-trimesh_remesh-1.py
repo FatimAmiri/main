@@ -5,7 +5,7 @@ from compas.plotters import MeshPlotter
 vertices = [
     (0.0, 0.0, 0.0),
     (10.0, 0.0, 0.0),
-    (10.0, 10.0, 0.0),
+    (6.0, 10.0, 0.0),
     (0.0, 10.0, 0.0),
     (5.0, 5.0, 0.0)
 ]
@@ -25,6 +25,7 @@ trimesh_remesh(
     kmax=300,
     allow_boundary_split=True,
     allow_boundary_swap=True,
+    allow_boundary_collapse=True,
     verbose=False
 )
 
