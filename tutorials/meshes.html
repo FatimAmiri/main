@@ -1,0 +1,646 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>COMPAS</title>
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    
+        <meta name="author" content="Tom Van Mele" />
+        <meta name="description" content="compas is a computational framework for research in architecture and structures." />
+
+        <link rel="shortcut icon" href="../_static/images/compas.ico" type="image/x-icon">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
+
+        <link rel="stylesheet" type="text/css" href="../_static/css/prism.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/css/compas.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/css/compas-reference.css" />
+
+        
+            <link rel="next" title="Working with Networks" href="networks.html" />
+        
+        
+        
+            <link rel="prev" title="Tutorials" href="../tutorials.html" />
+        
+
+        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    </head>
+    <body data-spy="scroll" data-target="#compas-localnav">
+
+        <header class="navbar navbar-expand compas-navbar">
+            <a class="navbar-brand" href="/">
+                <img src="/_static/images/compas_icon_white.png" width="36px" height="36px" alt="compas" />
+            </a>
+
+            <ul class="navbar-nav">
+                <li class="nav-item ">
+                    <a class="nav-link " href="/">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link active" href="/main/">Documentation</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link " href="/packages/">Packages</a>
+                </li>
+                <!-- <li class="nav-item ">
+                    <a class="nav-link " href="/workshops/">Workshops</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="http://forum.compas-framework.org">Forum</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="http://github.com/compas-dev">Github</a>
+                </li>
+            </ul>
+        </header>
+        
+        <div class="container-fluid compas-container">
+            <div class="row flex-xl-nowrap">
+
+                <!-- main content -->
+
+                
+
+                <main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+
+                
+
+                    
+
+                        
+
+                        <div class="section" id="working-with-meshes">
+<h1>Working with Meshes</h1>
+<p><strong>COMPAS</strong> meshes are polygon meshes with support for n-sided polygonal
+faces. the meshes are presented using a half-edge data structure. In a
+half-edge data structure, each edge is composed of two half-edges with
+opposite orientation. Each half-edge is part of exactly one face, unless
+it is on the boundary. An edge is thus incident to at least one face and
+at most to two. The half-edges of a face form a continuous cycle,
+connecting the vertices of the face in a specific order forming a closed
+n-sided polygon. The ordering of the vertices determines the direction
+of its normal.</p>
+<p>Check out the docs for detailed information about the mesh and the available
+functionality: <a class="reference internal" href="../api/generated/compas.datastructures.Mesh.html#compas.datastructures.Mesh" title="compas.datastructures.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">compas.datastructures.Mesh</span></code></a>.</p>
+<div class="section" id="making-a-mesh">
+<h2>Making a mesh</h2>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="adding-vertices-and-faces">
+<h2>Adding vertices and faces</h2>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">])</span>
+</code></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Edges cannot be added explicitly. They are added automatically when
+faces are added.</p>
+</div>
+</div>
+<div class="section" id="identifiers">
+<h2>Identifiers</h2>
+<p>All vertices of a mesh have a unique id, the <em>key</em> of the vertex. By
+default, keys are integers, and every vertex is assigned a unmbr
+corresponding to the order in which they are added. The number is always
+the highest number used so far, plus one.</p>
+<p>Keys can be assigned explicitly, as integers or as any other <em>hashable</em>
+type.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span>0 &lt;class &#39;int&#39;&gt;
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">b</span> <span class="o">==</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="kc">True</span>
+</code></pre></div>
+</div>
+<p>Faces are also assigned a unique id. As with vertices, keys are integers
+by default, but any other <em>hashable</em> type can be assigned explicitly.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span>0 &lt;class &#39;int&#39;&gt;
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="constructors">
+<h2>Constructors</h2>
+<p>Meshes can be constructed from data contained in files. Currently, the
+following formats are supported: <code class="docutils literal notranslate"><span class="pre">obj</span></code>, <code class="docutils literal notranslate"><span class="pre">ply</span></code>, <code class="docutils literal notranslate"><span class="pre">stl</span></code>. <strong>COMPAS</strong>
+provides a set of sample files that can be used to develop new
+functionality, or simply to make examples like the ones in this
+tutorial.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># mesh = Mesh.from_ply(compas.get(&#39;bunny.ply&#39;))</span>
+<span class="c1"># mesh = Mesh.from_stl(compas.get(&#39;cube.stl&#39;))</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="data">
+<h2>Data</h2>
+<p>All data accessors return objects that are meant to be iterated over
+(dictionary key iterators or generator objects). Storing the data in
+lists that can be reused multiple times must be done explicitly.</p>
+<div class="section" id="iteration">
+<h3>Iteration</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="o">&lt;</span><span class="n">dict_keyiterator</span> <span class="n">at</span> <span class="mh">0x60d74f278</span><span class="o">&gt;</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="o">&lt;</span><span class="n">generator</span> <span class="nb">object</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">faces</span> <span class="n">at</span> <span class="mh">0x60d723e08</span><span class="o">&gt;</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="o">&lt;</span><span class="n">generator</span> <span class="nb">object</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">edges</span> <span class="n">at</span> <span class="mh">0x60d723a98</span><span class="o">&gt;</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="mi">0</span>
+<span class="mi">1</span>
+<span class="mi">2</span>
+<span class="mi">3</span>
+<span class="o">...</span>
+<span class="mi">32</span>
+<span class="mi">33</span>
+<span class="mi">34</span>
+<span class="mi">35</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="mi">0</span>
+<span class="mi">1</span>
+<span class="mi">2</span>
+<span class="mi">3</span>
+<span class="o">...</span>
+<span class="mi">21</span>
+<span class="mi">22</span>
+<span class="mi">23</span>
+<span class="mi">24</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">33</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">34</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">35</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="lists">
+<h3>Lists</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">())</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">...</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">35</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">())</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">...</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="o">...</span> <span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span> <span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">35</span><span class="p">)]</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="traversal">
+<h3>Traversal</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;(neighbors)&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_neighbors</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;(faces)&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_faces</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="mi">0</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="mi">0</span> <span class="p">(</span><span class="n">faces</span><span class="p">)</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="mi">1</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="mi">1</span> <span class="p">(</span><span class="n">faces</span><span class="p">)</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="mi">2</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="mi">2</span> <span class="p">(</span><span class="n">faces</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="mi">3</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="mi">3</span> <span class="p">(</span><span class="n">faces</span><span class="p">)</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="o">...</span>
+
+<span class="mi">32</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">33</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">31</span><span class="p">]</span>
+<span class="mi">32</span> <span class="p">(</span><span class="n">faces</span><span class="p">)</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">21</span><span class="p">]</span>
+
+<span class="mi">33</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">34</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="mi">33</span> <span class="p">(</span><span class="n">faces</span><span class="p">)</span> <span class="p">[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">22</span><span class="p">]</span>
+
+<span class="mi">34</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">35</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">33</span><span class="p">]</span>
+<span class="mi">34</span> <span class="p">(</span><span class="n">faces</span><span class="p">)</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">23</span><span class="p">]</span>
+
+<span class="mi">35</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">29</span><span class="p">,</span> <span class="mi">34</span><span class="p">]</span>
+<span class="mi">35</span> <span class="p">(</span><span class="n">faces</span><span class="p">)</span> <span class="p">[</span><span class="mi">24</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="s2">&quot;(vertices)&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="s2">&quot;(half-edges)&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_halfedges</span><span class="p">(</span><span class="n">fkey</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="s2">&quot;(neighbors)&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_neighbors</span><span class="p">(</span><span class="n">fkey</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="mi">0</span> <span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="mi">0</span> <span class="p">(</span><span class="n">half</span><span class="o">-</span><span class="n">edges</span><span class="p">)</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+<span class="mi">0</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="mi">1</span> <span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="mi">1</span> <span class="p">(</span><span class="n">half</span><span class="o">-</span><span class="n">edges</span><span class="p">)</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+<span class="mi">1</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="mi">2</span> <span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="mi">2</span> <span class="p">(</span><span class="n">half</span><span class="o">-</span><span class="n">edges</span><span class="p">)</span> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+<span class="mi">2</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="mi">3</span> <span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+<span class="mi">3</span> <span class="p">(</span><span class="n">half</span><span class="o">-</span><span class="n">edges</span><span class="p">)</span> <span class="p">[(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
+<span class="mi">3</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="o">...</span>
+
+<span class="mi">21</span> <span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">31</span><span class="p">]</span>
+<span class="mi">21</span> <span class="p">(</span><span class="n">half</span><span class="o">-</span><span class="n">edges</span><span class="p">)</span> <span class="p">[(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span> <span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span> <span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">25</span><span class="p">)]</span>
+<span class="mi">21</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
+
+<span class="mi">22</span> <span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="p">[</span><span class="mi">26</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="mi">22</span> <span class="p">(</span><span class="n">half</span><span class="o">-</span><span class="n">edges</span><span class="p">)</span> <span class="p">[(</span><span class="mi">26</span><span class="p">,</span> <span class="mi">27</span><span class="p">),</span> <span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">26</span><span class="p">)]</span>
+<span class="mi">22</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">21</span><span class="p">]</span>
+
+<span class="mi">23</span> <span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="p">[</span><span class="mi">27</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">33</span><span class="p">]</span>
+<span class="mi">23</span> <span class="p">(</span><span class="n">half</span><span class="o">-</span><span class="n">edges</span><span class="p">)</span> <span class="p">[(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">28</span><span class="p">),</span> <span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span> <span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">27</span><span class="p">)]</span>
+<span class="mi">23</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">22</span><span class="p">]</span>
+
+<span class="mi">24</span> <span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="p">[</span><span class="mi">28</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">34</span><span class="p">]</span>
+<span class="mi">24</span> <span class="p">(</span><span class="n">half</span><span class="o">-</span><span class="n">edges</span><span class="p">)</span> <span class="p">[(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">29</span><span class="p">),</span> <span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">35</span><span class="p">),</span> <span class="p">(</span><span class="mi">35</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span> <span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">28</span><span class="p">)]</span>
+<span class="mi">24</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">23</span><span class="p">]</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="attributes">
+<h2>Attributes</h2>
+<p>All vertices, faces, and edges automatically have the default attributes
+specified by the mesh class. The default vertex attributes are xyz
+coordinates, with <code class="docutils literal notranslate"><span class="pre">x=0</span></code>, <code class="docutils literal notranslate"><span class="pre">y=0</span></code>, and <code class="docutils literal notranslate"><span class="pre">z=0</span></code>. Edges and faces have no
+default attributes.</p>
+<p>To change the default attributes, do:</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">update_default_vertex_attributes</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">is_fixed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">update_default_face_attributes</span><span class="p">(</span><span class="n">is_loaded</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">update_default_edge_attributes</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="section" id="getting-attributes">
+<h3>Getting attributes</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertex_attribute</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">(),</span> <span class="s1">&#39;x&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="mf">2.0</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">,</span> <span class="o">...</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+
+ <span class="o">...</span>
+
+ <span class="p">[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]]</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="setting-attributes">
+<h3>Setting attributes</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertex_attribute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertex_attributes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertices_attributes</span><span class="p">((</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="serialisation">
+<h2>Serialisation</h2>
+<div class="section" id="raw-data">
+<h3>Raw data</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">to_data</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="json">
+<h3>Json</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="s1">&#39;mesh.json&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s1">&#39;mesh.json&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="pickle">
+<h3>Pickle</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="s1">&#39;mesh.pickle&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mesh.pickle&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">dumps</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="visualisation">
+<h2>Visualisation</h2>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
+
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
+    <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">()},</span>
+    <span class="n">radius</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mf">0.3</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">()},</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">()}</span>
+<span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#00ff00&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">edges_on_boundary</span><span class="p">()},</span>
+    <span class="n">width</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mi">3</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">edges_on_boundary</span><span class="p">()}</span>
+<span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces_on_boundary</span><span class="p">()}</span>
+<span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="figure">
+<img alt="../_images/meshes-1.png" class="figure-img img-fluid" src="../_images/meshes-1.png" />
+</div>
+</div>
+</div>
+
+                        
+                    
+
+                </main>
+
+                <!-- site navigation sidebar -->
+
+                
+
+                <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation"> 
+                    <div class="navbar-light">
+
+                        <form id="" class="d-flex compas-searchbox" action="../search.html" method="get">
+                            <input class="form-control" type="text" name="q" placeholder="Search docs" />
+                            <input type="hidden" name="check_keywords" value="yes" />
+                            <input type="hidden" name="area" value="default" />
+
+                            <button class="navbar-toggler d-md-none compas-navigation-toggler" type="button" data-toggle="collapse" data-target="#compas-navigation" aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                        </form>
+
+                        
+                        
+
+                            <div class="navbar-expand-md">
+                                <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
+
+                                <ul class="nav flex-column active">
+<li class="nav-item"><a class="nav-link reference internal" href="../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../environments.html">Environments</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../examples.html">Examples</a></li>
+<li class="nav-item active"><a class="nav-link reference internal" href="../tutorials.html">Tutorials</a><ul class="nav active">
+<li class="nav-item active"><a class="nav-link active current reference internal" href="#">Working with Meshes</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="networks.html">Working with Networks</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="packages.html">Making a Package</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="plugins.html">Making a plugin for Rhino/RhinoMac</a></li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../contributions.html">Contributions</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../license.html">License</a></li>
+</ul>
+
+
+                                </div>
+                            </div>
+
+                        
+
+                    </div>
+                </div>
+
+                
+
+                <!-- table of contents of main content -->
+                
+                
+
+                <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+
+                    
+
+                    <ul class="nav flex-column" id="compas-localnav">
+<li class="nav-item"><a class="nav-link reference internal" href="#">Working with Meshes</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#making-a-mesh">Making a mesh</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#adding-vertices-and-faces">Adding vertices and faces</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#identifiers">Identifiers</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#constructors">Constructors</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#data">Data</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#iteration">Iteration</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#lists">Lists</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#traversal">Traversal</a></li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="#attributes">Attributes</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#getting-attributes">Getting attributes</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#setting-attributes">Setting attributes</a></li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="#serialisation">Serialisation</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#raw-data">Raw data</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#json">Json</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#pickle">Pickle</a></li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="#visualisation">Visualisation</a></li>
+</ul>
+</li>
+</ul>
+
+
+                </div>
+
+                
+
+            </div>
+        </div>
+
+        <footer class="compas-footer">
+            
+                
+                    &#169; Copyright Block Research Group - ETH Zurich.
+                
+            
+
+            
+                Last updated on Jan 22, 2019.
+            
+
+            
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+            
+        </footer>
+
+        
+
+            <script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT          : '',
+    VERSION           : '0.4.5',
+    COLLAPSE_INDEX    : false,
+    FILE_SUFFIX       : '.html',
+    HAS_SOURCE        : 'false',
+    SOURCELINK_SUFFIX : '.txt'
+};
+            </script>
+
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+            
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
+            <script src="../_static/underscore.js"></script>
+            <script src="../_static/doctools.js"></script>
+            <script src="../_static/js/searchtools_.js"></script>
+            <script src="../_static/js/prism.js"></script>
+
+            <script>
+$(document).ready(function() {
+
+    // $(".language-default pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-bash pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-python pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-c pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-cpp pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-fortran pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-markdown pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-rest pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    anchors.add();
+});
+            </script>
+
+        
+    </body>
+</html>

@@ -1,0 +1,503 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>COMPAS</title>
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    
+        <meta name="author" content="Tom Van Mele" />
+        <meta name="description" content="compas is a computational framework for research in architecture and structures." />
+
+        <link rel="shortcut icon" href="../_static/images/compas.ico" type="image/x-icon">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
+
+        <link rel="stylesheet" type="text/css" href="../_static/css/prism.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/css/compas.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/css/compas-reference.css" />
+
+        
+            <link rel="next" title="Making a Package" href="packages.html" />
+        
+        
+        
+            <link rel="prev" title="Working with Meshes" href="meshes.html" />
+        
+
+        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    </head>
+    <body data-spy="scroll" data-target="#compas-localnav">
+
+        <header class="navbar navbar-expand compas-navbar">
+            <a class="navbar-brand" href="/">
+                <img src="/_static/images/compas_icon_white.png" width="36px" height="36px" alt="compas" />
+            </a>
+
+            <ul class="navbar-nav">
+                <li class="nav-item ">
+                    <a class="nav-link " href="/">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link active" href="/main/">Documentation</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link " href="/packages/">Packages</a>
+                </li>
+                <!-- <li class="nav-item ">
+                    <a class="nav-link " href="/workshops/">Workshops</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="http://forum.compas-framework.org">Forum</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="http://github.com/compas-dev">Github</a>
+                </li>
+            </ul>
+        </header>
+        
+        <div class="container-fluid compas-container">
+            <div class="row flex-xl-nowrap">
+
+                <!-- main content -->
+
+                
+
+                <main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+
+                
+
+                    
+
+                        
+
+                        <div class="section" id="working-with-networks">
+<h1>Working with Networks</h1>
+<p><strong>COMPAS</strong> networks are simple edge graphs: they consist of vertices
+connected by edges. Not all vertices have to be connected by edges. A
+network without edges is a valid network. In fact, even a network
+without vertices and edges is a valid network, albeit a quite pointless
+one.</p>
+<p>Edges have a direction. There can only be one edge between two vertices
+in a particular direction. However, there can be two edges between two
+vertices in opposite direction. Vertices can be connected to
+themseleves.</p>
+<p>Check out the docs for detailed information about the network and the available
+functionality: <a class="reference internal" href="../api/generated/compas.datastructures.Network.html#compas.datastructures.Network" title="compas.datastructures.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">compas.datastructures.Network</span></code></a>.</p>
+<div class="section" id="making-a-network">
+<h2>Making a network</h2>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Network</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="adding-vertices-and-edges">
+<h2>Adding vertices and edges</h2>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">==</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">y</span><span class="o">==</span><span class="mf">1.0</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="identifiers">
+<h2>Identifiers</h2>
+<p>All vertices in a network have a unique id, the <em>key</em> of the vertex. By
+default, keys are integers, and every vertex is assigned a number
+corresponding to the order in which they are added. The number is always
+the highest number used so far, plus one.</p>
+<p>Other types keys may be specified as well, as long as their value is
+<em>hashable</em>.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span>0 &lt;class &#39;int&#39;&gt;
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">b</span> <span class="o">==</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="kc">True</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">==</span> <span class="n">e</span> <span class="o">+</span> <span class="mi">1</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="kc">False</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">()</span>
+<span class="n">g</span> <span class="o">==</span> <span class="n">f</span> <span class="o">+</span> <span class="mi">1</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="kc">True</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;compas&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="s1">&#39;compas&#39;</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="mi">9</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="data">
+<h2>Data</h2>
+<div class="section" id="iteration">
+<h3>Iteration</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="o">&lt;</span><span class="n">dict_keyiterator</span> <span class="n">at</span> <span class="mh">0x6193a2958</span><span class="o">&gt;</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="o">&lt;</span><span class="n">generator</span> <span class="nb">object</span> <span class="n">Network</span><span class="o">.</span><span class="n">edges</span> <span class="n">at</span> <span class="mh">0x61560f678</span><span class="o">&gt;</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="mi">0</span>
+<span class="mi">1</span>
+<span class="mi">2</span>
+<span class="mi">3</span>
+<span class="mi">4</span>
+<span class="mi">7</span>
+<span class="mi">8</span>
+<span class="n">compas</span>
+<span class="mi">9</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="mi">0</span> <span class="mi">1</span>
+<span class="mi">0</span> <span class="mi">2</span>
+<span class="mi">0</span> <span class="mi">3</span>
+<span class="mi">0</span> <span class="mi">4</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="lists">
+<h3>Lists</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">())</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;compas&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="filtering">
+<h3>Filtering</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">})</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="o">&lt;</span><span class="n">generator</span> <span class="nb">object</span> <span class="n">VertexFilter</span><span class="o">.</span><span class="n">vertices_where</span> <span class="n">at</span> <span class="mh">0x61560f468</span><span class="o">&gt;</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="attributes">
+<h2>Attributes</h2>
+<p>All vertices and edges automatically have the default attributes. The
+default vertex attributes are xyz coordinates, with <code class="docutils literal notranslate"><span class="pre">x=0</span></code>, <code class="docutils literal notranslate"><span class="pre">y=0</span></code> and
+<code class="docutils literal notranslate"><span class="pre">z=0</span></code>. Edges have no defaults.</p>
+<p>To change the default attributes associated with vertices and edges, do:</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">update_default_vertex_attributes</span><span class="p">({</span><span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span> <span class="n">is_fixed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># or network.update_default_vertex_attributes(z=10, is_fixed=False)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">update_default_edge_attributes</span><span class="p">({</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">})</span>
+
+<span class="c1"># or network.update_default_edge_attributes(weight=0.0)</span>
+</code></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Other attributes then the ones specified in the defaults can also be
+added. However, these attributes then only exist on the vertices or
+edges where they have been specified. To prevent this and only allow the
+registered attributes to be added, set
+<code class="docutils literal notranslate"><span class="pre">Network.strict_attributes</span> <span class="pre">=</span> <span class="pre">True</span></code>.</p>
+<p>When a vertex or edge is added to the network, the default attributes
+are copied and the values of the specified attributes are modified. To
+only store the modified values, set <code class="docutils literal notranslate"><span class="pre">Network.copy_defaults</span> <span class="pre">=</span> <span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="getting-attributes">
+<h3>Getting attributes</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">get_vertex_attribute</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="kc">False</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">get_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]]</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="setting-attributes">
+<h3>Setting attributes</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">set_vertex_attribute</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">set_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">network</span><span class="o">.</span><span class="n">set_vertices_attributes</span><span class="p">((</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="using-constructors">
+<h2>Using constructors</h2>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># network = Network.from_data(data)</span>
+<span class="c1"># network = Network.from_lines([([], []), ([], [])])</span>
+<span class="c1"># network = Network.from_json(&#39;network.json&#39;)</span>
+<span class="c1"># network = Network.from_pickle(&#39;network.pickle&#39;)</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lines.obj&#39;</span><span class="p">))</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="queries">
+<h2>Queries</h2>
+<p>under construction…</p>
+</div>
+<div class="section" id="visualisation">
+<h2>Visualisation</h2>
+<p>To create a 2D representation of a network, use a plotter.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="k">import</span> <span class="n">NetworkPlotter</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+
+                        
+                    
+
+                </main>
+
+                <!-- site navigation sidebar -->
+
+                
+
+                <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation"> 
+                    <div class="navbar-light">
+
+                        <form id="" class="d-flex compas-searchbox" action="../search.html" method="get">
+                            <input class="form-control" type="text" name="q" placeholder="Search docs" />
+                            <input type="hidden" name="check_keywords" value="yes" />
+                            <input type="hidden" name="area" value="default" />
+
+                            <button class="navbar-toggler d-md-none compas-navigation-toggler" type="button" data-toggle="collapse" data-target="#compas-navigation" aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                        </form>
+
+                        
+                        
+
+                            <div class="navbar-expand-md">
+                                <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
+
+                                <ul class="nav flex-column active">
+<li class="nav-item"><a class="nav-link reference internal" href="../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../environments.html">Environments</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../examples.html">Examples</a></li>
+<li class="nav-item active"><a class="nav-link reference internal" href="../tutorials.html">Tutorials</a><ul class="nav active">
+<li class="nav-item"><a class="nav-link reference internal" href="meshes.html">Working with Meshes</a></li>
+<li class="nav-item active"><a class="nav-link active current reference internal" href="#">Working with Networks</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="packages.html">Making a Package</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="plugins.html">Making a plugin for Rhino/RhinoMac</a></li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../contributions.html">Contributions</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../license.html">License</a></li>
+</ul>
+
+
+                                </div>
+                            </div>
+
+                        
+
+                    </div>
+                </div>
+
+                
+
+                <!-- table of contents of main content -->
+                
+                
+
+                <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+
+                    
+
+                    <ul class="nav flex-column" id="compas-localnav">
+<li class="nav-item"><a class="nav-link reference internal" href="#">Working with Networks</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#making-a-network">Making a network</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#adding-vertices-and-edges">Adding vertices and edges</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#identifiers">Identifiers</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#data">Data</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#iteration">Iteration</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#lists">Lists</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#filtering">Filtering</a></li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="#attributes">Attributes</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#getting-attributes">Getting attributes</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#setting-attributes">Setting attributes</a></li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="#using-constructors">Using constructors</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#queries">Queries</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#visualisation">Visualisation</a></li>
+</ul>
+</li>
+</ul>
+
+
+                </div>
+
+                
+
+            </div>
+        </div>
+
+        <footer class="compas-footer">
+            
+                
+                    &#169; Copyright Block Research Group - ETH Zurich.
+                
+            
+
+            
+                Last updated on Jan 22, 2019.
+            
+
+            
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+            
+        </footer>
+
+        
+
+            <script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT          : '',
+    VERSION           : '0.4.5',
+    COLLAPSE_INDEX    : false,
+    FILE_SUFFIX       : '.html',
+    HAS_SOURCE        : 'false',
+    SOURCELINK_SUFFIX : '.txt'
+};
+            </script>
+
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+            
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
+            <script src="../_static/underscore.js"></script>
+            <script src="../_static/doctools.js"></script>
+            <script src="../_static/js/searchtools_.js"></script>
+            <script src="../_static/js/prism.js"></script>
+
+            <script>
+$(document).ready(function() {
+
+    // $(".language-default pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-bash pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-python pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-c pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-cpp pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-fortran pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-markdown pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-rest pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    anchors.add();
+});
+            </script>
+
+        
+    </body>
+</html>
