@@ -19,7 +19,7 @@
         <link rel="stylesheet" type="text/css" href="../../_static/css/compas-reference.css" />
 
         
-            <link rel="next" title="Mesh" href="compas.datastructures.Mesh.html" />
+            <link rel="next" title="Network" href="compas.datastructures.Network.html" />
         
         
         
@@ -78,7 +78,41 @@
 <dl class="function">
 <dt id="compas.datastructures.trimesh_vertexarea_matrix">
 <code class="descclassname">compas.datastructures.</code><code class="descname">trimesh_vertexarea_matrix</code><span class="sig-paren">(</span><em>mesh</em><span class="sig-paren">)</span></dt>
-<dd></dd></dl>
+<dd><p>Compute the n x n diagonal matrix of per-vertex voronoi areas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mesh</strong> (<em>compas.datastructures.Mesh</em>) – The triangle mesh data structure.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>sparse matrix</em> – The diagonal voronoi area matrix.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">mesh_quads_to_triangles</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">trimesh_vertexarea_matrix</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
+
+<span class="n">mesh_quads_to_triangles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">trimesh_vertexarea_matrix</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">area</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;{:.1f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">area</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">())},</span>
+    <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span>
+<span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</dd></dl>
 
 </div>
 
@@ -180,7 +214,7 @@
             
 
             
-                Last updated on Jan 29, 2019.
+                Last updated on Jan 30, 2019.
             
 
             

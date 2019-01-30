@@ -96,23 +96,23 @@ Each row of the matrix represents a face. Each column represents a vertex.
 The matrix is filled with zeros except where a relationship between a vertex
 and a face exist.</p>
 <div class="math notranslate nohighlight">
-\[F_{ij} =
-\cases{
-    1 &amp; if vertex j is part of face i \cr
-    0 &amp; otherwise
-}\]</div>
+\[\begin{split}F_{ij} =
+\begin{cases}
+    1 &amp; \text{if vertex j is part of face i} \\
+    0 &amp; \text{otherwise}
+\end{cases}\end{split}\]</div>
 <p>The face matrix can for example be used to compute the centroids of all
 faces of a mesh.</p>
 <p class="rubric">Examples</p>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
-<span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="kn">import</span> <span class="n">mesh_face_matrix</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">mesh_face_matrix</span>
 
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
 
-<span class="n">F</span>   <span class="o">=</span> <span class="n">mesh_face_matrix</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;csr&#39;</span><span class="p">)</span>
+<span class="n">F</span>   <span class="o">=</span> <span class="n">mesh_face_matrix</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 <span class="n">xyz</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()])</span>
-<span class="n">c</span>   <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="n">c</span>   <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span> <span class="o">/</span> <span class="n">normrow</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </dd></dl>
@@ -217,7 +217,7 @@ faces of a mesh.</p>
             
 
             
-                Last updated on Jan 29, 2019.
+                Last updated on Jan 30, 2019.
             
 
             

@@ -19,7 +19,7 @@
         <link rel="stylesheet" type="text/css" href="../../_static/css/compas-reference.css" />
 
         
-            <link rel="next" title="trimesh_mean_curvature" href="compas.datastructures.trimesh_mean_curvature.html" />
+            <link rel="next" title="trimesh_gaussian_curvature" href="compas.datastructures.trimesh_gaussian_curvature.html" />
         
         
         
@@ -77,8 +77,21 @@
 <h1>trimesh_cotangent_laplacian_matrix</h1>
 <dl class="function">
 <dt id="compas.datastructures.trimesh_cotangent_laplacian_matrix">
-<code class="descclassname">compas.datastructures.</code><code class="descname">trimesh_cotangent_laplacian_matrix</code><span class="sig-paren">(</span><em>mesh</em><span class="sig-paren">)</span></dt>
+<code class="descclassname">compas.datastructures.</code><code class="descname">trimesh_cotangent_laplacian_matrix</code><span class="sig-paren">(</span><em>mesh</em>, <em>rtype='csr'</em><span class="sig-paren">)</span></dt>
 <dd><p>Construct the Laplacian of a triangular mesh with cotangent weights.</p>
+<p>The <span class="math notranslate nohighlight">\(n \times n\)</span> cotangent Laplacian matrix <span class="math notranslate nohighlight">\(\mathbf{L}\)</span> of a mesh
+with vertices <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> and edges <span class="math notranslate nohighlight">\(\mathbf{E}\)</span> is defined as
+follows <a class="reference internal" href="#nealen" id="id1">[Nealen]</a></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{L}_{ij} =
+    \begin{cases}
+        -1      &amp; \text{if i = j} \\
+        w_{ij}  &amp; \text{if (i, j) \in \mathbf{E}} \\
+        0       &amp; \text{otherwise}
+    \end{cases}\end{split}\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[w_{ij} = \frac{\omega_{ij}}{\sum_{(i, k) \in \mathbf{E}_{i}} \omega_{ik}}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>mesh</strong> (<em>obj</em>) – The triangular Mesh datastructure object.</p>
@@ -87,17 +100,59 @@
 <dd class="field-even"><p><em>array</em> – The Laplacian matrix with cotangent weights.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">choice</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span>
+
+<span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">trimesh_cotangent_laplacian_matrix</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">mesh_quads_to_triangles</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
+<span class="n">mesh_quads_to_triangles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+<span class="n">key</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">())))</span>
+
+<span class="n">mesh</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.3</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.3</span>
+
+<span class="n">V</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">))</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">trimesh_cotangent_laplacian_matrix</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">()</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
+
+<span class="n">arrows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">vector</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="n">arrows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;start&#39;</span> <span class="p">:</span> <span class="n">start</span><span class="p">,</span>
+        <span class="s1">&#39;end&#39;</span>   <span class="p">:</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">vector</span><span class="p">),</span>
+        <span class="s1">&#39;color&#39;</span> <span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span>
+    <span class="p">})</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_arrows</span><span class="p">(</span><span class="n">arrows</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
 <p class="rubric">Notes</p>
-<p>The matrix is constructed such that the diagonal contains the sum of the
-weights of the adjacent vertices, multiplied by <cite>-1</cite>.
-The entries of the matrix are thus</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\mathbf{L}_{ij} =
-    \begin{cases}
-        - \sum_{(i, k) \in \mathbf{E}_{i}} w_{ik} &amp; if i = j \\
-        w_{ij} &amp; if (i, j) \in \mathbf{E} \\
-        0 &amp; otherwise
-    \end{cases}\end{split}\]</div>
+<p>The cotangent laplacian of a vertex <span class="math notranslate nohighlight">\(\mathbf{v}_{i}\)</span> points from the vertex
+to the projection of the vertex into the 1-ring plane.
+The cotangent laplacian vectors of a mesh thus provide an approximation of the
+per-vertex normals.</p>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="nealen"><span class="brackets"><a class="fn-backref" href="#id1">Nealen</a></span></dt>
+<dd><p>Nealen A., Igarashi T., Sorkine O. and Alexa M. <a class="reference external" href="https://igl.ethz.ch/projects/Laplacian-mesh-processing/Laplacian-mesh-optimization/lmo.pdf">Laplacian Mesh Optimization</a>.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -200,7 +255,7 @@ The entries of the matrix are thus</p>
             
 
             
-                Last updated on Jan 29, 2019.
+                Last updated on Jan 30, 2019.
             
 
             
