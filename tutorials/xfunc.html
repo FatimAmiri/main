@@ -1,0 +1,439 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>COMPAS</title>
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    
+        <meta name="author" content="Tom Van Mele" />
+        <meta name="description" content="compas is a computational framework for research in architecture and structures." />
+
+        <link rel="shortcut icon" href="../_static/images/compas.ico" type="image/x-icon">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
+
+        <link rel="stylesheet" type="text/css" href="../_static/css/prism.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/css/compas.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/css/compas-reference.css" />
+
+        
+            <link rel="next" title="API Reference" href="../api.html" />
+        
+        
+        
+            <link rel="prev" title="Making a Rhino toolbar for your project" href="toolbar.html" />
+        
+
+        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    </head>
+    <body data-spy="scroll" data-target="#compas-localnav">
+
+        <header class="navbar navbar-expand compas-navbar">
+            <a class="navbar-brand" href="/">
+                <img src="/_static/images/compas_icon_white.png" width="36px" height="36px" alt="compas" />
+            </a>
+
+            <ul class="navbar-nav">
+                <li class="nav-item ">
+                    <a class="nav-link " href="/">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link active" href="/main/">Documentation</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link " href="/packages/">Packages</a>
+                </li>
+                <!-- <li class="nav-item ">
+                    <a class="nav-link " href="/workshops/">Workshops</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="http://forum.compas-framework.org">Forum</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="http://github.com/compas-dev">Github</a>
+                </li>
+            </ul>
+        </header>
+        
+        <div class="container-fluid compas-container">
+            <div class="row flex-xl-nowrap">
+
+                <!-- main content -->
+
+                
+
+                <main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+
+                
+
+                    
+
+                        
+
+                        <div class="section" id="writing-xfuncs">
+<h1>Writing XFuncs</h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In most use cases, <a class="reference internal" href="../api/generated/compas.utilities.XFunc.html#compas.utilities.XFunc" title="compas.utilities.XFunc"><code class="xref py py-class docutils literal notranslate"><span class="pre">compas.utilities.XFunc</span></code></a> has been superseded by
+<a class="reference internal" href="../api/compas.rpc.html#module-compas.rpc" title="compas.rpc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">compas.rpc</span></code></a>.</p>
+</div>
+<div class="section" id="python-implementations">
+<h2>Python Implementations</h2>
+<p>Python (the programming language) has several implementations.
+The default and most widespread implementation is CPython.</p>
+<p>CPython is implemented in C.
+The CPython interpreter compiles your Python source code into bytecodes, and then
+executes the bytecodes to run your program.
+It is therfore, very easy to write C-extensions for CPython code, because in the end
+it is executed by a C interpreter.</p>
+<p>Other implementations are, for example, Jython and IronPython.
+Jython is implemented in Java; the Jython intepreter compiles Python code to Java
+bytecode and runs it on the Java Virtual Machine.
+IronPython is written in C# and runs on the .NET DLR (Dynamic Language Runtime).</p>
+<p>The advantage of imlementations such as Jython or IronPython is that they can use Python
+libraries but also provide access to the capabilities of their respective ecosystems;
+In Jython you can import and use any Java classes from within your Jython code.
+IronPython can use the .NET framework.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># Jython</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">java.util</span> <span class="kn">import</span> <span class="n">Random</span>
+<span class="kn">from</span> <span class="nn">java.awt</span> <span class="kn">import</span> <span class="n">Color</span>
+
+<span class="kn">from</span> <span class="nn">jarray</span> <span class="kn">import</span> <span class="n">zeros</span>
+
+<span class="kn">from</span> <span class="nn">javax.swing</span> <span class="kn">import</span> <span class="n">JLabel</span>
+<span class="kn">from</span> <span class="nn">javax.vecmath</span> <span class="kn">import</span> <span class="n">Point2f</span>
+
+<span class="c1"># ...</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># IronPython</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">System.Windows.Forms</span> <span class="kn">import</span> <span class="n">PictureBox</span>
+<span class="kn">from</span> <span class="nn">System.Windows.Forms</span> <span class="kn">import</span> <span class="n">PictureBoxSizeMode</span>
+<span class="kn">from</span> <span class="nn">System.Windows.Forms</span> <span class="kn">import</span> <span class="n">DockStyle</span>
+
+<span class="kn">from</span> <span class="nn">System.Drawing</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="kn">from</span> <span class="nn">System.Net</span> <span class="kn">import</span> <span class="n">WebClient</span>
+
+<span class="kn">from</span> <span class="nn">System.IO</span> <span class="kn">import</span> <span class="n">MemoryStream</span>
+
+<span class="c1"># ...</span>
+</code></pre></div>
+</div>
+<p>The downside is that many of the Python packages that are interesting for Computational
+Science and Engineering are only available for CPython.</p>
+</div>
+<div class="section" id="rhinopython">
+<h2>RhinoPython</h2>
+<p>In Rhino, Python scripts are executed by an IronPython interpreter.
+This means that from your Python scripts, in addition to RhinoCommon, you have
+direct access to the .NET, but you can’t use Numpy, Scipy, Pandas, Shapely, Cython,
+Plnarity, Matplotlib, NetworkX, and many other interesting packages.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># yes</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="kn">as</span> <span class="nn">rs</span>
+<span class="kn">import</span> <span class="nn">sciptcontext</span> <span class="kn">as</span> <span class="nn">sc</span>
+
+<span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Point3d</span>
+<span class="kn">from</span> <span class="nn">Rhino.UI</span> <span class="kn">import</span> <span class="n">MouseCallback</span>
+
+<span class="kn">from</span> <span class="nn">System.Windows.Forms</span> <span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">from</span> <span class="nn">System.Drawing</span> <span class="kn">import</span> <span class="n">Color</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># no</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">solve</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</code></pre></div>
+</div>
+<p>As a result, none of the COMPAS algorithms relying on these packages can be used
+directly in Rhino.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># yes</span>
+
+<span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">mesh_transform</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">mesh_planarize_faces</span>
+
+<span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="kn">import</span> <span class="n">dr</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">bounding_box</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="external-functions">
+<h2>External Functions</h2>
+<p>To overcome this limitation, COMPAS provides a mechanism for calling Python functions
+through a separately launched subprocess.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">XFunc</span>
+
+<span class="n">dr_numpy</span> <span class="o">=</span> <span class="n">XFunc</span><span class="p">(</span><span class="s1">&#39;compas.numerical.dr_numpy&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On Rhino for Mac, the version of subprocess shipped with IronPython is broken.
+Therefore, you have to use <code class="xref py py-class docutils literal notranslate"><span class="pre">compas_rhino.utilities.XFunc</span></code> instead.
+This version obviously also works in Rhino for Windows.</p>
+</div>
+<div class="section" id="limitations">
+<h3>Limitations</h3>
+<p>The input and output of XFuncs have to be native Python objects.
+If the wrapped function returns Numpy arrays, these will be converted automatically
+to lists.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># yes</span>
+
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">XFunc</span>
+
+<span class="n">bounding_box_numpy</span> <span class="o">=</span> <span class="n">XFunc</span><span class="p">(</span><span class="s1">&#39;compas.geometry.bounding_box_numpy&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="c1"># no</span>
+
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">XFunc</span>
+
+<span class="n">mesh_transform_numpy</span> <span class="o">=</span> <span class="n">XFunc</span><span class="p">(</span><span class="s1">&#39;compas.datastructures.mesh_transform_numpy&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>The latter example will not work because the function <code class="xref py py-func docutils literal notranslate"><span class="pre">compas.datastructures.mesh_transform_numpy()</span></code>
+expects a <a class="reference internal" href="../api/generated/compas.datastructures.Mesh.html#compas.datastructures.Mesh" title="compas.datastructures.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">compas.datastructures.Mesh</span></code></a> as its first argument, which is not
+a native Python object.</p>
+<p>Using callbacks with XFuncs will currently also not work.</p>
+</div>
+<div class="section" id="error-handling">
+<h3>Error handling</h3>
+<p>Any errors thrown by the wrapped functions will be caught by the Xfunc and re-raised
+together with a traceback to allow for proper debugging.</p>
+</div>
+<div class="section" id="code-profiles">
+<h3>Code profiles</h3>
+<p>The execution of the wrapped function in the subprocess is automatically profiled
+and a printout of the profile is available as an attribute of the XFunc.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">XFunc</span>
+
+<span class="n">dr_numpy</span> <span class="o">=</span> <span class="n">XFunc</span><span class="p">(</span><span class="s1">&#39;compas.numerical.dr_numpy&#39;</span><span class="p">)</span>
+
+<span class="c1"># some preprocessing</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">dr_numpy</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">loads</span><span class="p">,</span> <span class="n">qpre</span><span class="p">,</span> <span class="n">fpre</span><span class="p">,</span> <span class="n">lpre</span><span class="p">,</span> <span class="n">linit</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">dr_numpy</span><span class="o">.</span><span class="n">profile</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="examples">
+<h2>Examples</h2>
+<div class="section" id="basic-usage">
+<h3>Basic usage</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">pass</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="usage-with-data-structures">
+<h3>Usage with data structures</h3>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="k">pass</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+
+                        
+                    
+
+                </main>
+
+                <!-- site navigation sidebar -->
+
+                
+
+                <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation"> 
+                    <div class="navbar-light">
+
+                        <form id="" class="d-flex compas-searchbox" action="../search.html" method="get">
+                            <input class="form-control" type="text" name="q" placeholder="Search docs" />
+                            <input type="hidden" name="check_keywords" value="yes" />
+                            <input type="hidden" name="area" value="default" />
+
+                            <button class="navbar-toggler d-md-none compas-navigation-toggler" type="button" data-toggle="collapse" data-target="#compas-navigation" aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                        </form>
+
+                        
+                        
+
+                            <div class="navbar-expand-md">
+                                <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
+
+                                <ul class="nav flex-column active">
+<li class="nav-item"><a class="nav-link reference internal" href="../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../environments.html">Environments</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../examples.html">Examples</a></li>
+<li class="nav-item active"><a class="nav-link reference internal" href="../tutorials.html">Tutorials</a><ul class="nav active">
+<li class="nav-item"><a class="nav-link reference internal" href="meshes.html">Working with Meshes</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="networks.html">Working with Networks</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="packages.html">Making a Package</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="plotters.html">Working with plotters</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="plugins.html">Making a plugin for Rhino/RhinoMac</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="rpc.html">Setting up an RPC service</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="toolbar.html">Making a Rhino toolbar for your project</a></li>
+<li class="nav-item active"><a class="nav-link active current reference internal" href="#">Writing XFuncs</a></li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../contributions.html">Contributions</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../license.html">License</a></li>
+</ul>
+
+
+                                </div>
+                            </div>
+
+                        
+
+                    </div>
+                </div>
+
+                
+
+                <!-- table of contents of main content -->
+                
+                
+
+                <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+
+                    
+
+                    <ul class="nav flex-column" id="compas-localnav">
+<li class="nav-item"><a class="nav-link reference internal" href="#">Writing XFuncs</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#python-implementations">Python Implementations</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#rhinopython">RhinoPython</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#external-functions">External Functions</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#limitations">Limitations</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#error-handling">Error handling</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#code-profiles">Code profiles</a></li>
+</ul>
+</li>
+<li class="nav-item"><a class="nav-link reference internal" href="#examples">Examples</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#basic-usage">Basic usage</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#usage-with-data-structures">Usage with data structures</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+                </div>
+
+                
+
+            </div>
+        </div>
+
+        <footer class="compas-footer">
+            
+                
+                    &#169; Copyright Block Research Group - ETH Zurich.
+                
+            
+
+            
+                Last updated on Feb 01, 2019.
+            
+
+            
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+            
+        </footer>
+
+        
+
+            <script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT          : '',
+    VERSION           : '0.4.8',
+    COLLAPSE_INDEX    : false,
+    FILE_SUFFIX       : '.html',
+    HAS_SOURCE        : 'false',
+    SOURCELINK_SUFFIX : '.txt'
+};
+            </script>
+
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+            
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
+            <script src="../_static/underscore.js"></script>
+            <script src="../_static/doctools.js"></script>
+            <script src="../_static/js/searchtools_.js"></script>
+            <script src="../_static/js/prism.js"></script>
+
+            <script>
+$(document).ready(function() {
+
+    // $(".language-default pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-bash pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-python pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-c pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-cpp pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-fortran pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-markdown pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    // $(".language-rest pre").each(function(i, element) {
+    //     Prism.highlightElement(element);
+    // });
+
+    anchors.add();
+});
+            </script>
+
+        
+    </body>
+</html>
