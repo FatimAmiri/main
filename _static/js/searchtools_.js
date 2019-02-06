@@ -528,7 +528,7 @@ var Search = {
           listItem.append($('<a/>').attr('href', item[0] + DOCUMENTATION_OPTIONS.FILE_SUFFIX + highlightstring + item[2]).html(item[1]));
         }
         if (item[3]) {
-          listItem.append($('<span> (' + item[3] + ')</span>'));
+          // listItem.append($('<span> (' + item[3] + ')</span>'));
           Search.output.append(listItem);
           listItem.slideDown(5, function() {
             displayNextItem();
@@ -549,13 +549,13 @@ var Search = {
         //             });
         //           }});
         // } 
-        else {
-          // no source available, just display title
-          Search.output.append(listItem);
-          listItem.slideDown(5, function() {
-            displayNextItem();
-          });
-        }
+        // else {
+        //   // no source available, just display title
+        //   Search.output.append(listItem);
+        //   listItem.slideDown(5, function() {
+        //     displayNextItem();
+        //   });
+        // }
       }
       // search finished, update title and status message
       else {
