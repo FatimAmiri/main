@@ -549,13 +549,13 @@ var Search = {
         //             });
         //           }});
         // } 
-        // else {
-        //   // no source available, just display title
-        //   Search.output.append(listItem);
-        //   listItem.slideDown(5, function() {
-        //     displayNextItem();
-        //   });
-        // }
+        else {
+          // no source available, just display title
+          // Search.output.append(listItem);
+          listItem.slideDown(5, function() {
+            displayNextItem();
+          });
+        }
       }
       // search finished, update title and status message
       else {
