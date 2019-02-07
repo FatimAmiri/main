@@ -20,11 +20,11 @@
         <link rel="stylesheet" type="text/css" href="../../_static/css/compas-reference.css" />
 
         
-            <link rel="next" title="Vector" href="compas.geometry.Vector.html" />
+            <link rel="next" title="voronoi_from_points_numpy" href="compas.geometry.voronoi_from_points_numpy.html" />
         
         
         
-            <link rel="prev" title="voronoi_from_points_numpy" href="compas.geometry.voronoi_from_points_numpy.html" />
+            <link rel="prev" title="constrained_delaunay_triangle" href="compas.geometry.constrained_delaunay_triangle.html" />
         
 
         <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -80,68 +80,61 @@
 
                         
 
-                        <div class="detail section" id="voronoi-from-delaunay">
-<h1>voronoi_from_delaunay</h1>
+                        <div class="detail section" id="conforming-delaunay-triangle">
+<h1>conforming_delaunay_triangle</h1>
 <dl class="function">
-<dt id="compas.geometry.voronoi_from_delaunay">
-<code class="descclassname">compas.geometry.</code><code class="descname">voronoi_from_delaunay</code><span class="sig-paren">(</span><em>delaunay</em><span class="sig-paren">)</span></dt>
-<dd><p>Construct the Voronoi dual of the triangulation of a set of points.</p>
+<dt id="compas.geometry.conforming_delaunay_triangle">
+<code class="descclassname">compas.geometry.</code><code class="descname">conforming_delaunay_triangle</code><span class="sig-paren">(</span><em>points</em>, <em>segments</em><span class="sig-paren">)</span></dt>
+<dd><p>Construct a Delaunay triangulation of set of vertices,
+constrained to the specified segments,
+and with as many Steiner points inserted as necessary to make sure all faces
+of the triangulation are Delaunay.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>delaunay</strong> (<em>Mesh</em>) – A delaunay mesh.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>list</em>) – XY(Z) coordinates of the points to triangulate.</p></li>
+<li><p><strong>segments</strong> (<em>list</em>) – A list of point index pairs, to indicate which straight line segments
+should be included in the triangulation.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Mesh</em> – The corresponding voronoi mesh.</p>
+<dd class="field-even"><p><em>tuple</em> – The vertices of the triangulation and the faces of the triangulation.</p>
 </dd>
 </dl>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function does not work properly if all vertices of the delaunay
-are on the boundary.</p>
-</div>
-<p class="rubric">Example</p>
+<p class="rubric">Notes</p>
+<p>Concavities will be removed automatically.
+Therefore, the boundary of the triangulation should be included in the specification
+of segments to avoid unexpected results.</p>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://www.cs.cmu.edu/~quake/triangle.delaunay.html">https://www.cs.cmu.edu/~quake/triangle.delaunay.html</a></p>
+<p class="rubric">Examples</p>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">trimesh_remesh</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">delaunay_from_points</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">voronoi_from_delaunay</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">pointcloud_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">conforming_delaunay_triangle</span>
 <span class="kn">from</span> <span class="nn">compas.plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
 
-<span class="n">points</span> <span class="o">=</span> <span class="n">pointcloud_xy</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">faces</span> <span class="o">=</span> <span class="n">delaunay_from_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-<span class="n">delaunay</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+<span class="n">points</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="mf">2.994817685045075</span><span class="p">,</span> <span class="mf">10.855606612493078</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">4.185204599300653</span><span class="p">,</span> <span class="mf">9.527867361977242</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">4.414125159734419</span><span class="p">,</span> <span class="mf">10.718254276232818</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">5.925000858597267</span><span class="p">,</span> <span class="mf">9.344730913630228</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">8.900968144236211</span><span class="p">,</span> <span class="mf">10.809822500406325</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">9.496161601363999</span><span class="p">,</span> <span class="mf">8.566401008155429</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">7.710581229980631</span><span class="p">,</span> <span class="mf">7.9254234389408875</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">7.847933566240888</span><span class="p">,</span> <span class="mf">6.414547740078039</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">3.9104999267801377</span><span class="p">,</span> <span class="mf">4.9036720412151915</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">5.2909301507195865</span><span class="p">,</span> <span class="mf">6.342692886748852</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="p">]</span>
+<span class="n">segments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pairwise</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)))</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
-<span class="n">trimesh_remesh</span><span class="p">(</span><span class="n">delaunay</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">allow_boundary_split</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">conforming_delaunay_triangle</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">segments</span><span class="p">)</span>
 
-<span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">delaunay</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">delaunay</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
-<span class="n">faces</span> <span class="o">=</span> <span class="n">delaunay_from_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-<span class="n">delaunay</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
 
-<span class="n">voronoi</span> <span class="o">=</span> <span class="n">voronoi_from_delaunay</span><span class="p">(</span><span class="n">delaunay</span><span class="p">)</span>
-
-<span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">voronoi</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-        <span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="n">voronoi</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;end&#39;</span>  <span class="p">:</span> <span class="n">voronoi</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">1.0</span>
-    <span class="p">})</span>
-
-<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">delaunay</span><span class="p">)</span>
-
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
-    <span class="n">radius</span><span class="o">=</span><span class="mf">0.075</span><span class="p">,</span>
-    <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#0092d2&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">delaunay</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">delaunay</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">()})</span>
-
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#cccccc&#39;</span><span class="p">)</span>
-
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;key&#39;</span><span class="p">)</span>
 <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
-</div>
-<div class="figure">
-<img alt="../../_images/compas-geometry-voronoi_from_delaunay-1.png" class="figure-img img-fluid" src="../../_images/compas-geometry-voronoi_from_delaunay-1.png" />
 </div>
 </dd></dl>
 
@@ -349,8 +342,10 @@ are on the boundary.</p>
 <li class="toctree-l4"><a class="nav-link reference internal" href="compas.geometry.translate_points_xy.html">translate_points_xy</a></li>
 <li class="toctree-l4"><a class="nav-link reference internal" href="compas.geometry.delaunay_from_points.html">delaunay_from_points</a></li>
 <li class="toctree-l4"><a class="nav-link reference internal" href="compas.geometry.delaunay_from_points_numpy.html">delaunay_from_points_numpy</a></li>
+<li class="toctree-l4"><a class="nav-link reference internal" href="compas.geometry.delaunay_triangle.html">delaunay_triangle</a></li>
+<li class="toctree-l4"><a class="nav-link reference internal" href="compas.geometry.constrained_delaunay_triangle.html">constrained_delaunay_triangle</a></li>
+<li class="toctree-l4 current"><a class="nav-link active current reference internal" href="#">conforming_delaunay_triangle</a></li>
 <li class="toctree-l4"><a class="nav-link reference internal" href="compas.geometry.voronoi_from_points_numpy.html">voronoi_from_points_numpy</a></li>
-<li class="toctree-l4 current"><a class="nav-link active current reference internal" href="#">voronoi_from_delaunay</a></li>
 <li class="toctree-l4"><a class="nav-link reference internal" href="compas.geometry.Vector.html">Vector</a></li>
 <li class="toctree-l4"><a class="nav-link reference internal" href="compas.geometry.Point.html">Point</a></li>
 <li class="toctree-l4"><a class="nav-link reference internal" href="compas.geometry.Line.html">Line</a></li>
@@ -405,7 +400,7 @@ are on the boundary.</p>
                     
 
                     <ul class="nav flex-column" id="compas-localnav">
-<li class="nav-item"><a class="nav-link reference internal" href="#">voronoi_from_delaunay</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#">conforming_delaunay_triangle</a></li>
 </ul>
 
 
@@ -424,7 +419,7 @@ are on the boundary.</p>
             
 
             
-                Last updated on Feb 06, 2019.
+                Last updated on Feb 07, 2019.
             
 
             
