@@ -83,19 +83,28 @@
                         <div class="section" id="working-in-blender">
 <h1>Working in Blender</h1>
 <p>Blender ships with its own embedded version of Python but it is relatively
-simple to replace it with the one you have <strong>COMPAS</strong> installed on.
-It is recommended to create a new <code class="docutils literal notranslate"><span class="pre">conda</span></code> environment to make sure the python
-version matches exactly what Blender expects.
-The following instructions are for Blender 2.79 which ships with
+simple to replace it with the one you have COMPAS installed on.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following instructions are for Blender 2.79 which ships with
 <strong>Pyhton 3.5.3</strong>, for other versions, update the python version accordingly.</p>
-<div class="section" id="on-windows">
-<h2>On Windows</h2>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>We currently do not yet support Blender 2.8 with any of the released versions
+of COMPAS. There is, however, a feature branch with some support for Blender
+2.8 available directly from the Github repo.</p>
+</div>
+<div class="section" id="replace-python">
+<h2>Replace Python</h2>
+<p>It is recommended to create a new <code class="docutils literal notranslate"><span class="pre">conda</span></code> environment to make sure the python
+version matches exactly what Blender expects.</p>
+<p><strong>On Windows</strong></p>
 <p>Open the command prompt and type the following to install a new python
-environment with <strong>COMPAS</strong>:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>$ conda create -n blender-279 <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.5.3
+environment with COMPAS:</p>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>$ conda config --add channels conda-forge
+$ conda create -n blender-279 <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.5.3 COMPAS
 $ activate blender-279
-$ conda config --add channels conda-forge
-$ conda install COMPAS
 </code></pre></div>
 </div>
 <p>Now configure Blender to use the newly installed environment:</p>
@@ -104,23 +113,75 @@ $ ren python original_python
 $ mklink /j python %CONDA_PREFIX%
 </code></pre></div>
 </div>
-</div>
-<div class="section" id="on-mac">
-<h2>On Mac</h2>
+<p><strong>On Mac</strong></p>
 <p>Open the Terminal and type the following to install a new python
-environment with <strong>COMPAS</strong>:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>$ conda create -n blender-279 <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.5.3
+environment with COMPAS:</p>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>$ conda config --add channels conda-forge
+$ conda create -n blender-279 <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.5.3 COMPAS
 $ <span class="nb">source</span> activate blender-279
-$ conda config --add channels conda-forge
-$ conda install COMPAS
 </code></pre></div>
 </div>
 <p>Now configure Blender to use the newly installed environment:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>$ <span class="nb">cd</span> /Applications/blender.app/Contents/Resources/2.78
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>$ <span class="nb">cd</span> /Applications/blender.app/Contents/Resources/2.79
 $ mv python original_python
 $ ln -s <span class="nv">$CONDA_PREFIX</span> python
 </code></pre></div>
 </div>
+</div>
+<div class="section" id="verify-setup">
+<h2>Verify setup</h2>
+<p>In Blender, you should now be able to use COMPAS packages without any problems.
+Simply create and run the following script to verify everything is working properly.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas_blender.artists</span> <span class="kn">import</span> <span class="n">MeshArtist</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
+
+<span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+<span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">()</span>
+<span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+<span class="n">artist</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="install-python-packages">
+<h2>Install Python packages</h2>
+<p>After replacing the embedded version of Python with the one in the virutual
+environment, as instructed above, it is not necessary to activate the environment
+before using Blender. However, when you want to update the installed packages,
+or add more packages, make sure you do it for the Python in the virtual environment.
+Otherwise, the changes will not have any effect.</p>
+<p><strong>On Windows</strong></p>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>$ activate blender-279
+$ conda install ...
+</code></pre></div>
+</div>
+<p><strong>On Mac</strong></p>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>$ <span class="nb">source</span> activate blender-279
+$ conda install ...
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="miscellaneous">
+<h2>Miscellaneous</h2>
+<p>For whatever reason, on Mac, the info bar that usually displays text output and
+and error and info messages, will not produce any output of scripts.
+To see the output of scripts, you have to start Blender from the Terminal such that
+the output can be directed there…</p>
+<p>To avoid having to navigate to the Blender executable evey time you want to do this,
+you could add the path to the executable to your system <code class="docutils literal notranslate"><span class="pre">PATH</span></code> variable.
+In your <code class="docutils literal notranslate"><span class="pre">~/.bash_profile</span></code> add the following.</p>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;/Applications/blender.app/Contents/MacOS:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+</code></pre></div>
+</div>
+<p>After that starting Blender from the command line is much simpler.</p>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>$ blender
+</code></pre></div>
+</div>
+<p>And all output from the scripts you run will appear in the Terminal window…</p>
 </div>
 </div>
 
@@ -188,8 +249,10 @@ $ ln -s <span class="nv">$CONDA_PREFIX</span> python
 
                     <ul class="nav flex-column" id="compas-localnav">
 <li class="nav-item"><a class="nav-link reference internal" href="#">Working in Blender</a><ul class="nav">
-<li class="nav-item"><a class="nav-link reference internal" href="#on-windows">On Windows</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#on-mac">On Mac</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#replace-python">Replace Python</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#verify-setup">Verify setup</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#install-python-packages">Install Python packages</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#miscellaneous">Miscellaneous</a></li>
 </ul>
 </li>
 </ul>
