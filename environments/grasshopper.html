@@ -82,6 +82,54 @@
 
                         <div class="section" id="working-in-grasshopper">
 <h1>Working in Grasshopper</h1>
+<p>To get COMPAS working in Grasshopper, you first have to follow the steps from
+<a class="reference external" href="rhino.html">Working in Rhino</a>.</p>
+<p>In Grasshopper, COMPAS is imported from within a GhPython component. Rhino for
+Mac and Rhino WIP+6 all come with their own GhPython interpreter, but if you use
+Rhino 5 in Windows, please download and install GhPython <a class="reference external" href="https://www.food4rhino.com/app/ghpython">here</a>.</p>
+<div class="section" id="verify-setup">
+<h2>Verify setup</h2>
+<p>To verify that everything is working properly, simply create a GhPython
+component on your Grasshopper canvas, paste the following script and hit <cite>OK</cite>.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas_ghpython.artists</span> <span class="kn">import</span> <span class="n">MeshArtist</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
+
+<span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">artist</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="figure">
+<img alt="../_images/gh_verify.jpg" class="figure-img img-fluid" src="../_images/gh_verify.jpg" />
+</div>
+</div>
+<div class="section" id="differences-to-working-in-the-rhino-pythonscript-editor">
+<h2>Differences to working in the Rhino PythonScript Editor</h2>
+</div>
+<div class="section" id="reloading-changed-libraries">
+<h2>Reloading changed libraries</h2>
+<p>If you change a Python library during a running Rhino application, which is
+imported in a GhPython component (e.g. via <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">my_custom_library</span></code>),
+it is necessary to reload the library so that the GhPython interpreter
+recognizes the changes. To avoid restarting Rhino, you can use the function
+<code class="code docutils literal notranslate"><span class="pre">unload_modules</span></code>. The following example reloads the library
+<code class="code docutils literal notranslate"><span class="pre">my_custom_library</span></code>.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas_ghpython</span> <span class="kn">import</span> <span class="n">unload_modules</span>
+
+<span class="n">unload_modules</span><span class="p">(</span><span class="s1">&#39;my_custom_library&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="section" id="working-with-global-sticky-variables">
+<h2>Working with global sticky variables</h2>
+</div>
+<div class="section" id="freezing-grasshopper-and-workarounds">
+<h2>Freezing Grasshopper and workarounds</h2>
+</div>
 </div>
 
                         
@@ -147,7 +195,14 @@
                     
 
                     <ul class="nav flex-column" id="compas-localnav">
-<li class="nav-item"><a class="nav-link reference internal" href="#">Working in Grasshopper</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#">Working in Grasshopper</a><ul class="nav">
+<li class="nav-item"><a class="nav-link reference internal" href="#verify-setup">Verify setup</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#differences-to-working-in-the-rhino-pythonscript-editor">Differences to working in the Rhino PythonScript Editor</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#reloading-changed-libraries">Reloading changed libraries</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#working-with-global-sticky-variables">Working with global sticky variables</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#freezing-grasshopper-and-workarounds">Freezing Grasshopper and workarounds</a></li>
+</ul>
+</li>
 </ul>
 
 
@@ -166,7 +221,7 @@
             
 
             
-                Last updated on Feb 25, 2019.
+                Last updated on Feb 26, 2019.
             
 
             
