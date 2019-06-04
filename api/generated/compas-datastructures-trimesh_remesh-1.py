@@ -1,6 +1,6 @@
 from compas.datastructures import Mesh
 from compas.datastructures import trimesh_remesh
-from compas.plotters import MeshPlotter
+from compas_plotters import MeshPlotter
 
 vertices = [
     (0.0, 0.0, 0.0),

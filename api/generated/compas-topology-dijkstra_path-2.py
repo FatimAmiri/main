@@ -2,7 +2,7 @@ import compas
 
 from compas.datastructures import Network
 from compas.topology import dijkstra_path
-from compas.plotters import NetworkPlotter
+from compas_plotters import NetworkPlotter
 
 network = Network.from_obj(compas.get('grid_irregular.obj'))
 

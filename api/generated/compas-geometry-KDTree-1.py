@@ -1,6 +1,6 @@
 from compas.geometry import KDTree
 from compas.geometry import pointcloud_xy
-from compas.plotters import Plotter
+from compas_plotters import Plotter
 
 plotter = Plotter()
 

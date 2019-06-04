@@ -2,7 +2,7 @@ import compas
 
 from compas.datastructures import Network
 from compas.datastructures import network_embed_in_plane
-from compas.plotters import NetworkPlotter
+from compas_plotters import NetworkPlotter
 
 network = Network.from_obj(compas.get('fink.obj'))
 

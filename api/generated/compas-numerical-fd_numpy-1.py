@@ -1,7 +1,7 @@
 import compas
 
 from compas.datastructures import Mesh
-from compas.plotters import MeshPlotter
+from compas_plotters import MeshPlotter
 from compas.numerical import fd_numpy
 from compas.utilities import i_to_black
 

@@ -1,6 +1,6 @@
 from compas.datastructures import Mesh
 from compas.datastructures import mesh_subdivide_catmullclark
-from compas.plotters import MeshPlotter
+from compas_plotters import MeshPlotter
 
 vertices = [[0., 0., 0.], [1., 0., 0.], [1., 1., 0.], [0., 1.0, 0.]]
 faces = [[0, 1, 2, 3]]

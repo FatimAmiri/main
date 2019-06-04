@@ -2,7 +2,7 @@ import compas
 
 from compas.datastructures import Mesh
 from compas.datastructures import mesh_smooth_area
-from compas.plotters import MeshPlotter
+from compas_plotters import MeshPlotter
 
 mesh = Mesh.from_obj(compas.get('faces.obj'))
 fixed = [key for key in mesh.vertices() if mesh.vertex_degree(key) == 2]

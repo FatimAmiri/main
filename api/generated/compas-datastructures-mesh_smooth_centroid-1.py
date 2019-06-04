@@ -2,7 +2,7 @@ import compas
 
 from compas.datastructures import Mesh
 from compas.datastructures import mesh_smooth_centroid
-from compas.plotters import MeshPlotter
+from compas_plotters import MeshPlotter
 
 mesh = Mesh.from_obj(compas.get('faces.obj'))
 fixed = list(mesh.vertices_where({'vertex_degree': 2}))

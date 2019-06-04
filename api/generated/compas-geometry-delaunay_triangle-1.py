@@ -1,6 +1,6 @@
 from compas.datastructures import Mesh
 from compas.geometry import delaunay_triangle
-from compas.plotters import MeshPlotter
+from compas_plotters import MeshPlotter
 
 points = [
     [2.994817685045075, 10.855606612493078, 0.0],

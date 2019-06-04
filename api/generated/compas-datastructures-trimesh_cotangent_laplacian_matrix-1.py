@@ -7,7 +7,7 @@ from compas.datastructures import Mesh
 from compas.datastructures import trimesh_cotangent_laplacian_matrix
 from compas.datastructures import mesh_quads_to_triangles
 from compas.geometry import add_vectors
-from compas.plotters import MeshPlotter
+from compas_plotters import MeshPlotter
 
 mesh = Mesh.from_obj(compas.get('faces.obj'))
 mesh_quads_to_triangles(mesh)

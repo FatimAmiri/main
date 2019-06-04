@@ -1,5 +1,5 @@
 from compas.datastructures import Mesh
-from compas.plotters import MeshPlotter
+from compas_plotters import MeshPlotter
 from compas.geometry import closest_point_on_line_xy
 from compas.geometry import voronoi_from_points_numpy
 

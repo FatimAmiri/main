@@ -3,7 +3,7 @@ import compas
 from compas.datastructures import Network
 from compas.datastructures import network_is_planar
 from compas.datastructures import network_find_crossings
-from compas.plotters import NetworkPlotter
+from compas_plotters import NetworkPlotter
 
 network = Network.from_obj(compas.get('lines.obj'))
 

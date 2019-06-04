@@ -3,7 +3,7 @@ import compas
 from compas.datastructures import Network
 from compas.datastructures import Mesh
 from compas.datastructures import network_find_faces
-from compas.plotters import MeshPlotter
+from compas_plotters import MeshPlotter
 
 network = Network.from_obj(compas.get('lines.obj'))
 

@@ -1,6 +1,6 @@
 import compas
 from compas.datastructures import Network
-from compas.plotters import NetworkPlotter
+from compas_plotters import NetworkPlotter
 from compas.numerical import dr_numpy
 
 dva = {

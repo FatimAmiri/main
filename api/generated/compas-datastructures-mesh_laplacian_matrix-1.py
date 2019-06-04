@@ -6,7 +6,7 @@ import compas
 from compas.datastructures import Mesh
 from compas.datastructures import mesh_laplacian_matrix
 from compas.geometry import add_vectors
-from compas.plotters import MeshPlotter
+from compas_plotters import MeshPlotter
 
 mesh = Mesh.from_obj(compas.get('faces.obj'))
 

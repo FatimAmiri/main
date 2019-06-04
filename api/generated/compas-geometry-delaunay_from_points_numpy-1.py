@@ -1,7 +1,7 @@
 from compas.datastructures import Mesh
 from compas.geometry import pointcloud_xy
 from compas.geometry import delaunay_from_points_numpy
-from compas.plotters import MeshPlotter
+from compas_plotters import MeshPlotter
 
 points = pointcloud_xy(20, (0, 50))
 faces = delaunay_from_points_numpy(points)

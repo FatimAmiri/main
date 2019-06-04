@@ -1,5 +1,5 @@
 from compas.geometry import tween_points
-from compas.plotters import Plotter
+from compas_plotters import Plotter
 
 points1 = [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [2.0, 0.0, 0.0], [3.0, 0.0, 0.0]]
 points2 = [[0.0, 0.0, 0.0], [1.0, 3.0, 0.0], [2.0, 1.0, 0.0], [3.0, 0.0, 0.0]]

@@ -1,5 +1,5 @@
 from compas.geometry import area_polygon
-from compas.plotters import Plotter
+from compas_plotters import Plotter
 
 plotter = Plotter()
 
