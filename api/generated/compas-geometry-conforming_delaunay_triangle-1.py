@@ -1,5 +1,6 @@
 from compas.datastructures import Mesh
 from compas.geometry import conforming_delaunay_triangle
+from compas.utilities import pairwise
 from compas_plotters import MeshPlotter
 
 points = [
