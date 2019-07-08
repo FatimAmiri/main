@@ -86,6 +86,18 @@
 <dt id="compas.datastructures.mesh_laplacian_matrix">
 <code class="sig-prename descclassname">compas.datastructures.</code><code class="sig-name descname">mesh_laplacian_matrix</code><span class="sig-paren">(</span><em class="sig-param">mesh</em>, <em class="sig-param">rtype='csr'</em><span class="sig-paren">)</span></dt>
 <dd><p>Construct a Laplacian matrix with uniform weights from a mesh data structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> (<em>compas.datastructures.Mesh</em>) – Instance of mesh.</p></li>
+<li><p><strong>rtype</strong> (<em>{‘array’, ‘csc’, ‘csr’, ‘coo’, ‘list’}</em>) – Format of the result.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>array-like</em> – The Laplacian matrix.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
 <p>The <span class="math notranslate nohighlight">\(n \times n\)</span> uniform Laplacian matrix <span class="math notranslate nohighlight">\(\mathbf{L}\)</span> of a mesh
 with vertices <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> and edges <span class="math notranslate nohighlight">\(\mathbf{E}\)</span> is defined as
 follows <a class="footnote-reference brackets" href="#id2" id="id1">1</a></p>
@@ -99,59 +111,9 @@ follows <a class="footnote-reference brackets" href="#id2" id="id1">1</a></p>
 <p>with <span class="math notranslate nohighlight">\(deg(i)\)</span> the degree of vertex <span class="math notranslate nohighlight">\(i\)</span>.</p>
 <p>Therefore, the uniform Laplacian of a vertex <span class="math notranslate nohighlight">\(\mathbf{v}_{i}\)</span> points to
 the centroid of its neighboring vertices.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>mesh</strong> (<em>obj</em>) – Mesh datastructure object to get data from.</p></li>
-<li><p><strong>rtype</strong> (<em>{‘array’, ‘csc’, ‘csr’, ‘coo’, ‘list’}</em>) – Format of the result.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>array-like</em> – The Laplacian matrix.</p>
-</dd>
-</dl>
 <p class="rubric">Examples</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">choice</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span>
-
-<span class="kn">import</span> <span class="nn">compas</span>
-
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">mesh_laplacian_matrix</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">add_vectors</span>
-<span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="kn">import</span> <span class="n">MeshPlotter</span>
-
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
-
-<span class="n">key</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">())))</span>
-
-<span class="n">mesh</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.3</span>
-<span class="n">mesh</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.3</span>
-
-<span class="n">V</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">))</span>
-<span class="n">L</span> <span class="o">=</span> <span class="n">mesh_laplacian_matrix</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-<span class="n">d</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-
-<span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">()</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
-
-<span class="n">arrows</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">vector</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
-    <span class="n">arrows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-        <span class="s1">&#39;start&#39;</span> <span class="p">:</span> <span class="n">start</span><span class="p">,</span>
-        <span class="s1">&#39;end&#39;</span>   <span class="p">:</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">vector</span><span class="p">),</span>
-        <span class="s1">&#39;color&#39;</span> <span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span>
-    <span class="p">})</span>
-
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_arrows</span><span class="p">(</span><span class="n">arrows</span><span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="nohighlight notranslate"><div class="highlight"><pre><code><span></span><span class="go">&gt;&gt;&gt;</span>
 </code></pre></div>
-</div>
-<div class="figure align-default">
-<img alt="../../_images/compas-datastructures-mesh_laplacian_matrix-1.png" class="figure-img img-fluid" src="../../_images/compas-datastructures-mesh_laplacian_matrix-1.png" />
 </div>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
