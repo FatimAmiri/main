@@ -71,28 +71,20 @@
 <li><p><a class="reference download internal" download="" href="../../_downloads/c289e73bf6c5fb3d4a7c5d90deab7750/mesh-smoothing.3dm"><code class="xref download docutils literal notranslate"><span class="pre">mesh-smoothing.3dm</span></code></a></p></li>
 </ul>
 </div>
-</div><div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="sd">&quot;&quot;&quot;Visualising mesh smoothing.</span>
+</div><div class="line-numbers language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="sd">- smooth a given input mesh with constraints</span>
-<span class="sd">- use a conduit for visualisation</span>
-<span class="sd">- update the conduit using a user-defined callback function</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">compas_rhino</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">smooth_area</span>
 
 <span class="kn">from</span> <span class="nn">compas_rhino.conduits</span> <span class="kn">import</span> <span class="n">LinesConduit</span>
 
-<span class="kn">import</span> <span class="nn">compas_rhino</span>
+<span class="c1"># define a callback for updating the conduit</span>
 
-
-<span class="n">__author__</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tom Van Mele&#39;</span><span class="p">,</span> <span class="s1">&#39;Matthias Rippmann&#39;</span><span class="p">]</span>
-<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright 2017, BRG - ETH Zurich&#39;</span><span class="p">,</span>
-<span class="n">__license__</span>   <span class="o">=</span> <span class="s1">&#39;MIT&#39;</span>
-<span class="n">__email__</span>     <span class="o">=</span> <span class="s1">&#39;van.mele@arch.ethz.ch&#39;</span>
+<span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="n">conduit</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="p">[[</span><span class="n">vertices</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">edges</span><span class="p">)]</span>
+    <span class="n">conduit</span><span class="o">.</span><span class="n">redraw</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
 
 <span class="n">dz</span> <span class="o">=</span> <span class="mi">10</span>
@@ -103,7 +95,6 @@
 <span class="n">guid</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">select_mesh</span><span class="p">()</span>
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">mesh_from_guid</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="n">guid</span><span class="p">)</span>
 
-
 <span class="c1"># extract the data needed by the smoothing algorithm</span>
 <span class="c1"># identify the boundary as fixed</span>
 
@@ -111,7 +102,6 @@
 <span class="n">faces</span>     <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()]</span>
 <span class="n">adjacency</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_faces</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
 <span class="n">fixed</span>     <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_on_boundary</span><span class="p">()</span>
-
 
 <span class="c1"># add two additional fixed vertices</span>
 <span class="c1"># on the inside of the mesh</span>
@@ -121,20 +111,12 @@
     <span class="n">vertices</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">-=</span> <span class="n">dz</span>
     <span class="n">fixed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
-
 <span class="c1"># make a conduit for visualisation</span>
-<span class="c1"># and a callback for updating the conduit</span>
 
 <span class="n">edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
 <span class="n">lines</span> <span class="o">=</span> <span class="p">[[</span><span class="n">vertices</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">]</span>
 
 <span class="n">conduit</span> <span class="o">=</span> <span class="n">LinesConduit</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">refreshrate</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-    <span class="n">conduit</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="p">[[</span><span class="n">vertices</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">edges</span><span class="p">)]</span>
-    <span class="n">conduit</span><span class="o">.</span><span class="n">redraw</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-
 
 <span class="c1"># run the smoothing algorithm</span>
 <span class="c1"># update the mesh</span>
@@ -246,7 +228,7 @@
         
 
         
-            Last updated on Jul 16, 2019.
+            Last updated on Jul 17, 2019.
         
 
         
@@ -266,7 +248,7 @@ var DOCUMENTATION_OPTIONS = {
 };
 </script>
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -281,39 +263,6 @@ var DOCUMENTATION_OPTIONS = {
 
 <script>
 $(document).ready(function() {
-
-    // $(".language-default pre").each(function(i, element) {
-    //     Prism.highlightElement(element);
-    // });
-
-    // $(".language-bash pre").each(function(i, element) {
-    //     Prism.highlightElement(element);
-    // });
-
-    // $(".language-python pre").each(function(i, element) {
-    //     Prism.highlightElement(element);
-    // });
-
-    // $(".language-c pre").each(function(i, element) {
-    //     Prism.highlightElement(element);
-    // });
-
-    // $(".language-cpp pre").each(function(i, element) {
-    //     Prism.highlightElement(element);
-    // });
-
-    // $(".language-fortran pre").each(function(i, element) {
-    //     Prism.highlightElement(element);
-    // });
-
-    // $(".language-markdown pre").each(function(i, element) {
-    //     Prism.highlightElement(element);
-    // });
-
-    // $(".language-rest pre").each(function(i, element) {
-    //     Prism.highlightElement(element);
-    // });
-
     anchors.add();
 });
 </script> 
