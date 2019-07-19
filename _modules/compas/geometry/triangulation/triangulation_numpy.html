@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>COMPAS</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <meta name="author" content="Tom Van Mele" />
+    <meta name="description" content="compas is a computational framework for research in architecture and structures." />
+
+    <link rel="shortcut icon" href="../../../../_static/images/compas.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/prism.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/compas.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/compas-reference.css" />
+
+    
+    
+    
+
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</head>
+
+<body data-spy="scroll" data-target="#compas-localnav">
+
+    <nav class="navbar navbar-expand compas-navbar">
+        <a class="navbar-brand" href="/">
+            <img src="../../../../_static/images/compas_icon_white.png" width="36px" height="36px" alt="compas" />
+        </a>
+
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/packages.html">Packages</a></li>
+            <li class="nav-item active"><a class="nav-link active" href="/main/index.html">Documentation</a></li>
+            <li class="nav-item"><a class="nav-link" href="/workshops.html">Workshops</a></li> 
+        </ul>
+
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link" target="_blank" href="http://forum.compas-framework.org">Forum</a></li>
+            <li class="nav-item"><a class="nav-link" target="_blank" href="http://github.com/compas-dev">Github</a></li>
+            <li class="nav-item"><a class="nav-link" target="_blank" href="https://pypi.org/project/COMPAS/">PyPI</a></li>
+            <li class="nav-item"><a class="nav-link" target="_blank" href="https://anaconda.org/conda-forge/compas">Anaconda</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+
+            <main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+                <div class="container">
+                
+
+                    
+
+                    <h1>Source code for compas.geometry.triangulation.triangulation_numpy</h1><div class="highlight"><pre><code>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">Voronoi</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">Delaunay</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;delaunay_from_points_numpy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;voronoi_from_points_numpy&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="delaunay_from_points_numpy"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.delaunay_from_points_numpy.html#compas.geometry.delaunay_from_points_numpy">[docs]</a><span class="k">def</span> <span class="nf">delaunay_from_points_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes the delaunay triangulation for a list of points using Numpy.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points : sequence of tuple</span>
+<span class="sd">        XYZ coordinates of the original points.</span>
+<span class="sd">    boundary : sequence of tuples</span>
+<span class="sd">        list of ordered points describing the outer boundary (optional)</span>
+<span class="sd">    holes : list of sequences of tuples</span>
+<span class="sd">        list of polygons (ordered points describing internal holes (optional)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The faces of the triangulation.</span>
+<span class="sd">        Each face is a triplet of indices referring to the list of point coordinates.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas.geometry import pointcloud_xy</span>
+<span class="sd">        from compas.geometry import delaunay_from_points_numpy</span>
+<span class="sd">        from compas_plotters import MeshPlotter</span>
+
+<span class="sd">        points = pointcloud_xy(20, (0, 50))</span>
+<span class="sd">        faces = delaunay_from_points_numpy(points)</span>
+
+<span class="sd">        delaunay = Mesh.from_vertices_and_faces(points, faces)</span>
+
+<span class="sd">        plotter = MeshPlotter(delaunay)</span>
+<span class="sd">        plotter.draw_vertices(radius=0.1)</span>
+<span class="sd">        plotter.draw_faces()</span>
+<span class="sd">        plotter.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">Delaunay</span><span class="p">(</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">simplices</span></div>
+
+
+<div class="viewcode-block" id="voronoi_from_points_numpy"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.voronoi_from_points_numpy.html#compas.geometry.voronoi_from_points_numpy">[docs]</a><span class="k">def</span> <span class="nf">voronoi_from_points_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a voronoi diagram from a set of points.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points : list of list of float</span>
+<span class="sd">        XYZ coordinates of the voronoi sites.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas_plotters import MeshPlotter</span>
+<span class="sd">        from compas.geometry import closest_point_on_line_xy</span>
+<span class="sd">        from compas.geometry import voronoi_from_points_numpy</span>
+
+<span class="sd">        mesh = Mesh()</span>
+
+<span class="sd">        mesh.add_vertex(x=0, y=0)</span>
+<span class="sd">        mesh.add_vertex(x=1.5, y=0)</span>
+<span class="sd">        mesh.add_vertex(x=1, y=1)</span>
+<span class="sd">        mesh.add_vertex(x=0, y=2)</span>
+
+<span class="sd">        mesh.add_face([0, 1, 2, 3])</span>
+
+<span class="sd">        sites = mesh.get_vertices_attributes(&#39;xy&#39;)</span>
+<span class="sd">        voronoi = voronoi_from_points_numpy(sites)</span>
+
+<span class="sd">        points = []</span>
+<span class="sd">        for xy in voronoi.vertices:</span>
+<span class="sd">            points.append({</span>
+<span class="sd">                &#39;pos&#39;       : xy,</span>
+<span class="sd">                &#39;radius&#39;    : 0.02,</span>
+<span class="sd">                &#39;facecolor&#39; : &#39;#ff0000&#39;,</span>
+<span class="sd">                &#39;edgecolor&#39; : &#39;#ffffff&#39;,</span>
+<span class="sd">            })</span>
+
+<span class="sd">        lines = []</span>
+<span class="sd">        arrows = []</span>
+<span class="sd">        for (a, b), (c, d) in zip(voronoi.ridge_vertices, voronoi.ridge_points):</span>
+<span class="sd">            if a &gt; -1 and b &gt; -1:</span>
+<span class="sd">                lines.append({</span>
+<span class="sd">                    &#39;start&#39; : voronoi.vertices[a],</span>
+<span class="sd">                    &#39;end&#39;   : voronoi.vertices[b],</span>
+<span class="sd">                    &#39;width&#39; : 1.0,</span>
+<span class="sd">                    &#39;color&#39; : &#39;#ff0000&#39;,</span>
+<span class="sd">                })</span>
+<span class="sd">            elif a == -1:</span>
+<span class="sd">                sp = voronoi.vertices[b]</span>
+<span class="sd">                ep = closest_point_on_line_xy(sp, (voronoi.points[c], voronoi.points[d]))</span>
+<span class="sd">                arrows.append({</span>
+<span class="sd">                    &#39;start&#39; : sp,</span>
+<span class="sd">                    &#39;end&#39;   : ep,</span>
+<span class="sd">                    &#39;width&#39; : 1.0,</span>
+<span class="sd">                    &#39;color&#39; : &#39;#00ff00&#39;,</span>
+<span class="sd">                    &#39;arrow&#39; : &#39;end&#39;</span>
+<span class="sd">                })</span>
+<span class="sd">            else:</span>
+<span class="sd">                sp = voronoi.vertices[a]</span>
+<span class="sd">                ep = closest_point_on_line_xy(sp, (voronoi.points[c], voronoi.points[d]))</span>
+<span class="sd">                arrows.append({</span>
+<span class="sd">                    &#39;start&#39; : sp,</span>
+<span class="sd">                    &#39;end&#39;   : ep,</span>
+<span class="sd">                    &#39;width&#39; : 1.0,</span>
+<span class="sd">                    &#39;color&#39; : &#39;#00ff00&#39;,</span>
+<span class="sd">                    &#39;arrow&#39; : &#39;end&#39;</span>
+<span class="sd">                })</span>
+
+
+<span class="sd">        plotter = MeshPlotter(mesh)</span>
+<span class="sd">        plotter.draw_points(points)</span>
+<span class="sd">        plotter.draw_lines(lines)</span>
+<span class="sd">        plotter.draw_arrows(arrows)</span>
+<span class="sd">        plotter.draw_vertices(radius=0.02)</span>
+<span class="sd">        plotter.draw_faces()</span>
+<span class="sd">        plotter.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">voronoi</span> <span class="o">=</span> <span class="n">Voronoi</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">voronoi</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">pointcloud_xy</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">delaunay_from_points_numpy</span>
+    <span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="k">import</span> <span class="n">MeshPlotter</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="n">pointcloud_xy</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="n">delaunay_from_points_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+    <span class="n">delaunay</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">delaunay</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+                    
+                
+                </div>
+            </main>
+
+            <!-- site navigation sidebar -->
+
+            <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation"> 
+                <div class="navbar-light">
+
+                    <form id="" class="d-flex compas-searchbox" action="../../../../search.html" method="get">
+                        <input class="form-control" type="text" name="q" placeholder="Search docs" />
+                        <input type="hidden" name="check_keywords" value="yes" />
+                        <input type="hidden" name="area" value="default" />
+
+                        <button class="navbar-toggler d-md-none compas-navigation-toggler" type="button" data-toggle="collapse" data-target="#compas-navigation" aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </form>
+
+                    
+                    
+
+                        <div class="navbar-expand-md">
+                            <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
+
+                            <ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../license.html">License</a></li>
+</ul>
+
+
+                            </div>
+                        </div>
+
+                    
+
+                </div>
+            </div>
+
+            <!-- table of contents of main content -->
+
+            <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+
+ <footer class="bg-dark pb-5">
+    <div class="container text-center pt-5 pb-5 text-muted">
+        
+            
+                &#169; Copyright Block Research Group - ETH Zurich.
+            
+        
+
+        
+            Last updated on Jul 19, 2019.
+        
+
+        
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+        
+    </div>
+</footer>
+
+<script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT          : '',
+    VERSION           : '0.7.1',
+    COLLAPSE_INDEX    : false,
+    FILE_SUFFIX       : '.html',
+    HAS_SOURCE        : 'false',
+    SOURCELINK_SUFFIX : '.txt'
+};
+</script>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
+<script src="../../../../_static/underscore.js"></script>
+<script src="../../../../_static/doctools.js"></script>
+<script src="../../../../_static/js/searchtools_.js"></script>
+<script src="../../../../_static/js/prism.js"></script>
+
+<script>
+$(document).ready(function() {
+    anchors.add();
+});
+</script> 
+
+</body>
+</html>

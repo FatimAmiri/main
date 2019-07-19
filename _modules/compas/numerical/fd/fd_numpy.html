@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>COMPAS</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <meta name="author" content="Tom Van Mele" />
+    <meta name="description" content="compas is a computational framework for research in architecture and structures." />
+
+    <link rel="shortcut icon" href="../../../../_static/images/compas.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/prism.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/compas.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/compas-reference.css" />
+
+    
+    
+    
+
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</head>
+
+<body data-spy="scroll" data-target="#compas-localnav">
+
+    <nav class="navbar navbar-expand compas-navbar">
+        <a class="navbar-brand" href="/">
+            <img src="../../../../_static/images/compas_icon_white.png" width="36px" height="36px" alt="compas" />
+        </a>
+
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/packages.html">Packages</a></li>
+            <li class="nav-item active"><a class="nav-link active" href="/main/index.html">Documentation</a></li>
+            <li class="nav-item"><a class="nav-link" href="/workshops.html">Workshops</a></li> 
+        </ul>
+
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link" target="_blank" href="http://forum.compas-framework.org">Forum</a></li>
+            <li class="nav-item"><a class="nav-link" target="_blank" href="http://github.com/compas-dev">Github</a></li>
+            <li class="nav-item"><a class="nav-link" target="_blank" href="https://pypi.org/project/COMPAS/">PyPI</a></li>
+            <li class="nav-item"><a class="nav-link" target="_blank" href="https://anaconda.org/conda-forge/compas">Anaconda</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+
+            <main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+                <div class="container">
+                
+
+                    
+
+                    <h1>Source code for compas.numerical.fd.fd_numpy</h1><div class="highlight"><pre><code>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">diags</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">import</span> <span class="n">spsolve</span>
+
+<span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="k">import</span> <span class="n">connectivity_matrix</span>
+<span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="k">import</span> <span class="n">normrow</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fd_numpy&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="fd_numpy"><a class="viewcode-back" href="../../../../api/generated/compas.numerical.fd_numpy.html#compas.numerical.fd_numpy">[docs]</a><span class="k">def</span> <span class="nf">fd_numpy</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">loads</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Implementation of the force density method to compute equilibrium of axial force networks.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vertices : list</span>
+<span class="sd">        XYZ coordinates of the vertices of the network</span>
+<span class="sd">    edges : list</span>
+<span class="sd">        Edges between vertices represented by</span>
+<span class="sd">    fixed : list</span>
+<span class="sd">        Indices of fixed vertices.</span>
+<span class="sd">    q : list</span>
+<span class="sd">        Force density of edges.</span>
+<span class="sd">    loads : list</span>
+<span class="sd">        XYZ components of the loads on the vertices.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xyz : array</span>
+<span class="sd">        XYZ coordinates of the equilibrium geometry.</span>
+<span class="sd">    q : array</span>
+<span class="sd">        Force densities in the edges.</span>
+<span class="sd">    f : array</span>
+<span class="sd">        Forces in the edges.</span>
+<span class="sd">    l : array</span>
+<span class="sd">        Lengths of the edges</span>
+<span class="sd">    r : array</span>
+<span class="sd">        Residual forces.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    For more info, see [1]_</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Schek H., *The Force Density Method for Form Finding and Computation of General Networks*,</span>
+<span class="sd">           Computer Methods in Applied Mechanics and Engineering 3: 115-134, 1974.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        import compas</span>
+
+<span class="sd">        from compas.datastructures import Mesh</span>
+<span class="sd">        from compas_plotters import MeshPlotter</span>
+<span class="sd">        from compas.numerical import fd_numpy</span>
+<span class="sd">        from compas.utilities import i_to_black</span>
+
+<span class="sd">        # make a mesh</span>
+<span class="sd">        # add default attributes for form finding</span>
+
+<span class="sd">        mesh = Mesh.from_obj(compas.get(&#39;faces.obj&#39;))</span>
+
+<span class="sd">        mesh.update_default_vertex_attributes({&#39;is_anchor&#39;: False, &#39;px&#39;: 0.0, &#39;py&#39;: 0.0, &#39;pz&#39;: 0.0})</span>
+<span class="sd">        mesh.update_default_edge_attributes({&#39;q&#39;: 1.0})</span>
+
+<span class="sd">        # identify the anchors</span>
+<span class="sd">        # move two anchors up to create anticlastic boundary conditions</span>
+
+<span class="sd">        for key, attr in mesh.vertices(True):</span>
+<span class="sd">            attr[&#39;is_anchor&#39;] = mesh.vertex_degree(key) == 2</span>
+<span class="sd">            if key in (18, 35):</span>
+<span class="sd">                attr[&#39;z&#39;] = 5.0</span>
+
+<span class="sd">        # preprocess</span>
+
+<span class="sd">        k_i   = mesh.key_index()</span>
+<span class="sd">        xyz   = mesh.get_vertices_attributes((&#39;x&#39;, &#39;y&#39;, &#39;z&#39;))</span>
+<span class="sd">        loads = mesh.get_vertices_attributes((&#39;px&#39;, &#39;py&#39;, &#39;pz&#39;))</span>
+<span class="sd">        q     = mesh.get_edges_attribute(&#39;q&#39;)</span>
+<span class="sd">        fixed = mesh.vertices_where({&#39;is_anchor&#39;: True})</span>
+<span class="sd">        fixed = [k_i[k] for k in fixed]</span>
+<span class="sd">        edges = [(k_i[u], k_i[v]) for u, v in mesh.edges()]</span>
+
+<span class="sd">        # compute equilibrium</span>
+<span class="sd">        # update the mesh geometry</span>
+
+<span class="sd">        xyz, q, f, l, r = fd_numpy(xyz, edges, fixed, q, loads)</span>
+
+<span class="sd">        for key, attr in mesh.vertices(True):</span>
+<span class="sd">            index = k_i[key]</span>
+<span class="sd">            attr[&#39;x&#39;] = xyz[index, 0]</span>
+<span class="sd">            attr[&#39;y&#39;] = xyz[index, 1]</span>
+<span class="sd">            attr[&#39;z&#39;] = xyz[index, 2]</span>
+
+<span class="sd">        # visualisae the result</span>
+<span class="sd">        # color the vertices according to their elevation</span>
+
+<span class="sd">        plotter = MeshPlotter(mesh)</span>
+
+<span class="sd">        zmax = max(mesh.get_vertices_attribute(&#39;z&#39;))</span>
+
+<span class="sd">        plotter.draw_vertices(</span>
+<span class="sd">            facecolor={key: i_to_black(attr[&#39;z&#39;] / zmax) for key, attr in mesh.vertices(True)}</span>
+<span class="sd">        )</span>
+<span class="sd">        plotter.draw_faces()</span>
+<span class="sd">        plotter.draw_edges()</span>
+<span class="sd">        plotter.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v</span>    <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+    <span class="n">free</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">fixed</span><span class="p">))</span>
+    <span class="n">xyz</span>  <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">q</span>    <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">p</span>    <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">loads</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">C</span>    <span class="o">=</span> <span class="n">connectivity_matrix</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="s1">&#39;csr&#39;</span><span class="p">)</span>
+    <span class="n">Ci</span>   <span class="o">=</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">free</span><span class="p">]</span>
+    <span class="n">Cf</span>   <span class="o">=</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">fixed</span><span class="p">]</span>
+    <span class="n">Ct</span>   <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+    <span class="n">Cit</span>  <span class="o">=</span> <span class="n">Ci</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+    <span class="n">Q</span>    <span class="o">=</span> <span class="n">diags</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">flatten</span><span class="p">()],</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">A</span>    <span class="o">=</span> <span class="n">Cit</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Ci</span><span class="p">)</span>
+    <span class="n">b</span>    <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">free</span><span class="p">]</span> <span class="o">-</span> <span class="n">Cit</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Cf</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="n">fixed</span><span class="p">])</span>
+
+    <span class="n">xyz</span><span class="p">[</span><span class="n">free</span><span class="p">]</span> <span class="o">=</span> <span class="n">spsolve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+    <span class="n">l</span> <span class="o">=</span> <span class="n">normrow</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">))</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">q</span> <span class="o">*</span> <span class="n">l</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">p</span> <span class="o">-</span> <span class="n">Ct</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="kn">import</span> <span class="nn">compas</span>
+
+    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
+    <span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="k">import</span> <span class="n">MeshPlotter</span>
+    <span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="k">import</span> <span class="n">fd_numpy</span>
+    <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">i_to_black</span>
+
+    <span class="c1"># make a mesh</span>
+    <span class="c1"># add default attributes for form finding</span>
+
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
+
+    <span class="n">mesh</span><span class="o">.</span><span class="n">update_default_vertex_attributes</span><span class="p">({</span><span class="s1">&#39;is_anchor&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;px&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;py&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;pz&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">})</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">update_default_edge_attributes</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+
+    <span class="c1"># identify the anchors</span>
+    <span class="c1"># move two anchors up to create anticlastic boundary conditions</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;is_anchor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertex_degree</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">35</span><span class="p">):</span>
+            <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5.0</span>
+
+    <span class="c1"># preprocess</span>
+
+    <span class="n">k_i</span>   <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
+    <span class="n">xyz</span>   <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">((</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">))</span>
+    <span class="n">loads</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">((</span><span class="s1">&#39;px&#39;</span><span class="p">,</span> <span class="s1">&#39;py&#39;</span><span class="p">,</span> <span class="s1">&#39;pz&#39;</span><span class="p">))</span>
+    <span class="n">q</span>     <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_edges_attribute</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">)</span>
+    <span class="n">fixed</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">&#39;is_anchor&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="n">fixed</span> <span class="o">=</span> <span class="p">[</span><span class="n">k_i</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">fixed</span><span class="p">]</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k_i</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">k_i</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">()]</span>
+
+    <span class="c1"># compute equilibrium</span>
+    <span class="c1"># update the mesh geometry</span>
+
+    <span class="n">xyz</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">fd_numpy</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">loads</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">k_i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+    <span class="c1"># visualisae the result</span>
+    <span class="c1"># color the vertices according to their elevation</span>
+
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">MeshPlotter</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+    <span class="n">zmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
+        <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">i_to_black</span><span class="p">(</span><span class="n">attr</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">zmax</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">)}</span>
+    <span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+                    
+                
+                </div>
+            </main>
+
+            <!-- site navigation sidebar -->
+
+            <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation"> 
+                <div class="navbar-light">
+
+                    <form id="" class="d-flex compas-searchbox" action="../../../../search.html" method="get">
+                        <input class="form-control" type="text" name="q" placeholder="Search docs" />
+                        <input type="hidden" name="check_keywords" value="yes" />
+                        <input type="hidden" name="area" value="default" />
+
+                        <button class="navbar-toggler d-md-none compas-navigation-toggler" type="button" data-toggle="collapse" data-target="#compas-navigation" aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </form>
+
+                    
+                    
+
+                        <div class="navbar-expand-md">
+                            <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
+
+                            <ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../license.html">License</a></li>
+</ul>
+
+
+                            </div>
+                        </div>
+
+                    
+
+                </div>
+            </div>
+
+            <!-- table of contents of main content -->
+
+            <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+
+ <footer class="bg-dark pb-5">
+    <div class="container text-center pt-5 pb-5 text-muted">
+        
+            
+                &#169; Copyright Block Research Group - ETH Zurich.
+            
+        
+
+        
+            Last updated on Jul 19, 2019.
+        
+
+        
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+        
+    </div>
+</footer>
+
+<script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT          : '',
+    VERSION           : '0.7.1',
+    COLLAPSE_INDEX    : false,
+    FILE_SUFFIX       : '.html',
+    HAS_SOURCE        : 'false',
+    SOURCELINK_SUFFIX : '.txt'
+};
+</script>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
+<script src="../../../../_static/underscore.js"></script>
+<script src="../../../../_static/doctools.js"></script>
+<script src="../../../../_static/js/searchtools_.js"></script>
+<script src="../../../../_static/js/prism.js"></script>
+
+<script>
+$(document).ready(function() {
+    anchors.add();
+});
+</script> 
+
+</body>
+</html>

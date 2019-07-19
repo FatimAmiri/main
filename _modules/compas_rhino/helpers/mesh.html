@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>COMPAS</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <meta name="author" content="Tom Van Mele" />
+    <meta name="description" content="compas is a computational framework for research in architecture and structures." />
+
+    <link rel="shortcut icon" href="../../../_static/images/compas.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/prism.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/compas.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/compas-reference.css" />
+
+    
+    
+    
+
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</head>
+
+<body data-spy="scroll" data-target="#compas-localnav">
+
+    <nav class="navbar navbar-expand compas-navbar">
+        <a class="navbar-brand" href="/">
+            <img src="../../../_static/images/compas_icon_white.png" width="36px" height="36px" alt="compas" />
+        </a>
+
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/packages.html">Packages</a></li>
+            <li class="nav-item active"><a class="nav-link active" href="/main/index.html">Documentation</a></li>
+            <li class="nav-item"><a class="nav-link" href="/workshops.html">Workshops</a></li> 
+        </ul>
+
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link" target="_blank" href="http://forum.compas-framework.org">Forum</a></li>
+            <li class="nav-item"><a class="nav-link" target="_blank" href="http://github.com/compas-dev">Github</a></li>
+            <li class="nav-item"><a class="nav-link" target="_blank" href="https://pypi.org/project/COMPAS/">PyPI</a></li>
+            <li class="nav-item"><a class="nav-link" target="_blank" href="https://anaconda.org/conda-forge/compas">Anaconda</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+
+            <main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+                <div class="container">
+                
+
+                    
+
+                    <h1>Source code for compas_rhino.helpers.mesh</h1><div class="highlight"><pre><code>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">import</span> <span class="nn">compas_rhino</span>
+
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">geometric_key</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino.geometry</span> <span class="k">import</span> <span class="n">RhinoSurface</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="k">import</span> <span class="n">MeshArtist</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino.modifiers</span> <span class="k">import</span> <span class="n">Modifier</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.modifiers</span> <span class="k">import</span> <span class="n">VertexModifier</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.modifiers</span> <span class="k">import</span> <span class="n">EdgeModifier</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.modifiers</span> <span class="k">import</span> <span class="n">FaceModifier</span>
+
+<span class="kn">from</span> <span class="nn">compas_rhino.selectors</span> <span class="k">import</span> <span class="n">VertexSelector</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.selectors</span> <span class="k">import</span> <span class="n">EdgeSelector</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.selectors</span> <span class="k">import</span> <span class="n">FaceSelector</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Rhino</span>
+    <span class="kn">import</span> <span class="nn">scriptcontext</span> <span class="k">as</span> <span class="nn">sc</span>
+    <span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="k">as</span> <span class="nn">rs</span>
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_ironpython</span><span class="p">()</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;mesh_from_guid&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_from_surface&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_from_surface_uv&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_from_surface_heightfield&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;mesh_draw&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_draw_vertices&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_draw_edges&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_draw_faces&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_draw_vertex_labels&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_draw_edge_labels&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_draw_face_labels&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;mesh_select_vertices&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_select_vertex&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_select_edges&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_select_edge&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_select_faces&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_select_face&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;mesh_update_vertex_attributes&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_update_edge_attributes&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_update_face_attributes&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_move_vertex&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_move_vertices&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_identify_vertices&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># constructors</span>
+<span class="c1"># ==============================================================================</span>
+
+
+<div class="viewcode-block" id="mesh_from_guid"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_from_guid.html#compas_rhino.helpers.mesh_from_guid">[docs]</a><span class="k">def</span> <span class="nf">mesh_from_guid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">guid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Construct a mesh from a Rhino mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cls : Mesh</span>
+<span class="sd">        A mesh type.</span>
+<span class="sd">    guid : str</span>
+<span class="sd">        The GUID of the Rhino mesh.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        A mesh object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_mesh_vertices_and_faces</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="p">[</span><span class="n">face</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">face</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">face</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="n">face</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
+    <span class="n">mesh</span>  <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mesh</span></div>
+
+
+<div class="viewcode-block" id="mesh_from_surface"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_from_surface.html#compas_rhino.helpers.mesh_from_surface">[docs]</a><span class="k">def</span> <span class="nf">mesh_from_surface</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">guid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Construct a mesh from a Rhino surface.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cls : Mesh</span>
+<span class="sd">        A mesh type.</span>
+<span class="sd">    guid : str</span>
+<span class="sd">        The GUID of the Rhino surface.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        A mesh object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gkey_xyz</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">Objects</span><span class="o">.</span><span class="n">Find</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">HasBrepForm</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">brep</span> <span class="o">=</span> <span class="n">Rhino</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Brep</span><span class="o">.</span><span class="n">TryConvertBrep</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">Geometry</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">loop</span> <span class="ow">in</span> <span class="n">brep</span><span class="o">.</span><span class="n">Loops</span><span class="p">:</span>
+        <span class="n">curve</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">To3dCurve</span><span class="p">()</span>
+        <span class="n">segments</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">Explode</span><span class="p">()</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="n">segments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">PointAtStart</span>
+        <span class="n">ep</span> <span class="o">=</span> <span class="n">segments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">PointAtEnd</span>
+        <span class="n">sp_gkey</span> <span class="o">=</span> <span class="n">geometric_key</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span>
+        <span class="n">ep_gkey</span> <span class="o">=</span> <span class="n">geometric_key</span><span class="p">(</span><span class="n">ep</span><span class="p">)</span>
+        <span class="n">gkey_xyz</span><span class="p">[</span><span class="n">sp_gkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span>
+        <span class="n">gkey_xyz</span><span class="p">[</span><span class="n">ep_gkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">ep</span>
+        <span class="n">face</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp_gkey</span><span class="p">)</span>
+        <span class="n">face</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ep_gkey</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">ep</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">PointAtEnd</span>
+            <span class="n">ep_gkey</span> <span class="o">=</span> <span class="n">geometric_key</span><span class="p">(</span><span class="n">ep</span><span class="p">)</span>
+            <span class="n">face</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ep_gkey</span><span class="p">)</span>
+            <span class="n">gkey_xyz</span><span class="p">[</span><span class="n">ep_gkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">ep</span>
+
+        <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+
+    <span class="n">gkey_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">gkey</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">gkey</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gkey_xyz</span><span class="p">)}</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span> <span class="k">for</span> <span class="n">gkey</span><span class="p">,</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="n">gkey_xyz</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="n">gkey_index</span><span class="p">[</span><span class="n">gkey</span><span class="p">]</span> <span class="k">for</span> <span class="n">gkey</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mesh</span></div>
+
+
+<div class="viewcode-block" id="mesh_from_surface_uv"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_from_surface_uv.html#compas_rhino.helpers.mesh_from_surface_uv">[docs]</a><span class="k">def</span> <span class="nf">mesh_from_surface_uv</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">guid</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Construct a mesh from a point cloud aligned with the uv space of a Rhino NURBS surface.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cls : Mesh</span>
+<span class="sd">        The mesh type.</span>
+<span class="sd">    guid : str</span>
+<span class="sd">        The GUID of the surface.</span>
+<span class="sd">    density : tuple</span>
+<span class="sd">        The density of the point grid in the u and v directions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        A mesh object.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :class:`compas_rhino.geometry.RhinoSurface`</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">mesh_from_surface_heightfield</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">guid</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mesh_from_surface_heightfield"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_from_surface_heightfield.html#compas_rhino.helpers.mesh_from_surface_heightfield">[docs]</a><span class="k">def</span> <span class="nf">mesh_from_surface_heightfield</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">guid</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Create a mesh data structure from a point grid aligned with the uv space of a Rhino NURBS surface.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cls : Mesh</span>
+<span class="sd">        The mesh type.</span>
+<span class="sd">    guid : str</span>
+<span class="sd">        The GUID of the surface.</span>
+<span class="sd">    density : tuple</span>
+<span class="sd">        The density of the point grid in the u and v directions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Mesh</span>
+<span class="sd">        A mesh object.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :class:`compas_rhino.geometry.RhinoSurface`</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">density</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">density</span><span class="p">,</span> <span class="n">density</span>
+
+    <span class="n">surface</span> <span class="o">=</span> <span class="n">RhinoSurface</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
+
+    <span class="n">mesh</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">surface</span><span class="o">.</span><span class="n">heightfield</span><span class="p">(</span><span class="n">density</span><span class="o">=</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span> <span class="n">over_space</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">:</span>
+        <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">face</span> <span class="o">=</span> <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mesh</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># drawing</span>
+<span class="c1"># ==============================================================================</span>
+
+<div class="viewcode-block" id="mesh_draw"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_draw.html#compas_rhino.helpers.mesh_draw">[docs]</a><span class="k">def</span> <span class="nf">mesh_draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span>
+              <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">clear_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">clear_vertices</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">clear_faces</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">clear_edges</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">show_faces</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">show_vertices</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">show_edges</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">vertexcolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">facecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draw a mesh object in Rhino.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        The mesh object.</span>
+<span class="sd">    layer : str (None)</span>
+<span class="sd">        The layer to draw in.</span>
+<span class="sd">        Default is to draw in the current layer.</span>
+<span class="sd">    clear_layer : bool (False)</span>
+<span class="sd">        Clear the drawing layer.</span>
+<span class="sd">    show_faces : bool (True)</span>
+<span class="sd">        Draw the faces.</span>
+<span class="sd">    show_vertices : bool (False)</span>
+<span class="sd">        Draw the vertices.</span>
+<span class="sd">    show_edges : bool (False)</span>
+<span class="sd">        Draw the edges.</span>
+<span class="sd">    vertexcolor : str, tuple, list, dict (None)</span>
+<span class="sd">        The vertex color specification.</span>
+<span class="sd">        Default is to use the color of the parent layer.</span>
+<span class="sd">    edgecolor : str, tuple, list, dict (None)</span>
+<span class="sd">        The edge color specification.</span>
+<span class="sd">        Default is to use the color of the parent layer.</span>
+<span class="sd">    facecolor : str, tuple, list, dict (None)</span>
+<span class="sd">        The face color specification.</span>
+<span class="sd">        Default is to use the color of the parent layer.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Colors can be specifiedin different ways:</span>
+
+<span class="sd">    * str: A hexadecimal color that will be applied to all elements subject to the specification.</span>
+<span class="sd">    * tuple, list: RGB color that will be applied to all elements subject to the specification.</span>
+<span class="sd">    * dict: RGB or hex color dict with a specification for some or all of the related elements.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    RGB colors specified as values between 0 and 255, should be integers.</span>
+<span class="sd">    RGB colors specified as values between 0.0 and 1.0, should be floats.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
+
+    <span class="k">if</span> <span class="n">clear_layer</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">clear_vertices</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">clear_vertices</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">clear_edges</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">clear_edges</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">clear_faces</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">clear_faces</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">show_faces</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">facecolor</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_edges</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_vertices</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">vertexcolor</span><span class="p">)</span>
+
+    <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="mesh_draw_vertices"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_draw_vertices.html#compas_rhino.helpers.mesh_draw_vertices">[docs]</a><span class="k">def</span> <span class="nf">mesh_draw_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span>
+                       <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">clear_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                       <span class="n">clear_vertices</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                       <span class="n">redraw</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draw a selection of vertices of the mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    keys : list (None)</span>
+<span class="sd">        A list of vertex keys identifying which vertices to draw.</span>
+<span class="sd">        Default is to draw all vertices.</span>
+<span class="sd">    color : str, tuple, dict (None)</span>
+<span class="sd">        The color specififcation for the vertices.</span>
+<span class="sd">        Colors should be specified in the form of a string (hex colors) or as a tuple of RGB components.</span>
+<span class="sd">        To apply the same color to all vertices, provide a single color specification.</span>
+<span class="sd">        Individual colors can be assigned using a dictionary of key-color pairs.</span>
+<span class="sd">        Missing keys will be assigned the default vertex color (``self.defaults[&#39;vertex.color&#39;]``).</span>
+<span class="sd">        Default is use the color of the parent layer.</span>
+<span class="sd">    layer : str (None)</span>
+<span class="sd">        The layer in which the vertices are drawn.</span>
+<span class="sd">        Default is to draw in the current layer.</span>
+<span class="sd">    clear_layer : bool (False)</span>
+<span class="sd">        Clear the drawing layer.</span>
+<span class="sd">    redraw : bool (True)</span>
+<span class="sd">        Redraw the view after adding the vertices.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The vertices are named using the following template:</span>
+<span class="sd">    ``&quot;{}.vertex.{}&quot;.format(self.mesh.attributes[&#39;name&#39;], key)``.</span>
+<span class="sd">    This name is used afterwards to identify vertices of the meshin the Rhino model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
+
+    <span class="k">if</span> <span class="n">clear_layer</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">clear_vertices</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">clear_vertices</span><span class="p">()</span>
+
+    <span class="n">guids</span> <span class="o">=</span> <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">redraw</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">guids</span></div>
+
+
+<div class="viewcode-block" id="mesh_draw_edges"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_draw_edges.html#compas_rhino.helpers.mesh_draw_edges">[docs]</a><span class="k">def</span> <span class="nf">mesh_draw_edges</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span>
+                    <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">clear_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">redraw</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draw a selection of edges of the mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    keys : list</span>
+<span class="sd">        A list of edge keys (as uv pairs) identifying which edges to draw.</span>
+<span class="sd">        Default is to draw all edges.</span>
+<span class="sd">    color : str, tuple, dict</span>
+<span class="sd">        The color specififcation for the edges.</span>
+<span class="sd">        Colors should be specified in the form of a string (hex colors) or as a tuple of RGB components.</span>
+<span class="sd">        To apply the same color to all faces, provide a single color specification.</span>
+<span class="sd">        Individual colors can be assigned using a dictionary of key-color pairs.</span>
+<span class="sd">        Missing keys will be assigned the default face color (``self.defaults[&#39;face.color&#39;]``).</span>
+<span class="sd">        Default is use the color of the parent layer.</span>
+<span class="sd">    layer : str (None)</span>
+<span class="sd">        The layer in which the edges are drawn.</span>
+<span class="sd">        Default is to draw in the current layer.</span>
+<span class="sd">    clear_layer : bool (False)</span>
+<span class="sd">        Clear the drawing layer.</span>
+<span class="sd">    redraw : bool (True)</span>
+<span class="sd">        Redraw the view after adding the edges.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    All edges are named using the following template:</span>
+<span class="sd">    ``&quot;{}.edge.{}-{}&quot;.fromat(self.mesh.attributes[&#39;name&#39;], u, v)``.</span>
+<span class="sd">    This name is used afterwards to identify edges of the mesh in the Rhino model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; mesh_draw_edges(mesh)</span>
+<span class="sd">    &gt;&gt;&gt; mesh_draw_edges(mesh, color=&#39;#ff0000&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; mesh_draw_edges(mesh, color=(255, 0, 0))</span>
+<span class="sd">    &gt;&gt;&gt; mesh_draw_edges(mesh, keys=mesh.edges_on_boundary())</span>
+<span class="sd">    &gt;&gt;&gt; mesh_draw_edges(mesh, color={(u, v): &#39;#00ff00&#39; for u, v in mesh.edges_on_boundary()})</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
+
+    <span class="k">if</span> <span class="n">clear_layer</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">()</span>
+
+    <span class="n">artist</span><span class="o">.</span><span class="n">clear_edges</span><span class="p">()</span>
+    <span class="n">guids</span> <span class="o">=</span> <span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">redraw</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">guids</span></div>
+
+
+<div class="viewcode-block" id="mesh_draw_faces"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_draw_faces.html#compas_rhino.helpers.mesh_draw_faces">[docs]</a><span class="k">def</span> <span class="nf">mesh_draw_faces</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span>
+                    <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">clear_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">clear_faces</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">redraw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">join_faces</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draw a selection of faces of the mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    keys : list (None)</span>
+<span class="sd">        A list of face keys identifying which faces to draw.</span>
+<span class="sd">        Default is to draw all faces.</span>
+<span class="sd">    color : str, tuple, dict (None)</span>
+<span class="sd">        The color specififcation for the faces.</span>
+<span class="sd">        Colors should be specified in the form of a string (hex colors) or as a tuple of RGB components.</span>
+<span class="sd">        To apply the same color to all faces, provide a single color specification.</span>
+<span class="sd">        Individual colors can be assigned using a dictionary of key-color pairs.</span>
+<span class="sd">        Missing keys will be assigned the default face color (``self.defaults[&#39;face.color&#39;]``).</span>
+<span class="sd">        Default is to use the color of the parent layer.</span>
+<span class="sd">    layer : str (None)</span>
+<span class="sd">        The layer in which the edges are drawn.</span>
+<span class="sd">        Default is to draw in the current layer.</span>
+<span class="sd">    clear_layer : bool (False)</span>
+<span class="sd">        Clear the drawing layer.</span>
+<span class="sd">    redraw : bool (True)</span>
+<span class="sd">        Redraw the view after adding the edges.</span>
+<span class="sd">    join_faces : bool (False)</span>
+<span class="sd">        Join the faces into a polymesh object.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The faces are named using the following template:</span>
+<span class="sd">    ``&quot;{}.face.{}&quot;.format(self.mesh.attributes[&#39;name&#39;], key)``.</span>
+<span class="sd">    This name is used afterwards to identify faces of the mesh in the Rhino model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
+
+    <span class="k">if</span> <span class="n">clear_layer</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">clear_faces</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">clear_faces</span><span class="p">()</span>
+    
+    <span class="n">guids</span> <span class="o">=</span> <span class="n">artist</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">redraw</span><span class="p">:</span>
+        <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">join_faces</span><span class="p">:</span>
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">JoinMeshes</span><span class="p">(</span><span class="n">guids</span><span class="p">,</span> <span class="n">delete_input</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">guid</span>
+
+    <span class="k">return</span> <span class="n">guids</span></div>
+
+
+<div class="viewcode-block" id="mesh_draw_vertex_labels"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_draw_vertex_labels.html#compas_rhino.helpers.mesh_draw_vertex_labels">[docs]</a><span class="k">def</span> <span class="nf">mesh_draw_vertex_labels</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span>
+                            <span class="n">attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">formatter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draw labels for the vertices of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    attr_name : str (None)</span>
+<span class="sd">        The name of the attribute value to display in the label.</span>
+<span class="sd">        Default is is to display the vertex key.</span>
+<span class="sd">    layer : str (None)</span>
+<span class="sd">        The layer to draw in.</span>
+<span class="sd">        Default is to draw in the current layer.</span>
+<span class="sd">    color : str, tuple, list, dict (None)</span>
+<span class="sd">        The color specififcation for the labels.</span>
+<span class="sd">        Colors should be specified in the form of a string (hex colors) or as a tuple of RGB components.</span>
+<span class="sd">        To apply the same color to all face labels, provide a single color specification.</span>
+<span class="sd">        Individual colors can be assigned using a dictionary of key-color pairs.</span>
+<span class="sd">        Missing keys will be assigned the default vertex color (``self.defaults[&#39;vertex.color&#39;]``).</span>
+<span class="sd">        Default is to inherit color from the parent layer.</span>
+<span class="sd">    formatter : callable (None)</span>
+<span class="sd">        A formatting function.</span>
+<span class="sd">        Defaults to the built-in ``str`` function.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The labels are named using the following template:</span>
+<span class="sd">    ``&quot;{}.vertex.label.{}&quot;.format(self.mesh.name, key)``.</span>
+<span class="sd">    This name is used afterwards to identify vertices of the meshin the Rhino model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_name</span><span class="p">:</span>
+        <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;key&#39;</span>
+
+    <span class="k">if</span> <span class="n">formatter</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">formatter</span><span class="p">),</span> <span class="s1">&#39;The provided formatter is not callable.&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="nb">str</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="s1">&#39;key&#39;</span> <span class="o">==</span> <span class="n">attr_name</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="k">elif</span> <span class="s1">&#39;index&#39;</span> <span class="o">==</span> <span class="n">attr_name</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span>
+        <span class="n">text</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">formatter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">clear_vertexlabels</span><span class="p">()</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertexlabels</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="mesh_draw_edge_labels"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_draw_edge_labels.html#compas_rhino.helpers.mesh_draw_edge_labels">[docs]</a><span class="k">def</span> <span class="nf">mesh_draw_edge_labels</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Display labels for the edges of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    attr_name : str (None)</span>
+<span class="sd">        The name of the attribute value to display in the label.</span>
+<span class="sd">        Default is to display the edge keys.</span>
+<span class="sd">    layer : str (None)</span>
+<span class="sd">        The layer to draw in.</span>
+<span class="sd">        Default is to draw in the current layer.</span>
+<span class="sd">    color : str, tuple, list, dict (None)</span>
+<span class="sd">        The color specififcation for the labels.</span>
+<span class="sd">        Colors should be specified in the form of a string (hex colors) or as a tuple of RGB components.</span>
+<span class="sd">        To apply the same color to all face labels, provide a single color specification.</span>
+<span class="sd">        Individual colors can be assigned using a dictionary of key-color pairs.</span>
+<span class="sd">        Missing keys will be assigned the default edge color (``self.defaults[&#39;edge.color&#39;]``).</span>
+<span class="sd">        Default is to inherit color from the parent layer.</span>
+<span class="sd">    formatter : callable (None)</span>
+<span class="sd">        A formatting function.</span>
+<span class="sd">        Defaults to the built-in ``str`` function.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The labels are named using the following template:</span>
+<span class="sd">    ``&quot;{}.edge.label.{}&quot;.format(self.mesh.name, key)``.</span>
+<span class="sd">    This name is used afterwards to identify edges of the mesh in the Rhino model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_name</span><span class="p">:</span>
+        <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;key&#39;</span>
+
+    <span class="k">if</span> <span class="n">formatter</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">formatter</span><span class="p">),</span> <span class="s1">&#39;The provided formatter is not callable.&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="nb">str</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="s1">&#39;key&#39;</span> <span class="o">==</span> <span class="n">attr_name</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;index&#39;</span> <span class="o">==</span> <span class="n">attr_name</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span>
+        <span class="n">text</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="n">formatter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">clear_edgelabels</span><span class="p">()</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">draw_edgelabels</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="mesh_draw_face_labels"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_draw_face_labels.html#compas_rhino.helpers.mesh_draw_face_labels">[docs]</a><span class="k">def</span> <span class="nf">mesh_draw_face_labels</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span>
+                          <span class="n">attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">formatter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Display labels for the faces of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    attr_name : str (None)</span>
+<span class="sd">        The name of the attribute value to display in the label.</span>
+<span class="sd">        Default is is to display the face key.</span>
+<span class="sd">    layer : str (None)</span>
+<span class="sd">        The layer to draw in.</span>
+<span class="sd">        Default is to draw in the current layer.</span>
+<span class="sd">    color : str, tuple, list, dict (None)</span>
+<span class="sd">        The color specififcation for the labels.</span>
+<span class="sd">        Colors should be specified in the form of a string (hex colors) or as a tuple of RGB components.</span>
+<span class="sd">        To apply the same color to all face labels, provide a single color specification.</span>
+<span class="sd">        Individual colors can be assigned using a dictionary of key-color pairs.</span>
+<span class="sd">        Missing keys will be assigned the default face color (``self.defaults[&#39;face.color&#39;]``).</span>
+<span class="sd">        Default is to inherit color from the parent layer.</span>
+<span class="sd">    formatter : callable (None)</span>
+<span class="sd">        A formatting function.</span>
+<span class="sd">        Defaults to the built-in ``str`` function.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The labels are named using the following template:</span>
+<span class="sd">    ``&quot;{}.face.label.{}&quot;.format(self.mesh.name, key)``.</span>
+<span class="sd">    This name is used afterwards to identify faces of the meshin the Rhino model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_name</span><span class="p">:</span>
+        <span class="n">attr_name</span> <span class="o">=</span> <span class="s1">&#39;key&#39;</span>
+
+    <span class="k">if</span> <span class="n">formatter</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">formatter</span><span class="p">),</span> <span class="s1">&#39;The provided formatter is not callable.&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="nb">str</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="s1">&#39;key&#39;</span> <span class="o">==</span> <span class="n">attr_name</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="k">elif</span> <span class="s1">&#39;index&#39;</span> <span class="o">==</span> <span class="n">attr_name</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span>
+        <span class="n">text</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">formatter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">clear_facelabels</span><span class="p">()</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">draw_facelabels</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># selections</span>
+<span class="c1"># ==============================================================================</span>
+
+
+<div class="viewcode-block" id="mesh_select_vertices"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_select_vertices.html#compas_rhino.helpers.mesh_select_vertices">[docs]</a><span class="k">def</span> <span class="nf">mesh_select_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select mesh vertices.&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select vertices of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    message : str (&quot;Select mesh vertices.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The keys of the selected vertices.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_select_edges`</span>
+<span class="sd">    * :func:`mesh_select_faces`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">VertexSelector</span><span class="o">.</span><span class="n">select_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mesh_select_vertex"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_select_vertex.html#compas_rhino.helpers.mesh_select_vertex">[docs]</a><span class="k">def</span> <span class="nf">mesh_select_vertex</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select a mesh vertex&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select one vertex of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    message : str (&quot;Select a mesh vertex.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    hashable</span>
+<span class="sd">        The key of the selected vertex.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_select_vertices`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">VertexSelector</span><span class="o">.</span><span class="n">select_vertex</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mesh_select_edges"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_select_edges.html#compas_rhino.helpers.mesh_select_edges">[docs]</a><span class="k">def</span> <span class="nf">mesh_select_edges</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select mesh edges&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select edges of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    message : str (&quot;Select mesh edges.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The keys of the selected edges.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_select_vertices`</span>
+<span class="sd">    * :func:`mesh_select_faces`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EdgeSelector</span><span class="o">.</span><span class="n">select_edges</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mesh_select_edge"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_select_edge.html#compas_rhino.helpers.mesh_select_edge">[docs]</a><span class="k">def</span> <span class="nf">mesh_select_edge</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select a mesh edge&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select one edge of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    message : str (&quot;Select a mesh edge.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        The key of the selected edge.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_select_edges`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EdgeSelector</span><span class="o">.</span><span class="n">select_edge</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mesh_select_faces"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_select_faces.html#compas_rhino.helpers.mesh_select_faces">[docs]</a><span class="k">def</span> <span class="nf">mesh_select_faces</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select mesh faces.&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select faces of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    message : str (&quot;Select mesh faces.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The keys of the selected faces.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_select_vertices`</span>
+<span class="sd">    * :func:`mesh_select_edges`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">FaceSelector</span><span class="o">.</span><span class="n">select_faces</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mesh_select_face"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_select_face.html#compas_rhino.helpers.mesh_select_face">[docs]</a><span class="k">def</span> <span class="nf">mesh_select_face</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Select face.&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select one face of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    message : str (&quot;Select a mesh face.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    hashable</span>
+<span class="sd">        The key of the selected face.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_select_faces`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">FaceSelector</span><span class="o">.</span><span class="n">select_face</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># modifications</span>
+<span class="c1"># ==============================================================================</span>
+
+
+<span class="k">def</span> <span class="nf">mesh_update_attributes</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update the attributes of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        ``True`` if the update was successful.</span>
+<span class="sd">        ``False`` otherwise.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_update_vertex_attributes`</span>
+<span class="sd">    * :func:`mesh_update_edge_attributes`</span>
+<span class="sd">    * :func:`mesh_update_face_attributes`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Modifier</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="mesh_update_vertex_attributes"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_update_vertex_attributes.html#compas_rhino.helpers.mesh_update_vertex_attributes">[docs]</a><span class="k">def</span> <span class="nf">mesh_update_vertex_attributes</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update the attributes of the vertices of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    keys : tuple, list</span>
+<span class="sd">        The keys of the vertices to update.</span>
+<span class="sd">    names : tuple, list (None)</span>
+<span class="sd">        The names of the atrtibutes to update.</span>
+<span class="sd">        Default is to update all attributes.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        ``True`` if the update was successful.</span>
+<span class="sd">        ``False`` otherwise.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_update_attributes`</span>
+<span class="sd">    * :func:`mesh_update_edge_attributes`</span>
+<span class="sd">    * :func:`mesh_update_face_attributes`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">VertexModifier</span><span class="o">.</span><span class="n">update_vertex_attributes</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mesh_move_vertex"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_move_vertex.html#compas_rhino.helpers.mesh_move_vertex">[docs]</a><span class="k">def</span> <span class="nf">mesh_move_vertex</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">constraint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allow_off</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Move on vertex of the mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    key : str</span>
+<span class="sd">        The vertex to move.</span>
+<span class="sd">    constraint : Rhino.Geometry (None)</span>
+<span class="sd">        A Rhino geometry object to constrain the movement to.</span>
+<span class="sd">        By default the movement is unconstrained.</span>
+<span class="sd">    allow_off : bool (False)</span>
+<span class="sd">        Allow the vertex to move off the constraint.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">VertexModifier</span><span class="o">.</span><span class="n">move_vertex</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">constraint</span><span class="o">=</span><span class="n">constraint</span><span class="p">,</span> <span class="n">allow_off</span><span class="o">=</span><span class="n">allow_off</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="mesh_move_vertices"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_move_vertices.html#compas_rhino.helpers.mesh_move_vertices">[docs]</a><span class="k">def</span> <span class="nf">mesh_move_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Move on vertices of the mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    keys : list</span>
+<span class="sd">        The vertices to move.</span>
+<span class="sd">    constraint : Rhino.Geometry (None)</span>
+<span class="sd">        A Rhino geometry object to constrain the movement to.</span>
+<span class="sd">        By default the movement is unconstrained.</span>
+<span class="sd">    allow_off : bool (False)</span>
+<span class="sd">        Allow the vertex to move off the constraint.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">VertexModifier</span><span class="o">.</span><span class="n">move_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="mesh_update_edge_attributes"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_update_edge_attributes.html#compas_rhino.helpers.mesh_update_edge_attributes">[docs]</a><span class="k">def</span> <span class="nf">mesh_update_edge_attributes</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update the attributes of the edges of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    keys : tuple, list</span>
+<span class="sd">        The keys of the edges to update.</span>
+<span class="sd">    names : tuple, list (None)</span>
+<span class="sd">        The names of the atrtibutes to update.</span>
+<span class="sd">        Default is to update all attributes.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        ``True`` if the update was successful.</span>
+<span class="sd">        ``False`` otherwise.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_update_attributes`</span>
+<span class="sd">    * :func:`mesh_update_vertex_attributes`</span>
+<span class="sd">    * :func:`mesh_update_face_attributes`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EdgeModifier</span><span class="o">.</span><span class="n">update_edge_attributes</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mesh_update_face_attributes"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_update_face_attributes.html#compas_rhino.helpers.mesh_update_face_attributes">[docs]</a><span class="k">def</span> <span class="nf">mesh_update_face_attributes</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">fkeys</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update the attributes of the faces of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    fkeys : tuple, list</span>
+<span class="sd">        The keys of the faces to update.</span>
+<span class="sd">    names : tuple, list (None)</span>
+<span class="sd">        The names of the atrtibutes to update.</span>
+<span class="sd">        Default is to update all attributes.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        ``True`` if the update was successful.</span>
+<span class="sd">        ``False`` otherwise.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_update_attributes`</span>
+<span class="sd">    * :func:`mesh_update_vertex_attributes`</span>
+<span class="sd">    * :func:`mesh_update_edge_attributes`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">FaceModifier</span><span class="o">.</span><span class="n">update_vertex_attributes</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">fkeys</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">)</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># identify</span>
+<span class="c1"># ==============================================================================</span>
+
+
+<div class="viewcode-block" id="mesh_identify_vertices"><a class="viewcode-back" href="../../../api/generated/compas_rhino.helpers.mesh_identify_vertices.html#compas_rhino.helpers.mesh_identify_vertices">[docs]</a><span class="k">def</span> <span class="nf">mesh_identify_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">gkey_key</span> <span class="o">=</span> <span class="p">{</span><span class="n">geometric_key</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">precision</span><span class="p">):</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
+    <span class="k">for</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+        <span class="n">gkey</span> <span class="o">=</span> <span class="n">geometric_key</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gkey</span> <span class="ow">in</span> <span class="n">gkey_key</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">gkey_key</span><span class="p">[</span><span class="n">gkey</span><span class="p">]</span>
+            <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">keys</span></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="kn">import</span> <span class="nn">compas</span>
+    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
+    <span class="kn">from</span> <span class="nn">compas_rhino</span> <span class="k">import</span> <span class="n">mesh_draw</span>
+    <span class="kn">from</span> <span class="nn">compas_rhino</span> <span class="k">import</span> <span class="n">mesh_select_vertex</span>
+    <span class="kn">from</span> <span class="nn">compas_rhino</span> <span class="k">import</span> <span class="n">mesh_move_vertex</span>
+
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;quadmesh_planar.obj&#39;</span><span class="p">))</span>
+
+    <span class="n">mesh_draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">clear_layer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+                    
+                
+                </div>
+            </main>
+
+            <!-- site navigation sidebar -->
+
+            <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation"> 
+                <div class="navbar-light">
+
+                    <form id="" class="d-flex compas-searchbox" action="../../../search.html" method="get">
+                        <input class="form-control" type="text" name="q" placeholder="Search docs" />
+                        <input type="hidden" name="check_keywords" value="yes" />
+                        <input type="hidden" name="area" value="default" />
+
+                        <button class="navbar-toggler d-md-none compas-navigation-toggler" type="button" data-toggle="collapse" data-target="#compas-navigation" aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </form>
+
+                    
+                    
+
+                        <div class="navbar-expand-md">
+                            <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
+
+                            <ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
+</ul>
+
+
+                            </div>
+                        </div>
+
+                    
+
+                </div>
+            </div>
+
+            <!-- table of contents of main content -->
+
+            <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+
+ <footer class="bg-dark pb-5">
+    <div class="container text-center pt-5 pb-5 text-muted">
+        
+            
+                &#169; Copyright Block Research Group - ETH Zurich.
+            
+        
+
+        
+            Last updated on Jul 19, 2019.
+        
+
+        
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+        
+    </div>
+</footer>
+
+<script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT          : '',
+    VERSION           : '0.7.1',
+    COLLAPSE_INDEX    : false,
+    FILE_SUFFIX       : '.html',
+    HAS_SOURCE        : 'false',
+    SOURCELINK_SUFFIX : '.txt'
+};
+</script>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
+<script src="../../../_static/underscore.js"></script>
+<script src="../../../_static/doctools.js"></script>
+<script src="../../../_static/js/searchtools_.js"></script>
+<script src="../../../_static/js/prism.js"></script>
+
+<script>
+$(document).ready(function() {
+    anchors.add();
+});
+</script> 
+
+</body>
+</html>
