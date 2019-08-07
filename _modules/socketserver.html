@@ -606,8 +606,10 @@
         <span class="n">timeout</span> <span class="o">=</span> <span class="mi">300</span>
         <span class="n">active_children</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">max_children</span> <span class="o">=</span> <span class="mi">40</span>
+        <span class="c1"># If true, server_close() waits until all child processes complete.</span>
+        <span class="n">_block_on_close</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="k">def</span> <span class="nf">collect_children</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">collect_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Internal routine to wait for children that have exited.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_children</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span>
@@ -631,7 +633,8 @@
             <span class="c1"># Now reap all defunct children.</span>
             <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_children</span><span class="o">.</span><span class="n">copy</span><span class="p">():</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">pid</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">waitpid</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">WNOHANG</span><span class="p">)</span>
+                    <span class="n">flags</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">blocking</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">WNOHANG</span>
+                    <span class="n">pid</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">waitpid</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
                     <span class="c1"># if the child hasn&#39;t exited yet, pid will be 0 and ignored by</span>
                     <span class="c1"># discard() below</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">active_children</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
@@ -680,6 +683,10 @@
                     <span class="k">finally</span><span class="p">:</span>
                         <span class="n">os</span><span class="o">.</span><span class="n">_exit</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
 
+        <span class="k">def</span> <span class="nf">server_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">server_close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">collect_children</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_block_on_close</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">ThreadingMixIn</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Mix-in class to handle each request in a new thread.&quot;&quot;&quot;</span>
@@ -687,6 +694,11 @@
     <span class="c1"># Decides how threads will act upon termination of the</span>
     <span class="c1"># main process</span>
     <span class="n">daemon_threads</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># If true, server_close() waits until all non-daemonic threads terminate.</span>
+    <span class="n">_block_on_close</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># For non-daemonic threads, list of threading.Threading objects</span>
+    <span class="c1"># used by server_close() to wait for all threads completion.</span>
+    <span class="n">_threads</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">process_request_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">client_address</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Same as in BaseServer but as a thread.</span>
@@ -706,7 +718,20 @@
         <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_request_thread</span><span class="p">,</span>
                              <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">client_address</span><span class="p">))</span>
         <span class="n">t</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_threads</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">daemon</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_on_close</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
         <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">server_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">server_close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_on_close</span><span class="p">:</span>
+            <span class="n">threads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">threads</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+                    <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
 
 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="s2">&quot;fork&quot;</span><span class="p">):</span>
@@ -919,7 +944,7 @@
         
 
         
-            Last updated on Aug 06, 2019.
+            Last updated on Aug 07, 2019.
         
 
         
