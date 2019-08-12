@@ -65,7 +65,7 @@
 <h1>mesh_face_matrix</h1>
 <dl class="function">
 <dt id="compas.datastructures.mesh_face_matrix">
-<code class="sig-prename descclassname">compas.datastructures.</code><code class="sig-name descname">mesh_face_matrix</code><span class="sig-paren">(</span><em class="sig-param">mesh</em>, <em class="sig-param">rtype='csr'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas/datastructures/mesh/matrices.html#mesh_face_matrix"><span class="viewcode-link">[source]</span></a></dt>
+<code class="sig-prename descclassname">compas.datastructures.</code><code class="sig-name descname">mesh_face_matrix</code><span class="sig-paren">(</span><em class="sig-param">mesh</em>, <em class="sig-param">rtype='array'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas/datastructures/mesh/matrices.html#mesh_face_matrix"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Construct the face matrix from a Mesh datastructure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -92,7 +92,23 @@ and a face exist.</p>
 <p>The face matrix can for example be used to compute the centroids of all
 faces of a mesh.</p>
 <p class="rubric">Examples</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="go">&gt;&gt;&gt;</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">mesh_face_matrix</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+<span class="go">&lt;class &#39;numpy.ndarray&#39;&gt;</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">mesh_face_matrix</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+<span class="go">&lt;class &#39;scipy.sparse.csr.csr_matrix&#39;&gt;</span>
+</code></pre></div>
+</div>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">allclose</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">mesh_face_matrix</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span> <span class="o">/</span> <span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c2</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_centroid</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">allclose</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">)</span>
+<span class="go">True</span>
 </code></pre></div>
 </div>
 </dd></dl>

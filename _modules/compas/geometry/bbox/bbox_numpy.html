@@ -90,7 +90,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    points : list</span>
+<span class="sd">    points : array-like</span>
 <span class="sd">        XYZ coordinates of the points.</span>
 
 <span class="sd">    Returns</span>
@@ -105,10 +105,12 @@
 
 <span class="sd">    1. Compute the convex hull of the points.</span>
 <span class="sd">    2. For each of the faces on the hull:</span>
+
 <span class="sd">       1. Compute face frame.</span>
 <span class="sd">       2. Compute coordinates of other points in face frame.</span>
-<span class="sd">       3. Find spread of point coordinates along local axes.</span>
-<span class="sd">       4. Compute volume of &quot;spread&quot; box.</span>
+<span class="sd">       3. Find &quot;peak-to-peak&quot; (PTP) values of point coordinates along local axes.</span>
+<span class="sd">       4. Compute volume of box formed with PTP values.</span>
+
 <span class="sd">    3. Select the box with the smallest volume.</span>
 
 <span class="sd">    Examples</span>
@@ -118,7 +120,7 @@
 <span class="sd">    Add the corners of the box such that we now the volume is supposed to be :math:`30.0`.</span>
 
 <span class="sd">    &gt;&gt;&gt; points = numpy.random.rand(10000, 3)</span>
-<span class="sd">    &gt;&gt;&gt; bottom = numpy.array([[0.0,0.0,0.0], [1.0,0.0,0.0], [0.0,1.0,0.0], [1.0,1.0,0.0]])</span>
+<span class="sd">    &gt;&gt;&gt; bottom = numpy.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [1.0, 1.0, 0.0]])</span>
 <span class="sd">    &gt;&gt;&gt; top = numpy.array([[0.0, 0.0, 1.0], [1.0, 0.0, 1.0], [0.0, 1.0, 1.0], [1.0, 1.0, 1.0]])</span>
 <span class="sd">    &gt;&gt;&gt; points = numpy.concatenate((points, bottom, top))</span>
 <span class="sd">    &gt;&gt;&gt; points[:, 0] *= 10</span>
@@ -200,13 +202,15 @@
 
 <span class="sd">    1. Compute the convex hull of the points.</span>
 <span class="sd">    2. For each of the edges on the hull:</span>
-<span class="sd">        1. Compute the s-axis as the unit vector in the direction of the edge</span>
-<span class="sd">        2. Compute the othorgonal t-axis.</span>
-<span class="sd">        3. Use the start point of the edge as origin.</span>
-<span class="sd">        4. Compute the spread of the points along the s-axis. (dot product of the point vecor in local coordinates and the s-axis)</span>
-<span class="sd">        5. Compute the spread along the t-axis.</span>
-<span class="sd">        6. Determine the side of s on which the points are.</span>
-<span class="sd">        7. Compute and store the corners of the bbox and its area.</span>
+
+<span class="sd">       1. Compute the s-axis as the unit vector in the direction of the edge</span>
+<span class="sd">       2. Compute the othorgonal t-axis.</span>
+<span class="sd">       3. Use the start point of the edge as origin.</span>
+<span class="sd">       4. Compute the spread of the points along the s-axis. (dot product of the point vecor in local coordinates and the s-axis)</span>
+<span class="sd">       5. Compute the spread along the t-axis.</span>
+<span class="sd">       6. Determine the side of s on which the points are.</span>
+<span class="sd">       7. Compute and store the corners of the bbox and its area.</span>
+
 <span class="sd">    3. Select the box with the smallest area.</span>
 
 <span class="sd">    Examples</span>

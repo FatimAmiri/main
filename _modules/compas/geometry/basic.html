@@ -65,7 +65,7 @@
 <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sqrt</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">fabs</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">sample</span>
-
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">uniform</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;allclose&#39;</span><span class="p">,</span>
@@ -122,11 +122,35 @@
 <span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns True if two lists are element-wise equal within a tolerance.</span>
 
-<span class="sd">    The function is similar to NumPy&#39;s *allclose* function.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    l1 : list of float</span>
+<span class="sd">        The first list of values.</span>
+<span class="sd">    l2 : list of float</span>
+<span class="sd">        The second list of values.</span>
+<span class="sd">    tol : float, optional</span>
+<span class="sd">        The tolerance for comparing values.</span>
+<span class="sd">        Default is ``1e-05``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The function is similar to NumPy&#39;s *allclose* function [1]_.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; allclose([0.1, 0.2, 0.3, 0.4], [0.1, 0.20001, 0.3, 0.4])</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; allclose([0.1, 0.2, 0.3, 0.4], [0.1, 0.20001, 0.3, 0.4], tol=1e-6)</span>
+<span class="sd">    False</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] https://docs.scipy.org/doc/numpy/reference/generated/numpy.allclose.html</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">fabs</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">fabs</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="kc">True</span>
 
 
@@ -137,16 +161,15 @@
 
 
 <div class="viewcode-block" id="sum_vectors"><a class="viewcode-back" href="../../../api/generated/compas.geometry.sum_vectors.html#compas.geometry.sum_vectors">[docs]</a><span class="k">def</span> <span class="nf">sum_vectors</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate the sum of a series of vectors along the specified axis.</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the sum of a series of vectors along the specified axis.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    vectors : list</span>
 <span class="sd">        A list of vectors.</span>
 <span class="sd">    axis : int, optional</span>
-<span class="sd">        If ``axis == 0``, the sum is taken across each of the indices of the mesh.</span>
-<span class="sd">        If ``axis == 1``, the sum is taken across the individual vectors.</span>
+<span class="sd">        If ``axis == 0``, the sum is taken per column.</span>
+<span class="sd">        If ``axis == 1``, the sum is taken per row.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -156,11 +179,11 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; vectors = [[1, 2, 3], [1, 2, 3], [1, 2, 3]]</span>
+<span class="sd">    &gt;&gt;&gt; vectors = [[1.0, 2.0, 3.0], [1.0, 2.0, 3.0], [1.0, 2.0, 3.0]]</span>
 <span class="sd">    &gt;&gt;&gt; sum_vectors(vectors)</span>
-<span class="sd">    [3, 6, 9]</span>
+<span class="sd">    [3.0, 6.0, 9.0]</span>
 <span class="sd">    &gt;&gt;&gt; sum_vectors(vectors, axis=1)</span>
-<span class="sd">    [6, 6, 6]</span>
+<span class="sd">    [6.0, 6.0, 6.0]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -169,8 +192,7 @@
 
 
 <div class="viewcode-block" id="norm_vector"><a class="viewcode-back" href="../../../api/generated/compas.geometry.norm_vector.html#compas.geometry.norm_vector">[docs]</a><span class="k">def</span> <span class="nf">norm_vector</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate the length of a vector.</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the length of a vector.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -184,7 +206,11 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; norm_vector([2.0, 0.0, 0.0])</span>
+<span class="sd">    2.0</span>
+
+<span class="sd">    &gt;&gt;&gt; norm_vector([1.0, 1.0, 0.0]) == sqrt(2.0)</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">axis</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">vector</span><span class="p">))</span></div>
@@ -206,7 +232,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; norm_vectors([[1.0, 0.0, 0.0], [2.0, 0.0, 0.0], [3.0, 0.0, 0.0]])</span>
+<span class="sd">    [1.0, 2.0, 3.0]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">norm_vector</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="k">for</span> <span class="n">vector</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">]</span></div>
@@ -225,13 +252,13 @@
 <span class="sd">    float</span>
 <span class="sd">        The length of the vector.</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    norm_vector</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; length_vector([2.0, 0.0, 0.0])</span>
+<span class="sd">    2.0</span>
+
+<span class="sd">    &gt;&gt;&gt; length_vector([1.0, 1.0, 0.0]) == sqrt(2.0)</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">length_vector_sqrd</span><span class="p">(</span><span class="n">vector</span><span class="p">))</span></div>
@@ -278,6 +305,11 @@
 <span class="sd">    float</span>
 <span class="sd">        The squared length.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; length_vector_sqrd([1.0, 1.0, 0.0])</span>
+<span class="sd">    2.0</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">vector</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">vector</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span></div>
 
@@ -294,6 +326,17 @@
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
 <span class="sd">        The squared length.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; length_vector_sqrd_xy([1.0, 1.0])</span>
+<span class="sd">    2.0</span>
+
+<span class="sd">    &gt;&gt;&gt; length_vector_sqrd_xy([1.0, 1.0, 0.0])</span>
+<span class="sd">    2.0</span>
+
+<span class="sd">    &gt;&gt;&gt; length_vector_sqrd_xy([1.0, 1.0, 1.0])</span>
+<span class="sd">    2.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">vector</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span></div>
@@ -324,14 +367,16 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; scale_vector([1.0, 2.0, 3.0], 2.0)</span>
+<span class="sd">    [2.0, 4.0, 6.0]</span>
+
+<span class="sd">    &gt;&gt;&gt; v = [2.0, 0.0, 0.0]</span>
+<span class="sd">    &gt;&gt;&gt; scale_vector(v, 1 / length_vector(v))</span>
+<span class="sd">    [1.0, 0.0, 0.0]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">axis</span> <span class="o">*</span> <span class="n">factor</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">vector</span><span class="p">]</span></div>
 
-
-<span class="c1"># does this even make sense?</span>
-<span class="c1"># should the Z-component not remain the same?</span>
 
 <div class="viewcode-block" id="scale_vector_xy"><a class="viewcode-back" href="../../../api/generated/compas.geometry.scale_vector_xy.html#compas.geometry.scale_vector_xy">[docs]</a><span class="k">def</span> <span class="nf">scale_vector_xy</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Scale a vector by a given factor, assuming it lies in the XY plane.</span>
@@ -350,7 +395,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; scale_vector_xy([1.0, 2.0, 3.0], 2.0)</span>
+<span class="sd">    [2.0, 4.0, 0.0]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor</span><span class="p">,</span> <span class="n">vector</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span></div>
@@ -875,7 +921,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; dot_vectors([1.0, 0, 0], [2.0, 0, 0])</span>
-<span class="sd">    2</span>
+<span class="sd">    2.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span></div>
@@ -939,8 +985,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; vector_component([1, 2, 3], [1, 0, 0])</span>
-<span class="sd">    [1, 0, 0]</span>
+<span class="sd">    &gt;&gt;&gt; vector_component([1.0, 2.0, 3.0], [1.0, 0.0, 0.0])</span>
+<span class="sd">    [1.0, 0.0, 0.0]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">l2</span> <span class="o">=</span> <span class="n">length_vector_sqrd</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -1133,7 +1179,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; vectors = [[1.0, 0.0, 0.0]]</span>
-<span class="sd">    &gt;&gt;&gt; homogenize(vectors)</span>
+<span class="sd">    &gt;&gt;&gt; homogenize_vectors(vectors)</span>
 <span class="sd">    [[1.0, 0.0, 0.0, 1.0]]</span>
 
 <span class="sd">    Notes</span>
@@ -1390,12 +1436,12 @@
 <span class="sd">    ----------</span>
 <span class="sd">    n : int</span>
 <span class="sd">        The number of points in the cloud.</span>
-<span class="sd">    xbounds : 2-tuple of int</span>
+<span class="sd">    xbounds : 2-tuple of float</span>
 <span class="sd">        The min/max values for the x-coordinates of the points in the cloud.</span>
-<span class="sd">    ybounds : 2-tuple of int, optional</span>
+<span class="sd">    ybounds : 2-tuple of float, optional</span>
 <span class="sd">        The min/max values for the y-coordinates of the points in the cloud.</span>
 <span class="sd">        If ``None``, defaults to the value of the ``xbounds``.</span>
-<span class="sd">    zbounds : 2-tuple of int, optional</span>
+<span class="sd">    zbounds : 2-tuple of float, optional</span>
 <span class="sd">        The min/max values for the z-coordinates of the points in the cloud.</span>
 <span class="sd">        If ``None``, defaults to the value of the ``xbounds``.</span>
 
@@ -1406,25 +1452,26 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; cloud = pointcloud(10, (0.0, 1.0))</span>
+<span class="sd">    &gt;&gt;&gt; all((0.0 &lt; x &lt; 1.0) and (0.0 &lt; y &lt; 1.0) and (0.0 &lt; z &lt; 1.0) for x, y, z in cloud)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; cloud = pointcloud(10, (5.0, 10.0), (0.0, 1.0), (-2.0, 3.0))</span>
+<span class="sd">    &gt;&gt;&gt; all((5.0 &lt; x &lt; 10.0) and (0.0 &lt; y &lt; 1.0) and (-2.0 &lt; z &lt; 3.0) for x, y, z in cloud)</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ybounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ybounds</span> <span class="o">=</span> <span class="n">xbounds</span>
     <span class="k">if</span> <span class="n">zbounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">zbounds</span> <span class="o">=</span> <span class="n">xbounds</span>
-    <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">xbounds</span><span class="p">)</span>
-    <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">ybounds</span><span class="p">)</span>
-    <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">zbounds</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">,</span> <span class="s1">&#39;The bounds do not permit taking a random sample of this size.&#39;</span>
-    <span class="k">assert</span> <span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">,</span> <span class="s1">&#39;The bounds do not permit taking a random sample of this size.&#39;</span>
-    <span class="k">assert</span> <span class="n">zmax</span> <span class="o">-</span> <span class="n">zmin</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">,</span> <span class="s1">&#39;The bounds do not permit taking a random sample of this size.&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[[</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-             <span class="mf">1.0</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-             <span class="mf">1.0</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+    <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">xbounds</span><span class="p">)</span>
+    <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">ybounds</span><span class="p">)</span>
+    <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">zbounds</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">uniform</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">uniform</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">uniform</span><span class="p">(</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)))</span>
 
 
 <span class="k">def</span> <span class="nf">pointcloud_xy</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">xbounds</span><span class="p">,</span> <span class="n">ybounds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1434,9 +1481,9 @@
 <span class="sd">    ----------</span>
 <span class="sd">    n : int</span>
 <span class="sd">        The number of points in the cloud.</span>
-<span class="sd">    xbounds : 2-tuple of int</span>
+<span class="sd">    xbounds : 2-tuple of float</span>
 <span class="sd">        The min/max values for the x-coordinates of the points in the cloud.</span>
-<span class="sd">    ybounds : 2-tuple of int, optional</span>
+<span class="sd">    ybounds : 2-tuple of float, optional</span>
 <span class="sd">        The min/max values for the y-coordinates of the points in the cloud.</span>
 <span class="sd">        If ``None``, defaults to the value of the ``xbounds``.</span>
 
@@ -1447,19 +1494,23 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; cloud = pointcloud_xy(10, (0.0, 1.0))</span>
+<span class="sd">    &gt;&gt;&gt; all((0.0 &lt; x &lt; 1.0) and (0.0 &lt; y &lt; 1.0) and z == 0.0 for x, y, z in cloud)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; cloud = pointcloud_xy(10, (5.0, 10.0), (0.0, 1.0))</span>
+<span class="sd">    &gt;&gt;&gt; all((5.0 &lt; x &lt; 10.0) and (0.0 &lt; y &lt; 1.0) and z == 0.0 for x, y, z in cloud)</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ybounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ybounds</span> <span class="o">=</span> <span class="n">xbounds</span>
-    <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">xbounds</span><span class="p">)</span>
-    <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">ybounds</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">,</span> <span class="s1">&#39;The bounds do not permit taking a random sample of this size.&#39;</span>
-    <span class="k">assert</span> <span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">,</span> <span class="s1">&#39;The bounds do not permit taking a random sample of this size.&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[[</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-             <span class="mf">1.0</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+    <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">xbounds</span><span class="p">)</span>
+    <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">ybounds</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">uniform</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">uniform</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)))</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -1468,7 +1519,8 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">vector_component_xy</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
 </code></pre></div>
                     
                 
