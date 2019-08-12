@@ -67,23 +67,54 @@
 <dt id="compas.geometry.oriented_bounding_box_numpy">
 <code class="sig-prename descclassname">compas.geometry.</code><code class="sig-name descname">oriented_bounding_box_numpy</code><span class="sig-paren">(</span><em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas/geometry/bbox/bbox_numpy.html#oriented_bounding_box_numpy"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Compute the oriented minimum bounding box of a set of points in 3D space.</p>
-<p class="rubric">Notes</p>
-<p>The implementation is based on the convex hull of the points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>points</strong> (<em>list</em>) – XYZ coordinates of the points.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p><em>3-tuple</em> –</p>
-<ol class="arabic simple">
-<li><p>The convex hull of the points.</p></li>
-<li><p>The coordinates of the bounding box.</p></li>
-<li><p>The volume of the box.</p></li>
-</ol>
-</p>
+<dd class="field-even"><p><em>array</em> – XYZ coordinates of 8 points defining a box.</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>The <em>oriented (minimum) bounding box</em> (OBB) of a given set of points
+is computed using the following procedure:</p>
+<ol class="arabic simple">
+<li><p>Compute the convex hull of the points.</p></li>
+<li><p>For each of the faces on the hull:
+1. Compute face frame.
+2. Compute coordinates of other points in face frame.
+3. Find spread of point coordinates along local axes.
+4. Compute volume of “spread” box.</p></li>
+<li><p>Select the box with the smallest volume.</p></li>
+</ol>
 <p class="rubric">Examples</p>
+<p>Generate a random set of points with
+<span class="math notranslate nohighlight">\(x \in [0, 10]\)</span>, <span class="math notranslate nohighlight">\(y \in [0, 1]\)</span> and <span class="math notranslate nohighlight">\(z \in [0, 3]\)</span>.
+Add the corners of the box such that we now the volume is supposed to be <span class="math notranslate nohighlight">\(30.0\)</span>.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bottom</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">top</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">points</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">top</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">3</span>
+</code></pre></div>
+</div>
+<p>Rotate the points around an arbitrary axis by an arbitrary angle.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Rotation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">transform_points_numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_axis_and_angle</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="mf">3.14159</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="n">transform_points_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>Compute the volume of the oriented bounding box.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bbox</span> <span class="o">=</span> <span class="n">oriented_bounding_box_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">c</span>
+<span class="go">30.0</span>
+</code></pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -176,7 +207,7 @@
         
 
         
-            Last updated on Aug 11, 2019.
+            Last updated on Aug 12, 2019.
         
 
         
