@@ -2350,8 +2350,8 @@
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_degree</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Mesh.face_vertex_ancestor"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.face_vertex_ancestor.html#compas.datastructures.Mesh.face_vertex_ancestor">[docs]</a>    <span class="k">def</span> <span class="nf">face_vertex_ancestor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the vertex before the specified vertex in a specific face.</span>
+<div class="viewcode-block" id="Mesh.face_vertex_ancestor"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.face_vertex_ancestor.html#compas.datastructures.Mesh.face_vertex_ancestor">[docs]</a>    <span class="k">def</span> <span class="nf">face_vertex_ancestor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the n-th vertex before the specified vertex in a specific face.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2359,6 +2359,8 @@
 <span class="sd">            Identifier of the face.</span>
 <span class="sd">        key : hashable</span>
 <span class="sd">            The identifier of the vertex.</span>
+<span class="sd">        n : int, optional</span>
+<span class="sd">            The index of the vertex ancestor. Default is 1, meaning the previous vertex. </span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2372,10 +2374,10 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">][</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">][(</span><span class="n">i</span> <span class="o">-</span> <span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">])]</span></div>
 
-<div class="viewcode-block" id="Mesh.face_vertex_descendant"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.face_vertex_descendant.html#compas.datastructures.Mesh.face_vertex_descendant">[docs]</a>    <span class="k">def</span> <span class="nf">face_vertex_descendant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the vertex after the specified vertex in a specific face.</span>
+<div class="viewcode-block" id="Mesh.face_vertex_descendant"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.face_vertex_descendant.html#compas.datastructures.Mesh.face_vertex_descendant">[docs]</a>    <span class="k">def</span> <span class="nf">face_vertex_descendant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the n-th vertex after the specified vertex in a specific face.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2383,6 +2385,8 @@
 <span class="sd">            Identifier of the face.</span>
 <span class="sd">        key : hashable</span>
 <span class="sd">            The identifier of the vertex.</span>
+<span class="sd">        n : int, optional</span>
+<span class="sd">            The index of the vertex descendant. Default is 1, meaning the next vertex. </span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2395,10 +2399,8 @@
 <span class="sd">            If the vertex is not part of the face.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">][(</span><span class="n">i</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">])]</span></div>
 
 <div class="viewcode-block" id="Mesh.face_adjacency_halfedge"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.face_adjacency_halfedge.html#compas.datastructures.Mesh.face_adjacency_halfedge">[docs]</a>    <span class="k">def</span> <span class="nf">face_adjacency_halfedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find one half-edge over which two faces are adjacent.</span>
@@ -3298,11 +3300,11 @@
         
 
         
-            Last updated on Aug 15, 2019.
+            Last updated on Aug 20, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
         
     </div>
 </footer>
