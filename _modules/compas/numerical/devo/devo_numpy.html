@@ -89,7 +89,7 @@
 
 
 <div class="viewcode-block" id="devo_numpy"><a class="viewcode-back" href="../../../../api/generated/compas.numerical.devo_numpy.html#compas.numerical.devo_numpy">[docs]</a><span class="k">def</span> <span class="nf">devo_numpy</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">population</span><span class="p">,</span> <span class="n">generations</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elites</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">F</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">CR</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">polish</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span>
-               <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">frange</span><span class="o">=</span><span class="p">[],</span> <span class="n">printout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+               <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">frange</span><span class="o">=</span><span class="p">[],</span> <span class="n">printout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">neutrals</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot; Call the Differential Evolution solver.</span>
 
@@ -121,6 +121,8 @@
 <span class="sd">        Minimum and maximum f value to plot.</span>
 <span class="sd">    printout : int</span>
 <span class="sd">        Print progress to screen.</span>
+<span class="sd">    neutrals : float</span>
+<span class="sd">        Fraction of neutral starting agents.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -152,7 +154,7 @@
     <span class="c1"># Population</span>
 
     <span class="n">agents</span> <span class="o">=</span> <span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">population</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">ub</span> <span class="o">-</span> <span class="n">lb</span><span class="p">)</span> <span class="o">+</span> <span class="n">lb</span><span class="p">)</span>
-    <span class="n">agents</span><span class="p">[:,</span> <span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">population</span> <span class="o">*</span> <span class="mf">0.05</span><span class="p">))]</span> <span class="o">*=</span> <span class="mi">0</span>
+    <span class="n">agents</span><span class="p">[:,</span> <span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">population</span> <span class="o">*</span> <span class="n">neutrals</span><span class="p">))]</span> <span class="o">*=</span> <span class="mi">0</span>
 
     <span class="n">candidates</span> <span class="o">=</span> <span class="n">tile</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">population</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">population</span><span class="p">))</span>
     <span class="n">candidates</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">delete</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">where</span><span class="p">(</span><span class="n">eye</span><span class="p">(</span><span class="n">population</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)),</span> <span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">population</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
@@ -338,7 +340,8 @@
         <span class="k">return</span> <span class="n">z</span>
 
     <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">)]</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">devo_numpy</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">fn</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">generations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">polish</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frange</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">devo_numpy</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">fn</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">generations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                     <span class="n">polish</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frange</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="n">neutrals</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </code></pre></div>
@@ -410,7 +413,7 @@
         
 
         
-            Last updated on Aug 30, 2019.
+            Last updated on Sep 02, 2019.
         
 
         
