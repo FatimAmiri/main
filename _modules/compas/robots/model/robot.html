@@ -105,7 +105,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">materials</span> <span class="o">=</span> <span class="n">materials</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_tree</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_tree</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">Transformation</span><span class="p">())</span></div>
 
     <span class="k">def</span> <span class="nf">_rebuild_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Store tree structure from link and joint lists.&quot;&quot;&quot;</span>
@@ -325,12 +326,20 @@
         <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">]</span></div>
 
+<div class="viewcode-block" id="RobotModel.get_end_effector_link"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.get_end_effector_link.html#compas.robots.RobotModel.get_end_effector_link">[docs]</a>    <span class="k">def</span> <span class="nf">get_end_effector_link</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
+        <span class="n">clink</span> <span class="o">=</span> <span class="n">joints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">child_link</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">clink</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">Joint</span><span class="o">.</span><span class="n">FIXED</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">j</span><span class="o">.</span><span class="n">child_link</span>
+        <span class="k">return</span> <span class="n">clink</span></div>
+
 <div class="viewcode-block" id="RobotModel.get_end_effector_link_name"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.get_end_effector_link_name.html#compas.robots.RobotModel.get_end_effector_link_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_end_effector_link_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
         <span class="n">clink</span> <span class="o">=</span> <span class="n">joints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">child_link</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">clink</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">Joint</span><span class="o">.</span><span class="n">FIXED</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">j</span><span class="o">.</span><span class="n">child</span>
+                <span class="k">return</span> <span class="n">j</span><span class="o">.</span><span class="n">child</span><span class="o">.</span><span class="n">link</span>
         <span class="k">return</span> <span class="n">clink</span><span class="o">.</span><span class="n">name</span></div>
 
 <div class="viewcode-block" id="RobotModel.get_base_link_name"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.get_base_link_name.html#compas.robots.RobotModel.get_base_link_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_base_link_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -398,7 +407,142 @@
             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">),</span>
             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">),</span>
             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()),</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">,</span> <span class="n">parent_transformation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Private function called during initialisation to transform origins and axes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        link : :class:`compas.robots.Link`</span>
+<span class="sd">            Link instance to create.</span>
+<span class="sd">        parent_transformation : :class:`Transformation`</span>
+<span class="sd">            Parent transformation to apply to the link when creating the structure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">link</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># some urdfs would fail here otherwise</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">visual</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">collision</span><span class="p">):</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">init_transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span>
+
+        <span class="k">for</span> <span class="n">child_joint</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+            <span class="n">child_joint</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">parent_transformation</span><span class="p">)</span>
+            <span class="c1"># Recursively call creation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="n">child_joint</span><span class="o">.</span><span class="n">child_link</span><span class="p">,</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">current_transformation</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RobotModel.compute_transformations"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.compute_transformations.html#compas.robots.RobotModel.compute_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">compute_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_state</span><span class="p">,</span> <span class="n">link</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent_transformation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Recursive function to calculate the transformations of each joint.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        joint_state : dict</span>
+<span class="sd">            A dictionary with the joint names as keys and values in radians and</span>
+<span class="sd">            meters (depending on the joint type).</span>
+<span class="sd">        link : :class:`compas.robots.Link`</span>
+<span class="sd">            Link instance to calculate the child joint&#39;s transformation.</span>
+<span class="sd">        parent_transformation : :class:`Transformation`</span>
+<span class="sd">            The transfomation of the parent joint.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict of str: :class:`Transformation`</span>
+<span class="sd">            A dictionary with the joint names as keys and values are the joint&#39;s respective transformation.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        &gt;&gt;&gt; names = robot.get_configurable_joint_names()</span>
+<span class="sd">        &gt;&gt;&gt; values = [-2.238, -1.153, -2.174, 0.185, 0.667, 0.000]</span>
+<span class="sd">        &gt;&gt;&gt; joint_state = dict(zip(names, values))</span>
+<span class="sd">        &gt;&gt;&gt; transformations = robot.compute_transformations(joint_state)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">link</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
+        <span class="k">if</span> <span class="n">parent_transformation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parent_transformation</span> <span class="o">=</span> <span class="n">Transformation</span><span class="p">()</span>
+
+        <span class="n">transformations</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">child_joint</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">joint_state</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">position</span> <span class="o">=</span> <span class="n">joint_state</span><span class="p">[</span><span class="n">child_joint</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span> <span class="o">*</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">calculate_transformation</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span>
+            <span class="n">transformations</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">child_joint</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">transformation</span><span class="p">})</span>
+            <span class="c1"># call function on child</span>
+            <span class="n">transformations</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_transformations</span><span class="p">(</span><span class="n">joint_state</span><span class="p">,</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">child_link</span><span class="p">,</span> <span class="n">transformation</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">transformations</span></div>
+
+<div class="viewcode-block" id="RobotModel.updated_frames"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.updated_frames.html#compas.robots.RobotModel.updated_frames">[docs]</a>    <span class="k">def</span> <span class="nf">updated_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the transformed frames based on the joint_state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        joint_state : dict</span>
+<span class="sd">            A dictionary with the joint names as keys and values in radians and</span>
+<span class="sd">            meters (depending on the joint type).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of :class:`Frame`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">transformations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_transformations</span><span class="p">(</span><span class="n">joint_state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">transformations</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_joints</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="RobotModel.updated_axes"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.updated_axes.html#compas.robots.RobotModel.updated_axes">[docs]</a>    <span class="k">def</span> <span class="nf">updated_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the transformed axes based on the joint_state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        joint_state : dict</span>
+<span class="sd">            A dictionary with the joint names as keys and values in radians and</span>
+<span class="sd">            meters (depending on the joint type).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of :class:`Vector`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">transformations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_transformations</span><span class="p">(</span><span class="n">joint_state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">transformations</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_joints</span><span class="p">()</span> <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">axis</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="RobotModel.forward_kinematics"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.forward_kinematics.html#compas.robots.RobotModel.forward_kinematics">[docs]</a>    <span class="k">def</span> <span class="nf">forward_kinematics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_state</span><span class="p">,</span> <span class="n">link_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the robot&#39;s forward kinematic.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        joint_state : dict</span>
+<span class="sd">            A dictionary with the joint names as keys and values in radians and</span>
+<span class="sd">            meters (depending on the joint type).</span>
+<span class="sd">        link_name : str, optional</span>
+<span class="sd">            The name of the link we want to calculate the forward kinematics for.</span>
+<span class="sd">            Defaults to the end-effector link name.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`Frame`</span>
+<span class="sd">            The (ee) link&#39;s frame in the world coordinate system.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; names = robot.get_configurable_joint_names()</span>
+<span class="sd">        &gt;&gt;&gt; values = [-2.238, -1.153, -2.174, 0.185, 0.667, 0.000]</span>
+<span class="sd">        &gt;&gt;&gt; joint_state = dict(zip(names, values))</span>
+<span class="sd">        &gt;&gt;&gt; frame_WCF = robot.forward_kinematics(joint_state)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">link_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ee_link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_end_effector_link</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ee_link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_link_by_name</span><span class="p">(</span><span class="n">link_name</span><span class="p">)</span>
+        <span class="n">joint</span> <span class="o">=</span> <span class="n">ee_link</span><span class="o">.</span><span class="n">parent_joint</span>
+
+        <span class="n">transformations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_transformations</span><span class="p">(</span><span class="n">joint_state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">joint</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">transformations</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span><span class="p">])</span></div></div>
+
 
 <span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">RobotModel</span><span class="p">,</span> <span class="s1">&#39;robot&#39;</span><span class="p">)</span>
 <span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Material</span><span class="p">,</span> <span class="s1">&#39;robot/material&#39;</span><span class="p">)</span>

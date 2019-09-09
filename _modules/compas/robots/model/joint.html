@@ -188,6 +188,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span></div>
 
+<div class="viewcode-block" id="Axis.transformed"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Axis.transformed.html#compas.robots.Axis.transformed">[docs]</a>    <span class="k">def</span> <span class="nf">transformed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">transform_vectors</span><span class="p">(</span>
+            <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">]],</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
@@ -254,8 +259,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">child_link</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_origin</span> <span class="o">=</span> <span class="n">origin</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">origin</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_axis</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">axis</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="n">switcher</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">Joint</span><span class="o">.</span><span class="n">REVOLUTE</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_revolute_transformation</span><span class="p">,</span>
@@ -275,23 +278,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Transformation</span><span class="p">()</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">init_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_origin</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_origin</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Transformation</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">reset_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_transformation</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_transformation</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
-
-<div class="viewcode-block" id="Joint.reset_transform"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Joint.reset_transform.html#compas.robots.Joint.reset_transform">[docs]</a>    <span class="k">def</span> <span class="nf">reset_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_origin</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_origin</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_axis</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_axis</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
-
 <div class="viewcode-block" id="Joint.transform"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Joint.transform.html#compas.robots.Joint.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
@@ -301,10 +287,8 @@
 <div class="viewcode-block" id="Joint.create"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Joint.create.html#compas.robots.Joint.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">init_origin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_transformation</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">init_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_transformation</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Joint.calculate_revolute_transformation"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Joint.calculate_revolute_transformation.html#compas.robots.Joint.calculate_revolute_transformation">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_revolute_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a transformation of a revolute joint.</span>
@@ -377,17 +361,15 @@
 <div class="viewcode-block" id="Joint.is_configurable"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Joint.is_configurable.html#compas.robots.Joint.is_configurable">[docs]</a>    <span class="k">def</span> <span class="nf">is_configurable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns ``True`` if the joint can be configured, otherwise ``False``.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">Joint</span><span class="o">.</span><span class="n">FIXED</span></div>
-    
+
 <div class="viewcode-block" id="Joint.is_scalable"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Joint.is_scalable.html#compas.robots.Joint.is_scalable">[docs]</a>    <span class="k">def</span> <span class="nf">is_scalable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns ``True`` if the joint can be scaled, otherwise ``False``.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Joint</span><span class="o">.</span><span class="n">PLANAR</span><span class="p">,</span> <span class="n">Joint</span><span class="o">.</span><span class="n">PRISMATIC</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Joint.scale"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Joint.scale.html#compas.robots.Joint.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_origin</span><span class="o">.</span><span class="n">point</span> <span class="o">*=</span> <span class="n">factor</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_scalable</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span></div></div>
-
 
 
 <span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Joint</span><span class="p">,</span> <span class="s1">&#39;robot/joint&#39;</span><span class="p">)</span>
