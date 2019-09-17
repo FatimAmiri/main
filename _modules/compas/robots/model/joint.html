@@ -249,8 +249,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">Joint</span><span class="o">.</span><span class="n">SUPPORTED_TYPES</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">ParentLink</span><span class="p">)</span> <span class="k">else</span> <span class="n">ParentLink</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">child</span> <span class="o">=</span> <span class="n">child</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">ChildLink</span><span class="p">)</span> <span class="k">else</span> <span class="n">ChildLink</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span> <span class="ow">or</span> <span class="n">Origin</span><span class="o">.</span><span class="n">from_euler_angles</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span> <span class="ow">or</span> <span class="n">Axis</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calibration</span> <span class="o">=</span> <span class="n">calibration</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dynamics</span> <span class="o">=</span> <span class="n">dynamics</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">limit</span>
@@ -299,6 +299,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">            position (float): the angle in radians</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Revolute joints are required to define a limit&#39;</span><span class="p">)</span>
+
         <span class="n">position</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">upper</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">lower</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_continous_transformation</span><span class="p">(</span><span class="n">position</span><span class="p">)</span></div>
 
@@ -322,6 +325,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">            position (float): the movement in meters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Prismatic joints are required to define a limit&#39;</span><span class="p">)</span>
+
         <span class="n">position</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">upper</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">lower</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Translation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">vector</span> <span class="o">*</span> <span class="n">position</span><span class="p">)</span></div>
 
