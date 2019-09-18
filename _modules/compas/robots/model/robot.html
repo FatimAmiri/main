@@ -335,12 +335,8 @@
         <span class="k">return</span> <span class="n">clink</span></div>
 
 <div class="viewcode-block" id="RobotModel.get_end_effector_link_name"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.get_end_effector_link_name.html#compas.robots.RobotModel.get_end_effector_link_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_end_effector_link_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
-        <span class="n">clink</span> <span class="o">=</span> <span class="n">joints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">child_link</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">clink</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">Joint</span><span class="o">.</span><span class="n">FIXED</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">j</span><span class="o">.</span><span class="n">child</span><span class="o">.</span><span class="n">link</span>
-        <span class="k">return</span> <span class="n">clink</span><span class="o">.</span><span class="n">name</span></div>
+        <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_end_effector_link</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span></div>
 
 <div class="viewcode-block" id="RobotModel.get_base_link_name"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.get_base_link_name.html#compas.robots.RobotModel.get_base_link_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_base_link_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
@@ -418,10 +414,6 @@
 <span class="sd">            Link instance to create.</span>
 <span class="sd">        parent_transformation : :class:`Transformation`</span>
 <span class="sd">            Parent transformation to apply to the link when creating the structure.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">link</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># some urdfs would fail here otherwise</span>
             <span class="k">return</span>
