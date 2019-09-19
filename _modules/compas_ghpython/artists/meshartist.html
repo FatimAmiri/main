@@ -58,16 +58,17 @@
                     
 
                     <h1>Source code for compas_ghpython.artists.meshartist</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">compas_ghpython</span>
-
-<span class="kn">from</span> <span class="nn">compas_ghpython.artists.mixins</span> <span class="k">import</span> <span class="n">VertexArtist</span>
 <span class="kn">from</span> <span class="nn">compas_ghpython.artists.mixins</span> <span class="k">import</span> <span class="n">EdgeArtist</span>
 <span class="kn">from</span> <span class="nn">compas_ghpython.artists.mixins</span> <span class="k">import</span> <span class="n">FaceArtist</span>
+<span class="kn">from</span> <span class="nn">compas_ghpython.artists.mixins</span> <span class="k">import</span> <span class="n">VertexArtist</span>
 
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">centroid_polygon</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;MeshArtist&#39;</span><span class="p">]</span>
 
@@ -120,6 +121,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span> <span class="o">=</span> <span class="n">mesh</span>
 
 <div class="viewcode-block" id="MeshArtist.draw"><a class="viewcode-back" href="../../../api/generated/compas_ghpython.artists.MeshArtist.draw.html#compas_ghpython.artists.MeshArtist.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Deprecated. Use ``draw_mesh()``&quot;&quot;&quot;</span>
+        <span class="c1"># NOTE: This warning should be triggered with warnings.warn(), not be a print statement, but GH completely ignores that</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MeshArtist.draw() is deprecated: please use draw_mesh() instead&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw_mesh</span><span class="p">(</span><span class="n">color</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MeshArtist.draw_mesh"><a class="viewcode-back" href="../../../api/generated/compas_ghpython.artists.MeshArtist.draw_mesh.html#compas_ghpython.artists.MeshArtist.draw_mesh">[docs]</a>    <span class="k">def</span> <span class="nf">draw_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">key_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
         <span class="n">vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
         <span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)]</span> <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()]</span>
@@ -130,6 +137,14 @@
                 <span class="n">new_faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span> <span class="o">+</span> <span class="p">[</span><span class="n">face</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
             <span class="k">elif</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
                 <span class="n">new_faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">centroid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">centroid_polygon</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">vertices</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">face</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">face</span> <span class="o">+</span> <span class="n">face</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">new_faces</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">centroid</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">b</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
         <span class="k">return</span> <span class="n">compas_ghpython</span><span class="o">.</span><span class="n">draw_mesh</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">new_faces</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span></div></div>
 
 

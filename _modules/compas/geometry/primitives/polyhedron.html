@@ -100,7 +100,7 @@
             <span class="k">return</span> <span class="n">Dodecahedron</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">fcount</span> <span class="o">==</span> <span class="mi">20</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Icosahedron</span><span class="p">()</span>
-        <span class="k">raise</span> <span class="ne">Exception</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unsupported solid type. Supported face count values: 4, 6, 8, 12, 20&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Polyhedron.from_platonicsolid"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polyhedron.from_platonicsolid.html#compas.geometry.Polyhedron.from_platonicsolid">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_platonicsolid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">fcount</span><span class="p">):</span>
@@ -336,24 +336,36 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Icosahedron</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 
-    <span class="c1"># (    0,   +-1, +-phi)</span>
-    <span class="c1"># (  +-1, +-phi,     0)</span>
-    <span class="c1"># (+-phi,     0,   +-1)</span>
     <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="n">phi</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">faces</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">l</span> <span class="o">=</span> <span class="mf">2.</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">l</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">phi</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">r</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">*=</span> <span class="n">c</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.</span><span class="p">:</span>
-                <span class="n">j</span> <span class="o">*=</span> <span class="n">c</span>
-                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span>     <span class="mf">0.</span><span class="p">,</span>       <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">])</span>
-                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span>      <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">,</span>      <span class="mf">0.</span><span class="p">])</span>
-                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">,</span>      <span class="mf">0.</span><span class="p">,</span>       <span class="n">i</span><span class="p">])</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+
+            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">),</span>
+
+            <span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="p">(</span><span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+            <span class="p">(</span><span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">faces</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="c1"># 5 faces around point 0</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
+            <span class="c1"># Adjacent faces</span>
+            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+            <span class="c1"># 5 faces around 3</span>
+            <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
+            <span class="c1"># Adjacent faces</span>
+            <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">]</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="n">faces</span>
 
