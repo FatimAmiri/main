@@ -57,7 +57,7 @@
 
                     
 
-                    <h1>Source code for compas.geometry.xforms.shear</h1><div class="highlight"><pre><code>
+                    <h1>Source code for compas.geometry.transformations.scale</h1><div class="highlight"><pre><code>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This library for transformations partly derived and was re-implemented from the</span>
 <span class="sd">following online resources:</span>
@@ -70,62 +70,27 @@
 <span class="sd">Many thanks to Christoph Gohlke, Martin John Baker, Sachin Joglekar and Andrew</span>
 <span class="sd">Ippoliti for providing code and documentation.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_shear_entries</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_shear</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_scale_factors</span>
 
-<span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Transformation</span>
-
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Shear&#39;</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Transformation</span>
 
 
-<div class="viewcode-block" id="Shear"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Shear.html#compas.geometry.Shear">[docs]</a><span class="k">class</span> <span class="nc">Shear</span><span class="p">(</span><span class="n">Transformation</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Constructs a ``Shear`` transformation by an angle along the</span>
-<span class="sd">    direction vector on the shear plane (defined by point and normal).</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Scale&#39;</span><span class="p">]</span>
 
-<span class="sd">    A point P is transformed by the shear matrix into P&quot; such that</span>
-<span class="sd">    the vector P-P&quot; is parallel to the direction vector and its extent is</span>
-<span class="sd">    given by the angle of P-P&#39;-P&quot;, where P&#39; is the orthogonal projection</span>
-<span class="sd">    of P onto the shear plane (defined by point and normal).</span>
+
+<div class="viewcode-block" id="Scale"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Scale.html#compas.geometry.Scale">[docs]</a><span class="k">class</span> <span class="nc">Scale</span><span class="p">(</span><span class="n">Transformation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a scaling transformation.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        angle (:obj:`float`): The angle in radians.</span>
-<span class="sd">        direction (:obj:`list` of :obj:`float`): The direction vector as</span>
-<span class="sd">            list of 3 numbers. It must be orthogonal to the normal vector.</span>
-<span class="sd">        point (:obj:`list` of :obj:`float`): The point of the shear plane</span>
-<span class="sd">            as list of 3 numbers.</span>
-<span class="sd">        normal (:obj:`list` of :obj:`float`): The normal of the shear plane</span>
-<span class="sd">            as list of 3 numbers.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If direction and normal are not orthogonal.</span>
+<span class="sd">        scale_factors (:obj:`list` of :obj:`float`): a list of 3 numbers</span>
+<span class="sd">            defining the scaling factors in x, y, and z respectively.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; angle = 0.1</span>
-<span class="sd">        &gt;&gt;&gt; direction = [0.1, 0.2, 0.3]</span>
-<span class="sd">        &gt;&gt;&gt; point = [4, 3, 1]</span>
-<span class="sd">        &gt;&gt;&gt; normal = cross_vectors(direction, [1, 0.3, -0.1])</span>
-<span class="sd">        &gt;&gt;&gt; S = Shear(angle, direction, point, normal)</span>
+<span class="sd">        &gt;&gt;&gt; S = Scale([1, 2, 3])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Shear.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Shear.__init__.html#compas.geometry.Shear.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                 <span class="n">point</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">normal</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]):</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix_from_shear</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Shear.from_entries"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Shear.from_entries.html#compas.geometry.Shear.from_entries">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_entries</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">shear_entries</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates a ``Shear`` from the 3 factors for x-y, x-z, and y-z axes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            shear_factors (:obj:`list` of :obj:`float`): The 3 shear factors</span>
-<span class="sd">                for x-y, x-z, and y-z axes.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; S = Shear.from_entries([1, 2, 3])</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="n">matrix_from_shear_entries</span><span class="p">(</span><span class="n">shear_entries</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_matrix</span><span class="p">(</span><span class="n">M</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="Scale.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Scale.__init__.html#compas.geometry.Scale.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale_factors</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix_from_scale_factors</span><span class="p">(</span><span class="n">scale_factors</span><span class="p">)</span></div></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -134,14 +99,7 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Frame</span>
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Shear</span>
-
-    <span class="n">shear1</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.41</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.14</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.35</span><span class="p">]</span>
-    <span class="n">Sh1</span> <span class="o">=</span> <span class="n">Shear</span><span class="o">.</span><span class="n">from_entries</span><span class="p">(</span><span class="n">shear1</span><span class="p">)</span>
-    <span class="n">S2</span><span class="p">,</span> <span class="n">Sh</span><span class="p">,</span> <span class="n">R2</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="n">P</span> <span class="o">=</span> <span class="n">Sh1</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">Sh</span><span class="p">)</span>
+    <span class="k">pass</span>
 </code></pre></div>
                     
                 
@@ -211,7 +169,7 @@
         
 
         
-            Last updated on Sep 22, 2019.
+            Last updated on Sep 25, 2019.
         
 
         

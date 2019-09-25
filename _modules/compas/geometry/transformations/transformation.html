@@ -57,7 +57,7 @@
 
                     
 
-                    <h1>Source code for compas.geometry.xforms.transformation</h1><div class="highlight"><pre><code>
+                    <h1>Source code for compas.geometry.transformations.transformation</h1><div class="highlight"><pre><code>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This library for transformations partly derived and was re-implemented from the</span>
 <span class="sd">following online resources:</span>
@@ -74,8 +74,8 @@
 
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">multiply_matrices</span>
 
-<span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="k">import</span> <span class="n">Point</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="k">import</span> <span class="n">Vector</span>
+<span class="c1"># from compas.geometry.primitives import Point</span>
+<span class="c1"># from compas.geometry.primitives import Vector</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">inverse</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">identity_matrix</span>
@@ -284,11 +284,11 @@
 <span class="sd">            &gt;&gt;&gt; T1 == T</span>
 <span class="sd">            True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Scale</span>
-        <span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Shear</span>
-        <span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Rotation</span>
-        <span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Translation</span>
-        <span class="kn">from</span> <span class="nn">compas.geometry.xforms</span> <span class="k">import</span> <span class="n">Projection</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Scale</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Shear</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Rotation</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Translation</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Projection</span>
 
         <span class="n">sc</span><span class="p">,</span> <span class="n">sh</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
 
@@ -318,6 +318,9 @@
         <span class="sd">&quot;&quot;&quot;Returns the basis vectors from the ``Rotation`` component of the</span>
 <span class="sd">            ``Transformation``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># this has to be here to avoid circular import</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="k">import</span> <span class="n">Vector</span>
+
         <span class="n">sc</span><span class="p">,</span> <span class="n">sh</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">matrix_from_euler_angles</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
         <span class="n">xv</span><span class="p">,</span> <span class="n">yv</span> <span class="o">=</span> <span class="n">basis_vectors_from_matrix</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
@@ -455,7 +458,7 @@
         
 
         
-            Last updated on Sep 22, 2019.
+            Last updated on Sep 25, 2019.
         
 
         
