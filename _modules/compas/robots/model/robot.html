@@ -106,7 +106,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_tree</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">Transformation</span><span class="p">())</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">Transformation</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scale_factor</span> <span class="o">=</span> <span class="mf">1.</span></div>
 
     <span class="k">def</span> <span class="nf">_rebuild_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Store tree structure from link and joint lists.&quot;&quot;&quot;</span>
@@ -426,6 +427,31 @@
             <span class="c1"># Recursively call creation</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="n">child_joint</span><span class="o">.</span><span class="n">child_link</span><span class="p">,</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">current_transformation</span><span class="p">)</span>
 
+<div class="viewcode-block" id="RobotModel.scale"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.scale.html#compas.robots.RobotModel.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">link</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Scales the robot by factor (absolute).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        factor : float</span>
+<span class="sd">            The factor to scale the robot with.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">link</span> <span class="ow">or</span> <span class="n">link</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
+            <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
+            <span class="n">relative_factor</span> <span class="o">=</span> <span class="n">factor</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_factor</span>  <span class="c1"># relative scaling factor</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">relative_factor</span> <span class="o">=</span> <span class="n">factor</span>
+
+        <span class="k">for</span> <span class="n">child_joint</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+            <span class="n">child_joint</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">relative_factor</span><span class="p">)</span>
+            <span class="c1"># Recursive call</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">relative_factor</span><span class="p">,</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">child_link</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scale_factor</span> <span class="o">=</span> <span class="n">factor</span></div>
+
 <div class="viewcode-block" id="RobotModel.compute_transformations"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.compute_transformations.html#compas.robots.RobotModel.compute_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">compute_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_state</span><span class="p">,</span> <span class="n">link</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent_transformation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursive function to calculate the transformations of each joint.</span>
 
@@ -609,7 +635,7 @@
         
 
         
-            Last updated on Sep 25, 2019.
+            Last updated on Sep 27, 2019.
         
 
         
