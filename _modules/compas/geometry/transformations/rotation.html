@@ -99,19 +99,20 @@
 <span class="sd">    The class contains methods for converting rotation matrices to axis-angle</span>
 <span class="sd">    representations, Euler angles, quaternion and basis vectors.</span>
 
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; from compas.geometry import Frame</span>
-<span class="sd">        &gt;&gt;&gt; f1 = Frame([0, 0, 0], [0.68, 0.68, 0.27], [-0.67, 0.73, -0.15])</span>
-<span class="sd">        &gt;&gt;&gt; R = Rotation.from_frame(f1)</span>
-<span class="sd">        &gt;&gt;&gt; args = False, &#39;xyz&#39;</span>
-<span class="sd">        &gt;&gt;&gt; alpha, beta, gamma = R.euler_angles(*args)</span>
-<span class="sd">        &gt;&gt;&gt; xaxis, yaxis, zaxis = [1, 0, 0], [0, 1, 0], [0, 0, 1]</span>
-<span class="sd">        &gt;&gt;&gt; Rx = Rotation.from_axis_and_angle(xaxis, alpha)</span>
-<span class="sd">        &gt;&gt;&gt; Ry = Rotation.from_axis_and_angle(yaxis, beta)</span>
-<span class="sd">        &gt;&gt;&gt; Rz = Rotation.from_axis_and_angle(zaxis, gamma)</span>
-<span class="sd">        &gt;&gt;&gt; f2 = Frame.worldXY()</span>
-<span class="sd">        &gt;&gt;&gt; f1 == f2.transformed(Rx * Ry * Rz)</span>
-<span class="sd">        True</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import Frame</span>
+<span class="sd">    &gt;&gt;&gt; f1 = Frame([0, 0, 0], [0.68, 0.68, 0.27], [-0.67, 0.73, -0.15])</span>
+<span class="sd">    &gt;&gt;&gt; R = Rotation.from_frame(f1)</span>
+<span class="sd">    &gt;&gt;&gt; args = False, &#39;xyz&#39;</span>
+<span class="sd">    &gt;&gt;&gt; alpha, beta, gamma = R.euler_angles(*args)</span>
+<span class="sd">    &gt;&gt;&gt; xaxis, yaxis, zaxis = [1, 0, 0], [0, 1, 0], [0, 0, 1]</span>
+<span class="sd">    &gt;&gt;&gt; Rx = Rotation.from_axis_and_angle(xaxis, alpha)</span>
+<span class="sd">    &gt;&gt;&gt; Ry = Rotation.from_axis_and_angle(yaxis, beta)</span>
+<span class="sd">    &gt;&gt;&gt; Rz = Rotation.from_axis_and_angle(zaxis, gamma)</span>
+<span class="sd">    &gt;&gt;&gt; f2 = Frame.worldXY()</span>
+<span class="sd">    &gt;&gt;&gt; f1 == f2.transformed(Rx * Ry * Rz)</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -119,14 +120,18 @@
     <span class="k">def</span> <span class="nf">from_basis_vectors</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates a ``Rotation`` from basis vectors (= orthonormal vectors).</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            xaxis (:obj:`list` oof :obj:`float`): The x-axis of the frame.</span>
-<span class="sd">            yaxis (:obj:`list` oof :obj:`float`): The y-axis of the frame.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        xaxis : :obj:`list` of :obj:`float`</span>
+<span class="sd">            The x-axis of the frame.</span>
+<span class="sd">        yaxis : :obj:`list` of :obj:`float`</span>
+<span class="sd">            The y-axis of the frame.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; xaxis = [0.68, 0.68, 0.27]</span>
-<span class="sd">            &gt;&gt;&gt; yaxis = [-0.67, 0.73, -0.15]</span>
-<span class="sd">            &gt;&gt;&gt; R = Rotation.from_basis_vectors(xaxis, yaxis)</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; xaxis = [0.68, 0.68, 0.27]</span>
+<span class="sd">        &gt;&gt;&gt; yaxis = [-0.67, 0.73, -0.15]</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_basis_vectors(xaxis, yaxis)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">xaxis</span> <span class="o">=</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">xaxis</span><span class="p">))</span>
@@ -146,17 +151,19 @@
 
 <span class="sd">        It is the same as from_frame_to_frame(Frame.worldXY(), frame).</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            frame (:class:`Frame`): a frame describing the targeted Cartesian</span>
-<span class="sd">                coordinate system</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frame : :class:`Frame`</span>
+<span class="sd">            A frame describing the targeted Cartesian coordinate system.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; from compas.geometry import Frame</span>
-<span class="sd">            &gt;&gt;&gt; f1 = Frame([1, 1, 1], [0.68, 0.68, 0.27], [-0.67, 0.73, -0.15])</span>
-<span class="sd">            &gt;&gt;&gt; T = Transformation.from_frame(f1)</span>
-<span class="sd">            &gt;&gt;&gt; f2 = Frame.from_transformation(T)</span>
-<span class="sd">            &gt;&gt;&gt; f1 == f2</span>
-<span class="sd">            True</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from compas.geometry import Frame</span>
+<span class="sd">        &gt;&gt;&gt; f1 = Frame([1, 1, 1], [0.68, 0.68, 0.27], [-0.67, 0.73, -0.15])</span>
+<span class="sd">        &gt;&gt;&gt; T = Transformation.from_frame(f1)</span>
+<span class="sd">        &gt;&gt;&gt; f2 = Frame.from_transformation(T)</span>
+<span class="sd">        &gt;&gt;&gt; f1 == f2</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">R</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">R</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix_from_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
@@ -167,16 +174,18 @@
     <span class="k">def</span> <span class="nf">from_quaternion</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">quaternion</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculates a ``Rotation`` from quaternion coefficients.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            quaternion (:obj:`list` of :obj:`float`): Four numbers that</span>
-<span class="sd">                represents the four coefficient values of a quaternion.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        quaternion : :obj:`list` of :obj:`float`</span>
+<span class="sd">            Four numbers that represents the four coefficient values of a quaternion.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; q1 = [0.945, -0.021, -0.125, 0.303]</span>
-<span class="sd">            &gt;&gt;&gt; R = Rotation.from_quaternion(q1)</span>
-<span class="sd">            &gt;&gt;&gt; q2 = R.quaternion</span>
-<span class="sd">            &gt;&gt;&gt; allclose(q1, q2, tol=1e-3)</span>
-<span class="sd">            True</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; q1 = [0.945, -0.021, -0.125, 0.303]</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_quaternion(q1)</span>
+<span class="sd">        &gt;&gt;&gt; q2 = R.quaternion</span>
+<span class="sd">        &gt;&gt;&gt; allclose(q1, q2, tol=1e-3)</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">matrix_from_quaternion</span><span class="p">(</span><span class="n">quaternion</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">R</span><span class="p">)</span></div>
@@ -185,19 +194,21 @@
     <span class="k">def</span> <span class="nf">from_axis_angle_vector</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">axis_angle_vector</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Calculates a ``Rotation`` from an axis-angle vector.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            axis_angle_vector (:obj:`list` of :obj:`float`): Three numbers</span>
-<span class="sd">                that represent the axis of rotation and angle of rotation</span>
-<span class="sd">                through the vector&#39;s magnitude.</span>
-<span class="sd">            point (:obj:`list` of :obj:`float`, optional): A point to</span>
-<span class="sd">                perform a rotation around an origin other than [0, 0, 0].</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axis_angle_vector : :obj:`list` of :obj:`float`</span>
+<span class="sd">            Three numbers that represent the axis of rotation and angle of rotation</span>
+<span class="sd">            through the vector&#39;s magnitude.</span>
+<span class="sd">        point : :obj:`list` of :obj:`float`, optional</span>
+<span class="sd">            A point to perform a rotation around an origin other than [0, 0, 0].</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; aav1 = [-0.043, -0.254, 0.617]</span>
-<span class="sd">            &gt;&gt;&gt; R = Rotation.from_axis_angle_vector(aav1)</span>
-<span class="sd">            &gt;&gt;&gt; aav2 = R.axis_angle_vector</span>
-<span class="sd">            &gt;&gt;&gt; allclose(aav1, aav2)</span>
-<span class="sd">            True</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; aav1 = [-0.043, -0.254, 0.617]</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_angle_vector(aav1)</span>
+<span class="sd">        &gt;&gt;&gt; aav2 = R.axis_angle_vector</span>
+<span class="sd">        &gt;&gt;&gt; allclose(aav1, aav2)</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">axis_angle_vector</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">axis_angle_vector</span><span class="p">)</span>
@@ -209,26 +220,30 @@
         <span class="sd">&quot;&quot;&quot;Calculates a ``Rotation`` from a rotation axis and an angle and \</span>
 <span class="sd">            an optional point of rotation.</span>
 
-<span class="sd">        Note:</span>
-<span class="sd">            The rotation is based on the right hand rule, i.e. anti-clockwise</span>
-<span class="sd">            if the axis of rotation points towards the observer.</span>
-
-<span class="sd">        Args:</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
 <span class="sd">            axis (:obj:`list` of :obj:`float`): Three numbers that represent</span>
 <span class="sd">                the axis of rotation</span>
 <span class="sd">            angle (:obj:`float`): The rotation angle in radians.</span>
 <span class="sd">            point (:obj:`list` of :obj:`float`, optional): A point to</span>
 <span class="sd">                perform a rotation around an origin other than [0, 0, 0].</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; axis1 = normalize_vector([-0.043, -0.254, 0.617])</span>
-<span class="sd">            &gt;&gt;&gt; angle1 = 0.1</span>
-<span class="sd">            &gt;&gt;&gt; R = Rotation.from_axis_and_angle(axis1, angle1)</span>
-<span class="sd">            &gt;&gt;&gt; axis2, angle2 = R.axis_and_angle</span>
-<span class="sd">            &gt;&gt;&gt; allclose(axis1, axis2)</span>
-<span class="sd">            True</span>
-<span class="sd">            &gt;&gt;&gt; allclose([angle1], [angle2])</span>
-<span class="sd">            True</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; axis1 = normalize_vector([-0.043, -0.254, 0.617])</span>
+<span class="sd">        &gt;&gt;&gt; angle1 = 0.1</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_and_angle(axis1, angle1)</span>
+<span class="sd">        &gt;&gt;&gt; axis2, angle2 = R.axis_and_angle</span>
+<span class="sd">        &gt;&gt;&gt; allclose(axis1, axis2)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; allclose([angle1], [angle2])</span>
+<span class="sd">        True</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The rotation is based on the right hand rule, i.e. anti-clockwise</span>
+<span class="sd">        if the axis of rotation points towards the observer.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">matrix_from_axis_and_angle</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">M</span><span class="p">)</span></div>
@@ -243,31 +258,33 @@
 <span class="sd">        depends on if the rotations are applied to a static (extrinsic) or</span>
 <span class="sd">        rotating (intrinsic) frame and the order of axes.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            euler_angles(:obj:`list` of :obj:`float`): Three numbers that</span>
-<span class="sd">                represent the angles of rotations about the defined axes.</span>
-<span class="sd">            static(:obj:`bool`, optional): If true the rotations are applied to</span>
-<span class="sd">                a static frame. If not, to a rotational. Defaults to true.</span>
-<span class="sd">            axes(:obj:`str`, optional): A 3 character string specifying order</span>
-<span class="sd">                of the axes. Defaults to &#39;xyz&#39;.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        euler_angles : :obj:`list` of :obj:`float`</span>
+<span class="sd">            Three numbers that represent the angles of rotations about the defined axes.</span>
+<span class="sd">        static : :obj:`bool`, optional</span>
+<span class="sd">            If true the rotations are applied to a static frame.</span>
+<span class="sd">            If not, to a rotational. Defaults to true.</span>
+<span class="sd">        axes : :obj:`str`, optional</span>
+<span class="sd">            A 3 character string specifying order of the axes. Defaults to &#39;xyz&#39;.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; ea1 = 1.4, 0.5, 2.3</span>
-<span class="sd">            &gt;&gt;&gt; args = False, &#39;xyz&#39;</span>
-<span class="sd">            &gt;&gt;&gt; R1 = Rotation.from_euler_angles(ea1, *args)</span>
-<span class="sd">            &gt;&gt;&gt; ea2 = R1.euler_angles(*args)</span>
-<span class="sd">            &gt;&gt;&gt; allclose(ea1, ea2)</span>
-<span class="sd">            True</span>
-<span class="sd">            &gt;&gt;&gt; alpha, beta, gamma = ea1</span>
-<span class="sd">            &gt;&gt;&gt; xaxis, yaxis, zaxis = [1, 0, 0], [0, 1, 0], [0, 0, 1]</span>
-<span class="sd">            &gt;&gt;&gt; Rx = Rotation.from_axis_and_angle(xaxis, alpha)</span>
-<span class="sd">            &gt;&gt;&gt; Ry = Rotation.from_axis_and_angle(yaxis, beta)</span>
-<span class="sd">            &gt;&gt;&gt; Rz = Rotation.from_axis_and_angle(zaxis, gamma)</span>
-<span class="sd">            &gt;&gt;&gt; R2 = Rx * Ry * Rz</span>
-<span class="sd">            &gt;&gt;&gt; R1 == R2</span>
-<span class="sd">            True</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; ea1 = 1.4, 0.5, 2.3</span>
+<span class="sd">        &gt;&gt;&gt; args = False, &#39;xyz&#39;</span>
+<span class="sd">        &gt;&gt;&gt; R1 = Rotation.from_euler_angles(ea1, *args)</span>
+<span class="sd">        &gt;&gt;&gt; ea2 = R1.euler_angles(*args)</span>
+<span class="sd">        &gt;&gt;&gt; allclose(ea1, ea2)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; alpha, beta, gamma = ea1</span>
+<span class="sd">        &gt;&gt;&gt; xaxis, yaxis, zaxis = [1, 0, 0], [0, 1, 0], [0, 0, 1]</span>
+<span class="sd">        &gt;&gt;&gt; Rx = Rotation.from_axis_and_angle(xaxis, alpha)</span>
+<span class="sd">        &gt;&gt;&gt; Ry = Rotation.from_axis_and_angle(yaxis, beta)</span>
+<span class="sd">        &gt;&gt;&gt; Rz = Rotation.from_axis_and_angle(zaxis, gamma)</span>
+<span class="sd">        &gt;&gt;&gt; R2 = Rx * Ry * Rz</span>
+<span class="sd">        &gt;&gt;&gt; R1 == R2</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">M</span> <span class="o">=</span> <span class="n">matrix_from_euler_angles</span><span class="p">(</span><span class="n">euler_angles</span><span class="p">,</span> <span class="n">static</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Rotation</span><span class="p">(</span><span class="n">M</span><span class="p">)</span></div>
 
@@ -275,12 +292,13 @@
     <span class="k">def</span> <span class="nf">quaternion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the 4 quaternion coefficients from the ``Rotation``.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; q1 = [0.945, -0.021, -0.125, 0.303]</span>
-<span class="sd">            &gt;&gt;&gt; R = Rotation.from_quaternion(q1)</span>
-<span class="sd">            &gt;&gt;&gt; q2 = R.quaternion</span>
-<span class="sd">            &gt;&gt;&gt; allclose(q1, q2, tol=1e-3)</span>
-<span class="sd">            True</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; q1 = [0.945, -0.021, -0.125, 0.303]</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_quaternion(q1)</span>
+<span class="sd">        &gt;&gt;&gt; q2 = R.quaternion</span>
+<span class="sd">        &gt;&gt;&gt; allclose(q1, q2, tol=1e-3)</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">quaternion_from_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
 
@@ -288,15 +306,16 @@
     <span class="k">def</span> <span class="nf">axis_and_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the axis and the angle of the ``Rotation``.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; axis1 = normalize_vector([-0.043, -0.254, 0.617])</span>
-<span class="sd">            &gt;&gt;&gt; angle1 = 0.1</span>
-<span class="sd">            &gt;&gt;&gt; R = Rotation.from_axis_and_angle(axis1, angle1)</span>
-<span class="sd">            &gt;&gt;&gt; axis2, angle2 = R.axis_and_angle</span>
-<span class="sd">            &gt;&gt;&gt; allclose(axis1, axis2)</span>
-<span class="sd">            True</span>
-<span class="sd">            &gt;&gt;&gt; allclose([angle1], [angle2])</span>
-<span class="sd">            True</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; axis1 = normalize_vector([-0.043, -0.254, 0.617])</span>
+<span class="sd">        &gt;&gt;&gt; angle1 = 0.1</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_and_angle(axis1, angle1)</span>
+<span class="sd">        &gt;&gt;&gt; axis2, angle2 = R.axis_and_angle</span>
+<span class="sd">        &gt;&gt;&gt; allclose(axis1, axis2)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; allclose([angle1], [angle2])</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">axis_and_angle_from_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
 
@@ -304,17 +323,19 @@
     <span class="k">def</span> <span class="nf">axis_angle_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the axis-angle vector of the ``Rotation``.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            (:obj:`list` of :obj:`float`): Three numbers that represent the</span>
-<span class="sd">                axis of rotation and angle of rotation through the vector&#39;s</span>
-<span class="sd">                magnitude.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`list` of :obj:`float`</span>
+<span class="sd">            Three numbers that represent the axis of rotation and angle of rotation</span>
+<span class="sd">            through the vector&#39;s magnitude.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; aav1 = [-0.043, -0.254, 0.617]</span>
-<span class="sd">            &gt;&gt;&gt; R = Rotation.from_axis_angle_vector(aav1)</span>
-<span class="sd">            &gt;&gt;&gt; aav2 = R.axis_angle_vector</span>
-<span class="sd">            &gt;&gt;&gt; allclose(aav1, aav2)</span>
-<span class="sd">            True</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; aav1 = [-0.043, -0.254, 0.617]</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_angle_vector(aav1)</span>
+<span class="sd">        &gt;&gt;&gt; aav2 = R.axis_angle_vector</span>
+<span class="sd">        &gt;&gt;&gt; allclose(aav1, aav2)</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">axis</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_and_angle</span>
         <span class="k">return</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
@@ -323,24 +344,28 @@
         <span class="sd">&quot;&quot;&quot;Returns Euler angles from the ``Rotation`` according to specified</span>
 <span class="sd">        axis sequence and rotation type.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            static(:obj:`bool`, optional): If true the rotations are applied to</span>
-<span class="sd">                a static frame. If not, to a rotational. Defaults to True.</span>
-<span class="sd">            axes(:obj:`str`, optional): A 3 character string specifying the</span>
-<span class="sd">                order of the axes. Defaults to &#39;xyz&#39;.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        static : :obj:`bool`, optional</span>
+<span class="sd">            If true the rotations are applied to a static frame.</span>
+<span class="sd">            If not, to a rotational. Defaults to True.</span>
+<span class="sd">        axes : :obj:`str`, optional</span>
+<span class="sd">            A 3 character string specifying the order of the axes. Defaults to &#39;xyz&#39;.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            (:obj:`list` of :obj:`float`): The 3 Euler angles.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`list` of :obj:`float`</span>
+<span class="sd">            The 3 Euler angles.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; ea1 = 1.4, 0.5, 2.3</span>
-<span class="sd">            &gt;&gt;&gt; args = False, &#39;xyz&#39;</span>
-<span class="sd">            &gt;&gt;&gt; R1 = Rotation.from_euler_angles(ea1, *args)</span>
-<span class="sd">            &gt;&gt;&gt; ea2 = R1.euler_angles(*args)</span>
-<span class="sd">            &gt;&gt;&gt; allclose(ea1, ea2)</span>
-<span class="sd">            True</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; ea1 = 1.4, 0.5, 2.3</span>
+<span class="sd">        &gt;&gt;&gt; args = False, &#39;xyz&#39;</span>
+<span class="sd">        &gt;&gt;&gt; R1 = Rotation.from_euler_angles(ea1, *args)</span>
+<span class="sd">        &gt;&gt;&gt; ea2 = R1.euler_angles(*args)</span>
+<span class="sd">        &gt;&gt;&gt; allclose(ea1, ea2)</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">return</span> <span class="n">euler_angles_from_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">static</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
