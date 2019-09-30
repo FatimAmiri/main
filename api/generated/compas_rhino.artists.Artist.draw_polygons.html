@@ -72,7 +72,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>polylines</strong> (<em>list of dict</em>) – The polygons to draw.</p></li>
 <li><p><strong>layer</strong> (<em>str, optional</em>) – The layer to draw the points in.
-Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case the current layer is used.</p></li>
 <li><p><strong>clear_layer</strong> (<em>bool, optional</em>) – Clear the specified layer.
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>redraw</strong> (<em>bool, optional</em>) – Redraw the Rhino view.
@@ -83,6 +83,22 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 <dd class="field-even"><p><em>list of guid</em> – The GUIDs of the polygon objects.</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>The attributes required for drawing a polygon are stored in a dictionary per polygon.
+The dictionary has the following structure:</p>
+<div class="language-none notranslate"><div class="highlight"><pre><code><span></span>{
+    &#39;points&#39; : list of point,
+    &#39;name&#39;   : str,                      # optional
+    &#39;color&#39;  : rgb or hex,               # optional
+    &#39;layer&#39;  : str,                      # optional, defaults to the value of the parameter ``layer``.
+    &#39;width&#39;  : float,                    # optional, modifies the plot weight if not None.
+    &#39;arrow&#39;  : {&#39;start&#39;, &#39;end&#39;, &#39;both&#39;}  # optional
+}
+</code></pre></div>
+</div>
+<p>Note that the draing of polygons currently falls back on the drawing of polylines.
+The polygon should therefore be closed expicitly, but this is done for you,
+on te fly…</p>
 </dd></dl>
 
 </div>
