@@ -80,6 +80,8 @@
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">smooth_area</span>
 
 <span class="kn">from</span> <span class="nn">compas_rhino.conduits</span> <span class="kn">import</span> <span class="n">LinesConduit</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.helpers</span> <span class="kn">import</span> <span class="n">mesh_from_guid</span>
+<span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="kn">import</span> <span class="n">MeshArtist</span>
 
 <span class="c1"># define a callback for updating the conduit</span>
 
@@ -94,7 +96,7 @@
 <span class="c1"># and make it into a mesh datastructure</span>
 
 <span class="n">guid</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">select_mesh</span><span class="p">()</span>
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">mesh_from_guid</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="n">guid</span><span class="p">)</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh_from_guid</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="n">guid</span><span class="p">)</span>
 
 <span class="c1"># extract the data needed by the smoothing algorithm</span>
 <span class="c1"># identify the boundary as fixed</span>
@@ -137,7 +139,9 @@
     <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
 
-<span class="n">compas_rhino</span><span class="o">.</span><span class="n">mesh_draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">artist</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">(</span><span class="n">join_faces</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
@@ -231,7 +235,7 @@
         
 
         
-            Last updated on Sep 30, 2019.
+            Last updated on Oct 01, 2019.
         
 
         
