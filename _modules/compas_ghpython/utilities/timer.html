@@ -66,6 +66,7 @@
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">Grasshopper</span> <span class="k">as</span> <span class="nn">gh</span>
+    <span class="kn">import</span> <span class="nn">System</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_ironpython</span><span class="p">()</span>
 
@@ -93,7 +94,8 @@
     <span class="n">ghdoc</span> <span class="o">=</span> <span class="n">ghcomp</span><span class="o">.</span><span class="n">OnPingDocument</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">ghdoc</span><span class="p">):</span>
-        <span class="n">ghcomp</span><span class="o">.</span><span class="n">ExpireSolution</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ghdoc</span><span class="o">.</span><span class="n">SolutionState</span> <span class="o">!=</span> <span class="n">gh</span><span class="o">.</span><span class="n">Kernel</span><span class="o">.</span><span class="n">GH_ProcessStep</span><span class="o">.</span><span class="n">Process</span><span class="p">:</span>
+            <span class="n">ghcomp</span><span class="o">.</span><span class="n">ExpireSolution</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="n">ghdoc</span><span class="o">.</span><span class="n">ScheduleSolution</span><span class="p">(</span>
         <span class="n">delay</span><span class="p">,</span> <span class="n">gh</span><span class="o">.</span><span class="n">Kernel</span><span class="o">.</span><span class="n">GH_Document</span><span class="o">.</span><span class="n">GH_ScheduleDelegate</span><span class="p">(</span><span class="n">callback</span><span class="p">))</span></div>

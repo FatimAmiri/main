@@ -78,7 +78,7 @@
 <span class="sd">        length: The target length of mesh edges</span>
 <span class="sd">        start: Computes the solution if `True`.</span>
 <span class="sd">    Output:</span>
-<span class="sd">        mesh: A Rhino mesh</span>
+<span class="sd">        mesh: The Rhino mesh</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
@@ -99,8 +99,10 @@
 <span class="n">guid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ghenv</span><span class="o">.</span><span class="n">Component</span><span class="o">.</span><span class="n">InstanceGuid</span><span class="p">)</span>  <span class="c1"># unique key</span>
 <span class="n">mesh_key</span> <span class="o">=</span> <span class="s2">&quot;mesh_&quot;</span> <span class="o">+</span> <span class="n">guid</span>  <span class="c1"># key for compas mesh</span>
 <span class="n">rmesh_key</span> <span class="o">=</span> <span class="s2">&quot;rmesh_&quot;</span> <span class="o">+</span> <span class="n">guid</span>  <span class="c1"># key for rhino mesh</span>
+<span class="n">running_key</span> <span class="o">=</span> <span class="s2">&quot;running_&quot;</span> <span class="o">+</span> <span class="n">guid</span>
 
 <span class="c1"># the callback is to update the Gh component</span>
+
 
 <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
 
@@ -112,6 +114,7 @@
 
 <span class="c1"># the remeshing algorithm should run in a thread</span>
 
+
 <span class="k">def</span> <span class="nf">threaded_function</span><span class="p">():</span>
     <span class="n">trimesh_remesh</span><span class="p">(</span><span class="n">st</span><span class="p">[</span><span class="n">mesh_key</span><span class="p">],</span>
                    <span class="n">target</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
@@ -119,7 +122,11 @@
                    <span class="n">allow_boundary_split</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                    <span class="n">allow_boundary_swap</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                    <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">)</span>
+    <span class="n">st</span><span class="p">[</span><span class="n">running_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
 
+
+<span class="k">if</span> <span class="n">running_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="p">:</span>
+    <span class="n">st</span><span class="p">[</span><span class="n">running_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
 
 <span class="k">if</span> <span class="n">mesh_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span> <span class="ow">or</span> <span class="n">start</span><span class="p">:</span>
 
@@ -132,12 +139,12 @@
     <span class="c1"># save mesh into sticky dictionary</span>
     <span class="n">st</span><span class="p">[</span><span class="n">mesh_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
 
-
 <span class="c1"># start or restart</span>
 
-<span class="k">if</span> <span class="n">start</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">st</span><span class="p">[</span><span class="n">running_key</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
     <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">threaded_function</span><span class="p">)</span>
     <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">st</span><span class="p">[</span><span class="n">running_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
 
 <span class="c1"># make the result visible in the outlet &#39;mesh&#39;</span>
 
