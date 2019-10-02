@@ -74,8 +74,10 @@
 </div>
 </div><div class="line-numbers language-python notranslate"><div class="highlight"><pre><code><span></span><span class="sd">&quot;&quot;&quot;Mesh subdivision in Grasshopper using the catmull clark algorithm.</span>
 <span class="sd">    Inputs:</span>
-<span class="sd">        fixed_keys: list of int</span>
-<span class="sd">            The vertex keys to be set to `is_fixed` </span>
+<span class="sd">        is_fixed: list of boolean</span>
+<span class="sd">            A list of booleans relating to the vertex keys (index = key).</span>
+<span class="sd">        k: int</span>
+<span class="sd">            The number of levels of subdivision.</span>
 <span class="sd">    Output:</span>
 <span class="sd">        P: Rhino points (vertices) of the control mesh</span>
 <span class="sd">        L: Rhino lines (edges) of the control mesh </span>
@@ -103,9 +105,12 @@
 <span class="n">P</span> <span class="o">=</span> <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">()</span>
 <span class="n">L</span> <span class="o">=</span> <span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
 
-<span class="c1"># make a subd mesh (using catmullclark) and keep some of the vertices fixed</span>
-<span class="n">mesh</span><span class="o">.</span><span class="n">set_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="n">fixed_keys</span><span class="p">)</span>
-<span class="n">subd</span> <span class="o">=</span> <span class="n">mesh_subdivide</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s1">&#39;catmullclark&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="n">fixed_keys</span><span class="p">)</span>
+<span class="c1"># keep some of the vertices fixed and make a subd mesh (using catmullclark)</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">is_fixed</span><span class="p">)),</span> <span class="n">is_fixed</span><span class="p">):</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">set_vertex_attribute</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            
+<span class="n">fixed</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">&#39;is_fixed&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">})</span>
+<span class="n">subd</span> <span class="o">=</span> <span class="n">mesh_subdivide</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s1">&#39;catmullclark&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="n">fixed</span><span class="p">)</span>
 
 <span class="c1"># pass the new mesh to the artist</span>
 <span class="n">artist</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">subd</span>
@@ -206,7 +211,7 @@
         
 
         
-            Last updated on Oct 01, 2019.
+            Last updated on Oct 02, 2019.
         
 
         
