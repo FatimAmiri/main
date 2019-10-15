@@ -65,6 +65,8 @@
 <span class="kn">import</span> <span class="nn">ast</span>
 
 <span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">geometric_key</span>
+
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="k">as</span> <span class="nn">rs</span>
@@ -72,7 +74,19 @@
     <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_ironpython</span><span class="p">()</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;VertexSelector&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;VertexSelector&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;mesh_identify_vertices&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_select_vertices&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_select_vertex&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;network_select_vertices&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;network_select_vertex&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;volmesh_select_vertices&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;volmesh_select_vertex&#39;</span>
+    <span class="p">]</span>
 
 
 <div class="viewcode-block" id="VertexSelector"><a class="viewcode-back" href="../../../api/generated/compas_rhino.selectors.VertexSelector.html#compas_rhino.selectors.VertexSelector">[docs]</a><span class="k">class</span> <span class="nc">VertexSelector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -105,6 +119,169 @@
                             <span class="n">key</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                             <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">keys</span></div></div>
+
+
+<span class="c1"># TODO: make sure if this function should be here</span>
+<span class="k">def</span> <span class="nf">mesh_identify_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">gkey_key</span> <span class="o">=</span> <span class="p">{</span><span class="n">geometric_key</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">precision</span><span class="p">):</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
+    <span class="k">for</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+        <span class="n">gkey</span> <span class="o">=</span> <span class="n">geometric_key</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gkey</span> <span class="ow">in</span> <span class="n">gkey_key</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">gkey_key</span><span class="p">[</span><span class="n">gkey</span><span class="p">]</span>
+            <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">keys</span>
+
+
+<span class="k">def</span> <span class="nf">mesh_select_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select mesh vertices.&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select vertices of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    message : str (&quot;Select mesh vertices.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The keys of the selected vertices.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_select_edges`</span>
+<span class="sd">    * :func:`mesh_select_faces`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">VertexSelector</span><span class="o">.</span><span class="n">select_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">mesh_select_vertex</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select a mesh vertex&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select one vertex of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    message : str (&quot;Select a mesh vertex.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    hashable</span>
+<span class="sd">        The key of the selected vertex.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_select_vertices`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">VertexSelector</span><span class="o">.</span><span class="n">select_vertex</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">network_select_vertices</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select network vertices.&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select vertices of a network.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    network : compas.datastructures.Network</span>
+<span class="sd">        A network object.</span>
+<span class="sd">    message : str (&quot;Select network vertices.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The keys of the selected vertices.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`network_select_vertex`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">VertexSelector</span><span class="o">.</span><span class="n">select_vertices</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">network_select_vertex</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select a network vertex&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select one vertex of a network.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    network : compas.datastructures.Network</span>
+<span class="sd">        A network object.</span>
+<span class="sd">    message : str (&quot;Select a network vertex.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        The key of the selected vertex.</span>
+<span class="sd">    None</span>
+<span class="sd">        If no vertex was selected.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`network_select_vertices`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">VertexSelector</span><span class="o">.</span><span class="n">select_vertex</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">volmesh_select_vertices</span><span class="p">(</span><span class="n">volmesh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select multiple vertices of a volmesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    volmesh : compas.datastructures.VolMesh</span>
+<span class="sd">        A volmesh object.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    keys : list(int, str, tuple, frozenset)</span>
+<span class="sd">        The identifiers or *keys* of the selected vertices.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; keys = volmesh_select_vertices(volmesh)</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * volmesh_select_vertex</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">VertexSelector</span><span class="o">.</span><span class="n">select_vertices</span><span class="p">(</span><span class="n">volmesh</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">volmesh_select_vertex</span><span class="p">(</span><span class="n">volmesh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select a vertex of a volmesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    volmesh : compas.datastructures.VolMesh</span>
+<span class="sd">        A volmesh object.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    key : int, str, tuple, frozenset</span>
+<span class="sd">        The identifier or *key* of the selected vertex.</span>
+<span class="sd">    None</span>
+<span class="sd">        If no vertex was selected.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; key = volmesh_select_vertex(volmesh)</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * volmesh_select_vertices</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">VertexSelector</span><span class="o">.</span><span class="n">select_vertex</span><span class="p">(</span><span class="n">volmesh</span><span class="p">)</span>
 
 
 <span class="c1"># ==============================================================================</span>

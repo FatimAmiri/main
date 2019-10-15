@@ -72,7 +72,18 @@
     <span class="n">compas</span><span class="o">.</span><span class="n">raise_if_ironpython</span><span class="p">()</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;EdgeSelector&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;EdgeSelector&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;mesh_select_edges&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mesh_select_edge&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;network_select_edges&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;network_select_edge&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;volmesh_select_edges&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;volmesh_select_edge&#39;</span>
+    <span class="p">]</span>
 
 
 <div class="viewcode-block" id="EdgeSelector"><a class="viewcode-back" href="../../../api/generated/compas_rhino.selectors.EdgeSelector.html#compas_rhino.selectors.EdgeSelector">[docs]</a><span class="k">class</span> <span class="nc">EdgeSelector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -111,6 +122,110 @@
                             <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">keys</span></div></div>
 
+
+<span class="k">def</span> <span class="nf">mesh_select_edges</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select mesh edges&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select edges of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    message : str (&quot;Select mesh edges.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The keys of the selected edges.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_select_vertices`</span>
+<span class="sd">    * :func:`mesh_select_faces`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EdgeSelector</span><span class="o">.</span><span class="n">select_edges</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">mesh_select_edge</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select a mesh edge&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select one edge of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : compas.datastructures.Mesh</span>
+<span class="sd">        A mesh object.</span>
+<span class="sd">    message : str (&quot;Select a mesh edge.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        The key of the selected edge.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`mesh_select_edges`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EdgeSelector</span><span class="o">.</span><span class="n">select_edge</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">network_select_edges</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select network edges&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select edges of a network.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    network : compas.datastructures.Network</span>
+<span class="sd">        The network object.</span>
+<span class="sd">    message : str (&quot;Select network edges.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The keys of the selected edges. Each key is a *uv* pair.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`network_select_edge`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EdgeSelector</span><span class="o">.</span><span class="n">select_edges</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">network_select_edge</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Select a network edge&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select one edge of a network.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    network : compas.datastructures.Network</span>
+<span class="sd">        A network object.</span>
+<span class="sd">    message : str (&quot;Select a network edge.&quot;)</span>
+<span class="sd">        The message to display to the user.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        The key of the selected edge.</span>
+<span class="sd">    None</span>
+<span class="sd">        If no edge was selected.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    * :func:`network_select_edges`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EdgeSelector</span><span class="o">.</span><span class="n">select_edge</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">volmesh_select_edge</span><span class="p">(</span><span class="n">volmesh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EdgeSelector</span><span class="o">.</span><span class="n">select_edge</span><span class="p">(</span><span class="n">volmesh</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">volmesh_select_edges</span><span class="p">(</span><span class="n">volmesh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EdgeSelector</span><span class="o">.</span><span class="n">select_edges</span><span class="p">(</span><span class="n">volmesh</span><span class="p">)</span>
 
 <span class="c1"># ==============================================================================</span>
 <span class="c1"># Main</span>
