@@ -223,8 +223,15 @@
             <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_python</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;compas.remote.services.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">)]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ping_server</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">ThreadedServerError</span><span class="p">(</span><span class="s2">&quot;Server unavailable at </span><span class="si">{}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">))</span>
+        <span class="c1"># this doesn&#39;t work because (at least on my computer)</span>
+        <span class="c1"># you have to allow the server to accept incoming connections</span>
+        <span class="c1"># while you click on the dialog to confirm</span>
+        <span class="c1"># the ping times out</span>
+        <span class="c1"># and the function throws an error</span>
+        <span class="c1"># it does start the server anyway though :)</span>
+
+        <span class="c1"># if not self.ping_server():</span>
+        <span class="c1">#     raise ThreadedServerError(&quot;Server unavailable at {}...&quot;.format(self.address))</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Started </span><span class="si">{}</span><span class="s2"> service at </span><span class="si">{}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">))</span></div>
 
@@ -388,7 +395,7 @@
         
 
         
-            Last updated on Oct 15, 2019.
+            Last updated on Oct 17, 2019.
         
 
         
