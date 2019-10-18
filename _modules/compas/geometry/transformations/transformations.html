@@ -81,6 +81,7 @@
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">multiply_matrix_vector</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">multiply_matrices</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">transpose_matrix</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">norm_vector</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry.angles</span> <span class="k">import</span> <span class="n">angle_vectors</span>
 
@@ -97,14 +98,19 @@
 
 <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_axis_and_angle</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_scale_factors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_axis_and_angle</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_change_basis</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;local_axes&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;orthonormalize_axes&#39;</span><span class="p">,</span>
 
     <span class="s1">&#39;transform_points&#39;</span><span class="p">,</span>
     <span class="s1">&#39;transform_vectors&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;transform_frames&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;local_to_world_coords&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;world_to_local_coords&#39;</span><span class="p">,</span>
 
     <span class="s1">&#39;translate_points&#39;</span><span class="p">,</span>
     <span class="s1">&#39;translate_points_xy&#39;</span><span class="p">,</span>
@@ -145,6 +151,42 @@
     <span class="n">w</span> <span class="o">=</span> <span class="n">cross_vectors</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">cross_vectors</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">orthonormalize_axes</span><span class="p">(</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Corrects xaxis and yaxis to be unit vectors and orthonormal.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xaxis: :class:`Vector` or list of float</span>
+<span class="sd">    yaxis: :class:`Vector` or list of float</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple: (xaxis, yaxis)</span>
+<span class="sd">        The corrected axes.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError: If xaxis and yaxis cannot span a plane.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; xaxis = [1, 4, 5]</span>
+<span class="sd">    &gt;&gt;&gt; yaxis = [1, 0, -2]</span>
+<span class="sd">    &gt;&gt;&gt; xaxis, yaxis = orthonormalize_axes(xaxis, yaxis)</span>
+<span class="sd">    &gt;&gt;&gt; allclose(xaxis, [0.1543, 0.6172, 0.7715], tol=0.001)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; allclose(yaxis, [0.6929, 0.4891, -0.5298], tol=0.001)</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xaxis</span> <span class="o">=</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">xaxis</span><span class="p">)</span>
+    <span class="n">yaxis</span> <span class="o">=</span> <span class="n">normalize_vector</span><span class="p">(</span><span class="n">yaxis</span><span class="p">)</span>
+    <span class="n">zaxis</span> <span class="o">=</span> <span class="n">cross_vectors</span><span class="p">(</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">norm_vector</span><span class="p">(</span><span class="n">zaxis</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Xaxis and yaxis cannot span a plane.&quot;</span><span class="p">)</span>
+    <span class="n">yaxis</span> <span class="o">=</span> <span class="n">cross_vectors</span><span class="p">(</span><span class="n">normalize_vector</span><span class="p">(</span><span class="n">zaxis</span><span class="p">),</span> <span class="n">xaxis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span>
 
 
 <span class="k">def</span> <span class="nf">homogenize</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
@@ -200,17 +242,169 @@
     <span class="k">return</span> <span class="p">[[</span><span class="n">x</span> <span class="o">/</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span> <span class="o">/</span> <span class="n">w</span><span class="p">,</span> <span class="n">z</span> <span class="o">/</span> <span class="n">w</span><span class="p">]</span> <span class="k">if</span> <span class="n">w</span> <span class="k">else</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">]</span>
 
 
+<span class="k">def</span> <span class="nf">homogenize_and_flatten_frames</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Homogenize a list of frames and flatten the 3D list into a 2D list.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frames: list of :class:`Frame`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of list of float</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; frames = [Frame((1, 1, 1), (0, 1, 0), (1, 0, 0))]</span>
+<span class="sd">    &gt;&gt;&gt; homogenize_and_flatten_frames(frames)</span>
+<span class="sd">    [[1.0, 1.0, 1.0, 1.0], [0.0, 1.0, 0.0, 0.0], [1.0, -0.0, 0.0, 0.0]]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">homogenize_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">homogenize</span><span class="p">([</span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">w</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">homogenize</span><span class="p">([</span><span class="n">frame</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">w</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">frames</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">homogenize_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">dehomogenize_and_unflatten_frames</span><span class="p">(</span><span class="n">points_and_vectors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dehomogenize a list of vectors and unflatten the 2D list into a 3D list.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points_and_vectors: list of list of float</span>
+<span class="sd">        Homogenized points and vectors.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of list of list of float</span>
+<span class="sd">        The frames.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; points_and_vectors = [(1., 1., 1., 1.), (0., 1., 0., 0.), (1., 0., 0., 0.)]</span>
+<span class="sd">    &gt;&gt;&gt; dehomogenize_and_unflatten_frames(points_and_vectors)</span>
+<span class="sd">    [[[1.0, 1.0, 1.0], [0.0, 1.0, 0.0], [1.0, 0.0, 0.0]]]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="n">dehomogenize</span><span class="p">(</span><span class="n">points_and_vectors</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span> <span class="mi">3</span><span class="p">)]</span>
+
 <span class="c1"># ==============================================================================</span>
 <span class="c1"># transform</span>
 <span class="c1"># ==============================================================================</span>
 
 
 <span class="k">def</span> <span class="nf">transform_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform multiple points with one transformation matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points : list of :class:`Point` or list of list of float</span>
+<span class="sd">        A list of points to be transformed.</span>
+<span class="sd">    T : :class:`Transformation` or list of list of float</span>
+<span class="sd">        The transformation to apply.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; points = [[1, 0, 0], [1, 2, 4], [4, 7, 1]]</span>
+<span class="sd">    &gt;&gt;&gt; T = matrix_from_axis_and_angle([0, 2, 0], math.radians(45), point=[4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; points_transformed = transform_points(points, T)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">dehomogenize</span><span class="p">(</span><span class="n">multiply_matrices</span><span class="p">(</span><span class="n">homogenize</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">transpose_matrix</span><span class="p">(</span><span class="n">T</span><span class="p">)))</span>
 
 
 <span class="k">def</span> <span class="nf">transform_vectors</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform multiple vectors with one transformation matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vectors : list of :class:`Vector` or list of list of float</span>
+<span class="sd">        A list of vectors to be transformed.</span>
+<span class="sd">    T : :class:`Transformation` list of list of float</span>
+<span class="sd">        The transformation to apply.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; vectors = [[1, 0, 0], [1, 2, 4], [4, 7, 1]]</span>
+<span class="sd">    &gt;&gt;&gt; T = matrix_from_axis_and_angle([0, 2, 0], math.radians(45), point=[4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; vectors_transformed = transform_vectors(vectors, T)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">dehomogenize</span><span class="p">(</span><span class="n">multiply_matrices</span><span class="p">(</span><span class="n">homogenize</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">transpose_matrix</span><span class="p">(</span><span class="n">T</span><span class="p">)))</span>
+
+
+<span class="k">def</span> <span class="nf">transform_frames</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform multiple frames with one transformation matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frames : list of :class:`Frame`</span>
+<span class="sd">        A list of frames to be transformed.</span>
+<span class="sd">    T : :class:`Transformation`</span>
+<span class="sd">        The transformation to apply on the frames.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; frames = [Frame([1, 0, 0], [1, 2, 4], [4, 7, 1]), Frame([0, 2, 0], [5, 2, 1], [0, 2, 1])]</span>
+<span class="sd">    &gt;&gt;&gt; T = matrix_from_axis_and_angle([0, 2, 0], math.radians(45), point=[4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; transformed_frames = transform_frames(frames, T)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">points_and_vectors</span> <span class="o">=</span> <span class="n">homogenize_and_flatten_frames</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dehomogenize_and_unflatten_frames</span><span class="p">(</span><span class="n">multiply_matrices</span><span class="p">(</span><span class="n">points_and_vectors</span><span class="p">,</span> <span class="n">transpose_matrix</span><span class="p">(</span><span class="n">T</span><span class="p">)))</span>
+
+
+<span class="k">def</span> <span class="nf">world_to_local_coords</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">xyz</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert global coordinates to local coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frame : :class:`Frame` or [point, xaxis, yaxis]</span>
+<span class="sd">        The local coordinate system.</span>
+<span class="sd">    xyz : array-like</span>
+<span class="sd">        The global coordinates of the points to convert.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of list of float</span>
+<span class="sd">        The coordinates of the given points in the local coordinate system.</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; f = Frame([0, 1, 0], [3, 4, 1], [1, 5, 9])</span>
+<span class="sd">    &gt;&gt;&gt; xyz = [Point(2, 3, 5)]</span>
+<span class="sd">    &gt;&gt;&gt; Point(*world_to_local_coords(f, xyz)[0])</span>
+<span class="sd">    Point(3.726, 4.088, 1.550)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="k">import</span> <span class="n">Frame</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">matrix_change_basis</span><span class="p">(</span><span class="n">Frame</span><span class="o">.</span><span class="n">worldXY</span><span class="p">(),</span> <span class="n">frame</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">transform_points</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">local_to_world_coords</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">xyz</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert local coordinates to global coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frame : :class:`Frame` or [point, xaxis, yaxis]</span>
+<span class="sd">        The local coordinate system.</span>
+<span class="sd">    xyz : list of `Points` or list of list of float</span>
+<span class="sd">        The global coordinates of the points to convert.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of list of float</span>
+<span class="sd">        The coordinates of the given points in the local coordinate system.</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; f = Frame([0, 1, 0], [3, 4, 1], [1, 5, 9])</span>
+<span class="sd">    &gt;&gt;&gt; xyz = [Point(3.726, 4.088, 1.550)]</span>
+<span class="sd">    &gt;&gt;&gt; Point(*local_to_world_coords(f, xyz)[0])</span>
+<span class="sd">    Point(2.000, 3.000, 5.000)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="k">import</span> <span class="n">Frame</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">matrix_change_basis</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">Frame</span><span class="o">.</span><span class="n">worldXY</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">transform_points</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -671,7 +865,7 @@
 <span class="sd">    &gt;&gt;&gt; point = [3.0, 3.0, 3.0]</span>
 <span class="sd">    &gt;&gt;&gt; plane = ([0.0, 0.0, 0.0], [0.0, 0.0, 1.0])  # the XY plane</span>
 <span class="sd">    &gt;&gt;&gt; project_point_plane(point, plane)</span>
-<span class="sd">    [3.0, 3.0, 3.0]</span>
+<span class="sd">    [3.0, 3.0, 0.0]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">base</span><span class="p">,</span> <span class="n">normal</span> <span class="o">=</span> <span class="n">plane</span>
@@ -913,7 +1107,7 @@
 <span class="sd">    &gt;&gt;&gt; triangle = [1.0, 0, 0], [-1.0, 0, 0], [0, 0, 1.0]</span>
 <span class="sd">    &gt;&gt;&gt; line = [-1, 1, 0], [-0.5, 0.5, 0]</span>
 <span class="sd">    &gt;&gt;&gt; reflect_line_triangle(line, triangle)</span>
-<span class="sd">    ([0.0, 0.0, 0], [1.0, 1.0, 0])</span>
+<span class="sd">    ([0.0, 0.0, 0.0], [1.0, 1.0, 0.0])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">intersection_line_triangle</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">triangle</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
@@ -967,32 +1161,29 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        from compas.geometry import orient_points</span>
-<span class="sd">        from compas.geometry import intersection_segment_segment_xy</span>
-
-<span class="sd">        refplane = ([0.57735, 0.57735, 0.57735], [1.0, 1.0, 1.0])</span>
-<span class="sd">        tarplane = ([0.0, 0.0, 0.0], [0.0, 0.0, 1.0])</span>
-
-<span class="sd">        points = [</span>
-<span class="sd">            [0.288675, 0.288675, 1.1547],</span>
-<span class="sd">            [0.866025, 0.866025, 0.0],</span>
-<span class="sd">            [1.077350, 0.077350, 0.57735],</span>
-<span class="sd">            [0.077350, 1.077350, 0.57735]</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import orient_points</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import intersection_segment_segment_xy</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; refplane = ([0.57735, 0.57735, 0.57735], [1.0, 1.0, 1.0])</span>
+<span class="sd">    &gt;&gt;&gt; tarplane = ([0.0, 0.0, 0.0], [0.0, 0.0, 1.0])</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; points = [\</span>
+<span class="sd">            [0.288675, 0.288675, 1.1547],\</span>
+<span class="sd">            [0.866025, 0.866025, 0.0],\</span>
+<span class="sd">            [1.077350, 0.077350, 0.57735],\</span>
+<span class="sd">            [0.077350, 1.077350, 0.57735]\</span>
 <span class="sd">        ]</span>
-
-<span class="sd">        points = orient_points(points, refplane, tarplane)</span>
-
-<span class="sd">        ab = points[0], points[1]</span>
-<span class="sd">        cd = points[2], points[3]</span>
-
-<span class="sd">        point = intersection_segment_segment_xy(ab, cd)</span>
-
-<span class="sd">        points = orient_points([point], tarplane, refplane)</span>
-
-<span class="sd">        print(points[0])</span>
-
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; points = orient_points(points, refplane, tarplane)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; ab = points[0], points[1]</span>
+<span class="sd">    &gt;&gt;&gt; cd = points[2], points[3]</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; point = intersection_segment_segment_xy(ab, cd)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; points = orient_points([point], tarplane, refplane)</span>
+<span class="sd">    &gt;&gt;&gt; Point(*points[0])</span>
+<span class="sd">    Point(0.577, 0.577, 0.577)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">axis</span> <span class="o">=</span> <span class="n">cross_vectors</span><span class="p">(</span><span class="n">reference_plane</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">target_plane</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">angle</span> <span class="o">=</span> <span class="n">angle_vectors</span><span class="p">(</span><span class="n">reference_plane</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">target_plane</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -1013,7 +1204,11 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-    <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">allclose</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Point</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Frame</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
@@ -1084,7 +1279,7 @@
         
 
         
-            Last updated on Oct 17, 2019.
+            Last updated on Oct 18, 2019.
         
 
         

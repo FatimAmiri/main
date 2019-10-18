@@ -74,14 +74,13 @@
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">multiply_matrix_vector</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">length_vector</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">allclose</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">transpose_matrix</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">multiply_matrices</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">transpose_matrix</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">norm_vector</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">_EPS</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">_SPEC2TUPLE</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">_NEXT_SPEC</span>
-
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;matrix_determinant&#39;</span><span class="p">,</span>
@@ -92,6 +91,8 @@
     <span class="s1">&#39;identity_matrix&#39;</span><span class="p">,</span>
 
     <span class="s1">&#39;matrix_from_frame&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;matrix_from_frame_to_frame&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;matrix_change_basis&#39;</span><span class="p">,</span>
     <span class="s1">&#39;matrix_from_euler_angles&#39;</span><span class="p">,</span>
     <span class="s1">&#39;matrix_from_axis_and_angle&#39;</span><span class="p">,</span>
     <span class="s1">&#39;matrix_from_axis_angle_vector&#39;</span><span class="p">,</span>
@@ -120,6 +121,7 @@
     <span class="s1">&#39;basis_vectors_from_matrix&#39;</span><span class="p">,</span>
     <span class="s1">&#39;translation_from_matrix&#39;</span><span class="p">,</span>
 <span class="p">]</span>
+
 
 <span class="k">def</span> <span class="nf">matrix_determinant</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculates the determinant of a square matrix M.</span>
@@ -455,6 +457,55 @@
     <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">M</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">zaxis</span>
     <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">M</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">point</span>
     <span class="k">return</span> <span class="n">M</span></div>
+
+
+<span class="k">def</span> <span class="nf">matrix_from_frame_to_frame</span><span class="p">(</span><span class="n">frame_from</span><span class="p">,</span> <span class="n">frame_to</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes a transformation between two frames.</span>
+
+<span class="sd">    This transformation allows to transform geometry from one Cartesian</span>
+<span class="sd">    coordinate system defined by &quot;frame_from&quot; to another Cartesian</span>
+<span class="sd">    coordinate system defined by &quot;frame_to&quot;.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frame_from : :class:`Frame`</span>
+<span class="sd">        A frame defining the original Cartesian coordinate system</span>
+<span class="sd">    frame_to : :class:`Frame`</span>
+<span class="sd">        A frame defining the targeted Cartesian coordinate system</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; f1 = Frame([2, 2, 2], [0.12, 0.58, 0.81], [-0.80, 0.53, -0.26])</span>
+<span class="sd">    &gt;&gt;&gt; f2 = Frame([1, 1, 1], [0.68, 0.68, 0.27], [-0.67, 0.73, -0.15])</span>
+<span class="sd">    &gt;&gt;&gt; T = matrix_from_frame_to_frame(f1, f2)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">T1</span> <span class="o">=</span> <span class="n">matrix_from_frame</span><span class="p">(</span><span class="n">frame_from</span><span class="p">)</span>
+    <span class="n">T2</span> <span class="o">=</span> <span class="n">matrix_from_frame</span><span class="p">(</span><span class="n">frame_to</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">multiply_matrices</span><span class="p">(</span><span class="n">T2</span><span class="p">,</span> <span class="n">matrix_inverse</span><span class="p">(</span><span class="n">T1</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">matrix_change_basis</span><span class="p">(</span><span class="n">frame_from</span><span class="p">,</span> <span class="n">frame_to</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes a change of basis transformation between two frames.</span>
+
+<span class="sd">    A basis change is essentially a remapping of geometry from one</span>
+<span class="sd">    coordinate system to another.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frame_from : :class:`Frame`</span>
+<span class="sd">        A frame defining the original Cartesian coordinate system</span>
+<span class="sd">    frame_to : :class:`Frame`</span>
+<span class="sd">        A frame defining the targeted Cartesian coordinate system</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import Point, Frame</span>
+<span class="sd">    &gt;&gt;&gt; f1 = Frame([2, 2, 2], [0.12, 0.58, 0.81], [-0.80, 0.53, -0.26])</span>
+<span class="sd">    &gt;&gt;&gt; f2 = Frame([1, 1, 1], [0.68, 0.68, 0.27], [-0.67, 0.73, -0.15])</span>
+<span class="sd">    &gt;&gt;&gt; T = matrix_change_basis(f1, f2)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">T1</span> <span class="o">=</span> <span class="n">matrix_from_frame</span><span class="p">(</span><span class="n">frame_from</span><span class="p">)</span>
+    <span class="n">T2</span> <span class="o">=</span> <span class="n">matrix_from_frame</span><span class="p">(</span><span class="n">frame_to</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">multiply_matrices</span><span class="p">(</span><span class="n">matrix_inverse</span><span class="p">(</span><span class="n">T2</span><span class="p">),</span> <span class="n">T1</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="matrix_from_euler_angles"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.matrix_from_euler_angles.html#compas.geometry.matrix_from_euler_angles">[docs]</a><span class="k">def</span> <span class="nf">matrix_from_euler_angles</span><span class="p">(</span><span class="n">euler_angles</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">):</span>
@@ -1341,8 +1392,10 @@
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-
-    <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Frame</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Transformation</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
@@ -1413,7 +1466,7 @@
         
 
         
-            Last updated on Oct 17, 2019.
+            Last updated on Oct 18, 2019.
         
 
         

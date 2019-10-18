@@ -76,8 +76,8 @@
 <span class="c1"># from scipy.spatial import QhullError</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">local_axes</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">local_coords_numpy</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">global_coords_numpy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">world_to_local_coords_numpy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">local_to_world_coords_numpy</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -87,7 +87,7 @@
 
 
 <div class="viewcode-block" id="oriented_bounding_box_numpy"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.oriented_bounding_box_numpy.html#compas.geometry.oriented_bounding_box_numpy">[docs]</a><span class="k">def</span> <span class="nf">oriented_bounding_box_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the oriented minimum bounding box of a set of points in 3D space.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the oriented minimum bounding box of a set of points in 3D space.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -145,8 +145,8 @@
 <span class="sd">    &gt;&gt;&gt; a = length_vector(subtract_vectors(bbox[1], bbox[0]))</span>
 <span class="sd">    &gt;&gt;&gt; b = length_vector(subtract_vectors(bbox[3], bbox[0]))</span>
 <span class="sd">    &gt;&gt;&gt; c = length_vector(subtract_vectors(bbox[4], bbox[0]))</span>
-<span class="sd">    &gt;&gt;&gt; a * b * c</span>
-<span class="sd">    30.0</span>
+<span class="sd">    &gt;&gt;&gt; close(a * b * c, 30.)</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
@@ -174,7 +174,8 @@
         <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">simplex</span><span class="p">]</span>
         <span class="n">uvw</span> <span class="o">=</span> <span class="n">local_axes</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">]</span>
-        <span class="n">rst</span> <span class="o">=</span> <span class="n">local_coords_numpy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">uvw</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">uvw</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">rst</span> <span class="o">=</span> <span class="n">world_to_local_coords_numpy</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
         <span class="n">dr</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">dt</span> <span class="o">=</span> <span class="n">ptp</span><span class="p">(</span><span class="n">rst</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">dr</span> <span class="o">*</span> <span class="n">ds</span> <span class="o">*</span> <span class="n">dt</span>
 
@@ -191,7 +192,7 @@
                 <span class="p">[</span><span class="n">rmax</span><span class="p">,</span> <span class="n">smax</span><span class="p">,</span> <span class="n">tmax</span><span class="p">],</span>
                 <span class="p">[</span><span class="n">rmin</span><span class="p">,</span> <span class="n">smax</span><span class="p">,</span> <span class="n">tmax</span><span class="p">],</span>
             <span class="p">]</span>
-            <span class="n">bbox</span> <span class="o">=</span> <span class="n">global_coords_numpy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
+            <span class="n">bbox</span> <span class="o">=</span> <span class="n">local_to_world_coords_numpy</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
             <span class="n">volume</span> <span class="o">=</span> <span class="n">v</span>
 
     <span class="k">return</span> <span class="n">bbox</span></div>
@@ -251,7 +252,7 @@
         <span class="n">p1</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">simplex</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
 
         <span class="c1"># s direction</span>
-        <span class="n">s</span>  <span class="o">=</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">p0</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">p0</span>
         <span class="n">sl</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
         <span class="n">su</span> <span class="o">=</span> <span class="n">s</span> <span class="o">/</span> <span class="n">sl</span>
         <span class="n">vn</span> <span class="o">=</span> <span class="n">xy_hull</span> <span class="o">-</span> <span class="n">p0</span>
@@ -264,7 +265,7 @@
         <span class="n">b1</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">+</span> <span class="n">sc</span><span class="p">[</span><span class="n">scmax</span><span class="p">]</span> <span class="o">*</span> <span class="n">su</span>
 
         <span class="c1"># t direction</span>
-        <span class="n">t</span>  <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
         <span class="n">tl</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">t</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
         <span class="n">tu</span> <span class="o">=</span> <span class="n">t</span> <span class="o">/</span> <span class="n">tl</span>
         <span class="n">vn</span> <span class="o">=</span> <span class="n">xy_hull</span> <span class="o">-</span> <span class="n">p0</span>
@@ -299,38 +300,18 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
     <span class="kn">import</span> <span class="nn">numpy</span>
+    <span class="kn">import</span> <span class="nn">math</span>
     <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">bounding_box</span>
     <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">subtract_vectors</span>
     <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">length_vector</span>
     <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Rotation</span>
     <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">transform_points_numpy</span>
     <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">allclose</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">close</span>
 
-    <span class="n">points</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="n">bottom</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]])</span>
-    <span class="n">top</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
-    <span class="n">points</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">points</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">top</span><span class="p">))</span>
-    <span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">10</span>
-    <span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">3</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 
-    <span class="n">bbox</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="n">v1</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">c</span>
-
-    <span class="n">R</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_axis_and_angle</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="mf">3.14159</span><span class="p">)</span>
-    <span class="n">points</span> <span class="o">=</span> <span class="n">transform_points_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
-
-    <span class="n">bbox</span> <span class="o">=</span> <span class="n">oriented_bounding_box_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-
-    <span class="n">a</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="n">v2</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">c</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">allclose</span><span class="p">([</span><span class="n">v1</span><span class="p">],</span> <span class="p">[</span><span class="n">v2</span><span class="p">]))</span>
 </code></pre></div>
                     
                 
@@ -401,7 +382,7 @@
         
 
         
-            Last updated on Oct 17, 2019.
+            Last updated on Oct 18, 2019.
         
 
         

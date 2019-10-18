@@ -122,9 +122,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        xaxis : :obj:`list` of :obj:`float`</span>
+<span class="sd">        xaxis : :class:`Vector`</span>
 <span class="sd">            The x-axis of the frame.</span>
-<span class="sd">        yaxis : :obj:`list` of :obj:`float`</span>
+<span class="sd">        yaxis : :class:`Vector`</span>
 <span class="sd">            The y-axis of the frame.</span>
 
 <span class="sd">        Examples</span>
@@ -176,7 +176,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        quaternion : :obj:`list` of :obj:`float`</span>
+<span class="sd">        quaternion : :class:`Quaternion`</span>
 <span class="sd">            Four numbers that represents the four coefficient values of a quaternion.</span>
 
 <span class="sd">        Examples</span>
@@ -196,10 +196,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis_angle_vector : :obj:`list` of :obj:`float`</span>
-<span class="sd">            Three numbers that represent the axis of rotation and angle of rotation</span>
-<span class="sd">            through the vector&#39;s magnitude.</span>
-<span class="sd">        point : :obj:`list` of :obj:`float`, optional</span>
+<span class="sd">        axis_angle_vector : list of float</span>
+<span class="sd">            Three numbers that represent the axis of rotation and angle of rotation through the vector&#39;s magnitude.</span>
+<span class="sd">        point : list of float, optional</span>
 <span class="sd">            A point to perform a rotation around an origin other than [0, 0, 0].</span>
 
 <span class="sd">        Examples</span>
@@ -217,16 +216,19 @@
 
 <div class="viewcode-block" id="Rotation.from_axis_and_angle"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Rotation.from_axis_and_angle.html#compas.geometry.Rotation.from_axis_and_angle">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_axis_and_angle</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Calculates a ``Rotation`` from a rotation axis and an angle and \</span>
-<span class="sd">            an optional point of rotation.</span>
+        <span class="sd">&quot;&quot;&quot;Calculates a ``Rotation`` from a rotation axis and an angle and an optional point of rotation.</span>
+
+<span class="sd">        The rotation is based on the right hand rule, i.e. anti-clockwise if the</span>
+<span class="sd">        axis of rotation points towards the observer.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            axis (:obj:`list` of :obj:`float`): Three numbers that represent</span>
-<span class="sd">                the axis of rotation</span>
-<span class="sd">            angle (:obj:`float`): The rotation angle in radians.</span>
-<span class="sd">            point (:obj:`list` of :obj:`float`, optional): A point to</span>
-<span class="sd">                perform a rotation around an origin other than [0, 0, 0].</span>
+<span class="sd">        axis : list of float</span>
+<span class="sd">            Three numbers that represent the axis of rotation.</span>
+<span class="sd">        angle : float</span>
+<span class="sd">            The rotation angle in radians.</span>
+<span class="sd">        point : :class:`Point` or list of float</span>
+<span class="sd">            A point to perform a rotation around an origin other than [0, 0, 0].</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -260,12 +262,13 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        euler_angles : :obj:`list` of :obj:`float`</span>
-<span class="sd">            Three numbers that represent the angles of rotations about the defined axes.</span>
-<span class="sd">        static : :obj:`bool`, optional</span>
-<span class="sd">            If true the rotations are applied to a static frame.</span>
-<span class="sd">            If not, to a rotational. Defaults to true.</span>
-<span class="sd">        axes : :obj:`str`, optional</span>
+<span class="sd">        euler_angles: list of float</span>
+<span class="sd">            Three numbers that represent the angles of rotations about the</span>
+<span class="sd">            defined axes.</span>
+<span class="sd">        static: bool, optional</span>
+<span class="sd">            If true the rotations are applied to a static frame. If not, to a</span>
+<span class="sd">            rotational. Defaults to true.</span>
+<span class="sd">        axes: str, optional</span>
 <span class="sd">            A 3 character string specifying order of the axes. Defaults to &#39;xyz&#39;.</span>
 
 <span class="sd">        Examples</span>
@@ -290,7 +293,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">quaternion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the 4 quaternion coefficients from the ``Rotation``.</span>
+        <span class="sd">&quot;&quot;&quot;Returns the Quaternion from the ``Rotation``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`Quaternion`</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -300,11 +307,16 @@
 <span class="sd">        &gt;&gt;&gt; allclose(q1, q2, tol=1e-3)</span>
 <span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">quaternion_from_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="k">import</span> <span class="n">Quaternion</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="o">*</span><span class="n">quaternion_from_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">axis_and_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the axis and the angle of the ``Rotation``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple: (:class:`Vector`, float)</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -317,7 +329,9 @@
 <span class="sd">        &gt;&gt;&gt; allclose([angle1], [angle2])</span>
 <span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">axis_and_angle_from_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="k">import</span> <span class="n">Vector</span>
+        <span class="n">axis</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="n">axis_and_angle_from_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">axis</span><span class="p">),</span> <span class="n">angle</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">axis_angle_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -325,9 +339,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        :obj:`list` of :obj:`float`</span>
-<span class="sd">            Three numbers that represent the axis of rotation and angle of rotation</span>
-<span class="sd">            through the vector&#39;s magnitude.</span>
+<span class="sd">        :class:`Vector`</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -338,7 +350,7 @@
 <span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">axis</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_and_angle</span>
-        <span class="k">return</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">axis</span><span class="o">.</span><span class="n">scaled</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Rotation.euler_angles"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Rotation.euler_angles.html#compas.geometry.Rotation.euler_angles">[docs]</a>    <span class="k">def</span> <span class="nf">euler_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns Euler angles from the ``Rotation`` according to specified</span>
@@ -346,16 +358,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        static : :obj:`bool`, optional</span>
-<span class="sd">            If true the rotations are applied to a static frame.</span>
-<span class="sd">            If not, to a rotational. Defaults to True.</span>
-<span class="sd">        axes : :obj:`str`, optional</span>
-<span class="sd">            A 3 character string specifying the order of the axes. Defaults to &#39;xyz&#39;.</span>
+<span class="sd">        static : bool, optional</span>
+<span class="sd">            If true the rotations are applied to a static frame. If not, to a</span>
+<span class="sd">            rotational. Defaults to True.</span>
+<span class="sd">        axes : str, optional</span>
+<span class="sd">            A 3 character string specifying the order of the axes. Defaults to</span>
+<span class="sd">            &#39;xyz&#39;.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        :obj:`list` of :obj:`float`</span>
-<span class="sd">            The 3 Euler angles.</span>
+<span class="sd">        list of float: The 3 Euler angles.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -371,8 +383,15 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">basis_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the basis vectors of the ``Rotation``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple: (:class:`Vector`, :class:`Vector`)</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">basis_vectors_from_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span></div>
+        <span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="k">import</span> <span class="n">Vector</span>
+        <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span> <span class="o">=</span> <span class="n">basis_vectors_from_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">xaxis</span><span class="p">),</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">yaxis</span><span class="p">)</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -456,7 +475,7 @@
         
 
         
-            Last updated on Oct 17, 2019.
+            Last updated on Oct 18, 2019.
         
 
         

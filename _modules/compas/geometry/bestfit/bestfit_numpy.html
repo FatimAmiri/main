@@ -73,8 +73,8 @@
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">leastsq</span>
 
 <span class="c1"># should this not be defined in a different location?</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">local_coords_numpy</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">global_coords_numpy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">world_to_local_coords_numpy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">local_to_world_coords_numpy</span>
 
 <span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="k">import</span> <span class="n">pca_numpy</span>
 
@@ -211,7 +211,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pca_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-    <span class="n">rst</span> <span class="o">=</span> <span class="n">local_coords_numpy</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">uvw</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+    <span class="n">rst</span> <span class="o">=</span> <span class="n">world_to_local_coords_numpy</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">rst</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">rst</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
 
@@ -232,7 +233,7 @@
 
     <span class="nb">print</span><span class="p">(</span><span class="n">residu</span><span class="p">)</span>
 
-    <span class="n">xyz</span> <span class="o">=</span> <span class="n">global_coords_numpy</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">,</span> <span class="p">[[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">]])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">local_to_world_coords_numpy</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">[[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">]])[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">o</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">uvw</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
@@ -371,7 +372,7 @@
         
 
         
-            Last updated on Oct 17, 2019.
+            Last updated on Oct 18, 2019.
         
 
         
