@@ -62,11 +62,6 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 
-<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sin</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">cos</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sqrt</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">pi</span>
-
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">length_vector</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">cross_vectors</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">subtract_vectors</span>
@@ -102,9 +97,9 @@
 <span class="sd">    &gt;&gt;&gt; u = Vector(1, 0, 0)</span>
 <span class="sd">    &gt;&gt;&gt; v = Vector(0, 1, 0)</span>
 <span class="sd">    &gt;&gt;&gt; u</span>
-<span class="sd">    [1.0, 0.0, 0.0]</span>
+<span class="sd">    Vector(1.000, 0.000, 0.000)</span>
 <span class="sd">    &gt;&gt;&gt; v</span>
-<span class="sd">    [0.0, 1.0, 0.0]</span>
+<span class="sd">    Vector(0.000, 1.000, 0.000)</span>
 <span class="sd">    &gt;&gt;&gt; u.x</span>
 <span class="sd">    1.0</span>
 <span class="sd">    &gt;&gt;&gt; u[0]</span>
@@ -112,21 +107,21 @@
 <span class="sd">    &gt;&gt;&gt; u.length</span>
 <span class="sd">    1.0</span>
 <span class="sd">    &gt;&gt;&gt; u + v</span>
-<span class="sd">    [1.0, 1.0, 0.0]</span>
+<span class="sd">    Vector(1.000, 1.000, 0.000)</span>
 <span class="sd">    &gt;&gt;&gt; u + [0.0, 1.0, 0.0]</span>
-<span class="sd">    [1.0, 1.0, 0.0]</span>
+<span class="sd">    Vector(1.000, 1.000, 0.000)</span>
 <span class="sd">    &gt;&gt;&gt; u * 2</span>
-<span class="sd">    [2.0, 0.0, 0.0]</span>
+<span class="sd">    Vector(2.000, 0.000, 0.000)</span>
 <span class="sd">    &gt;&gt;&gt; u.dot(v)</span>
 <span class="sd">    0.0</span>
 <span class="sd">    &gt;&gt;&gt; u.cross(v)</span>
-<span class="sd">    [0.0, 0.0, 1.0]</span>
+<span class="sd">    Vector(0.000, 0.000, 1.000)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_x&#39;</span><span class="p">,</span> <span class="s1">&#39;_y&#39;</span><span class="p">,</span> <span class="s1">&#39;_z&#39;</span><span class="p">,</span> <span class="s1">&#39;_precision&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="Vector.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Vector.__init__.html#compas.geometry.Vector.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Vector.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Vector.__init__.html#compas.geometry.Vector.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -136,9 +131,124 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">=</span> <span class="n">precision</span></div>
 
+<div class="viewcode-block" id="Vector.transform_collection"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Vector.transform_collection.html#compas.geometry.Vector.transform_collection">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">transform_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform a collection of ``Vector`` objects.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        collection : list of compas.geometry.Vector</span>
+<span class="sd">            The collection of vectors.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            The vectors are modified in-place.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_and_angle(Vector.Zaxis(), radians(90))</span>
+<span class="sd">        &gt;&gt;&gt; u = Vector(1.0, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; vectors = [u]</span>
+<span class="sd">        &gt;&gt;&gt; Vector.transform_collection(vectors, R)</span>
+<span class="sd">        &gt;&gt;&gt; v = vectors[0]</span>
+<span class="sd">        &gt;&gt;&gt; v</span>
+<span class="sd">        Vector(0.000, 1.000, 0.000)</span>
+<span class="sd">        &gt;&gt;&gt; u is v</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">transform_vectors</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">vector</span><span class="p">,</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+            <span class="n">vector</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">vector</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">vector</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Vector.transformed_collection"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Vector.transformed_collection.html#compas.geometry.Vector.transformed_collection">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">transformed_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a collection of transformed ``Vector`` objects.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        collection : list of compas.geometry.Vector</span>
+<span class="sd">            The collection of vectors.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of compas.geometry.Vector</span>
+<span class="sd">            The transformed vectors.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_and_angle(Vector.Zaxis(), radians(90))</span>
+<span class="sd">        &gt;&gt;&gt; u = Vector(1.0, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; vectors = [u]</span>
+<span class="sd">        &gt;&gt;&gt; vectors = Vector.transformed_collection(vectors, R)</span>
+<span class="sd">        &gt;&gt;&gt; v = vectors[0]</span>
+<span class="sd">        &gt;&gt;&gt; v</span>
+<span class="sd">        Vector(0.000, 1.000, 0.000)</span>
+<span class="sd">        &gt;&gt;&gt; u is v</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vectors</span> <span class="o">=</span> <span class="p">[</span><span class="n">vector</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">vector</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">]</span>
+        <span class="n">Vector</span><span class="o">.</span><span class="n">transform_collection</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">vectors</span></div>
+
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># factory</span>
     <span class="c1"># ==========================================================================</span>
+
+<div class="viewcode-block" id="Vector.Xaxis"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Vector.Xaxis.html#compas.geometry.Vector.Xaxis">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Xaxis</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a unit vector along the X axis.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Vector</span>
+<span class="sd">            A vector with components ``x = 1.0, y = 0.0, z = 0.0``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; Vector.Xaxis()</span>
+<span class="sd">        Vector(1.000, 0.000, 0.000)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Vector.Yaxis"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Vector.Yaxis.html#compas.geometry.Vector.Yaxis">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Yaxis</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a unit vector along the Y axis.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Vector</span>
+<span class="sd">            A vector with components ``x = 0.0, y = 1.0, z = 0.0``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; Vector.Yaxis()</span>
+<span class="sd">        Vector(0.000, 1.000, 0.000)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Vector.Zaxis"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Vector.Zaxis.html#compas.geometry.Vector.Zaxis">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Zaxis</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a unit vector along the Z axis.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Vector</span>
+<span class="sd">            A vector with components ``x = 0.0, y = 0.0, z = 1.0``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; Vector.Zaxis()</span>
+<span class="sd">        Vector(0.000, 0.000, 1.000)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Vector.from_start_end"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Vector.from_start_end.html#compas.geometry.Vector.from_start_end">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_start_end</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
@@ -671,23 +781,12 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">matrix_from_axis_and_angle</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
 
-    <span class="n">u</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">radians</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Rotation</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="mf">3.14159</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-
-    <span class="n">w</span> <span class="o">=</span> <span class="n">Vector</span><span class="o">.</span><span class="n">from_start_end</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-
-    <span class="n">M</span> <span class="o">=</span> <span class="n">matrix_from_axis_and_angle</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
-
-    <span class="n">u</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
@@ -758,7 +857,7 @@
         
 
         
-            Last updated on Oct 22, 2019.
+            Last updated on Oct 25, 2019.
         
 
         

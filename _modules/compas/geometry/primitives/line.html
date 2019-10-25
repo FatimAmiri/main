@@ -85,19 +85,21 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; line = Line([0, 0, 0], [1, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; line</span>
+<span class="sd">    Line(Point(0.000, 0.000, 0.000), Point(1.000, 1.000, 1.000))</span>
 <span class="sd">    &gt;&gt;&gt; line.midpoint</span>
 <span class="sd">    Point(0.500, 0.500, 0.500)</span>
-<span class="sd">    &gt;&gt;&gt; line.length</span>
-<span class="sd">    1.73205080757</span>
+<span class="sd">    &gt;&gt;&gt; line.length == sqrt(1 + 1 + 1)</span>
+<span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; line.direction</span>
-<span class="sd">    Vector(0.577, 0.577, 0.577, 1.000)</span>
+<span class="sd">    Vector(0.577, 0.577, 0.577)</span>
 
-<span class="sd">    &gt;&gt;&gt; type(line.start)</span>
-<span class="sd">    &lt;class &#39;compas.geometry.objects.point.Point&#39;&gt;</span>
-<span class="sd">    &gt;&gt;&gt; type(line.midpoint)</span>
-<span class="sd">    &lt;class &#39;compas.geometry.objects.point.Point&#39;&gt;</span>
-<span class="sd">    &gt;&gt;&gt; type(line.direction)</span>
-<span class="sd">    &lt;class &#39;compas.geometry.objects.vector.Vector&#39;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; type(line.start) == Point</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; type(line.midpoint) == Point</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; type(line.direction) == Vector</span>
+<span class="sd">    True</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -117,6 +119,67 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">p1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">p2</span></div>
+
+<div class="viewcode-block" id="Line.transform_collection"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Line.transform_collection.html#compas.geometry.Line.transform_collection">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">transform_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform a collection of ``Line`` objects.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        collection : list of compas.geometry.Line</span>
+<span class="sd">            The collection of lines.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            The lines are modified in-place.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_and_angle(Vector.Zaxis(), radians(90))</span>
+<span class="sd">        &gt;&gt;&gt; a = Line(Point(0.0, 0.0, 0.0), Point(1.0, 0.0, 0.0))</span>
+<span class="sd">        &gt;&gt;&gt; lines = [a]</span>
+<span class="sd">        &gt;&gt;&gt; Line.transform_collection(lines, R)</span>
+<span class="sd">        &gt;&gt;&gt; b = lines[0]</span>
+<span class="sd">        &gt;&gt;&gt; b.end</span>
+<span class="sd">        Point(0.000, 1.000, 0.000)</span>
+<span class="sd">        &gt;&gt;&gt; a is b</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">start</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">end</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">]</span>
+        <span class="n">Point</span><span class="o">.</span><span class="n">transform_collection</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Line.transformed_collection"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Line.transformed_collection.html#compas.geometry.Line.transformed_collection">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">transformed_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a collection of transformed ``Line`` objects.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        collection : list of compas.geometry.Line</span>
+<span class="sd">            The collection of lines.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of compas.geometry.Line</span>
+<span class="sd">            The transformed lines.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_and_angle(Vector.Zaxis(), radians(90))</span>
+<span class="sd">        &gt;&gt;&gt; a = Line(Point(0.0, 0.0, 0.0), Point(1.0, 0.0, 0.0))</span>
+<span class="sd">        &gt;&gt;&gt; lines = [a]</span>
+<span class="sd">        &gt;&gt;&gt; lines = Line.transformed_collection(lines, R)</span>
+<span class="sd">        &gt;&gt;&gt; b = lines[0]</span>
+<span class="sd">        &gt;&gt;&gt; b.end</span>
+<span class="sd">        Point(0.000, 1.000, 0.000)</span>
+<span class="sd">        &gt;&gt;&gt; a is b</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">]</span>
+        <span class="n">Line</span><span class="o">.</span><span class="n">transform_collection</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lines</span></div>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># factory</span>
@@ -293,17 +356,16 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
-    <span class="n">l1</span> <span class="o">=</span> <span class="n">Line</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">l1</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sqrt</span>
+    <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">radians</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">start</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">midpoint</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="o">.</span><span class="mi">75</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">midpoint</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">direction</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">direction</span><span class="p">))</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Rotation</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Point</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Vector</span>
+
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
@@ -374,7 +436,7 @@
         
 
         
-            Last updated on Oct 22, 2019.
+            Last updated on Oct 25, 2019.
         
 
         
