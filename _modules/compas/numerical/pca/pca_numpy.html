@@ -75,7 +75,6 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    data : list</span>
-
 <span class="sd">        A list of `m` observations, measuring `n` variables.</span>
 <span class="sd">        For example, if the data are points in 2D space, the data parameter</span>
 <span class="sd">        should contain `m` nested lists of `2` variables, the `x` and `y`</span>
@@ -84,7 +83,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    tuple</span>
-<span class="sd">        * The ``mean of the data points``</span>
+<span class="sd">        * The ``mean of the data points``.</span>
 <span class="sd">        * The principle directions.</span>
 <span class="sd">          The number of principle directions is equal to the dimensionality of the data.</span>
 <span class="sd">          For example, if the data points are locations in 3D space, three principle components will be returned.</span>
@@ -98,6 +97,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -137,18 +137,16 @@
     <span class="c1"># =&gt; take the rows of vT, or the columns of v</span>
     <span class="c1"># the right-singular vectors of C (the columns of V or the rows of Vt)</span>
     <span class="c1"># are the eigenvectors of CtC</span>
-
     <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">vT</span>
 
     <span class="c1"># eigenvalues</span>
     <span class="c1"># -----------</span>
     <span class="c1"># the nonzero singular values of C are the square roots</span>
     <span class="c1"># of the nonzero eigenvalues of CtC and CCt</span>
-
     <span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">s</span>
 
     <span class="c1"># return</span>
-    <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">eigenvectors</span><span class="p">,</span> <span class="n">eigenvalues</span></div>
+    <span class="k">return</span> <span class="n">mean</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eigenvectors</span><span class="p">,</span> <span class="n">eigenvalues</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -157,43 +155,9 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">random</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
 
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">matrix_from_axis_and_angle</span>
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">transform_points_numpy</span>
-
-    <span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="k">import</span> <span class="n">Axes3D</span>
-    <span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="k">import</span> <span class="n">Cloud3D</span>
-    <span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="k">import</span> <span class="n">Bounds</span>
-    <span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="k">import</span> <span class="n">create_axes_3d</span>
-
-    <span class="n">data</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">10.0</span>
-    <span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.0</span>
-    <span class="n">data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">4.0</span>
-
-    <span class="n">a</span> <span class="o">=</span> <span class="mf">3.14159</span> <span class="o">*</span> <span class="mf">30.0</span> <span class="o">/</span> <span class="mi">180</span>
-    <span class="n">Ry</span> <span class="o">=</span> <span class="n">matrix_from_axis_and_angle</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">a</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
-
-    <span class="n">a</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3.14159</span> <span class="o">*</span> <span class="mf">45.0</span> <span class="o">/</span> <span class="mi">180</span>
-    <span class="n">Rz</span> <span class="o">=</span> <span class="n">matrix_from_axis_and_angle</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="n">a</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
-
-    <span class="n">R</span> <span class="o">=</span> <span class="n">Rz</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Ry</span><span class="p">)</span>
-
-    <span class="n">data</span> <span class="o">=</span> <span class="n">transform_points_numpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
-
-    <span class="n">average</span><span class="p">,</span> <span class="n">vectors</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">pca_numpy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-    <span class="n">axes</span> <span class="o">=</span> <span class="n">create_axes_3d</span><span class="p">()</span>
-
-    <span class="n">Bounds</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
-    <span class="n">Cloud3D</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
-    <span class="n">Axes3D</span><span class="p">(</span><span class="n">average</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
@@ -264,11 +228,11 @@
         
 
         
-            Last updated on Oct 25, 2019.
+            Last updated on Oct 27, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
         
     </div>
 </footer>

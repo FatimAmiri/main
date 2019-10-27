@@ -65,14 +65,13 @@
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">sqrt</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">mean</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="nb">sum</span>
+<span class="c1"># from numpy import sum</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">zeros</span>
 <span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">lstsq</span>
 
-<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="k">import</span> <span class="n">svd</span>
+<span class="c1"># from scipy.linalg import svd</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">leastsq</span>
 
-<span class="c1"># should this not be defined in a different location?</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">world_to_local_coords_numpy</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">local_to_world_coords_numpy</span>
 
@@ -81,6 +80,7 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;bestfit_plane_numpy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bestfit_frame_numpy&#39;</span><span class="p">,</span>
     <span class="s1">&#39;bestfit_circle_numpy&#39;</span><span class="p">,</span>
     <span class="s1">&#39;bestfit_sphere_numpy&#39;</span><span class="p">,</span>
 <span class="p">]</span>
@@ -88,10 +88,6 @@
 
 <div class="viewcode-block" id="bestfit_plane_numpy"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.bestfit_plane_numpy.html#compas.geometry.bestfit_plane_numpy">[docs]</a><span class="k">def</span> <span class="nf">bestfit_plane_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fit a plane through more than three (non-coplanar) points.</span>
-
-<span class="sd">    Warning</span>
-<span class="sd">    -------</span>
-<span class="sd">    This function requires Numpy and Scipy.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -105,79 +101,41 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        #</span>
+<span class="sd">    &gt;&gt;&gt;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">xyz</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-    <span class="n">Yt</span> <span class="o">=</span> <span class="n">xyz</span> <span class="o">-</span> <span class="n">c</span>
-    <span class="n">C</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">Yt</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Yt</span><span class="p">)</span>
-    <span class="n">u</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">vT</span> <span class="o">=</span> <span class="n">svd</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">vT</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span>
-    <span class="k">return</span> <span class="n">c</span><span class="p">,</span> <span class="n">w</span></div>
+    <span class="c1"># xyz = asarray(points).reshape((-1, 3))</span>
+    <span class="c1"># n = xyz.shape[0]</span>
+    <span class="c1"># c = (sum(xyz, axis=0) / n).reshape((-1, 3))</span>
+    <span class="c1"># Yt = xyz - c</span>
+    <span class="c1"># C = Yt.T.dot(Yt) / (n - 1)</span>
+    <span class="c1"># U, S, Vt = svd(C)</span>
+    <span class="c1"># w = Vt[2, :]</span>
+    <span class="c1"># return c, w</span>
+    <span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pca_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
 
 
-<span class="c1"># # @see: https://stackoverflow.com/questions/35070178/fit-plane-to-a-set-of-points-in-3d-scipy-optimize-minimize-vs-scipy-linalg-lsts</span>
-<span class="c1"># # @see: https://stackoverflow.com/questions/20699821/find-and-draw-regression-plane-to-a-set-of-points/20700063#20700063</span>
-<span class="c1"># # @see: http://www.ilikebigbits.com/blog/2015/3/2/plane-from-points</span>
-<span class="c1"># # @see: https://math.stackexchange.com/questions/99299/best-fitting-plane-given-a-set-of-points</span>
+<span class="k">def</span> <span class="nf">bestfit_frame_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fit a frame to a set of points.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points : list</span>
+<span class="sd">        XYZ coordinates of the points.</span>
 
-<span class="c1"># def bestfit_plane_numpy2(points):</span>
-<span class="c1">#     from numpy import asarray</span>
-<span class="c1">#     from numpy import sum</span>
-<span class="c1">#     from numpy import hstack</span>
-<span class="c1">#     from numpy import ones</span>
-<span class="c1">#     from scipy.linalg import solve</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    3-tuple</span>
+<span class="sd">        The frame origin, and the local X and Y axes.</span>
 
-<span class="c1">#     xyz = asarray(points).reshape((-1, 3))</span>
-<span class="c1">#     n = xyz.shape[0]</span>
-<span class="c1">#     c = (sum(xyz, axis=0) / n).reshape((-1, 3))</span>
-<span class="c1">#     A = hstack((xyz[:, 0:2], ones((xyz.shape[0], 1))))</span>
-<span class="c1">#     b = xyz[:, 2:]</span>
-<span class="c1">#     a, b, c = solve(A.T.dot(A), A.T.dot(b))</span>
-<span class="c1">#     u = 1.0, 0.0, a[0]</span>
-<span class="c1">#     v = 0.0, 1.0, b[0]</span>
-<span class="c1">#     w = normalize_vector(cross_vectors(u, v))</span>
-<span class="c1">#     return c, w</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
 
-
-<span class="c1"># def bestfit_plane_numpy3(points):</span>
-<span class="c1">#     from numpy import asarray</span>
-<span class="c1">#     from numpy import sum</span>
-<span class="c1">#     from functools import partial</span>
-<span class="c1">#     from scipy.optimize import minimize</span>
-
-<span class="c1">#     def plane(x, y, abc):</span>
-<span class="c1">#         a, b, c = abc</span>
-<span class="c1">#         return a * x + b * y + c</span>
-
-<span class="c1">#     def error(abc, points):</span>
-<span class="c1">#         result = 0</span>
-<span class="c1">#         for x, y, z in points:</span>
-<span class="c1">#             znew = plane(x, y, abc)</span>
-<span class="c1">#             result += (znew - z) ** 2</span>
-<span class="c1">#         return result</span>
-
-<span class="c1">#     c = sum(asarray(points), axis=0) / len(points)</span>
-<span class="c1">#     objective = partial(error, points=points)</span>
-<span class="c1">#     res = minimize(objective, [0, 0, 0])</span>
-<span class="c1">#     a, b, c = res.x</span>
-<span class="c1">#     u = 1.0, 0.0, a</span>
-<span class="c1">#     v = 0.0, 1.0, b</span>
-<span class="c1">#     w = normalize_vector(cross_vectors(u, v))</span>
-<span class="c1">#     return c, w</span>
-
-
-<span class="c1"># def bestfit_plane_numpy4(points):</span>
-<span class="c1">#     from compas.numerical import pca_numpy</span>
-
-<span class="c1">#     c, (_, _, w), _ = pca_numpy(points)</span>
-<span class="c1">#     return c, w</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pca_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">uvw</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="bestfit_circle_numpy"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.bestfit_circle_numpy.html#compas.geometry.bestfit_circle_numpy">[docs]</a><span class="k">def</span> <span class="nf">bestfit_circle_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
@@ -196,6 +154,14 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
+<span class="sd">    The point of this function is to find the bestfit frame through the given points</span>
+<span class="sd">    and transform the points to make the problem 2D.</span>
+
+<span class="sd">    Once in 2D, the problem simplifies to finding the center point that minimises</span>
+<span class="sd">    the difference between the resulting circles for all given points, i.e.</span>
+<span class="sd">    minimise in the least squares sense the deviation between the individual</span>
+<span class="sd">    radii and the average radius.</span>
+
 <span class="sd">    For more information see [1]_.</span>
 
 <span class="sd">    References</span>
@@ -205,40 +171,48 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        #</span>
+<span class="sd">    &gt;&gt;&gt;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pca_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
     <span class="n">frame</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span><span class="p">,</span> <span class="n">uvw</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">uvw</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+
     <span class="n">rst</span> <span class="o">=</span> <span class="n">world_to_local_coords_numpy</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+
     <span class="n">x</span> <span class="o">=</span> <span class="n">rst</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">rst</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">dist</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">):</span>
+        <span class="c1"># compute the radius of the circle through each of the given points</span>
+        <span class="c1"># for the current centre point</span>
         <span class="k">return</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">xc</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">yc</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+        <span class="c1"># compute the deviation of the radius of each sample point</span>
+        <span class="c1"># from the average radius</span>
+        <span class="c1"># =&gt; minimize this deviation</span>
         <span class="n">Ri</span> <span class="o">=</span> <span class="n">dist</span><span class="p">(</span><span class="o">*</span><span class="n">c</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Ri</span> <span class="o">-</span> <span class="n">Ri</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
     <span class="n">xm</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">ym</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="n">c0</span> <span class="o">=</span> <span class="n">xm</span><span class="p">,</span> <span class="n">ym</span>
-    <span class="n">c</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">c0</span><span class="p">)</span>
+    <span class="n">c</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">c0</span><span class="p">)</span>
+
+    <span class="c1"># compute the radius of the circle through each sample point for the</span>
+    <span class="c1"># computed center point.</span>
     <span class="n">Ri</span> <span class="o">=</span> <span class="n">dist</span><span class="p">(</span><span class="o">*</span><span class="n">c</span><span class="p">)</span>
+
+    <span class="c1"># compute the radius of the bestfit circle as the average of the individual</span>
+    <span class="c1"># radii.</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">Ri</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    <span class="n">residu</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">Ri</span> <span class="o">-</span> <span class="n">R</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">residu</span><span class="p">)</span>
+    <span class="c1"># residu = sum((Ri - R) ** 2)</span>
+    <span class="c1"># print(residu)</span>
 
+    <span class="c1"># convert the location of the center point back to global coordinates.</span>
     <span class="n">xyz</span> <span class="o">=</span> <span class="n">local_to_world_coords_numpy</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">[[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">]])[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="n">o</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">uvw</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-
-    <span class="k">return</span> <span class="n">o</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">R</span></div>
+    <span class="k">return</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">uvw</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">R</span></div>
 
 
 <span class="k">def</span> <span class="nf">bestfit_sphere_numpy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
@@ -372,11 +346,11 @@
         
 
         
-            Last updated on Oct 25, 2019.
+            Last updated on Oct 27, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
         
     </div>
 </footer>
