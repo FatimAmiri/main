@@ -789,6 +789,39 @@
         <span class="n">p</span> <span class="o">=</span> <span class="n">Polyhedron</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Mesh.from_shape"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.from_shape.html#compas.datastructures.Mesh.from_shape">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_shape</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a mesh from a primitive shape.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        shape : :class: `compas.geometry.shape`</span>
+<span class="sd">            The input shape to generate a mesh from.</span>
+<span class="sd">        kwargs:</span>
+<span class="sd">            Optional keyword arguments ``u`` and ``v`` for the resolution in u (Torus, Sphere, Cylinder, Cone) and v direction (Torus and Sphere).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Mesh</span>
+<span class="sd">            A mesh object.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            import compas</span>
+<span class="sd">            from compas.geometry import Torus</span>
+<span class="sd">            from compas.datastructures import Mesh</span>
+
+<span class="sd">            t = Torus(((0, 0, 0), (0, 0, 1)), 2, 1)</span>
+<span class="sd">            mesh = Mesh.from_shape(t)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">to_vertices_and_faces</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mesh</span></div>
+
 <div class="viewcode-block" id="Mesh.from_points"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.from_points.html#compas.datastructures.Mesh.from_points">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_points</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">holes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Construct a mesh from a delaunay triangulation of a set of points.</span>
@@ -3244,7 +3277,6 @@
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-
     <span class="k">pass</span>
 </code></pre></div>
                     

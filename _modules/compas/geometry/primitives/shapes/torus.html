@@ -62,8 +62,13 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">cos</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sin</span>
 
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">matrix_from_frame</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">transform_points</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="k">import</span> <span class="n">Frame</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="k">import</span> <span class="n">Plane</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.primitives.shapes</span> <span class="k">import</span> <span class="n">Shape</span>
 
@@ -219,6 +224,41 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
 
+<div class="viewcode-block" id="Torus.to_vertices_and_faces"><a class="viewcode-back" href="../../../../../api/generated/compas.geometry.Torus.to_vertices_and_faces.html#compas.geometry.Torus.to_vertices_and_faces">[docs]</a>    <span class="k">def</span> <span class="nf">to_vertices_and_faces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a list of vertices and faces&quot;&quot;&quot;</span>
+
+        <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">10</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;v&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">10</span>
+        <span class="k">if</span> <span class="n">u</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The values for u and v should be &gt; 3.&#39;</span><span class="p">)</span>
+
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">pi</span><span class="o">*</span><span class="mi">2</span> <span class="o">/</span> <span class="n">u</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">pi</span><span class="o">*</span><span class="mi">2</span> <span class="o">/</span> <span class="n">v</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius_axis</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius_pipe</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">))</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius_axis</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius_pipe</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">))</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius_pipe</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">)</span>
+                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span>
+
+        <span class="c1"># transform vertices to torus&#39; plane</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">Frame</span><span class="o">.</span><span class="n">from_plane</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plane</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">matrix_from_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">transform_points</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+
+        <span class="n">faces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">u</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                <span class="n">jj</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">v</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">j</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">j</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">jj</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">jj</span>
+                <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span></div>
+
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># representation</span>
     <span class="c1"># ==========================================================================</span>
@@ -335,8 +375,6 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Frame</span>
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Plane</span>
     <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Transformation</span>
 
     <span class="n">torus</span> <span class="o">=</span> <span class="n">Torus</span><span class="p">(</span><span class="n">Plane</span><span class="o">.</span><span class="n">worldXY</span><span class="p">(),</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
