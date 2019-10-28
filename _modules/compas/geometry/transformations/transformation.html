@@ -73,8 +73,10 @@
 <span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">multiply_matrices</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">transpose_matrix</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_inverse</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_determinant</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">identity_matrix</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_frame</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">matrix_from_euler_angles</span>
@@ -122,10 +124,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span></div>
 
     <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">concatenated</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">concatenated</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">key</span>
@@ -306,70 +308,6 @@
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">multiply_matrices</span><span class="p">(</span><span class="n">matrix_inverse</span><span class="p">(</span><span class="n">T2</span><span class="o">.</span><span class="n">matrix</span><span class="p">),</span> <span class="n">T1</span><span class="o">.</span><span class="n">matrix</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Transformation.inverse"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Transformation.inverse.html#compas.geometry.Transformation.inverse">[docs]</a>    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the inverse transformation.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Transformation</span>
-<span class="sd">            The inverse transformation.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from compas.geometry import Frame</span>
-<span class="sd">        &gt;&gt;&gt; f = Frame([1, 1, 1], [0.68, 0.68, 0.27], [-0.67, 0.73, -0.15])</span>
-<span class="sd">        &gt;&gt;&gt; T = Transformation.from_frame(f)</span>
-<span class="sd">        &gt;&gt;&gt; I = Transformation()</span>
-<span class="sd">        &gt;&gt;&gt; I == T * T.inverse()</span>
-<span class="sd">        True</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">matrix_inverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="Transformation.decompose"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Transformation.decompose.html#compas.geometry.Transformation.decompose">[docs]</a>    <span class="k">def</span> <span class="nf">decompose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Decomposes the ``Transformation`` into ``Scale``, ``Shear``, ``Rotation``, ``Translation`` and ``Perspective``.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        5-tuple of Transformation</span>
-<span class="sd">            The scale, shear, rotation, tranlation, and projection components</span>
-<span class="sd">            of the current transformation.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; trans1 = [1, 2, 3]</span>
-<span class="sd">        &gt;&gt;&gt; angle1 = [-2.142, 1.141, -0.142]</span>
-<span class="sd">        &gt;&gt;&gt; scale1 = [0.123, 2, 0.5]</span>
-<span class="sd">        &gt;&gt;&gt; T1 = Translation(trans1)</span>
-<span class="sd">        &gt;&gt;&gt; R1 = Rotation.from_euler_angles(angle1)</span>
-<span class="sd">        &gt;&gt;&gt; S1 = Scale(scale1)</span>
-<span class="sd">        &gt;&gt;&gt; M = (T1 * R1) * S1</span>
-<span class="sd">        &gt;&gt;&gt; Sc, Sh, R, T, P = M.decompose()</span>
-<span class="sd">        &gt;&gt;&gt; S1 == Sc</span>
-<span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; R1 == R</span>
-<span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; T1 == T</span>
-<span class="sd">        True</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Scale</span>
-        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Shear</span>
-        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Rotation</span>
-        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Translation</span>
-        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Projection</span>
-
-        <span class="n">sc</span><span class="p">,</span> <span class="n">sh</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
-
-        <span class="n">Sc</span> <span class="o">=</span> <span class="n">Scale</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
-        <span class="n">Sh</span> <span class="o">=</span> <span class="n">Shear</span><span class="o">.</span><span class="n">from_entries</span><span class="p">(</span><span class="n">sh</span><span class="p">)</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler_angles</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
-        <span class="n">T</span> <span class="o">=</span> <span class="n">Translation</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-        <span class="n">P</span> <span class="o">=</span> <span class="n">Projection</span><span class="o">.</span><span class="n">from_entries</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">Sc</span><span class="p">,</span> <span class="n">Sh</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span></div>
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">rotation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the ``Rotation`` component from the ``Transformation``.</span>
@@ -401,18 +339,152 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span>
 
+<div class="viewcode-block" id="Transformation.transpose"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Transformation.transpose.html#compas.geometry.Transformation.transpose">[docs]</a>    <span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transpose the matrix of this transformation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            The transformation is transposed in-place.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">transpose_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Transformation.transposed"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Transformation.transposed.html#compas.geometry.Transformation.transposed">[docs]</a>    <span class="k">def</span> <span class="nf">transposed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a transposed copy of this transformation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        T: :class:`compas.geometry.Transformation`</span>
+<span class="sd">            The transposed transformation object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">T</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">T</span></div>
+
+<div class="viewcode-block" id="Transformation.invert"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Transformation.invert.html#compas.geometry.Transformation.invert">[docs]</a>    <span class="k">def</span> <span class="nf">invert</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Invert this transformation.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix_inverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Transformation.inverse"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Transformation.inverse.html#compas.geometry.Transformation.inverse">[docs]</a>    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the inverse transformation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Transformation</span>
+<span class="sd">            The inverse transformation.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from compas.geometry import Frame</span>
+<span class="sd">        &gt;&gt;&gt; f = Frame([1, 1, 1], [0.68, 0.68, 0.27], [-0.67, 0.73, -0.15])</span>
+<span class="sd">        &gt;&gt;&gt; T = Transformation.from_frame(f)</span>
+<span class="sd">        &gt;&gt;&gt; I = Transformation()</span>
+<span class="sd">        &gt;&gt;&gt; I == T * T.inverse()</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># cls = type(self)</span>
+        <span class="c1"># return cls(matrix_inverse(self.matrix))</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">T</span><span class="o">.</span><span class="n">invert</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">T</span></div>
+
+    <span class="n">inverted</span> <span class="o">=</span> <span class="n">inverse</span>
+
+<div class="viewcode-block" id="Transformation.determinant"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Transformation.determinant.html#compas.geometry.Transformation.determinant">[docs]</a>    <span class="k">def</span> <span class="nf">determinant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The determinant of the matrix of the transformation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The determinant of the matrix of this transformation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">matrix_determinant</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Transformation.decomposed"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Transformation.decomposed.html#compas.geometry.Transformation.decomposed">[docs]</a>    <span class="k">def</span> <span class="nf">decomposed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Decompose the ``Transformation`` into its ``Scale``, ``Shear``,</span>
+<span class="sd">        ``Rotation``, ``Translation`` and ``Perspective`` components.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        5-tuple of Transformation</span>
+<span class="sd">            The scale, shear, rotation, tranlation, and projection components</span>
+<span class="sd">            of the current transformation.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; trans1 = [1, 2, 3]</span>
+<span class="sd">        &gt;&gt;&gt; angle1 = [-2.142, 1.141, -0.142]</span>
+<span class="sd">        &gt;&gt;&gt; scale1 = [0.123, 2, 0.5]</span>
+<span class="sd">        &gt;&gt;&gt; T1 = Translation(trans1)</span>
+<span class="sd">        &gt;&gt;&gt; R1 = Rotation.from_euler_angles(angle1)</span>
+<span class="sd">        &gt;&gt;&gt; S1 = Scale(scale1)</span>
+<span class="sd">        &gt;&gt;&gt; M = (T1 * R1) * S1</span>
+<span class="sd">        &gt;&gt;&gt; Sc, Sh, R, T, P = M.decomposed()</span>
+<span class="sd">        &gt;&gt;&gt; S1 == Sc</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; R1 == R</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; T1 == T</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Scale</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Shear</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Rotation</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Translation</span>
+        <span class="kn">from</span> <span class="nn">compas.geometry.transformations</span> <span class="k">import</span> <span class="n">Projection</span>
+        <span class="n">sc</span><span class="p">,</span> <span class="n">sh</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="n">Sc</span> <span class="o">=</span> <span class="n">Scale</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+        <span class="n">Sh</span> <span class="o">=</span> <span class="n">Shear</span><span class="o">.</span><span class="n">from_entries</span><span class="p">(</span><span class="n">sh</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler_angles</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">Translation</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">Projection</span><span class="o">.</span><span class="n">from_entries</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Sc</span><span class="p">,</span> <span class="n">Sh</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span></div>
+
 <div class="viewcode-block" id="Transformation.concatenate"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Transformation.concatenate.html#compas.geometry.Transformation.concatenate">[docs]</a>    <span class="k">def</span> <span class="nf">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Concatenate two transformations into one ``Transformation``.</span>
+        <span class="sd">&quot;&quot;&quot;Concatenate another transformation to this transformation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other: :class:`compas.geometry.Transformation`</span>
+<span class="sd">            The transformation object to concatenate.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            This transformation object is changed in-place.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Rz * Ry * Rx means that Rx is first transformation, Ry second, and Rz third.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">multiply_matrices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Transformation.concatenated"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Transformation.concatenated.html#compas.geometry.Transformation.concatenated">[docs]</a>    <span class="k">def</span> <span class="nf">concatenated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Concatenate two transformations into one ``Transformation``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other: :class:`compas.geometry.Transformation`</span>
+<span class="sd">            The transformation object to concatenate.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        T: :class:`compas.geometry.Transformation`</span>
+<span class="sd">            The new transformation that is the concatenation of this one and the other.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Rz * Ry * Rx means that Rx is first transformation, Ry second, and Rz third.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># T = self.copy()</span>
+        <span class="c1"># T.concatenate(other)</span>
+        <span class="c1"># return T</span>
         <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">Transformation</span><span class="p">(</span><span class="n">multiply_matrices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">matrix</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">multiply_matrices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">matrix</span><span class="p">))</span></div></div>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">multiply_matrices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">matrix</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Transformation</span><span class="p">(</span><span class="n">multiply_matrices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">matrix</span><span class="p">))</span></div></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -420,6 +492,7 @@
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
     <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Translation</span>
     <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Rotation</span>
     <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Scale</span>
@@ -497,7 +570,7 @@
         
 
         
-            Last updated on Oct 27, 2019.
+            Last updated on Oct 28, 2019.
         
 
         
@@ -509,7 +582,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.9.0',
+    VERSION           : '0.9.1',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',
