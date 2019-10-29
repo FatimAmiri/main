@@ -19,11 +19,11 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/compas-reference.css" />
 
     
-        <link rel="next" title="Artist.redraw" href="compas_rhino.artists.Artist.redraw.html" />
+        <link rel="next" title="LineArtist" href="compas_rhino.artists.LineArtist.html" />
     
     
     
-        <link rel="prev" title="Artist.draw_polygons" href="compas_rhino.artists.Artist.draw_polygons.html" />
+        <link rel="prev" title="PointArtist.draw" href="compas_rhino.artists.PointArtist.draw.html" />
     
 
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -61,41 +61,39 @@
 
                     
 
-                    <div class="detail section" id="artist-draw-polylines">
-<h1>Artist.draw_polylines</h1>
+                    <div class="detail section" id="pointartist-draw-collection">
+<h1>PointArtist.draw_collection</h1>
 <dl class="method">
-<dt id="compas_rhino.artists.Artist.draw_polylines">
-<code class="sig-prename descclassname">Artist.</code><code class="sig-name descname">draw_polylines</code><span class="sig-paren">(</span><em class="sig-param">polylines</em>, <em class="sig-param">layer=None</em>, <em class="sig-param">clear_layer=False</em>, <em class="sig-param">redraw=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas_rhino/artists/artist.html#Artist.draw_polylines"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Draw a collection of polygons.</p>
+<dt id="compas_rhino.artists.PointArtist.draw_collection">
+<em class="property">static </em><code class="sig-prename descclassname">PointArtist.</code><code class="sig-name descname">draw_collection</code><span class="sig-paren">(</span><em class="sig-param">collection</em>, <em class="sig-param">color=None</em>, <em class="sig-param">layer=None</em>, <em class="sig-param">clear=False</em>, <em class="sig-param">group_collection=False</em>, <em class="sig-param">group_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas_rhino/artists/pointartist.html#PointArtist.draw_collection"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw a collection of points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>polylines</strong> (<em>list of dict</em>) – The polylines to draw.</p></li>
-<li><p><strong>layer</strong> (<em>str, optional</em>) – The layer to draw the points in.
-Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case the current layer is used.</p></li>
-<li><p><strong>clear_layer</strong> (<em>bool, optional</em>) – Clear the specified layer.
+<li><p><strong>collection</strong> (<em>list of compas.geometry.Point</em>) – A collection of <code class="docutils literal notranslate"><span class="pre">Point</span></code> objects.</p></li>
+<li><p><strong>color</strong> (<em>tuple or list of tuple (optional)</em>) – Color specification of the points.
+If one RGB color is provided, it will be applied to all points.
+If a list of RGB colors is provided, these colors are applied to the corresponding points.
+A list of colors should have the same length as the collection, with one color per item.
+Default value is <code class="docutils literal notranslate"><span class="pre">None</span></code> in which case the default point color of the artist is used.</p></li>
+<li><p><strong>layer</strong> (<em>str (optional)</em>) – The layer in which the objects of the collection should be created.
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case the default layer setting of the artist is used.</p></li>
+<li><p><strong>clear</strong> (<em>bool (optional)</em>) – Clear the layer before drawing.
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>redraw</strong> (<em>bool, optional</em>) – Redraw the Rhino view.
+<li><p><strong>group_collection</strong> (<em>bool (optional)</em>) – Flag for grouping the objects of the collection.
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>group_name</strong> (<em>str (optional).</em>) – The name of the group.
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>list of guid</em> – The GUIDs of the polyline objects.</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>guids</strong> (<em>list</em>) – A list of GUIDs if the collection is not grouped.</p></li>
+<li><p><strong>groupname</strong> (<em>str</em>) – The name of the group if the collection objects are grouped.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<p>The attributes required for drawing a polyline are stored in a dictionary per polyline.
-The dictionary has the following structure:</p>
-<div class="language-none notranslate"><div class="highlight"><pre><code><span></span>{
-    &#39;points&#39; : list of point,
-    &#39;name&#39;   : str,                      # optional
-    &#39;color&#39;  : rgb or hex,               # optional
-    &#39;layer&#39;  : str,                      # optional, defaults to the value of the parameter ``layer``.
-    &#39;width&#39;  : float,                    # optional, modifies the plot weight if not None.
-    &#39;arrow&#39;  : {&#39;start&#39;, &#39;end&#39;, &#39;both&#39;}  # optional
-}
-</code></pre></div>
-</div>
 </dd></dl>
 
 </div>
@@ -173,7 +171,7 @@ The dictionary has the following structure:</p>
                 
 
                 <ul class="nav flex-column" id="compas-localnav">
-<li class="nav-item"><a class="nav-link reference internal" href="#">Artist.draw_polylines</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#">PointArtist.draw_collection</a></li>
 </ul>
 
 
@@ -191,7 +189,7 @@ The dictionary has the following structure:</p>
         
 
         
-            Last updated on Oct 28, 2019.
+            Last updated on Oct 29, 2019.
         
 
         
