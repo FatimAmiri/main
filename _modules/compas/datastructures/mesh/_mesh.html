@@ -58,72 +58,59 @@
                     
 
                     <h1>Source code for compas.datastructures.mesh._mesh</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">collections</span>
-
-<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">ast</span> <span class="k">import</span> <span class="n">literal_eval</span>
-
-<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
-
-<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">average</span>
-
-<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">OBJ</span>
-<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">PLY</span>
-<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">STL</span>
-<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">OFF</span>
-
-<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
-<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">window</span>
-<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">geometric_key</span>
-
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">normalize_vector</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">centroid_points</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">centroid_polygon</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">cross_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">length_vector</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">scale_vector</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">add_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">sum_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">subtract_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">normal_polygon</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">area_polygon</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">flatness</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Polyhedron</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">angle_points</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">bestfit_plane</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">distance_point_plane</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">distance_point_point</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">pi</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Datastructure</span>
-
-<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexAttributesManagement</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexHelpers</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexFilter</span>
-
-<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">EdgeHelpers</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">EdgeGeometry</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">EdgeFilter</span>
-
+<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">EdgeGeometry</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">EdgeHelpers</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">EdgeMappings</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FaceAttributesManagement</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FaceHelpers</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FaceFilter</span>
-
+<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FaceHelpers</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FaceMappings</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FromToData</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FromToJson</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FromToPickle</span>
-
+<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexAttributesManagement</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexFilter</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexHelpers</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">VertexMappings</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">EdgeMappings</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures._mixins</span> <span class="k">import</span> <span class="n">FaceMappings</span>
-
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">OBJ</span>
+<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">OFF</span>
+<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">PLY</span>
+<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">STL</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Polyhedron</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">angle_points</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">area_polygon</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">bestfit_plane</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">centroid_points</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">centroid_polygon</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">cross_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">distance_point_plane</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">distance_point_point</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">flatness</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">length_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">normal_polygon</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">normalize_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">scale_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">subtract_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">sum_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">average</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">geometric_key</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">window</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Mesh&#39;</span><span class="p">]</span>
 
@@ -142,6 +129,7 @@
 
 <span class="s2">================================================================================</span>
 <span class="s2">&quot;&quot;&quot;</span>
+
 
 <span class="k">class</span> <span class="nc">Mesh</span><span class="p">(</span><span class="n">FromToPickle</span><span class="p">,</span>
            <span class="n">FromToJson</span><span class="p">,</span>
@@ -219,7 +207,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;Mesh&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Mesh&#39;</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_face_attributes</span> <span class="o">=</span> <span class="p">{}</span></div>
@@ -289,15 +277,15 @@
 <span class="sd">        format, which only allows for dict keys that are strings.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;attributes&#39;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span>
-                <span class="s1">&#39;dva&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span><span class="p">,</span>
-                <span class="s1">&#39;dea&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span><span class="p">,</span>
-                <span class="s1">&#39;dfa&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_face_attributes</span><span class="p">,</span>
-                <span class="s1">&#39;vertex&#39;</span>      <span class="p">:</span> <span class="p">{},</span>
-                <span class="s1">&#39;face&#39;</span>        <span class="p">:</span> <span class="p">{},</span>
-                <span class="s1">&#39;facedata&#39;</span>    <span class="p">:</span> <span class="p">{},</span>
-                <span class="s1">&#39;edgedata&#39;</span>    <span class="p">:</span> <span class="p">{},</span>
-                <span class="s1">&#39;max_int_key&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span><span class="p">,</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;attributes&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span>
+                <span class="s1">&#39;dva&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span><span class="p">,</span>
+                <span class="s1">&#39;dea&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span><span class="p">,</span>
+                <span class="s1">&#39;dfa&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_face_attributes</span><span class="p">,</span>
+                <span class="s1">&#39;vertex&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                <span class="s1">&#39;face&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                <span class="s1">&#39;facedata&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                <span class="s1">&#39;edgedata&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                <span class="s1">&#39;max_int_key&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span><span class="p">,</span>
                 <span class="s1">&#39;max_int_fkey&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_fkey</span><span class="p">,</span> <span class="p">}</span>
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
@@ -316,15 +304,15 @@
 
     <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="n">attributes</span>   <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attributes&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">dva</span>          <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dva&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">dfa</span>          <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dfa&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">dea</span>          <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dea&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">vertex</span>       <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vertex&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">face</span>         <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">facedata</span>     <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;facedata&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">edgedata</span>     <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;edgedata&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">max_int_key</span>  <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_int_key&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attributes&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">dva</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dva&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">dfa</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dfa&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">dea</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dea&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">vertex</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vertex&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">facedata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;facedata&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">edgedata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;edgedata&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">max_int_key</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_int_key&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">max_int_fkey</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_int_fkey&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
@@ -363,15 +351,15 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;attributes&#39;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span>
-            <span class="s1">&#39;dva&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span><span class="p">,</span>
-            <span class="s1">&#39;dea&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span><span class="p">,</span>
-            <span class="s1">&#39;dfa&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_face_attributes</span><span class="p">,</span>
-            <span class="s1">&#39;vertex&#39;</span>      <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">,</span>
-            <span class="s1">&#39;face&#39;</span>        <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">,</span>
-            <span class="s1">&#39;facedata&#39;</span>    <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span><span class="p">,</span>
-            <span class="s1">&#39;edgedata&#39;</span>    <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span><span class="p">,</span>
-            <span class="s1">&#39;max_int_key&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span><span class="p">,</span>
+            <span class="s1">&#39;attributes&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span>
+            <span class="s1">&#39;dva&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span><span class="p">,</span>
+            <span class="s1">&#39;dea&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span><span class="p">,</span>
+            <span class="s1">&#39;dfa&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_face_attributes</span><span class="p">,</span>
+            <span class="s1">&#39;vertex&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">,</span>
+            <span class="s1">&#39;face&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">,</span>
+            <span class="s1">&#39;facedata&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span><span class="p">,</span>
+            <span class="s1">&#39;edgedata&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span><span class="p">,</span>
+            <span class="s1">&#39;max_int_key&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span><span class="p">,</span>
             <span class="s1">&#39;max_int_fkey&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_fkey</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;wb+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>
@@ -388,15 +376,15 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;attributes&#39;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span>
-            <span class="s1">&#39;dva&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span><span class="p">,</span>
-            <span class="s1">&#39;dea&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span><span class="p">,</span>
-            <span class="s1">&#39;dfa&#39;</span>         <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_face_attributes</span><span class="p">,</span>
-            <span class="s1">&#39;vertex&#39;</span>      <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">,</span>
-            <span class="s1">&#39;face&#39;</span>        <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">,</span>
-            <span class="s1">&#39;facedata&#39;</span>    <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span><span class="p">,</span>
-            <span class="s1">&#39;edgedata&#39;</span>    <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span><span class="p">,</span>
-            <span class="s1">&#39;max_int_key&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span><span class="p">,</span>
+            <span class="s1">&#39;attributes&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span>
+            <span class="s1">&#39;dva&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span><span class="p">,</span>
+            <span class="s1">&#39;dea&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span><span class="p">,</span>
+            <span class="s1">&#39;dfa&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_face_attributes</span><span class="p">,</span>
+            <span class="s1">&#39;vertex&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">,</span>
+            <span class="s1">&#39;face&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">,</span>
+            <span class="s1">&#39;facedata&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span><span class="p">,</span>
+            <span class="s1">&#39;edgedata&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span><span class="p">,</span>
+            <span class="s1">&#39;max_int_key&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span><span class="p">,</span>
             <span class="s1">&#39;max_int_fkey&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_fkey</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span></div>
@@ -491,8 +479,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">OBJ</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
         <span class="n">vertices</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">vertices</span>
-        <span class="n">faces</span>    <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">faces</span>
-        <span class="n">edges</span>    <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">lines</span>
+        <span class="n">faces</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">faces</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">lines</span>
         <span class="k">if</span> <span class="n">faces</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">edges</span><span class="p">:</span>
@@ -531,7 +519,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ply</span> <span class="o">=</span> <span class="n">PLY</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
         <span class="n">vertices</span> <span class="o">=</span> <span class="n">ply</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">vertices</span>
-        <span class="n">faces</span>    <span class="o">=</span> <span class="n">ply</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">faces</span>
+        <span class="n">faces</span> <span class="o">=</span> <span class="n">ply</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">faces</span>
         <span class="n">mesh</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_vertices_and_faces</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mesh</span></div>
 
@@ -747,7 +735,7 @@
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="n">vertices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">j</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">xyz</span><span class="p">)})</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">attr_dict</span><span class="o">=</span><span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">j</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">xyz</span><span class="p">)})</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">vertices</span><span class="p">):</span>
                 <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
@@ -1033,10 +1021,10 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span>   <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">face</span>     <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_fkey</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span></div>
@@ -2123,7 +2111,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">directed</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">]</span></div>
 
@@ -2896,7 +2884,9 @@
         <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="nb">max</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">-</span> <span class="n">ideal_angle</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">180</span> <span class="o">-</span> <span class="n">ideal_angle</span><span class="p">),</span> <span class="p">(</span><span class="n">ideal_angle</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">angles</span><span class="p">))</span> <span class="o">/</span> <span class="n">ideal_angle</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Mesh.face_curvature"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.face_curvature.html#compas.datastructures.Mesh.face_curvature">[docs]</a>    <span class="k">def</span> <span class="nf">face_curvature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fkey</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dimensionless face curvature as the maximum face vertex deviation from the best-fit plane of the face vertices divided by the average lengths of the face vertices to the face centroid.</span>
+        <span class="sd">&quot;&quot;&quot;Dimensionless face curvature as the maximum face vertex deviation from</span>
+<span class="sd">        the best-fit plane of the face vertices divided by the average lengths of</span>
+<span class="sd">        the face vertices to the face centroid.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -3052,7 +3042,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># TODO: perhaps split into two functions</span>
-        <span class="n">boundary_edges</span> <span class="o">=</span>  <span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_edge_on_boundary</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span>
+        <span class="n">boundary_edges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_edge_on_boundary</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">chained</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">boundary_edges</span>
@@ -3349,7 +3339,7 @@
         
 
         
-            Last updated on Nov 03, 2019.
+            Last updated on Nov 04, 2019.
         
 
         
