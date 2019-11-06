@@ -70,7 +70,10 @@
 <span class="kn">from</span> <span class="nn">compas_rhino.artists.mixins</span> <span class="k">import</span> <span class="n">EdgeArtist</span>
 <span class="kn">from</span> <span class="nn">compas_rhino.artists.mixins</span> <span class="k">import</span> <span class="n">FaceArtist</span>
 
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">color_to_colordict</span>
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">scale_vector</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">centroid_polygon</span>
 
 
@@ -120,6 +123,9 @@
             <span class="s1">&#39;color.vertex&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
             <span class="s1">&#39;color.edge&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s1">&#39;color.face&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">210</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">210</span><span class="p">),</span>
+            <span class="s1">&#39;color.normal&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+
+            <span class="s1">&#39;scale.normal&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
         <span class="p">})</span></div>
 
     <span class="nd">@property</span>
@@ -130,6 +136,28 @@
     <span class="nd">@mesh</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span> <span class="o">=</span> <span class="n">mesh</span>
+
+<div class="viewcode-block" id="MeshArtist.draw_normals"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.draw_normals.html#compas_rhino.artists.MeshArtist.draw_normals">[docs]</a>    <span class="k">def</span> <span class="nf">draw_normals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">())</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;scale.normal&#39;</span><span class="p">)</span>
+        <span class="n">colordict</span> <span class="o">=</span> <span class="n">color_to_colordict</span><span class="p">(</span><span class="n">color</span><span class="p">,</span>
+                                       <span class="n">keys</span><span class="p">,</span>
+                                       <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color.normal&#39;</span><span class="p">),</span>
+                                       <span class="n">colorformat</span><span class="o">=</span><span class="s1">&#39;rgb&#39;</span><span class="p">,</span>
+                                       <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_normal</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">scale</span><span class="p">))</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span>
+                <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="n">b</span><span class="p">,</span>
+                <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">colordict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.normal.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span>
+                <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span>
+                <span class="s1">&#39;arrow&#39;</span><span class="p">:</span> <span class="s1">&#39;end&#39;</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">draw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span> <span class="n">clear</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">redraw</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MeshArtist.draw_mesh"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.draw_mesh.html#compas_rhino.artists.MeshArtist.draw_mesh">[docs]</a>    <span class="k">def</span> <span class="nf">draw_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disjoint</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Draw the mesh as a consolidated RhinoMesh.</span>
@@ -164,6 +192,27 @@
 <div class="viewcode-block" id="MeshArtist.clear_mesh"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.clear_mesh.html#compas_rhino.artists.MeshArtist.clear_mesh">[docs]</a>    <span class="k">def</span> <span class="nf">clear_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">compas_rhino</span><span class="o">.</span><span class="n">delete_objects</span><span class="p">(</span><span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.mesh&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">name</span><span class="p">)))</span></div>
 
+<div class="viewcode-block" id="MeshArtist.clear_normals"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.clear_normals.html#compas_rhino.artists.MeshArtist.clear_normals">[docs]</a>    <span class="k">def</span> <span class="nf">clear_normals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear all normals previously drawn by the ``MeshArtist``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        keys : list, optional</span>
+<span class="sd">            The keys of a specific set of normals that should be cleared.</span>
+<span class="sd">            Default is to clear all normals.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.normal.*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">guids</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">guids</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.normal.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                <span class="n">guid</span> <span class="o">=</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">guids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
+        <span class="n">compas_rhino</span><span class="o">.</span><span class="n">delete_objects</span><span class="p">(</span><span class="n">guids</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="MeshArtist.clear"><a class="viewcode-back" href="../../../api/generated/compas_rhino.artists.MeshArtist.clear.html#compas_rhino.artists.MeshArtist.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear the vertices, faces and edges of the mesh, without clearing the</span>
 <span class="sd">        other elements in the layer.</span>
@@ -172,7 +221,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_vertices</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_faces</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_mesh</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">clear_edges</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_edges</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_normals</span><span class="p">()</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -253,7 +303,7 @@
         
 
         
-            Last updated on Nov 04, 2019.
+            Last updated on Nov 06, 2019.
         
 
         
