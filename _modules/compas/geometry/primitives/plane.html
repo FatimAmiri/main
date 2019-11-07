@@ -205,13 +205,29 @@
 <span class="sd">        &gt;&gt;&gt;</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">plane</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">worldXY</span><span class="p">()</span>
-        <span class="n">plane</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
-        <span class="k">return</span> <span class="n">plane</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;normal&#39;</span><span class="p">])</span></div>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># descriptors</span>
     <span class="c1"># ==========================================================================</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the data dictionary that represents the plane.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            The plane data.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;point&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">),</span>
+                <span class="s1">&#39;normal&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="p">)}</span>
+
+    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;normal&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -239,21 +255,6 @@
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span>
         <span class="k">return</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">z</span>
 
-    <span class="c1"># @property</span>
-    <span class="c1"># def frame(self):</span>
-    <span class="c1">#     &quot;&quot;&quot;Frame: The frame that forms a basis for the local coordinates of all</span>
-    <span class="c1">#     points in the half-spaces defined by the plane.</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     a, b, c = self.normal</span>
-    <span class="c1">#     u = 1.0, 0.0, - a / c</span>
-    <span class="c1">#     v = 0.0, 1.0, - b / c</span>
-    <span class="c1">#     u, v = orthonormalize_vectors([u, v])</span>
-    <span class="c1">#     u = Vector(*u)</span>
-    <span class="c1">#     v = Vector(*v)</span>
-    <span class="c1">#     u.unitize()</span>
-    <span class="c1">#     v.unitize()</span>
-    <span class="c1">#     return self.point, u, v</span>
-
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># representation</span>
     <span class="c1"># ==========================================================================</span>
@@ -263,35 +264,6 @@
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="mi">2</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the data dictionary that represents the plane.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        dict</span>
-<span class="sd">            The plane data.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;point&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">),</span>
-                <span class="s1">&#39;normal&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="p">)}</span>
-
-    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;normal&#39;</span><span class="p">]</span>
-
-<div class="viewcode-block" id="Plane.to_data"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Plane.to_data.html#compas.geometry.Plane.to_data">[docs]</a>    <span class="k">def</span> <span class="nf">to_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the data dictionary that represents the plane.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        dict</span>
-<span class="sd">            The plane data.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># access</span>

@@ -92,13 +92,13 @@
 <span class="sd">    &gt;&gt;&gt; polyline.length</span>
 <span class="sd">    3.0</span>
 
-<span class="sd">    &gt;&gt;&gt; type(polyline.points[0])</span>
-<span class="sd">    &lt;class &#39;point.Point&#39;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; type(polyline.points[0]) == Point</span>
+<span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; polyline.points[0].x</span>
 <span class="sd">    0.0</span>
 
-<span class="sd">    &gt;&gt;&gt; type(polyline.lines[0])</span>
-<span class="sd">    &lt;class &#39;line.Line&#39;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; type(polyline.lines[0]) == Line</span>
+<span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; polyline.lines[0].length</span>
 <span class="sd">    1.0</span>
 
@@ -116,9 +116,28 @@
     <span class="c1"># factory</span>
     <span class="c1"># ==========================================================================</span>
 
+<div class="viewcode-block" id="Polyline.from_data"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polyline.from_data.html#compas.geometry.Polyline.from_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">])</span></div>
+
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># descriptors</span>
     <span class="c1"># ==========================================================================</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the data dictionary that represents the polyline.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            The polyline&#39;s data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;points&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">]}</span>
+
+    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -128,24 +147,12 @@
     <span class="nd">@points</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_points</span> <span class="o">=</span> <span class="p">[</span><span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">xyz</span><span class="p">)</span> <span class="k">for</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">Line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_points</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">Line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_points</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;list of Line: The lines of the polyline.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">p</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;int: The number of points.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">l</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;int: The number of lines.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -157,25 +164,20 @@
     <span class="c1"># ==========================================================================</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;Polyline(</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">point</span><span class="p">:</span> <span class="nb">format</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="s2">&quot;Polyline(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">]))</span>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># access</span>
     <span class="c1"># ==========================================================================</span>
 
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="k">return</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
@@ -318,21 +320,9 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
-    <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">pi</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
 
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">matrix_from_axis_and_angle</span>
-    <span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="k">import</span> <span class="n">Plotter</span>
-
-    <span class="n">M</span> <span class="o">=</span> <span class="n">matrix_from_axis_and_angle</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">Polyline</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
-
-    <span class="c1">#plotter = Plotter(figsize=(10, 7))</span>
-
-    <span class="c1">#plotter.draw_polygons([{&#39;points&#39;: p.points}, {&#39;points&#39;: q.points}])</span>
-    <span class="c1"># plotter.show()</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="o">.</span><span class="mi">7</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 

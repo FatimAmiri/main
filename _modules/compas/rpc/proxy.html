@@ -146,41 +146,7 @@
 
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        import compas</span>
-<span class="sd">        import time</span>
-
-<span class="sd">        from compas.datastructures import Mesh</span>
-<span class="sd">        from compas.rpc import Proxy</span>
-
-<span class="sd">        numerical = Proxy(&#39;compas.numerical&#39;)</span>
-
-<span class="sd">        mesh = Mesh.from_obj(compas.get(&#39;faces.obj&#39;))</span>
-
-<span class="sd">        mesh.update_default_vertex_attributes({&#39;px&#39;: 0.0, &#39;py&#39;: 0.0, &#39;pz&#39;: 0.0})</span>
-<span class="sd">        mesh.update_default_edge_attributes({&#39;q&#39;: 1.0})</span>
-
-<span class="sd">        key_index = mesh.key_index()</span>
-
-<span class="sd">        xyz   = mesh.get_vertices_attributes(&#39;xyz&#39;)</span>
-<span class="sd">        edges = [(key_index[u], key_index[v]) for u, v in mesh.edges()]</span>
-<span class="sd">        fixed = [key_index[key] for key in mesh.vertices_where({&#39;vertex_degree&#39;: 2})]</span>
-<span class="sd">        q     = mesh.get_edges_attribute(&#39;q&#39;, 1.0)</span>
-<span class="sd">        loads = mesh.get_vertices_attributes((&#39;px&#39;, &#39;py&#39;, &#39;pz&#39;), (0.0, 0.0, 0.0))</span>
-
-<span class="sd">        xyz, q, f, l, r = numerical.fd_numpy(xyz, edges, fixed, q, loads)</span>
-
-<span class="sd">        for key, attr in mesh.vertices(True):</span>
-<span class="sd">            index = key</span>
-<span class="sd">            attr[&#39;x&#39;] = xyz[index][0]</span>
-<span class="sd">            attr[&#39;y&#39;] = xyz[index][1]</span>
-<span class="sd">            attr[&#39;z&#39;] = xyz[index][2]</span>
-<span class="sd">            attr[&#39;rx&#39;] = r[index][0]</span>
-<span class="sd">            attr[&#39;ry&#39;] = r[index][1]</span>
-<span class="sd">            attr[&#39;rz&#39;] = r[index][2]</span>
-
-<span class="sd">        for index, (u, v, attr) in enumerate(mesh.edges(True)):</span>
-<span class="sd">            attr[&#39;f&#39;] = f[index][0]</span>
-<span class="sd">            attr[&#39;l&#39;] = l[index][0]</span>
+<span class="sd">        pass</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -290,6 +256,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">env</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">_os</span><span class="o">.</span><span class="n">prepare_environment</span><span class="p">()</span>
 
+        <span class="c1"># this part starts the server side of the RPC setup</span>
+        <span class="c1"># it basically launches a subprocess</span>
+        <span class="c1"># to start the default service</span>
+        <span class="c1"># the default service creates a server</span>
+        <span class="c1"># and registers a dispatcher for custom functionality</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">Popen</span>
         <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
@@ -311,6 +282,9 @@
             <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">python</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">)]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
 
+        <span class="c1"># this starts the client side</span>
+        <span class="c1"># it creates a proxy for the server</span>
+        <span class="c1"># and tries to connect the proxy to the actual server</span>
         <span class="n">server</span> <span class="o">=</span> <span class="n">ServerProxy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting a new proxy server...&quot;</span><span class="p">)</span>
@@ -427,47 +401,9 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-    <span class="kn">import</span> <span class="nn">compas</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
 
-    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
-
-    <span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="k">import</span> <span class="n">MeshArtist</span>
-
-    <span class="n">numerical</span> <span class="o">=</span> <span class="n">Proxy</span><span class="p">(</span><span class="s1">&#39;compas.numerical&#39;</span><span class="p">)</span>
-
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
-
-    <span class="n">mesh</span><span class="o">.</span><span class="n">update_default_vertex_attributes</span><span class="p">({</span><span class="s1">&#39;px&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;py&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;pz&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">})</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">update_default_edge_attributes</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
-
-    <span class="n">key_index</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">key_index</span><span class="p">()</span>
-
-    <span class="n">xyz</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
-    <span class="n">edges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">key_index</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">key_index</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">()]</span>
-    <span class="n">fixed</span> <span class="o">=</span> <span class="p">[</span><span class="n">key_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices_where</span><span class="p">({</span><span class="s1">&#39;vertex_degree&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})]</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_edges_attribute</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-    <span class="n">loads</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">((</span><span class="s1">&#39;px&#39;</span><span class="p">,</span> <span class="s1">&#39;py&#39;</span><span class="p">,</span> <span class="s1">&#39;pz&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
-
-    <span class="n">xyz</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">numerical</span><span class="o">.</span><span class="n">fd_numpy</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">loads</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">key</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;rx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;ry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;rz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
-
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;l&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-    <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">()</span>
-    <span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-    <span class="n">artist</span><span class="o">.</span><span class="n">draw_faces</span><span class="p">()</span>
-    <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 

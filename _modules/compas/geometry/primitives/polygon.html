@@ -99,7 +99,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; polygon = Polygon([[0,0,0], [1,0,0], [1,1,0], [0,1,0]])</span>
 <span class="sd">    &gt;&gt;&gt; polygon.centroid</span>
-<span class="sd">    [0.5, 0.5, 0.0]</span>
+<span class="sd">    Point(0.500, 0.500, 0.000)</span>
 <span class="sd">    &gt;&gt;&gt; polygon.area</span>
 <span class="sd">    1.0</span>
 
@@ -116,17 +116,52 @@
 <div class="viewcode-block" id="Polygon.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polygon.__init__.html#compas.geometry.Polygon.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_points</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_p</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_l</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">points</span></div>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># factory</span>
     <span class="c1"># ==========================================================================</span>
 
+<div class="viewcode-block" id="Polygon.from_data"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polygon.from_data.html#compas.geometry.Polygon.from_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a polygon from its data representation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : :obj:`dict`</span>
+<span class="sd">            The data dictionary.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Polygon</span>
+<span class="sd">            The constructed polygon.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">])</span></div>
+
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># descriptors</span>
     <span class="c1"># ==========================================================================</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the data dictionary that represents the polygon.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            The polygon data.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;points&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">]}</span>
+
+    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -144,16 +179,6 @@
     <span class="k">def</span> <span class="nf">lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;list of Line: The lines of the polyline.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">p</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;int: The number of points.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">l</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;int: The number of lines.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -189,36 +214,6 @@
         <span class="n">n</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span> <span class="n">n</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">n</span>
 
-    <span class="c1"># @property</span>
-    <span class="c1"># def tangent(self):</span>
-    <span class="c1">#     &quot;&quot;&quot;The (average) tangent plane.&quot;&quot;&quot;</span>
-    <span class="c1">#     o = self.center</span>
-    <span class="c1">#     a, b, c = self.normal</span>
-    <span class="c1">#     d = - (a * o.x + b * o.y + c * o.z)</span>
-    <span class="c1">#     return a, b, c, d</span>
-
-    <span class="c1"># @property</span>
-    <span class="c1"># def frame(self):</span>
-    <span class="c1">#     &quot;&quot;&quot;The local coordinate frame.&quot;&quot;&quot;</span>
-    <span class="c1">#     o  = self.center</span>
-    <span class="c1">#     w  = self.normal</span>
-    <span class="c1">#     p  = self.points[0]</span>
-    <span class="c1">#     u  = Vector.from_start_end(o, p)</span>
-    <span class="c1">#     u.unitize()</span>
-    <span class="c1">#     v = Vector.cross(w, u)</span>
-
-    <span class="c1">#     a, b, c = self.normal</span>
-    <span class="c1">#     u = 1.0, 0.0, - a / c</span>
-    <span class="c1">#     v = 0.0, 1.0, - b / c</span>
-    <span class="c1">#     u, v = orthonormalize_vectors([u, v])</span>
-    <span class="c1">#     u = Vector(*u)</span>
-    <span class="c1">#     v = Vector(*v)</span>
-    <span class="c1">#     u.unitize()</span>
-    <span class="c1">#     v.unitize()</span>
-    <span class="c1">#     return self.point, u, v</span>
-
-    <span class="c1">#     return o, u, v, w</span>
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;float: The area of the polygon.&quot;&quot;&quot;</span>
@@ -229,10 +224,10 @@
     <span class="c1"># ==========================================================================</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;Polygon(</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">point</span><span class="p">:</span> <span class="nb">format</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="s2">&quot;Polygon(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">]))</span>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># access</span>
@@ -349,16 +344,11 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
-    <span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="k">import</span> <span class="n">Plotter</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
 
-    <span class="n">polygon</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">Polygon</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]]))</span>
 
-    <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">polygon</span><span class="o">.</span><span class="n">points</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
-
-    <span class="n">plotter</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
-    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_polygons</span><span class="p">([{</span><span class="s1">&#39;points&#39;</span><span class="p">:</span> <span class="n">polygon</span><span class="o">.</span><span class="n">points</span><span class="p">}])</span>
-    <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
