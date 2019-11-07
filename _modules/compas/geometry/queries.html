@@ -89,6 +89,7 @@
     <span class="s1">&#39;is_ccw_xy&#39;</span><span class="p">,</span>
     <span class="s1">&#39;is_colinear&#39;</span><span class="p">,</span>
     <span class="s1">&#39;is_colinear_xy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;is_line_line_colinear&#39;</span><span class="p">,</span>
     <span class="s1">&#39;is_coplanar&#39;</span><span class="p">,</span>
     <span class="s1">&#39;is_polygon_convex&#39;</span><span class="p">,</span>
     <span class="s1">&#39;is_polygon_convex_xy&#39;</span><span class="p">,</span>
@@ -224,6 +225,31 @@
     <span class="n">ac_y</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">ab_x</span> <span class="o">*</span> <span class="n">ac_y</span> <span class="o">==</span> <span class="n">ab_y</span>  <span class="o">*</span> <span class="n">ac_x</span></div>
+
+
+<span class="k">def</span> <span class="nf">is_line_line_colinear</span><span class="p">(</span><span class="n">line1</span><span class="p">,</span> <span class="n">line2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determine if two lines are colinear.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line1 : 2-tuple of points, Line</span>
+<span class="sd">        Line 1.</span>
+<span class="sd">    line2 : 2-tuple of points, Line</span>
+<span class="sd">        Line 2.</span>
+<span class="sd">    tol : float, optional</span>
+<span class="sd">        A tolerance for membership verification.</span>
+<span class="sd">        Default is ``1e-9``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        ``True`` if the lines are colinear</span>
+<span class="sd">        ``False`` otherwise.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">line1</span>
+    <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">line2</span>
+    <span class="k">return</span> <span class="n">is_colinear</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_colinear</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="is_coplanar"><a class="viewcode-back" href="../../../api/generated/compas.geometry.is_coplanar.html#compas.geometry.is_coplanar">[docs]</a><span class="k">def</span> <span class="nf">is_coplanar</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
