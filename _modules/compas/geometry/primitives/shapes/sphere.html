@@ -213,16 +213,18 @@
 
         <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">10</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;v&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">10</span>
-        <span class="k">if</span> <span class="n">u</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The values for u and v should be &gt; 3.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">u</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The value for u should be u &gt; 3.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The value for v should be v &gt; 3.&#39;</span><span class="p">)</span>
 
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">/</span> <span class="n">u</span>
-        <span class="n">phi</span> <span class="o">=</span> <span class="n">pi</span><span class="o">*</span><span class="mi">2</span> <span class="o">/</span> <span class="n">v</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">/</span> <span class="n">v</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">pi</span><span class="o">*</span><span class="mi">2</span> <span class="o">/</span> <span class="n">u</span>
         <span class="n">hpi</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">*</span> <span class="mf">0.5</span>
 
         <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
                 <span class="n">tx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">hpi</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">x</span>
                 <span class="n">ty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">hpi</span><span class="p">)</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">y</span>
                 <span class="n">tz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">hpi</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">z</span>
@@ -235,23 +237,23 @@
 
         <span class="c1"># south pole triangle fan</span>
         <span class="n">sp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-            <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">sp</span><span class="p">,</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">v</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">sp</span><span class="p">,</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">u</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-                <span class="n">jj</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">v</span>
-                <span class="n">a</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">j</span>
-                <span class="n">b</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">jj</span>
-                <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">jj</span>
-                <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">j</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">v</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+                <span class="n">jj</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">u</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">u</span> <span class="o">+</span> <span class="n">j</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">u</span> <span class="o">+</span> <span class="n">jj</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span> <span class="o">+</span> <span class="n">jj</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span> <span class="o">+</span> <span class="n">j</span>
                 <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">])</span>
 
         <span class="c1"># north pole triangle fan</span>
         <span class="n">np</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
             <span class="n">nc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">j</span>
-            <span class="n">nn</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">-</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">v</span>
+            <span class="n">nn</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">-</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">u</span>
             <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">np</span><span class="p">,</span> <span class="n">nn</span><span class="p">,</span> <span class="n">nc</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span></div>
@@ -453,7 +455,7 @@
         
 
         
-            Last updated on Nov 08, 2019.
+            Last updated on Nov 09, 2019.
         
 
         

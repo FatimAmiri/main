@@ -182,9 +182,9 @@
     <span class="c1"># factory</span>
     <span class="c1"># ==========================================================================</span>
 
-<div class="viewcode-block" id="Line.from_data"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Line.from_data.html#compas.geometry.Line.from_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">])</span>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># descriptors</span>
@@ -244,6 +244,24 @@
         <span class="sd">&quot;&quot;&quot;Point: The midpoint between start and end.&quot;&quot;&quot;</span>
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">v</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the data dictionary that represents the line.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            The line data.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">),</span>
+                <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)}</span>
+
+<div class="viewcode-block" id="Line.from_data"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Line.from_data.html#compas.geometry.Line.from_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">Line</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">line</span></div>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># representation</span>
@@ -336,34 +354,33 @@
     <span class="c1"># transformations</span>
     <span class="c1"># ==========================================================================</span>
 
-<div class="viewcode-block" id="Line.transform"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Line.transform.html#compas.geometry.Line.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Transform this ``Plane`` using a given transformation matrix.</span>
+<div class="viewcode-block" id="Line.transform"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Line.transform.html#compas.geometry.Line.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform the line.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        matrix : list of list</span>
-<span class="sd">            The transformation matrix.</span>
-
+<span class="sd">        transformation : :class:`Transformation`</span>
+<span class="sd">            The transformation used to transform the line.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Line.transformed"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Line.transformed.html#compas.geometry.Line.transformed">[docs]</a>    <span class="k">def</span> <span class="nf">transformed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a transformed copy of this ``Line`` using a given transformation matrix.</span>
+<div class="viewcode-block" id="Line.transformed"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Line.transformed.html#compas.geometry.Line.transformed">[docs]</a>    <span class="k">def</span> <span class="nf">transformed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a transformed copy of the current line.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        matrix : list of list</span>
-<span class="sd">            The transformation matrix.</span>
+<span class="sd">        transformation : :class:`Transformation`</span>
+<span class="sd">            The transformation used to transform the line.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Line</span>
-<span class="sd">            The transformed copy.</span>
+<span class="sd">        :class: `Line`</span>
+<span class="sd">            The transformed line.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">line</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="n">line</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">line</span></div></div>
 
 
@@ -454,7 +471,7 @@
         
 
         
-            Last updated on Nov 08, 2019.
+            Last updated on Nov 09, 2019.
         
 
         
