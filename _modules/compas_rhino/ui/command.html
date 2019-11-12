@@ -65,7 +65,7 @@
 <span class="kn">import</span> <span class="nn">compas_rhino</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CommandMenu&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CommandMenu&#39;</span><span class="p">,</span> <span class="s1">&#39;CommandAction&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="CommandMenu"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.CommandMenu.html#compas_rhino.ui.CommandMenu">[docs]</a><span class="k">class</span> <span class="nc">CommandMenu</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -74,7 +74,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">menu</span> <span class="o">=</span> <span class="n">menu</span></div>
 
 <div class="viewcode-block" id="CommandMenu.select_action"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.CommandMenu.select_action.html#compas_rhino.ui.CommandMenu.select_action">[docs]</a>    <span class="k">def</span> <span class="nf">select_action</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_select</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="p">:</span>
                 <span class="k">return</span>
             <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">option</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">options</span><span class="p">]</span>
@@ -88,10 +88,23 @@
                     <span class="k">break</span>
             <span class="k">if</span> <span class="s2">&quot;action&quot;</span> <span class="ow">in</span> <span class="n">option</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">option</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">)</span>
+
             <span class="n">message</span> <span class="o">=</span> <span class="n">option</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span>
             <span class="n">options</span> <span class="o">=</span> <span class="n">option</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">select</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">])</span></div></div>
+
+            <span class="k">return</span> <span class="n">_select</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">])</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">CommandAction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="n">action</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -99,7 +112,14 @@
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="n">action</span> <span class="o">=</span> <span class="n">CommandAction</span><span class="p">(</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">action</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">))</span>
 </code></pre></div>
                     
                 
@@ -171,7 +191,7 @@
         
 
         
-            Last updated on Nov 11, 2019.
+            Last updated on Nov 12, 2019.
         
 
         
