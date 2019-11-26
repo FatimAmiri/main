@@ -86,42 +86,66 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Network</span>
-<span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="kn">import</span> <span class="n">NetworkPlotter</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span> <span class="kn">import</span> <span class="nn">compas</span>
+ <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Network</span>
+ <span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="kn">import</span> <span class="n">NetworkPlotter</span>
 
-<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lines.obj&#39;</span><span class="p">))</span>
+ <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lines.obj&#39;</span><span class="p">))</span>
 
-<span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_any_edge</span><span class="p">()</span>
+ <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_any_edge</span><span class="p">()</span>
 
-<span class="n">a</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+ <span class="n">a</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
-<span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-        <span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;end&#39;</span>  <span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;arrow&#39;</span><span class="p">:</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span>
-        <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;#00ff00&#39;</span>
-    <span class="p">})</span>
+ <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+ <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+         <span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span><span class="p">),</span>
+         <span class="s1">&#39;end&#39;</span>  <span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span><span class="p">),</span>
+         <span class="s1">&#39;arrow&#39;</span><span class="p">:</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span>
+         <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;#00ff00&#39;</span>
+     <span class="p">})</span>
 
-<span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+ <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+ <span class="n">plotter</span><span class="o">.</span><span class="n">draw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
 
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
-    <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-    <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()},</span>
-    <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">a</span><span class="p">,)}</span>
-<span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+ <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
+     <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+     <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()},</span>
+     <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">a</span><span class="p">,)}</span>
+ <span class="p">)</span>
+ <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
 
-<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+ <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+
+
+
+
+
+
+<span class="o">..</span> <span class="n">figure</span><span class="p">::</span> <span class="o">../../../</span><span class="n">dist</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">plot_directive</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">generated</span><span class="o">/</span><span class="n">compas</span><span class="o">-</span><span class="n">datastructures</span><span class="o">-</span><span class="n">Network</span><span class="o">-</span><span class="n">split_edge</span><span class="o">-</span><span class="mf">1.</span><span class="n">png</span>
+   <span class="p">:</span><span class="n">class</span><span class="p">:</span> <span class="n">figure</span><span class="o">-</span><span class="n">img</span> <span class="n">img</span><span class="o">-</span><span class="n">fluid</span>
+
+         
+
+
+
+
+
+<span class="o">..</span> <span class="n">figure</span><span class="p">::</span> <span class="o">../../../</span><span class="n">dist</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">plot_directive</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">generated</span><span class="o">/</span><span class="n">compas</span><span class="o">-</span><span class="n">datastructures</span><span class="o">-</span><span class="n">Network</span><span class="o">-</span><span class="n">split_edge</span><span class="o">-</span><span class="mf">1.</span><span class="n">pdf</span>
+   
+
+         
+
+
+
+
+
+<span class="o">..</span> <span class="n">image</span><span class="p">::</span> <span class="o">../../../</span><span class="n">dist</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">plot_directive</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">generated</span><span class="o">/</span><span class="n">compas</span><span class="o">-</span><span class="n">datastructures</span><span class="o">-</span><span class="n">Network</span><span class="o">-</span><span class="n">split_edge</span><span class="o">-</span><span class="mf">1.</span><span class="n">png</span>
 </code></pre></div>
-</div>
-<div class="figure align-default">
-<img alt="../../_images/compas-datastructures-Network-split_edge-1.png" class="figure-img img-fluid" src="../../_images/compas-datastructures-Network-split_edge-1.png" />
 </div>
 </dd></dl>
 
@@ -218,7 +242,7 @@
         
 
         
-            Last updated on Nov 19, 2019.
+            Last updated on Nov 26, 2019.
         
 
         
@@ -230,7 +254,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.11.2',
+    VERSION           : '0.11.3',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',
