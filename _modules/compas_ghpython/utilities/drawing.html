@@ -58,11 +58,9 @@
                     
 
                     <h1>Source code for compas_ghpython.utilities.drawing</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-
-<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">compas</span>
 
@@ -70,26 +68,25 @@
     <span class="kn">import</span> <span class="nn">rhinoscriptsyntax</span> <span class="k">as</span> <span class="nn">rs</span>
     <span class="kn">import</span> <span class="nn">scriptcontext</span> <span class="k">as</span> <span class="nn">sc</span>
 
-    <span class="kn">from</span> <span class="nn">System.Collections.Generic</span> <span class="k">import</span> <span class="n">List</span>
-    <span class="kn">from</span> <span class="nn">System.Enum</span> <span class="k">import</span> <span class="n">ToObject</span>
-    <span class="kn">from</span> <span class="nn">System.Array</span> <span class="k">import</span> <span class="n">CreateInstance</span>
-    <span class="kn">from</span> <span class="nn">System.Drawing</span> <span class="k">import</span> <span class="n">Color</span>
+    <span class="kn">from</span> <span class="nn">System.Enum</span> <span class="kn">import</span> <span class="n">ToObject</span>
+    <span class="kn">from</span> <span class="nn">System.Array</span> <span class="kn">import</span> <span class="n">CreateInstance</span>
+    <span class="kn">from</span> <span class="nn">System.Drawing</span> <span class="kn">import</span> <span class="n">Color</span>
 
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Point3d</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Vector3d</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Line</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Polyline</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Brep</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Cylinder</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Circle</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Plane</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">PipeCapMode</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Curve</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Sphere</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Mesh</span>
-    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Vector3f</span><span class="p">,</span> <span class="n">Point2f</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Point3d</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Vector3d</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Line</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Polyline</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Brep</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Cylinder</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Circle</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Plane</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">PipeCapMode</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Curve</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Sphere</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Mesh</span>
+    <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="kn">import</span> <span class="n">Vector3f</span><span class="p">,</span> <span class="n">Point2f</span>
 
-    <span class="kn">from</span> <span class="nn">compas_rhino.utilities.drawing</span> <span class="k">import</span> <span class="n">_face_to_max_quad</span>
+    <span class="kn">from</span> <span class="nn">compas_rhino.utilities.drawing</span> <span class="kn">import</span> <span class="n">_face_to_max_quad</span>
 
     <span class="n">TOL</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">ModelAbsoluteTolerance</span>
 
@@ -181,8 +178,6 @@
     <span class="n">meshes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">faces</span><span class="p">):</span>
         <span class="n">points</span> <span class="o">=</span> <span class="n">face</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">][:]</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">face</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-        <span class="n">color</span> <span class="o">=</span> <span class="n">face</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
         <span class="n">vertexcolors</span> <span class="o">=</span> <span class="n">face</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vertexcolors&#39;</span><span class="p">)</span>
 
         <span class="n">v</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
@@ -352,14 +347,12 @@
                             <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../devguide.html">Developer Guides</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 </ul>
 
 
@@ -393,11 +386,11 @@
         
 
         
-            Last updated on Nov 26, 2019.
+            Last updated on Dec 10, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
         
     </div>
 </footer>
@@ -405,7 +398,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.11.4',
+    VERSION           : '0.12.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

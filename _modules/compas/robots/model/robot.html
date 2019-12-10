@@ -58,31 +58,30 @@
                     
 
                     <h1>Source code for compas.robots.model.robot</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">itertools</span>
 
-<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">URDF</span>
-<span class="kn">from</span> <span class="nn">compas.files</span> <span class="k">import</span> <span class="n">URDFParser</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Frame</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">Transformation</span>
-<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">shortest_path</span>
+<span class="kn">from</span> <span class="nn">compas.files</span> <span class="kn">import</span> <span class="n">URDF</span>
+<span class="kn">from</span> <span class="nn">compas.files</span> <span class="kn">import</span> <span class="n">URDFParser</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Transformation</span>
+<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="kn">import</span> <span class="n">shortest_path</span>
 
-<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="k">import</span> <span class="n">Color</span>
-<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="k">import</span> <span class="n">Material</span>
-<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="k">import</span> <span class="n">Texture</span>
-<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="k">import</span> <span class="n">Geometry</span>
-<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="k">import</span> <span class="n">MeshDescriptor</span>
-<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="k">import</span> <span class="n">Origin</span>
-<span class="kn">from</span> <span class="nn">compas.robots.model.joint</span> <span class="k">import</span> <span class="n">Axis</span>
-<span class="kn">from</span> <span class="nn">compas.robots.model.joint</span> <span class="k">import</span> <span class="n">Joint</span>
-<span class="kn">from</span> <span class="nn">compas.robots.model.joint</span> <span class="k">import</span> <span class="n">Limit</span>
-<span class="kn">from</span> <span class="nn">compas.robots.model.link</span> <span class="k">import</span> <span class="n">Link</span>
-<span class="kn">from</span> <span class="nn">compas.robots.model.link</span> <span class="k">import</span> <span class="n">Visual</span>
-<span class="kn">from</span> <span class="nn">compas.robots.model.link</span> <span class="k">import</span> <span class="n">Collision</span>
-<span class="kn">from</span> <span class="nn">compas.robots.resources</span> <span class="k">import</span> <span class="n">DefaultMeshLoader</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="kn">import</span> <span class="n">Color</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="kn">import</span> <span class="n">Material</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="kn">import</span> <span class="n">Texture</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="kn">import</span> <span class="n">MeshDescriptor</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.geometry</span> <span class="kn">import</span> <span class="n">Origin</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.joint</span> <span class="kn">import</span> <span class="n">Axis</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.joint</span> <span class="kn">import</span> <span class="n">Joint</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.joint</span> <span class="kn">import</span> <span class="n">Limit</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.link</span> <span class="kn">import</span> <span class="n">Link</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.link</span> <span class="kn">import</span> <span class="n">Visual</span>
+<span class="kn">from</span> <span class="nn">compas.robots.model.link</span> <span class="kn">import</span> <span class="n">Collision</span>
+<span class="kn">from</span> <span class="nn">compas.robots.resources</span> <span class="kn">import</span> <span class="n">DefaultMeshLoader</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RobotModel&#39;</span><span class="p">]</span>
@@ -97,16 +96,23 @@
 <span class="sd">    In line with URDF limitations, only tree structures can be represented by</span>
 <span class="sd">    this model, ruling out all parallel robots.</span>
 
-<span class="sd">    Attributes:</span>
-<span class="sd">        name: Unique name of the robot.</span>
-<span class="sd">        joints: List of joint elements.</span>
-<span class="sd">        links: List of links of the robot.</span>
-<span class="sd">        materials: List of global materials.</span>
-<span class="sd">        root: Root link of the model.</span>
-<span class="sd">        attr: Non-standard attributes.</span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name:</span>
+<span class="sd">        Unique name of the robot.</span>
+<span class="sd">    joints:</span>
+<span class="sd">        List of joint elements.</span>
+<span class="sd">    links:</span>
+<span class="sd">        List of links of the robot.</span>
+<span class="sd">    materials:</span>
+<span class="sd">        List of global materials.</span>
+<span class="sd">    root:</span>
+<span class="sd">        Root link of the model.</span>
+<span class="sd">    attr:</span>
+<span class="sd">        Non-standard attributes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="RobotModel.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.__init__.html#compas.robots.RobotModel.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">joints</span><span class="o">=</span><span class="p">[],</span> <span class="n">links</span><span class="o">=</span><span class="p">[],</span> <span class="n">materials</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="RobotModel.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.__init__.html#compas.robots.RobotModel.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">joints</span><span class="o">=</span><span class="p">[],</span> <span class="n">links</span><span class="o">=</span><span class="p">[],</span> <span class="n">materials</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">joints</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">joints</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">links</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">links</span><span class="p">)</span>
@@ -144,11 +150,15 @@
     <span class="k">def</span> <span class="nf">from_urdf_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Construct a robot model from a URDF file model description.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            file: file name or file object.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file:</span>
+<span class="sd">            file name or file object.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            A robot model instance.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        A robot model instance.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">urdf</span> <span class="o">=</span> <span class="n">URDF</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">urdf</span><span class="o">.</span><span class="n">robot</span></div>
@@ -157,11 +167,14 @@
     <span class="k">def</span> <span class="nf">from_urdf_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Construct a robot model from a URDF description as string.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            text: string containing the XML URDF model.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        text:</span>
+<span class="sd">            String containing the XML URDF model.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            A robot model instance.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        A robot model instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">urdf</span> <span class="o">=</span> <span class="n">URDF</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">urdf</span><span class="o">.</span><span class="n">robot</span></div>
@@ -186,30 +199,37 @@
 <div class="viewcode-block" id="RobotModel.get_link_by_name"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.get_link_by_name.html#compas.robots.RobotModel.get_link_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_link_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get a link in a robot model matching by its name.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            name: link name.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name:</span>
+<span class="sd">            link name.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            A link instance.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        A link instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_links</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RobotModel.get_joint_by_name"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.get_joint_by_name.html#compas.robots.RobotModel.get_joint_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get a joint in a robot model matching by its name.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            name: joint name.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name:</span>
+<span class="sd">            joint name.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            A joint instance.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        A joint instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RobotModel.iter_links"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.iter_links.html#compas.robots.RobotModel.iter_links">[docs]</a>    <span class="k">def</span> <span class="nf">iter_links</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterator over the links that starts with the root link.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            Iterator of all links starting at root.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Iterator of all links starting at root.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">cjoints</span><span class="p">,</span> <span class="n">links</span><span class="p">):</span>
@@ -225,8 +245,9 @@
         <span class="sd">&quot;&quot;&quot;Iterator over the joints that starts with the root link&#39;s</span>
 <span class="sd">            children joints.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            Iterator of all joints starting at root.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Iterator of all joints starting at root.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">clink</span><span class="p">,</span> <span class="n">joints</span><span class="p">):</span>
@@ -241,19 +262,22 @@
 <div class="viewcode-block" id="RobotModel.iter_link_chain"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.iter_link_chain.html#compas.robots.RobotModel.iter_link_chain">[docs]</a>    <span class="k">def</span> <span class="nf">iter_link_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_start_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">link_end_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterator over the chain of links between a pair of start and end links.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
 <span class="sd">            link_start_name: Name of the starting link of the chain,</span>
 <span class="sd">                or ``None`` to start at root.</span>
 <span class="sd">            link_end_name: Name of the final link of the chain,</span>
 <span class="sd">                or ``None`` to try to identify the last link.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            Iterator of the chain of links.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Iterator of the chain of links.</span>
 
-<span class="sd">        .. note::</span>
-<span class="sd">            This method differs from :meth:`iter_links` in that it returns the chain respecting</span>
-<span class="sd">            the tree structure, hence if one link branches into two or more joints, only the</span>
-<span class="sd">            branch matching the end link will be returned.</span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This method differs from :meth:`iter_links` in that it returns the chain respecting</span>
+<span class="sd">        the tree structure, hence if one link branches into two or more joints, only the</span>
+<span class="sd">        branch matching the end link will be returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_chain</span><span class="p">(</span><span class="n">link_start_name</span><span class="p">,</span> <span class="n">link_end_name</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_link_by_name</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
@@ -264,20 +288,23 @@
 <div class="viewcode-block" id="RobotModel.iter_joint_chain"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.iter_joint_chain.html#compas.robots.RobotModel.iter_joint_chain">[docs]</a>    <span class="k">def</span> <span class="nf">iter_joint_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_start_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">link_end_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterator over the chain of joints between a pair of start and end links.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
 <span class="sd">            link_start_name: Name of the starting link of the chain,</span>
 <span class="sd">                or ``None`` to start at root.</span>
 <span class="sd">            link_end_name: Name of the final link of the chain,</span>
 <span class="sd">                or ``None`` to try to identify the last link.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            Iterator of the chain of joints.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Iterator of the chain of joints.</span>
 
-<span class="sd">        .. note::</span>
-<span class="sd">            This method differs from :meth:`iter_joints` in that it returns the</span>
-<span class="sd">            chain respecting the tree structure, hence if one link branches into</span>
-<span class="sd">            two or more joints, only the branch matching the end link will be</span>
-<span class="sd">            returned.</span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This method differs from :meth:`iter_joints` in that it returns the</span>
+<span class="sd">        chain respecting the tree structure, hence if one link branches into</span>
+<span class="sd">        two or more joints, only the branch matching the end link will be</span>
+<span class="sd">        returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_chain</span><span class="p">(</span><span class="n">link_start_name</span><span class="p">,</span> <span class="n">link_end_name</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_joint_by_name</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
@@ -288,14 +315,16 @@
 <div class="viewcode-block" id="RobotModel.iter_chain"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.iter_chain.html#compas.robots.RobotModel.iter_chain">[docs]</a>    <span class="k">def</span> <span class="nf">iter_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterator over the chain of all elements between a pair of start and end elements.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
 <span class="sd">            start: Name of the starting element of the chain,</span>
 <span class="sd">                or ``None`` to start at the root link.</span>
 <span class="sd">            end: Name of the final element of the chain,</span>
 <span class="sd">                or ``None`` to try to identify the last element.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            Iterator of the chain of links and joints.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Iterator of the chain of links and joints.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">start</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
@@ -354,12 +383,15 @@
 <div class="viewcode-block" id="RobotModel.load_geometry"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.load_geometry.html#compas.robots.RobotModel.load_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">load_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">resource_loaders</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load external geometry resources, such as meshes.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            resource_loaders: List of objects that implement the</span>
-<span class="sd">                resource loading interface (:class:`compas.robots.AbstractMeshLoader`)</span>
-<span class="sd">                and can retrieve external geometry.</span>
-<span class="sd">            force: True if it should force reloading even if the geometry</span>
-<span class="sd">                has been loaded already, otherwise False.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        resource_loaders:</span>
+<span class="sd">            List of objects that implement the</span>
+<span class="sd">            resource loading interface (:class:`compas.robots.AbstractMeshLoader`)</span>
+<span class="sd">            and can retrieve external geometry.</span>
+<span class="sd">        force:</span>
+<span class="sd">            True if it should force reloading even if the geometry</span>
+<span class="sd">            has been loaded already, otherwise False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">force</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
@@ -383,8 +415,10 @@
     <span class="k">def</span> <span class="nf">frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the frames of links that have a visual node.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            list: List of :class:`compas.geometry.Frame` of all links with a visual representation.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            List of :class:`compas.geometry.Frame` of all links with a visual representation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_links</span><span class="p">():</span>
@@ -396,8 +430,10 @@
     <span class="k">def</span> <span class="nf">axes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the joints&#39; axes.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            list: Axis vectors of all joints.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            Axis vectors of all joints.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_joints</span><span class="p">():</span>
@@ -405,7 +441,7 @@
                 <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">joint</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">axes</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate a readable representation of the robot.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;Robot name=</span><span class="si">{}</span><span class="s1">, Links=</span><span class="si">{}</span><span class="s1">, Joints=</span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1"> configurable)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -722,6 +758,14 @@
 <span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Material</span><span class="p">,</span> <span class="s1">&#39;robot/material&#39;</span><span class="p">)</span>
 <span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Color</span><span class="p">,</span> <span class="s1">&#39;robot/material/color&#39;</span><span class="p">)</span>
 <span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Texture</span><span class="p">,</span> <span class="s1">&#39;robot/material/texture&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
 </code></pre></div>
                     
                 
@@ -752,14 +796,12 @@
                             <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../contributing.html">Contributing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../devguide.html">Developer Guides</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../license.html">License</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../citing.html">Citing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../license.html">License</a></li>
 </ul>
 
 
@@ -793,11 +835,11 @@
         
 
         
-            Last updated on Nov 26, 2019.
+            Last updated on Dec 10, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
         
     </div>
 </footer>
@@ -805,7 +847,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.11.4',
+    VERSION           : '0.12.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

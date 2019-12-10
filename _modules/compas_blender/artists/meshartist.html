@@ -58,14 +58,11 @@
                     
 
                     <h1>Source code for compas_blender.artists.meshartist</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-
-<span class="kn">from</span> <span class="nn">compas_blender.artists</span> <span class="k">import</span> <span class="n">Artist</span>
-<span class="kn">from</span> <span class="nn">compas_blender.artists.mixins</span> <span class="k">import</span> <span class="n">VertexArtist</span>
-<span class="kn">from</span> <span class="nn">compas_blender.artists.mixins</span> <span class="k">import</span> <span class="n">EdgeArtist</span>
-<span class="kn">from</span> <span class="nn">compas_blender.artists.mixins</span> <span class="k">import</span> <span class="n">FaceArtist</span>
+<span></span><span class="kn">from</span> <span class="nn">compas_blender.artists</span> <span class="kn">import</span> <span class="n">Artist</span>
+<span class="kn">from</span> <span class="nn">compas_blender.artists.mixins</span> <span class="kn">import</span> <span class="n">VertexArtist</span>
+<span class="kn">from</span> <span class="nn">compas_blender.artists.mixins</span> <span class="kn">import</span> <span class="n">EdgeArtist</span>
+<span class="kn">from</span> <span class="nn">compas_blender.artists.mixins</span> <span class="kn">import</span> <span class="n">FaceArtist</span>
+<span class="kn">from</span> <span class="nn">compas_blender.utilities</span> <span class="kn">import</span> <span class="n">draw_mesh</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -74,12 +71,32 @@
 
 
 <span class="k">class</span> <span class="nc">MeshArtist</span><span class="p">(</span><span class="n">FaceArtist</span><span class="p">,</span> <span class="n">EdgeArtist</span><span class="p">,</span> <span class="n">VertexArtist</span><span class="p">,</span> <span class="n">Artist</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Artist for COMPAS meshes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh: compas.datastructures.Mesh</span>
+<span class="sd">        A COMPAS mesh data structure.</span>
+<span class="sd">    layer (optional): str</span>
+<span class="sd">        The layer in which the components of the mesh should be drawn.</span>
+<span class="sd">        Default is None.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    There is no such thing as a &quot;layer&quot; in Blender.</span>
+<span class="sd">    Instead, objects are added to collections.</span>
+<span class="sd">    Vertices will automatically be added to a vertex collection,</span>
+<span class="sd">    edges to an edge collection, and faces to a face collection.</span>
+<span class="sd">    These collections are added to a mesh collection for the current mesh.</span>
+<span class="sd">    What is specified as &quot;layer&quot; will be the collection this overal mesh</span>
+<span class="sd">    collection is added to.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__module__</span> <span class="o">=</span> <span class="s2">&quot;compas_blender.artists&quot;</span>
 
-<div class="viewcode-block" id="MeshArtist.__init__"><a class="viewcode-back" href="../../../api/generated/compas_blender.artists.MeshArtist.__init__.html#compas_blender.artists.MeshArtist.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">MeshArtist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
-
+<div class="viewcode-block" id="MeshArtist.__init__"><a class="viewcode-back" href="../../../api/generated/compas_blender.artists.MeshArtist.__init__.html#compas_blender.artists.MeshArtist.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;color.vertex&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">],</span>
@@ -96,7 +113,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">datastructure</span> <span class="o">=</span> <span class="n">mesh</span>
 
 <div class="viewcode-block" id="MeshArtist.draw_mesh"><a class="viewcode-back" href="../../../api/generated/compas_blender.artists.MeshArtist.draw_mesh.html#compas_blender.artists.MeshArtist.draw_mesh">[docs]</a>    <span class="k">def</span> <span class="nf">draw_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">faces</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()]</span>
+        <span class="n">draw_mesh</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MeshArtist.clear"><a class="viewcode-back" href="../../../api/generated/compas_blender.artists.MeshArtist.clear.html#compas_blender.artists.MeshArtist.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_vertices</span><span class="p">()</span>
@@ -110,27 +130,7 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-    <span class="kn">import</span> <span class="nn">compas</span>
-
-    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
-
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quadmesh.obj&#39;</span><span class="p">))</span>
-
-    <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-
-    <span class="c1"># artist.clear()</span>
-
-    <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
-    <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertexlabels</span><span class="p">()</span>
-    <span class="c1"># artist.clear_vertexlabels()</span>
-
-    <span class="c1"># artist.draw_edges(width=0.01)</span>
-    <span class="c1"># artist.draw_edgelabels()</span>
-    <span class="c1"># artist.clear_edgelabels()</span>
-
-    <span class="c1"># artist.draw_faces()</span>
-    <span class="c1"># artist.draw_facelabels()</span>
-    <span class="c1"># artist.clear_facelabels()</span>
+    <span class="k">pass</span>
 </code></pre></div>
                     
                 
@@ -161,14 +161,12 @@
                             <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../devguide.html">Developer Guides</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 </ul>
 
 
@@ -202,11 +200,11 @@
         
 
         
-            Last updated on Nov 26, 2019.
+            Last updated on Dec 10, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
         
     </div>
 </footer>
@@ -214,7 +212,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.11.4',
+    VERSION           : '0.12.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

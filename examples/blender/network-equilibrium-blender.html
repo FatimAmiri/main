@@ -19,11 +19,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/compas-reference.css" />
 
     
-        <link rel="next" title="Remeshing 2D with GhPython" href="../gh/mesh-remeshing.html" />
     
-    
-    
-        <link rel="prev" title="Examples" href="../../examples.html" />
     
 
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -66,18 +62,21 @@
 <div class="figure align-default">
 <img alt="../../_images/network-equilibrium-blender.png" class="figure-img img-fluid" src="../../_images/network-equilibrium-blender.png" />
 </div>
-<div class="line-numbers language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
-<span class="kn">from</span> <span class="nn">compas_blender.helpers</span> <span class="kn">import</span> <span class="n">NetworkArtist</span>
+<div class="line-numbers language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">bpy</span>
+<span class="kn">import</span> <span class="nn">compas</span>
+<span class="kn">import</span> <span class="nn">compas_blender</span>
+<span class="kn">from</span> <span class="nn">compas_blender.artists</span> <span class="kn">import</span> <span class="n">NetworkArtist</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Network</span>
 <span class="kn">from</span> <span class="nn">compas.numerical</span> <span class="kn">import</span> <span class="n">fd_numpy</span>
 
+
 <span class="c1"># make a network from sample data</span>
 
-<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;saddle.obj&#39;</span><span class="p">))</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;saddle.obj&#39;</span><span class="p">))</span>
 
 <span class="c1"># set default vertex and edge attributes</span>
 
-<span class="n">dva</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;is_anchor&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s1">&#39;px&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;py&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;pz&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+<span class="n">dva</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;is_anchor&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;px&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;py&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;pz&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
 <span class="n">dea</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 
 <span class="n">network</span><span class="o">.</span><span class="n">update_default_vertex_attributes</span><span class="p">(</span><span class="n">dva</span><span class="p">)</span>
@@ -118,14 +117,10 @@
 
 <span class="c1"># display the result</span>
 
-<span class="n">networkartist</span> <span class="o">=</span> <span class="n">NetworkArtist</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">)</span>
-<span class="n">networkartist</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">()</span>
+<span class="n">artist</span> <span class="o">=</span> <span class="n">NetworkArtist</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;TEMP&quot;</span><span class="p">)</span>
 
-<span class="n">networkartist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
-<span class="n">networkartist</span><span class="o">.</span><span class="n">draw_vertexlabels</span><span class="p">()</span>
-
-<span class="n">networkartist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-<span class="n">networkartist</span><span class="o">.</span><span class="n">draw_edgelabels</span><span class="p">()</span>
+<span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
@@ -156,36 +151,15 @@
                         <div class="navbar-expand-md">
                             <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
 
-                            <ul class="nav flex-column active">
+                            <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item active"><a class="nav-link reference internal" href="../../examples.html">Examples</a><ul class="nav active">
-<li class="nav-item active"><a class="nav-link active current reference internal" href="#">Network equilibrium in Blender</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../gh/mesh-remeshing.html">Remeshing 2D with GhPython</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../gh/mesh-subd-modeling.html">Mesh subdivision in GhPython</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../plotter/mesh-collapse.html">Collapse mesh to a single vertex</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../plotter/mesh-parameterisation.html">Mesh parametrisation</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../plotter/network-shortest-path.html">Shortest network paths</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../plotter/pointcloud_alignment.html">Pointcloud alignment</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../plotter/spline-drx-numpy.html">Spline relaxation</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../rhino/mesh-delaunay-from-points.html">Delaunay triangulation</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../rhino/mesh-delaunay-with-boundary.html">Delaunay triangulation with boundary</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../rhino/mesh-remeshing.html">Remeshing 2D in Rhino</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../rhino/mesh-remeshing-on-mesh.html">Remeshing 3D</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../rhino/mesh-smoothing-on-surface.html">Mesh smoothing on a surface</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../rhino/mesh-smoothing-with-conduit.html">Visualising mesh smoothing with a conduit</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../rhino/mesh-stanford-bunny.html">The Stanford Bunny</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../rhino/mesh-subd-modeling.html">Subd mesh modeling</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../viewer/formfinding-cablenet.html">Network equilibrium</a></li>
-</ul>
-</li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../contributing.html">Contributing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../devguide.html">Developer Guides</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../citing.html">Citing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
 </ul>
 
 
@@ -222,11 +196,11 @@
         
 
         
-            Last updated on Nov 26, 2019.
+            Last updated on Dec 10, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
         
     </div>
 </footer>
@@ -234,7 +208,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.11.4',
+    VERSION           : '0.12.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

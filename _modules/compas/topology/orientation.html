@@ -58,13 +58,15 @@
                     
 
                     <h1>Source code for compas.topology.orientation</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
-<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">centroid_points</span>
-<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="k">import</span> <span class="n">breadth_first_traverse</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">KDTree</span>
+
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">pairwise</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">centroid_points</span>
+<span class="kn">from</span> <span class="nn">compas.topology</span> <span class="kn">import</span> <span class="n">breadth_first_traverse</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -73,94 +75,40 @@
 <span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_face_adjacency</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">nmax</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
+<div class="viewcode-block" id="unify_cycles"><a class="viewcode-back" href="../../../api/generated/compas.topology.unify_cycles.html#compas.topology.unify_cycles">[docs]</a><span class="k">def</span> <span class="nf">unify_cycles</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
-    <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">centroid_points</span><span class="p">([</span><span class="n">xyz</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">face</span><span class="p">])</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">unify</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">nbr</span><span class="p">):</span>
+        <span class="c1"># find the common edge</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">]</span> <span class="o">+</span> <span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+                <span class="c1"># node and nbr have edge u-v in common</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">faces</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">faces</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">or</span> <span class="p">(</span><span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">u</span> <span class="o">==</span> <span class="n">faces</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="c1"># if the traversal of a neighboring halfedge</span>
+                    <span class="c1"># is in the same direction</span>
+                    <span class="c1"># flip the neighbor</span>
+                    <span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">return</span>
 
-    <span class="n">k</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">),</span> <span class="n">nmax</span><span class="p">)</span>
+    <span class="n">adj</span> <span class="o">=</span> <span class="n">face_adjacency</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">cKDTree</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="n">breadth_first_traverse</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">unify</span><span class="p">)</span>
 
-        <span class="n">tree</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">closest</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">Rhino</span>
-
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="k">import</span> <span class="n">KDTree</span>
-
-            <span class="n">tree</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-            <span class="n">closest</span> <span class="o">=</span> <span class="p">[</span><span class="n">tree</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">nmax</span><span class="p">)</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
-            <span class="n">closest</span> <span class="o">=</span> <span class="p">[[</span><span class="n">index</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">nnbrs</span><span class="p">]</span> <span class="k">for</span> <span class="n">nnbrs</span> <span class="ow">in</span> <span class="n">closest</span><span class="p">]</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">RTree</span>
-            <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Sphere</span>
-            <span class="kn">from</span> <span class="nn">Rhino.Geometry</span> <span class="k">import</span> <span class="n">Point3d</span>
-
-            <span class="n">tree</span> <span class="o">=</span> <span class="n">RTree</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
-                <span class="n">tree</span><span class="o">.</span><span class="n">Insert</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span> <span class="n">point</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span>
-
-            <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">Tag</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">Id</span><span class="p">)</span>
-
-            <span class="n">closest</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
-                <span class="n">sphere</span> <span class="o">=</span> <span class="n">Sphere</span><span class="p">(</span><span class="n">Point3d</span><span class="p">(</span><span class="o">*</span> <span class="n">point</span><span class="p">),</span> <span class="n">radius</span><span class="p">)</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">tree</span><span class="o">.</span><span class="n">Search</span><span class="p">(</span><span class="n">sphere</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-                <span class="n">closest</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-    <span class="n">adjacency</span>  <span class="o">=</span> <span class="p">{}</span>
-
-    <span class="k">for</span> <span class="n">face</span><span class="p">,</span> <span class="n">vertices</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">faces</span><span class="p">):</span>
-        <span class="n">nbrs</span>  <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-
-        <span class="n">nnbrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">closest</span><span class="p">[</span><span class="n">face</span><span class="p">])</span>
-
-        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">vertices</span> <span class="o">+</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">nnbrs</span><span class="p">:</span>
-
-                <span class="k">if</span> <span class="n">nbr</span> <span class="o">==</span> <span class="n">face</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="k">if</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
-                    <span class="k">continue</span>
-
-                <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">]</span> <span class="o">+</span> <span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]):</span>
-                    <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">a</span> <span class="ow">and</span> <span class="n">u</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>
-                        <span class="n">nbrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span>
-                        <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span>
-                        <span class="k">break</span>
-
-                <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">]</span> <span class="o">+</span> <span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]):</span>
-                    <span class="k">if</span> <span class="n">u</span> <span class="o">==</span> <span class="n">a</span> <span class="ow">and</span> <span class="n">v</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>
-                        <span class="n">nbrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span>
-                        <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span>
-                        <span class="k">break</span>
-
-        <span class="n">adjacency</span><span class="p">[</span><span class="n">face</span><span class="p">]</span> <span class="o">=</span> <span class="n">nbrs</span>
-
-    <span class="k">return</span> <span class="n">adjacency</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">visited</span><span class="p">))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">),</span> <span class="s1">&#39;Not all faces were visited&#39;</span>
+    <span class="k">return</span> <span class="n">faces</span></div>
 
 
 <div class="viewcode-block" id="face_adjacency"><a class="viewcode-back" href="../../../api/generated/compas.topology.face_adjacency.html#compas.topology.face_adjacency">[docs]</a><span class="k">def</span> <span class="nf">face_adjacency</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">faces</span><span class="p">):</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
     <span class="k">if</span> <span class="n">f</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_face_adjacency</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
 
-    <span class="n">adjacency</span>  <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">for</span> <span class="n">face</span><span class="p">,</span> <span class="n">vertices</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">faces</span><span class="p">):</span>
-        <span class="n">nbrs</span>  <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">nbrs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">vertices</span> <span class="o">+</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]):</span>
@@ -188,28 +136,45 @@
     <span class="k">return</span> <span class="n">adjacency</span></div>
 
 
-<div class="viewcode-block" id="unify_cycles"><a class="viewcode-back" href="../../../api/generated/compas.topology.unify_cycles.html#compas.topology.unify_cycles">[docs]</a><span class="k">def</span> <span class="nf">unify_cycles</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_face_adjacency</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">nmax</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">unify</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">nbr</span><span class="p">):</span>
-        <span class="c1"># find the common edge</span>
-        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">]</span> <span class="o">+</span> <span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
-                <span class="c1"># node and nbr have edge u-v in common</span>
-                <span class="n">i</span> <span class="o">=</span> <span class="n">faces</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
-                <span class="n">j</span> <span class="o">=</span> <span class="n">faces</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">or</span> <span class="p">(</span><span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">u</span> <span class="o">==</span> <span class="n">faces</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-                    <span class="c1"># if the traversal of a neighboring halfedge</span>
-                    <span class="c1"># is in the same direction</span>
-                    <span class="c1"># flip the neighbor</span>
-                    <span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="k">return</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">centroid_points</span><span class="p">([</span><span class="n">xyz</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">face</span><span class="p">])</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
 
-    <span class="n">adj</span> <span class="o">=</span> <span class="n">face_adjacency</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">)</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">closest</span> <span class="o">=</span> <span class="p">[</span><span class="n">tree</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">nmax</span><span class="p">)</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+    <span class="n">closest</span> <span class="o">=</span> <span class="p">[[</span><span class="n">index</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">nnbrs</span><span class="p">]</span> <span class="k">for</span> <span class="n">nnbrs</span> <span class="ow">in</span> <span class="n">closest</span><span class="p">]</span>
 
-    <span class="n">visited</span> <span class="o">=</span> <span class="n">breadth_first_traverse</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">unify</span><span class="p">)</span>
+    <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">visited</span><span class="p">))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">),</span> <span class="s1">&#39;Not all faces were visited&#39;</span>
-    <span class="k">return</span> <span class="n">faces</span></div>
+    <span class="k">for</span> <span class="n">face</span><span class="p">,</span> <span class="n">vertices</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">faces</span><span class="p">):</span>
+        <span class="n">nbrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="n">nnbrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">closest</span><span class="p">[</span><span class="n">face</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">vertices</span> <span class="o">+</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">nnbrs</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">nbr</span> <span class="o">==</span> <span class="n">face</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">]</span> <span class="o">+</span> <span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">a</span> <span class="ow">and</span> <span class="n">u</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>
+                        <span class="n">nbrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span>
+                        <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span>
+                        <span class="k">break</span>
+
+                <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">]</span> <span class="o">+</span> <span class="n">faces</span><span class="p">[</span><span class="n">nbr</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="n">u</span> <span class="o">==</span> <span class="n">a</span> <span class="ow">and</span> <span class="n">v</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>
+                        <span class="n">nbrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span>
+                        <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span>
+                        <span class="k">break</span>
+
+        <span class="n">adjacency</span><span class="p">[</span><span class="n">face</span><span class="p">]</span> <span class="o">=</span> <span class="n">nbrs</span>
+
+    <span class="k">return</span> <span class="n">adjacency</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -249,14 +214,12 @@
                             <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../devguide.html">Developer Guides</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 </ul>
 
 
@@ -290,11 +253,11 @@
         
 
         
-            Last updated on Nov 26, 2019.
+            Last updated on Dec 10, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
         
     </div>
 </footer>
@@ -302,7 +265,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.11.4',
+    VERSION           : '0.12.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

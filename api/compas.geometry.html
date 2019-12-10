@@ -63,75 +63,6 @@
 
                     <span class="target" id="module-compas.geometry"></span><div class="section" id="geometry">
 <h1>geometry</h1>
-<p>The functions of this package take various geometric primitives as input parameters.
-These primitives may be passed into those functions as instances of the
-corresponding classes or as an equivalent representation using (combinations of)
-built-in Python objects. The following table defines those equivalent representations.</p>
-<table class="longtable table table-bordered docutils align-default">
-<colgroup>
-<col style="width: 14%" />
-<col style="width: 86%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>parameter</p></th>
-<th class="head"><p>representation</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>vector</p></td>
-<td><p>list of XYZ coordinates.</p></td>
-</tr>
-<tr class="row-odd"><td><p>point</p></td>
-<td><p>list of XYZ coordinates.</p></td>
-</tr>
-<tr class="row-even"><td><p>segment</p></td>
-<td><p>2-tuple of points.</p></td>
-</tr>
-<tr class="row-odd"><td><p>line</p></td>
-<td><p>2-tuple of points.</p></td>
-</tr>
-<tr class="row-even"><td><p>ray</p></td>
-<td><p>2-tuple of points.</p></td>
-</tr>
-<tr class="row-odd"><td><p>polyline</p></td>
-<td><p>list of points.</p></td>
-</tr>
-<tr class="row-even"><td><p>polygon</p></td>
-<td><p>list of points.</p></td>
-</tr>
-<tr class="row-odd"><td><p>plane</p></td>
-<td><p>2-tuple of origin (point) and normal (vector).</p></td>
-</tr>
-<tr class="row-even"><td><p>frame</p></td>
-<td><p>3-tuple of origin (point), U axis (vector) and V axis (vector).</p></td>
-</tr>
-<tr class="row-odd"><td><p>circle</p></td>
-<td><p>3-tuple of center (point), normal (vector) and radius (float).</p></td>
-</tr>
-</tbody>
-</table>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cross_vectors</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
-<span class="go">[0.0, 0.0, 1.0]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cross_vectors</span><span class="p">(</span><span class="n">Vector</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="go">[0.0, 0.0, 1.0]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cross_vectors</span><span class="p">(</span><span class="n">Vector</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="go">[0.0, 0.0, 1.0]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">area_polygon</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">==</span> <span class="n">area_polygon</span><span class="p">(</span><span class="n">Polygon</span><span class="p">(</span><span class="n">points</span><span class="p">))</span>
-<span class="go">True</span>
-</code></pre></div>
-</div>
-<p>Many functions also have an <code class="docutils literal notranslate"><span class="pre">_xy</span></code> variant.
-These variants ignore the Z-component of the input parameters.
-Therefore, they also accept 2D representations of geometric objects.
-However, they always return a 3D result in the XY plane (with <code class="docutils literal notranslate"><span class="pre">z</span> <span class="pre">=</span> <span class="pre">0</span></code>).
-For example, <code class="docutils literal notranslate"><span class="pre">scale_vector_xy</span></code> accepts both 2D and 3D vectors,
-but always returns a 3D vector with the Z-component set to zero.</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">area_polygon_xy</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">==</span> <span class="n">area_polygon</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-<span class="go">False</span>
-</code></pre></div>
-</div>
 <div class="section" id="primitives">
 <h2>Primitives</h2>
 <table class="longtable docutils align-default">
@@ -1078,15 +1009,13 @@ but always returns a 3D vector with the Z-component set to zero.</p>
                             <ul class="nav flex-column active">
 <li class="nav-item"><a class="nav-link reference internal" href="../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../tutorial.html">Tutorial</a></li>
 <li class="nav-item active"><a class="nav-link reference internal" href="../api.html">API Reference</a><ul class="nav active">
 <li class="nav-item active"><a class="nav-link reference internal" href="compas.html">compas</a><ul class="nav active">
 <li class="nav-item"><a class="nav-link reference internal" href="compas.datastructures.html">datastructures</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="compas.files.html">files</a></li>
 <li class="nav-item active"><a class="nav-link active current reference internal" href="#">geometry</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="compas.numerical.html">numerical</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas.remote.html">remote</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="compas.robots.html">robots</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="compas.rpc.html">rpc</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="compas.topology.html">topology</a></li>
@@ -1100,10 +1029,9 @@ but always returns a 3D vector with the Z-component set to zero.</p>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../contributing.html">Contributing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../devguide.html">Developer Guides</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../license.html">License</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../citing.html">Citing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../license.html">License</a></li>
 </ul>
 
 
@@ -1166,11 +1094,11 @@ but always returns a 3D vector with the Z-component set to zero.</p>
         
 
         
-            Last updated on Nov 26, 2019.
+            Last updated on Dec 10, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
         
     </div>
 </footer>
@@ -1178,7 +1106,7 @@ but always returns a 3D vector with the Z-component set to zero.</p>
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.11.4',
+    VERSION           : '0.12.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

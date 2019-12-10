@@ -58,22 +58,20 @@
                     
 
                     <h1>Source code for compas.robots.resources.github</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="k">import</span> <span class="n">Mesh</span>
-<span class="kn">from</span> <span class="nn">compas.robots.resources.basic</span> <span class="k">import</span> <span class="n">SUPPORTED_FORMATS</span>
-<span class="kn">from</span> <span class="nn">compas.robots.resources.basic</span> <span class="k">import</span> <span class="n">AbstractMeshLoader</span>
-<span class="kn">from</span> <span class="nn">compas.robots.resources.basic</span> <span class="k">import</span> <span class="n">_mesh_import</span>
+<span class="kn">from</span> <span class="nn">compas.robots.resources.basic</span> <span class="kn">import</span> <span class="n">AbstractMeshLoader</span>
+<span class="kn">from</span> <span class="nn">compas.robots.resources.basic</span> <span class="kn">import</span> <span class="n">_mesh_import</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GithubPackageMeshLoader&#39;</span><span class="p">]</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span><span class="p">,</span> <span class="n">urlretrieve</span>
+    <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span><span class="p">,</span> <span class="n">urlretrieve</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">urllib2</span> <span class="k">import</span> <span class="n">urlopen</span>
-    <span class="kn">from</span> <span class="nn">urllib</span> <span class="k">import</span> <span class="n">urlretrieve</span>
+    <span class="kn">from</span> <span class="nn">urllib2</span> <span class="kn">import</span> <span class="n">urlopen</span>
+    <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">urlretrieve</span>
 
 
 <div class="viewcode-block" id="GithubPackageMeshLoader"><a class="viewcode-back" href="../../../../api/generated/compas.robots.GithubPackageMeshLoader.html#compas.robots.GithubPackageMeshLoader">[docs]</a><span class="k">class</span> <span class="nc">GithubPackageMeshLoader</span><span class="p">(</span><span class="n">AbstractMeshLoader</span><span class="p">):</span>
@@ -93,7 +91,7 @@
 
     <span class="n">HOST</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com&#39;</span>
 
-<div class="viewcode-block" id="GithubPackageMeshLoader.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.GithubPackageMeshLoader.__init__.html#compas.robots.GithubPackageMeshLoader.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repository</span><span class="p">,</span> <span class="n">support_package</span><span class="p">,</span> <span class="n">branch</span><span class="o">=</span><span class="s1">&#39;master&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="GithubPackageMeshLoader.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.GithubPackageMeshLoader.__init__.html#compas.robots.GithubPackageMeshLoader.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repository</span><span class="p">,</span> <span class="n">support_package</span><span class="p">,</span> <span class="n">branch</span><span class="o">=</span><span class="s1">&#39;master&#39;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GithubPackageMeshLoader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">repository</span> <span class="o">=</span> <span class="n">repository</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">support_package</span> <span class="o">=</span> <span class="n">support_package</span>
@@ -156,6 +154,14 @@
         <span class="c1"># storing a temp file for these urls</span>
         <span class="n">tempfile</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_mesh_import</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">tempfile</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
 </code></pre></div>
                     
                 
@@ -186,14 +192,12 @@
                             <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../contributing.html">Contributing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../devguide.html">Developer Guides</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../../license.html">License</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../../citing.html">Citing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../../license.html">License</a></li>
 </ul>
 
 
@@ -227,11 +231,11 @@
         
 
         
-            Last updated on Nov 26, 2019.
+            Last updated on Dec 10, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
         
     </div>
 </footer>
@@ -239,7 +243,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.11.4',
+    VERSION           : '0.12.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

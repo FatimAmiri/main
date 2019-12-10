@@ -58,30 +58,29 @@
                     
 
                     <h1>Source code for compas.geometry.distance</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
-<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">fabs</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">fabs</span>
 
-<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">pairwise</span>
 
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">add_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">add_vectors_xy</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">subtract_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">subtract_vectors_xy</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">scale_vector</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">normalize_vector</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">length_vector</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">length_vector_xy</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">length_vector_sqrd</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">length_vector_sqrd_xy</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">cross_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">cross_vectors_xy</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">dot_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">dot_vectors_xy</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">vector_component</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">vector_component_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">add_vectors_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">subtract_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">subtract_vectors_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">scale_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">normalize_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">length_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">length_vector_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">length_vector_sqrd</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">length_vector_sqrd_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">cross_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">cross_vectors_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">dot_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">vector_component</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">vector_component_xy</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -264,9 +263,9 @@
     <span class="n">ab</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
     <span class="n">pa</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
     <span class="n">pb</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
-    <span class="n">l</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">cross_vectors</span><span class="p">(</span><span class="n">pa</span><span class="p">,</span> <span class="n">pb</span><span class="p">))</span>
-    <span class="n">l_ab</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">l</span> <span class="o">/</span> <span class="n">l_ab</span></div>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">cross_vectors</span><span class="p">(</span><span class="n">pa</span><span class="p">,</span> <span class="n">pb</span><span class="p">))</span>
+    <span class="n">length_ab</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">length</span> <span class="o">/</span> <span class="n">length_ab</span></div>
 
 
 <div class="viewcode-block" id="distance_point_line_xy"><a class="viewcode-back" href="../../../api/generated/compas.geometry.distance_point_line_xy.html#compas.geometry.distance_point_line_xy">[docs]</a><span class="k">def</span> <span class="nf">distance_point_line_xy</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
@@ -300,9 +299,9 @@
     <span class="n">ab</span> <span class="o">=</span> <span class="n">subtract_vectors_xy</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
     <span class="n">pa</span> <span class="o">=</span> <span class="n">subtract_vectors_xy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
     <span class="n">pb</span> <span class="o">=</span> <span class="n">subtract_vectors_xy</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
-    <span class="n">l</span> <span class="o">=</span> <span class="n">fabs</span><span class="p">(</span><span class="n">cross_vectors_xy</span><span class="p">(</span><span class="n">pa</span><span class="p">,</span> <span class="n">pb</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
-    <span class="n">l_ab</span> <span class="o">=</span> <span class="n">length_vector_xy</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">l</span> <span class="o">/</span> <span class="n">l_ab</span></div>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">fabs</span><span class="p">(</span><span class="n">cross_vectors_xy</span><span class="p">(</span><span class="n">pa</span><span class="p">,</span> <span class="n">pb</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">length_ab</span> <span class="o">=</span> <span class="n">length_vector_xy</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">length</span> <span class="o">/</span> <span class="n">length_ab</span></div>
 
 
 <div class="viewcode-block" id="distance_point_line_sqrd"><a class="viewcode-back" href="../../../api/generated/compas.geometry.distance_point_line_sqrd.html#compas.geometry.distance_point_line_sqrd">[docs]</a><span class="k">def</span> <span class="nf">distance_point_line_sqrd</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
@@ -334,9 +333,9 @@
     <span class="n">ab</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
     <span class="n">pa</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
     <span class="n">pb</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
-    <span class="n">l</span> <span class="o">=</span> <span class="n">length_vector_sqrd</span><span class="p">(</span><span class="n">cross_vectors</span><span class="p">(</span><span class="n">pa</span><span class="p">,</span> <span class="n">pb</span><span class="p">))</span>
-    <span class="n">l_ab</span> <span class="o">=</span> <span class="n">length_vector_sqrd</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">l</span> <span class="o">/</span> <span class="n">l_ab</span></div>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">length_vector_sqrd</span><span class="p">(</span><span class="n">cross_vectors</span><span class="p">(</span><span class="n">pa</span><span class="p">,</span> <span class="n">pb</span><span class="p">))</span>
+    <span class="n">length_ab</span> <span class="o">=</span> <span class="n">length_vector_sqrd</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">length</span> <span class="o">/</span> <span class="n">length_ab</span></div>
 
 
 <div class="viewcode-block" id="distance_point_line_sqrd_xy"><a class="viewcode-back" href="../../../api/generated/compas.geometry.distance_point_line_sqrd_xy.html#compas.geometry.distance_point_line_sqrd_xy">[docs]</a><span class="k">def</span> <span class="nf">distance_point_line_sqrd_xy</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
@@ -370,9 +369,9 @@
     <span class="n">ab</span> <span class="o">=</span> <span class="n">subtract_vectors_xy</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
     <span class="n">pa</span> <span class="o">=</span> <span class="n">subtract_vectors_xy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
     <span class="n">pb</span> <span class="o">=</span> <span class="n">subtract_vectors_xy</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
-    <span class="n">l</span> <span class="o">=</span> <span class="n">cross_vectors_xy</span><span class="p">(</span><span class="n">pa</span><span class="p">,</span> <span class="n">pb</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
-    <span class="n">l_ab</span> <span class="o">=</span> <span class="n">length_vector_sqrd_xy</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">l</span> <span class="o">/</span> <span class="n">l_ab</span></div>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">cross_vectors_xy</span><span class="p">(</span><span class="n">pa</span><span class="p">,</span> <span class="n">pb</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">length_ab</span> <span class="o">=</span> <span class="n">length_vector_sqrd_xy</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">length</span> <span class="o">/</span> <span class="n">length_ab</span></div>
 
 
 <div class="viewcode-block" id="distance_point_plane"><a class="viewcode-back" href="../../../api/generated/compas.geometry.distance_point_plane.html#compas.geometry.distance_point_plane">[docs]</a><span class="k">def</span> <span class="nf">distance_point_plane</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">plane</span><span class="p">):</span>
@@ -529,10 +528,10 @@
     <span class="n">cd</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
     <span class="n">ac</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">cross_vectors</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">cd</span><span class="p">)</span>
-    <span class="n">l</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;=</span> <span class="n">tol</span><span class="p">:</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">length_vector</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;=</span> <span class="n">tol</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">distance_point_point</span><span class="p">(</span><span class="n">closest_point_on_line</span><span class="p">(</span><span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">l2</span><span class="p">),</span> <span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">l</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">length</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fabs</span><span class="p">(</span><span class="n">dot_vectors</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">ac</span><span class="p">))</span></div>
 
 
@@ -670,10 +669,10 @@
 <span class="sd">           [ 0.84680233,  0.85390316,  0.72154983,  0.50432293]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">argmin</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">argpartition</span>
-    <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">distance_matrix</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">asarray</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">argmin</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">argpartition</span>
+    <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">distance_matrix</span>
 
     <span class="n">points</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
     <span class="n">cloud</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
@@ -1010,14 +1009,12 @@
                             <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../devguide.html">Developer Guides</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 </ul>
 
 
@@ -1051,11 +1048,11 @@
         
 
         
-            Last updated on Nov 26, 2019.
+            Last updated on Dec 10, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
         
     </div>
 </footer>
@@ -1063,7 +1060,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.11.4',
+    VERSION           : '0.12.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

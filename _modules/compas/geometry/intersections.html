@@ -58,31 +58,30 @@
                     
 
                     <h1>Source code for compas.geometry.intersections</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
-<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">fabs</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sqrt</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">fabs</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
 
-<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="k">import</span> <span class="n">pairwise</span>
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">pairwise</span>
 
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">close</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">allclose</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">add_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">subtract_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">scale_vector</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">cross_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">dot_vectors</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">length_vector_xy</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">subtract_vectors_xy</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="k">import</span> <span class="n">normalize_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">allclose</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">add_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">subtract_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">scale_vector</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">cross_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">dot_vectors</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">length_vector_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">subtract_vectors_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">normalize_vector</span>
 
-<span class="kn">from</span> <span class="nn">compas.geometry.distance</span> <span class="k">import</span> <span class="n">distance_point_point</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.distance</span> <span class="kn">import</span> <span class="n">distance_point_point</span>
 
-<span class="kn">from</span> <span class="nn">compas.geometry.queries</span> <span class="k">import</span> <span class="n">is_point_on_segment</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.queries</span> <span class="k">import</span> <span class="n">is_point_on_segment_xy</span>
-<span class="kn">from</span> <span class="nn">compas.geometry.queries</span> <span class="k">import</span> <span class="n">is_point_in_triangle</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.queries</span> <span class="kn">import</span> <span class="n">is_point_on_segment</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.queries</span> <span class="kn">import</span> <span class="n">is_point_on_segment_xy</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.queries</span> <span class="kn">import</span> <span class="n">is_point_in_triangle</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -463,46 +462,6 @@
 <span class="sd">        If the intersection does not exist.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># a, b, c = triangle</span>
-    <span class="c1"># v1 = subtract_vectors(line[1], line[0])</span>
-    <span class="c1"># p1 = line[0]</span>
-    <span class="c1"># # Find vectors for two edges sharing V1</span>
-    <span class="c1"># e1 = subtract_vectors(b, a)</span>
-    <span class="c1"># e2 = subtract_vectors(c, a)</span>
-    <span class="c1"># # Begin calculating determinant - also used to calculate u parameter</span>
-    <span class="c1"># p = cross_vectors(v1, e2)</span>
-
-    <span class="c1"># # if determinant is near zero, ray lies in plane of triangle</span>
-    <span class="c1"># det = dot_vectors(e1, p)</span>
-    <span class="c1"># if det &gt; - epsilon and det &lt; epsilon:</span>
-    <span class="c1">#     return None</span>
-
-    <span class="c1"># inv_det = 1.0 / det</span>
-    <span class="c1"># # calculate distance from V1 to ray origin</span>
-    <span class="c1"># t = subtract_vectors(p1, a)</span>
-
-    <span class="c1"># # Calculate u parameter</span>
-    <span class="c1"># u = dot_vectors(t, p) * inv_det</span>
-    <span class="c1"># # The intersection lies outside of the triangle</span>
-    <span class="c1"># if u &lt; 0.0 or u &gt; 1.0:</span>
-    <span class="c1">#     return None</span>
-
-    <span class="c1"># # Prepare to make_blocks v parameter</span>
-    <span class="c1"># q = cross_vectors(t, e1)</span>
-    <span class="c1"># # Calculate V parameter</span>
-
-    <span class="c1"># v = dot_vectors(v1, q) * inv_det</span>
-    <span class="c1"># # The intersection lies outside of the triangle</span>
-    <span class="c1"># if v &lt; 0.0 or u + v &gt; 1.0:</span>
-    <span class="c1">#     return None</span>
-
-    <span class="c1"># t = dot_vectors(e2, q) * inv_det</span>
-    <span class="c1"># if t &gt; epsilon:</span>
-    <span class="c1">#     return add_vectors(p1, scale_vector(v1, t))</span>
-
-    <span class="c1"># # No hit</span>
-    <span class="c1"># return None</span>
-
     <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">triangle</span>
     <span class="n">ab</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
     <span class="n">ac</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
@@ -639,18 +598,22 @@
     <span class="c1"># Case 4: No intersection</span>
     <span class="k">if</span> <span class="n">radius1</span> <span class="o">+</span> <span class="n">radius2</span> <span class="o">&lt;</span> <span class="n">distance</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
+
     <span class="c1"># Case 4: No intersection, sphere is within the other sphere</span>
     <span class="k">elif</span> <span class="n">distance</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">radius1</span><span class="p">,</span> <span class="n">radius2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">radius1</span><span class="p">,</span> <span class="n">radius2</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
+
     <span class="c1"># Case 3: sphere&#39;s overlap</span>
     <span class="k">elif</span> <span class="n">radius1</span> <span class="o">==</span> <span class="n">radius2</span> <span class="ow">and</span> <span class="n">distance</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;sphere&quot;</span><span class="p">,</span> <span class="n">sphere1</span>
+
     <span class="c1"># Case 2: point intersection</span>
     <span class="k">elif</span> <span class="n">radius1</span> <span class="o">+</span> <span class="n">radius2</span> <span class="o">==</span> <span class="n">distance</span><span class="p">:</span>
         <span class="n">ipt</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">center2</span><span class="p">,</span> <span class="n">center1</span><span class="p">)</span>
         <span class="n">ipt</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">ipt</span><span class="p">,</span> <span class="n">radius1</span><span class="o">/</span><span class="n">distance</span><span class="p">)</span>
         <span class="n">ipt</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">center1</span><span class="p">,</span> <span class="n">ipt</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">ipt</span>
+
     <span class="c1"># Case 2: point intersection, smaller sphere is within the bigger</span>
     <span class="k">elif</span> <span class="n">distance</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">radius1</span><span class="p">,</span> <span class="n">radius2</span><span class="p">)</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="n">radius1</span><span class="p">,</span> <span class="n">radius2</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">radius1</span> <span class="o">&gt;</span> <span class="n">radius2</span><span class="p">:</span>
@@ -662,15 +625,15 @@
             <span class="n">ipt</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">ipt</span><span class="p">,</span> <span class="n">radius2</span><span class="o">/</span><span class="n">distance</span><span class="p">)</span>
             <span class="n">ipt</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">center2</span><span class="p">,</span> <span class="n">ipt</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">ipt</span>
+
     <span class="c1"># Case 1: circle intersection</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">h</span>  <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="p">(</span><span class="n">radius1</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">radius2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">distance</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">ci</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">center2</span><span class="p">,</span> <span class="n">center1</span><span class="p">)</span>
-        <span class="n">ci</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">ci</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
-        <span class="n">ci</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">center1</span><span class="p">,</span> <span class="n">ci</span><span class="p">)</span>
-        <span class="n">ri</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">radius1</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">distance</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">normal</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">center2</span><span class="p">,</span> <span class="n">center1</span><span class="p">),</span> <span class="mi">1</span><span class="o">/</span><span class="n">distance</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s2">&quot;circle&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">ci</span><span class="p">,</span> <span class="n">ri</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="p">(</span><span class="n">radius1</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">radius2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">distance</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ci</span> <span class="o">=</span> <span class="n">subtract_vectors</span><span class="p">(</span><span class="n">center2</span><span class="p">,</span> <span class="n">center1</span><span class="p">)</span>
+    <span class="n">ci</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">ci</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+    <span class="n">ci</span> <span class="o">=</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">center1</span><span class="p">,</span> <span class="n">ci</span><span class="p">)</span>
+    <span class="n">ri</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">radius1</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">distance</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">normal</span> <span class="o">=</span> <span class="n">scale_vector</span><span class="p">(</span><span class="n">subtract_vectors</span><span class="p">(</span><span class="n">center2</span><span class="p">,</span> <span class="n">center1</span><span class="p">),</span> <span class="mi">1</span><span class="o">/</span><span class="n">distance</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;circle&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">ci</span><span class="p">,</span> <span class="n">ri</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">intersection_ellipse_line_xy</span><span class="p">(</span><span class="n">ellipse</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
@@ -729,28 +692,10 @@
 <span class="c1"># Main</span>
 <span class="c1"># ==============================================================================</span>
 
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    
-    <span class="c1"># # intersection_sphere_sphere(sphere1, sphere2)</span>
-    <span class="c1"># sphere1 = (3.0, 7.0, 4.0), 10.0</span>
-    <span class="c1"># sphere2 = (7.0, 4.0, 0.0), 5.0</span>
-    <span class="c1"># result = intersection_sphere_sphere(sphere1, sphere2)</span>
-    <span class="c1"># print(result)</span>
-    <span class="c1"># if result:</span>
-    <span class="c1">#     case, res = result</span>
-    <span class="c1">#     if case == &quot;circle&quot;:</span>
-    <span class="c1">#         center, radius, normal = res</span>
-    <span class="c1">#     elif case == &quot;point&quot;:</span>
-    <span class="c1">#         point = res</span>
-    <span class="c1">#     elif case == &quot;sphere&quot;:</span>
-    <span class="c1">#         center, radius = res</span>
 
-    <span class="n">a</span> <span class="o">=</span> <span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
-
-    <span class="n">res</span> <span class="o">=</span> <span class="n">intersection_line_line_xy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="k">pass</span>
 </code></pre></div>
                     
                 
@@ -781,14 +726,12 @@
                             <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../devguide.html">Developer Guides</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 </ul>
 
 
@@ -822,11 +765,11 @@
         
 
         
-            Last updated on Nov 26, 2019.
+            Last updated on Dec 10, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
         
     </div>
 </footer>
@@ -834,7 +777,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.11.4',
+    VERSION           : '0.12.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

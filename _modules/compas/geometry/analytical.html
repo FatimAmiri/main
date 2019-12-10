@@ -58,161 +58,164 @@
                     
 
                     <h1>Source code for compas.geometry.analytical</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">exp</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">cos</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sin</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">exp</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sin</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-	<span class="s1">&#39;circle_evaluate&#39;</span><span class="p">,</span>
-	<span class="s1">&#39;ellipse_evaluate&#39;</span><span class="p">,</span>
-	<span class="s1">&#39;archimedean_spiral_evaluate&#39;</span><span class="p">,</span>
-	<span class="s1">&#39;logarithmic_spiral_evaluate&#39;</span><span class="p">,</span>
-	<span class="s1">&#39;helix_evaluate&#39;</span>
+    <span class="s1">&#39;circle_evaluate&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ellipse_evaluate&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;archimedean_spiral_evaluate&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;logarithmic_spiral_evaluate&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;helix_evaluate&#39;</span>
 <span class="p">]</span>
 
 
 <div class="viewcode-block" id="circle_evaluate"><a class="viewcode-back" href="../../../api/generated/compas.geometry.circle_evaluate.html#compas.geometry.circle_evaluate">[docs]</a><span class="k">def</span> <span class="nf">circle_evaluate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Evalutes a circle at a parameter.</span>
+    <span class="sd">&quot;&quot;&quot;Evalutes a circle at a parameter.</span>
 
-<span class="sd">	Parameters</span>
-<span class="sd">	----------</span>
-<span class="sd">	t : float</span>
-<span class="sd">		Parameter</span>
-<span class="sd">	r : float</span>
-<span class="sd">		Constant</span>
-<span class="sd">	z : float, optional</span>
-<span class="sd">		Height. Default is 0.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t: float</span>
+<span class="sd">        Parameter</span>
+<span class="sd">    r: float</span>
+<span class="sd">        Constant</span>
+<span class="sd">    z: float, optional</span>
+<span class="sd">        Height. Default is 0.</span>
 
-<span class="sd">	Notes</span>
-<span class="sd">	-----</span>
-<span class="sd">	The radius is r.</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The radius is r.</span>
 
-<span class="sd">	Returns</span>
-<span class="sd">	-------</span>
-<span class="sd">	list</span>
-<span class="sd">		The (x, y, z) coordinates.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The (x, y, z) coordinates.</span>
 
-<span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">return</span> <span class="p">[</span><span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">z</span><span class="p">]</span></div>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">z</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ellipse_evaluate"><a class="viewcode-back" href="../../../api/generated/compas.geometry.ellipse_evaluate.html#compas.geometry.ellipse_evaluate">[docs]</a><span class="k">def</span> <span class="nf">ellipse_evaluate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Evalutes an ellipse at a parameter.</span>
+    <span class="sd">&quot;&quot;&quot;Evalutes an ellipse at a parameter.</span>
 
-<span class="sd">	Parameters</span>
-<span class="sd">	----------</span>
-<span class="sd">	t : float</span>
-<span class="sd">		Parameter</span>
-<span class="sd">	a : float</span>
-<span class="sd">		Constant</span>
-<span class="sd">	b : float</span>
-<span class="sd">		Constant</span>
-<span class="sd">	z : float, optional</span>
-<span class="sd">		Height. Default is 0.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t: float</span>
+<span class="sd">        Parameter</span>
+<span class="sd">    a: float</span>
+<span class="sd">        Constant</span>
+<span class="sd">    b: float</span>
+<span class="sd">        Constant</span>
+<span class="sd">    z: float, optional</span>
+<span class="sd">        Height. Default is 0.</span>
 
-<span class="sd">	Notes</span>
-<span class="sd">	-----</span>
-<span class="sd">	The radius along the x and y axes are a and b, respectively.</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The radius along the x and y axes are a and b, respectively.</span>
 
-<span class="sd">	Returns</span>
-<span class="sd">	-------</span>
-<span class="sd">	list</span>
-<span class="sd">		The (x, y, z) coordinates.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The (x, y, z) coordinates.</span>
 
-<span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">return</span> <span class="p">[</span><span class="n">a</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">b</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">z</span><span class="p">]</span></div>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">a</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">b</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">z</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="archimedean_spiral_evaluate"><a class="viewcode-back" href="../../../api/generated/compas.geometry.archimedean_spiral_evaluate.html#compas.geometry.archimedean_spiral_evaluate">[docs]</a><span class="k">def</span> <span class="nf">archimedean_spiral_evaluate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Evalutes a spiral at a parameter. The analytical polar equation is r = a + b * theta.</span>
+    <span class="sd">&quot;&quot;&quot;Evalutes a spiral at a parameter. The analytical polar equation is r = a + b * theta.</span>
 
-<span class="sd">	Parameters</span>
-<span class="sd">	----------</span>
-<span class="sd">	t : float</span>
-<span class="sd">		Parameter</span>
-<span class="sd">	a : float</span>
-<span class="sd">		Constant</span>
-<span class="sd">	b : float</span>
-<span class="sd">		Constant</span>
-<span class="sd">	z : float, optional</span>
-<span class="sd">		Height. Default is 0.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t: float</span>
+<span class="sd">        Parameter</span>
+<span class="sd">    a: float</span>
+<span class="sd">        Constant</span>
+<span class="sd">    b: float</span>
+<span class="sd">        Constant</span>
+<span class="sd">    z: float, optional</span>
+<span class="sd">        Height. Default is 0.</span>
 
-<span class="sd">	Returns</span>
-<span class="sd">	-------</span>
-<span class="sd">	list</span>
-<span class="sd">		The (x, y, z) coordinates.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The (x, y, z) coordinates.</span>
 
-<span class="sd">	Notes</span>
-<span class="sd">	-----</span>
-<span class="sd">	The radius between turns is equal to 2 * pi * b.</span>
-<span class="sd">	The angle of the tangent at the beginning is equal to a.</span>
-<span class="sd">	The length of an arc of the spiral from 0 t is equal to L(t) = b / 2 * t ** 2 [1]_.</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The radius between turns is equal to 2 * pi * b.</span>
+<span class="sd">    The angle of the tangent at the beginning is equal to a.</span>
+<span class="sd">    The length of an arc of the spiral from 0 t is equal to L(t) = b / 2 * t ** 2 [1]_.</span>
 
-<span class="sd">	References</span>
-<span class="sd">	----------</span>
-<span class="sd">	.. [1] GeoGebra. *Archimedean Spiral built by parametric equations*.</span>
-<span class="sd">		   Available at: https://www.geogebra.org/m/dZuH5hWa.</span>
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] GeoGebra. *Archimedean Spiral built by parametric equations*. Available at: https://www.geogebra.org/m/dZuH5hWa.</span>
 
-<span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">return</span> <span class="p">[</span><span class="n">b</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">a</span><span class="p">),</span> <span class="n">b</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">a</span><span class="p">),</span> <span class="n">z</span><span class="p">]</span></div>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">b</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">a</span><span class="p">),</span> <span class="n">b</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">a</span><span class="p">),</span> <span class="n">z</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="logarithmic_spiral_evaluate"><a class="viewcode-back" href="../../../api/generated/compas.geometry.logarithmic_spiral_evaluate.html#compas.geometry.logarithmic_spiral_evaluate">[docs]</a><span class="k">def</span> <span class="nf">logarithmic_spiral_evaluate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Evalutes a logarithmic spiral at a parameter. The analytical polar equation is r = a * exp(b * theta).</span>
+    <span class="sd">&quot;&quot;&quot;Evalutes a logarithmic spiral at a parameter. The analytical polar equation is r = a * exp(b * theta).</span>
 
-<span class="sd">	Parameters</span>
-<span class="sd">	----------</span>
-<span class="sd">	t : float</span>
-<span class="sd">		Parameter</span>
-<span class="sd">	a : float</span>
-<span class="sd">		Constant</span>
-<span class="sd">	b : float</span>
-<span class="sd">		Constant</span>
-<span class="sd">	z : float, optional</span>
-<span class="sd">		Height. Default is 0.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t: float</span>
+<span class="sd">        Parameter</span>
+<span class="sd">    a: float</span>
+<span class="sd">        Constant</span>
+<span class="sd">    b: float</span>
+<span class="sd">        Constant</span>
+<span class="sd">    z: float, optional</span>
+<span class="sd">        Height. Default is 0.</span>
 
-<span class="sd">	Returns</span>
-<span class="sd">	-------</span>
-<span class="sd">	list</span>
-<span class="sd">		The (x, y, z) coordinates.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">            The (x, y, z) coordinates.</span>
 
-<span class="sd">	References</span>
-<span class="sd">	----------</span>
-<span class="sd">	.. [1] GeoGebra. *An equiangular spiral - parametric equation*.</span>
-<span class="sd">		   Available at: https://www.geogebra.org/m/zsHgCvq7.</span>
-<span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">return</span> <span class="p">[</span><span class="n">a</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">a</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">z</span><span class="p">]</span></div>
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] GeoGebra. *An equiangular spiral - parametric equation*.</span>
+<span class="sd">               Available at: https://www.geogebra.org/m/zsHgCvq7.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">a</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">a</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">z</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="helix_evaluate"><a class="viewcode-back" href="../../../api/generated/compas.geometry.helix_evaluate.html#compas.geometry.helix_evaluate">[docs]</a><span class="k">def</span> <span class="nf">helix_evaluate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Evalutes an helix at a parameter.</span>
+    <span class="sd">&quot;&quot;&quot;Evalutes an helix at a parameter.</span>
 
-<span class="sd">	Parameters</span>
-<span class="sd">	----------</span>
-<span class="sd">	t : float</span>
-<span class="sd">		Parameter</span>
-<span class="sd">	a : float</span>
-<span class="sd">		Constant</span>
-<span class="sd">	b : float</span>
-<span class="sd">		Constant</span>
-<span class="sd">	c : float</span>
-<span class="sd">		Constant</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t: float</span>
+<span class="sd">        Parameter</span>
+<span class="sd">    a: float</span>
+<span class="sd">        Constant</span>
+<span class="sd">    b: float</span>
+<span class="sd">        Constant</span>
+<span class="sd">    c: float</span>
+<span class="sd">        Constant</span>
 
-<span class="sd">	Returns</span>
-<span class="sd">	-------</span>
-<span class="sd">	list</span>
-<span class="sd">		The (x, y, z) coordinates.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The (x, y, z) coordinates.</span>
 
-<span class="sd">	Notes</span>
-<span class="sd">	-----</span>
-<span class="sd">	An interpretation of the constants a and b are the radius of the helix is a, and the slope of the helix is b / a.</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    An interpretation of the constants a and b are the radius of the helix is a, and the slope of the helix is b / a.</span>
 
-<span class="sd">	References</span>
-<span class="sd">	----------</span>
-<span class="sd">	.. [1] Wolfram MathWorld. *Helix*.</span>
-<span class="sd">		   Available at: http://mathworld.wolfram.com/Helix.html.</span>
-<span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">return</span> <span class="p">[</span><span class="n">a</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">a</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">b</span> <span class="o">*</span> <span class="n">t</span><span class="p">]</span></div>
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Wolfram MathWorld. *Helix*.</span>
+<span class="sd">               Available at: http://mathworld.wolfram.com/Helix.html.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">a</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">a</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">b</span> <span class="o">*</span> <span class="n">t</span><span class="p">]</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -221,7 +224,7 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
-	<span class="kn">import</span> <span class="nn">compas</span>
+    <span class="k">pass</span>
 </code></pre></div>
                     
                 
@@ -252,14 +255,12 @@
                             <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../examples.html">Examples</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../devguide.html">Developer Guides</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
 </ul>
 
 
@@ -293,11 +294,11 @@
         
 
         
-            Last updated on Nov 26, 2019.
+            Last updated on Dec 10, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
         
     </div>
 </footer>
@@ -305,7 +306,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.11.4',
+    VERSION           : '0.12.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',
