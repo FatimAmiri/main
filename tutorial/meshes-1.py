@@ -8,11 +8,11 @@ plotter = MeshPlotter(mesh)
 
 plotter.draw_vertices(
     facecolor={key: '#ff0000' for key in mesh.vertices_on_boundary()},
-    radius={key: 0.3 for key in mesh.vertices_on_boundary()},
+    radius={key: 0.2 for key in mesh.vertices_on_boundary()},
     text={key: str(key) for key in mesh.vertices_on_boundary()})
 
 plotter.draw_edges(
-    color={key: '#00ff00' for key in mesh.edges_on_boundary()},
+    color={key: '#ff0000' for key in mesh.edges_on_boundary()},
     width={key: 3 for key in mesh.edges_on_boundary()})
 
 plotter.draw_faces(

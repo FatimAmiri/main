@@ -69,6 +69,8 @@
 
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">pairwise</span>
 
+<span class="kn">from</span> <span class="nn">compas.geometry.average</span> <span class="kn">import</span> <span class="n">centroid_points</span>
+
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">allclose</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">add_vectors</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">subtract_vectors</span>
@@ -102,6 +104,8 @@
     <span class="s1">&#39;intersection_plane_plane_plane&#39;</span><span class="p">,</span>
     <span class="s1">&#39;intersection_sphere_sphere&#39;</span><span class="p">,</span>
     <span class="s1">&#39;intersection_ellipse_line_xy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;intersection_segment_polyline&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;intersection_segment_polyline_xy&#39;</span>
 <span class="p">]</span>
 
 
@@ -152,7 +156,7 @@
 
 
 <div class="viewcode-block" id="intersection_line_line_xy"><a class="viewcode-back" href="../../../api/generated/compas.geometry.intersection_line_line_xy.html#compas.geometry.intersection_line_line_xy">[docs]</a><span class="k">def</span> <span class="nf">intersection_line_line_xy</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the intersection of two lines, assuming they lie in the XY plane.</span>
+    <span class="sd">&quot;&quot;&quot;Compute the intersection of two lines, assuming they lie on the XY plane.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -223,13 +227,13 @@
 <span class="sd">        XYZ coordinates of intersection point if one exists.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">intersection_line_line</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">cd</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">intersection_line_line</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">cd</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">x1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">x2</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="n">is_point_on_segment</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ab</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_point_on_segment</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cd</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">x</span>
+    <span class="k">if</span> <span class="n">is_point_on_segment</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">ab</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_point_on_segment</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">cd</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">centroid_points</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">])</span>
 
 
 <span class="k">def</span> <span class="nf">intersection_line_segment</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">segment</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
@@ -578,13 +582,13 @@
 <span class="sd">    &gt;&gt;&gt; sphere2 = (7.0, 4.0, 0.0), 5.0</span>
 <span class="sd">    &gt;&gt;&gt; result = intersection_sphere_sphere(sphere1, sphere2)</span>
 <span class="sd">    &gt;&gt;&gt; if result:</span>
-<span class="sd">    &gt;&gt;&gt;    case, res = result</span>
-<span class="sd">    &gt;&gt;&gt;    if case == &quot;circle&quot;:</span>
-<span class="sd">    &gt;&gt;&gt;        center, radius, normal = res</span>
-<span class="sd">    &gt;&gt;&gt;    elif case == &quot;point&quot;:</span>
-<span class="sd">    &gt;&gt;&gt;        point = res</span>
-<span class="sd">    &gt;&gt;&gt;    elif case == &quot;sphere&quot;:</span>
-<span class="sd">    &gt;&gt;&gt;        center, radius = res</span>
+<span class="sd">    ...     case, res = result</span>
+<span class="sd">    ...     if case == &quot;circle&quot;:</span>
+<span class="sd">    ...         center, radius, normal = res</span>
+<span class="sd">    ...     elif case == &quot;point&quot;:</span>
+<span class="sd">    ...         point = res</span>
+<span class="sd">    ...     elif case == &quot;sphere&quot;:</span>
+<span class="sd">    ...         center, radius = res</span>
 
 <span class="sd">    References</span>
 <span class="sd">    --------</span>
@@ -690,14 +694,98 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
 
+
+<span class="k">def</span> <span class="nf">intersection_segment_polyline</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">polyline</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the intersection point of a segment and a polyline.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    segment : sequence of sequence of float</span>
+<span class="sd">        XYZ coordinates of two points defining a line segment.</span>
+<span class="sd">    polyline : sequence of sequence of float</span>
+<span class="sd">        XYZ coordinates of the points of the polyline.</span>
+<span class="sd">    tol : float, optional</span>
+<span class="sd">        The tolerance for intersection verification.</span>
+<span class="sd">        Default is ``1e-6``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">        If there is no intersection point.</span>
+<span class="sd">    point : list of tuple</span>
+<span class="sd">        XYZ coordinates of the first intersection point if it exists.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import is_point_on_polyline</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import is_point_on_segment</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import distance_point_point</span>
+<span class="sd">    &gt;&gt;&gt; p = [(0.0, 0.0, 0.0), (1.0, 0.0, 0.5), (2.0, 0.5, 1.0)]</span>
+<span class="sd">    &gt;&gt;&gt; s = [(0.5, 0.0, 0.0), (0.5, 0.0, 2.0)]</span>
+<span class="sd">    &gt;&gt;&gt; intpt = intersection_segment_polyline(s, p)</span>
+<span class="sd">    &gt;&gt;&gt; is_point_on_polyline(intpt, p)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; is_point_on_segment(intpt, s)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; distance_point_point((0.5, 0.0, 0.25), intpt) &lt; 1e-6</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">cd</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">polyline</span><span class="p">):</span>
+        <span class="n">pt</span> <span class="o">=</span> <span class="n">intersection_segment_segment</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">cd</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pt</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pt</span>
+
+
+<span class="k">def</span> <span class="nf">intersection_segment_polyline_xy</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">polyline</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the intersection point of a segment and a polyline on the XY-plane.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    segment : sequence of sequence of float</span>
+<span class="sd">        XY(Z) coordinates of two points defining a line segment.</span>
+<span class="sd">    polyline : sequence of sequence of float</span>
+<span class="sd">        XY(Z) coordinates of the points of the polyline.</span>
+<span class="sd">    tol : float, optional</span>
+<span class="sd">        The tolerance for intersection verification.</span>
+<span class="sd">        Default is ``1e-6``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">        If there is no intersection point.</span>
+<span class="sd">    point : list of tuple</span>
+<span class="sd">        XYZ coordinates of the first intersection point if one exists (Z = 0).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import is_point_on_polyline_xy</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import is_point_on_segment_xy</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import distance_point_point</span>
+<span class="sd">    &gt;&gt;&gt; p = [(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (2.0, 0.0, 0.0)]</span>
+<span class="sd">    &gt;&gt;&gt; s = [(0.5, -0.5, 0.0), (0.5, 0.5, 0.0)]</span>
+<span class="sd">    &gt;&gt;&gt; intpt = intersection_segment_polyline_xy(s, p)</span>
+<span class="sd">    &gt;&gt;&gt; is_point_on_polyline_xy(intpt, p)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; is_point_on_segment_xy(intpt, s)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; distance_point_point((0.5, 0.0, 0.0), intpt) &lt; 1e-6</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">cd</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">polyline</span><span class="p">):</span>
+        <span class="n">pt</span> <span class="o">=</span> <span class="n">intersection_segment_segment_xy</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">cd</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pt</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pt</span>
+
 <span class="c1"># ==============================================================================</span>
 <span class="c1"># Main</span>
 <span class="c1"># ==============================================================================</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-
-    <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
@@ -767,11 +855,11 @@
         
 
         
-            Last updated on Dec 11, 2019.
+            Last updated on Dec 16, 2019.
         
 
         
-            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
         
     </div>
 </footer>
@@ -779,7 +867,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.12.4',
+    VERSION           : '0.13.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',
