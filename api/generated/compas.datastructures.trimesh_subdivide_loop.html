@@ -38,10 +38,10 @@
         </a>
 
         <ul class="navbar-nav">
-            <li class="nav-item active"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="/packages.html">Packages</a></li>
             <li class="nav-item active"><a class="nav-link active" href="/main/index.html">Documentation</a></li>
-            <li class="nav-item"><a class="nav-link" href="examples.html">Examples</a></li>
+            <li class="nav-item"><a class="nav-link" href="/examples/index.html">Examples</a></li>
             <li class="nav-item"><a class="nav-link" href="devguide.html">Developer&nbsp;Guide</a></li>
             <li class="nav-item"><a class="nav-link" href="workshops.html">Workshops</a></li>
         </ul>
@@ -82,25 +82,21 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">mesh_flip_cycle_directions</span>
-<span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="kn">import</span> <span class="n">SubdMeshViewer</span>
-
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_polyhedron</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">mesh_flip_cycle_directions</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-
-<span class="n">viewer</span> <span class="o">=</span> <span class="n">SubdMeshViewer</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">subdfunc</span><span class="o">=</span><span class="n">loop_subdivision</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
-
-<span class="n">viewer</span><span class="o">.</span><span class="n">axes_on</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">grid_on</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">zoom_in</span><span class="p">()</span>
-
-<span class="n">viewer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div>
-</div>
+<p>Make a low poly mesh from a box shape.
+Triangulate the faces.
+&gt;&gt;&gt; box = Box.from_corner_corner_height([0.0, 0.0, 0.0], [1.0, 1.0, 0.0], 1.0)
+&gt;&gt;&gt; mesh = Mesh.from_shape(box)
+&gt;&gt;&gt; mesh_quads_to_triangles(mesh)</p>
+<p>Subdivide 2 times.
+&gt;&gt;&gt; k = 2
+&gt;&gt;&gt; subd = trimesh_subdivide_loop(mesh, k=k)</p>
+<p>Compare low-poly cage with subdivision mesh.
+&gt;&gt;&gt; mesh is subd
+False
+&gt;&gt;&gt; type(mesh) is type(subd)
+True
+&gt;&gt;&gt; subd.number_of_faces() == mesh.number_of_faces() * (3 + 1) ** k
+True</p>
 </dd></dl>
 
 </div>
@@ -170,6 +166,8 @@
 
             <!-- table of contents of main content -->
 
+            
+
             <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
 
                 
@@ -180,6 +178,8 @@
 
 
             </div>
+
+            
 
         </div>
     </div>
@@ -193,7 +193,7 @@
         
 
         
-            Last updated on Dec 16, 2019.
+            Last updated on Dec 17, 2019.
         
 
         
@@ -205,7 +205,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.13.0',
+    VERSION           : '0.13.1',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',
