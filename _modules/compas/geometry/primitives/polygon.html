@@ -68,6 +68,8 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
+<span class="kn">import</span> <span class="nn">math</span>
+
 <span class="kn">from</span> <span class="nn">compas.geometry.basic</span> <span class="kn">import</span> <span class="n">cross_vectors</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry.average</span> <span class="kn">import</span> <span class="n">centroid_points</span>
@@ -82,8 +84,11 @@
 <span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="kn">import</span> <span class="n">Point</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="kn">import</span> <span class="n">Vector</span>
 <span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="kn">import</span> <span class="n">Line</span>
+<span class="kn">from</span> <span class="nn">compas.geometry.primitives</span> <span class="kn">import</span> <span class="n">Frame</span>
 
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Transformation</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">transform_points</span>
+
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Polygon&#39;</span><span class="p">]</span>
 
@@ -148,6 +153,54 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Polygon.from_sides_and_radius_xy"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polygon.from_sides_and_radius_xy.html#compas.geometry.Polygon.from_sides_and_radius_xy">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_sides_and_radius_xy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a polygon from a number of sides and a radius.</span>
+<span class="sd">        The resulting polygon is planar, equilateral and equiangular.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n : ``int``</span>
+<span class="sd">            The number of sides.</span>
+<span class="sd">        radius : ``float``</span>
+<span class="sd">            The radius of the circle the polygon will be circumscribed to.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        polygon: ``Polygon``</span>
+<span class="sd">            The constructed polygon.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The first point of the polygon aligns with the Y-axis.</span>
+<span class="sd">        The order of the polygon&#39;s points is counterclockwise.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from compas.geometry import dot_vectors</span>
+<span class="sd">        &gt;&gt;&gt; from compas.geometry import subtract_vectors</span>
+<span class="sd">        &gt;&gt;&gt; pentagon = Polygon.from_sides_and_radius_xy(5, 1.0)</span>
+<span class="sd">        &gt;&gt;&gt; len(pentagon.lines) == 5</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; len({round(line.length, 6) for line in pentagon.lines}) == 1</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; dot_vectors(pentagon.normal, [0.0, 0.0, 1.0]) == 1</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; centertofirst = subtract_vectors(pentagon.points[0], pentagon.center)</span>
+<span class="sd">        &gt;&gt;&gt; dot_vectors(centertofirst, [0.0, 1.0, 0.0]) == 1</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Supplied number of sides must be at least 3!&quot;</span>
+        
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">side</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">n</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">point</span> <span class="o">=</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">side</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">i</span><span class="p">))</span> <span class="o">*</span> <span class="n">radius</span><span class="p">,</span>
+                     <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">side</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">i</span><span class="p">))</span> <span class="o">*</span> <span class="n">radius</span><span class="p">,</span>
+                     <span class="mf">0.0</span><span class="p">]</span>
+            <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># descriptors</span>
