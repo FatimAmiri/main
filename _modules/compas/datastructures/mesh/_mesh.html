@@ -277,17 +277,41 @@
 <span class="sd">        format, which only allows for dict keys that are strings.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vertex</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">halfedge</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">facedata</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">edgedata</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
+            <span class="n">vertex</span><span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">halfedge</span><span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">:</span>
+            <span class="n">face</span><span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span>
+
+        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                <span class="n">halfedge</span><span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="n">u</span><span class="p">)][</span><span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span><span class="p">:</span>
+            <span class="n">facedata</span><span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span><span class="p">:</span>
+            <span class="n">edgedata</span><span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;attributes&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span>
                 <span class="s1">&#39;dva&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span><span class="p">,</span>
                 <span class="s1">&#39;dea&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span><span class="p">,</span>
                 <span class="s1">&#39;dfa&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_face_attributes</span><span class="p">,</span>
-                <span class="s1">&#39;vertex&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">,</span>
-                <span class="s1">&#39;face&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">,</span>
-                <span class="s1">&#39;halfedge&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">,</span>
-                <span class="s1">&#39;facedata&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span><span class="p">,</span>
-                <span class="s1">&#39;edgedata&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span><span class="p">,</span>
+                <span class="s1">&#39;vertex&#39;</span><span class="p">:</span> <span class="n">vertex</span><span class="p">,</span>
+                <span class="s1">&#39;face&#39;</span><span class="p">:</span> <span class="n">face</span><span class="p">,</span>
+                <span class="s1">&#39;halfedge&#39;</span><span class="p">:</span> <span class="n">halfedge</span><span class="p">,</span>
+                <span class="s1">&#39;facedata&#39;</span><span class="p">:</span> <span class="n">facedata</span><span class="p">,</span>
+                <span class="s1">&#39;edgedata&#39;</span><span class="p">:</span> <span class="n">edgedata</span><span class="p">,</span>
                 <span class="s1">&#39;max_int_key&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span><span class="p">,</span>
                 <span class="s1">&#39;max_int_fkey&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_fkey</span><span class="p">,</span> <span class="p">}</span>
+
         <span class="k">return</span> <span class="n">data</span>
 
     <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
@@ -296,22 +320,44 @@
         <span class="n">dva</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dva&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="n">dfa</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dfa&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="n">dea</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dea&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">vertex</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vertex&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">halfedge</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;halfedge&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">facedata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;facedata&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">edgedata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;edgedata&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">max_int_key</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_int_key&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">max_int_fkey</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_int_fkey&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">vertex</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">face</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">face</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span>
+
+        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">halfedge</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">u</span><span class="p">)][</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="n">literal_eval</span><span class="p">(</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">facedata</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span><span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">facedata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">edgedata</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span><span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">edgedata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_vertex_attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dva</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_face_attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dfa</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_edge_attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dea</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vertex&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">halfedge</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;halfedge&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">halfedge</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">halfedge</span> <span class="o">=</span> <span class="n">halfedge</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">vertices</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;face&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">fkey</span><span class="o">=</span><span class="n">fkey</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">facedata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;facedata&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">edgedata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;edgedata&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_int_key&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_fkey</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_int_fkey&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_key</span> <span class="o">=</span> <span class="n">max_int_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_int_fkey</span> <span class="o">=</span> <span class="n">max_int_fkey</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># constructors</span>
@@ -342,7 +388,7 @@
         <span class="k">return</span> <span class="n">mesh</span></div>
 
 <div class="viewcode-block" id="Mesh.from_json"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.Mesh.from_json.html#compas.datastructures.Mesh.from_json">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">convert</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Construct a datastructure from structured data contained in a json file.</span>
 
 <span class="sd">        Parameters</span>
@@ -363,38 +409,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">convert</span><span class="p">:</span>
-            <span class="n">vertex</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">face</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">facedata</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">edgedata</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;vertex&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-                <span class="n">vertex</span><span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">attr</span>
-            <span class="k">for</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">vertices</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;face&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-                <span class="n">face</span><span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">fkey</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;facedata&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-                <span class="n">facedata</span><span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">fkey</span><span class="p">)]</span> <span class="o">=</span> <span class="n">attr</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;edgedata&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-                <span class="n">edgedata</span><span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">attr</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;vertex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vertex</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;face&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">face</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;facedata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">facedata</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;edgedata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">edgedata</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">vertex</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">face</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">facedata</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;vertex&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-                <span class="n">vertex</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">attr</span>
-            <span class="k">for</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">vertices</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;face&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-                <span class="n">face</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">fkey</span><span class="p">)]</span> <span class="o">=</span> <span class="n">vertices</span>
-            <span class="k">for</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;facedata&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-                <span class="n">facedata</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">fkey</span><span class="p">)]</span> <span class="o">=</span> <span class="n">attr</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;vertex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vertex</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;face&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">face</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;facedata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">facedata</span>
 
         <span class="n">mesh</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">mesh</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
@@ -3370,7 +3384,7 @@
         
 
         
-            Last updated on Dec 25, 2019.
+            Last updated on Jan 06, 2020.
         
 
         
@@ -3382,7 +3396,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.13.1',
+    VERSION           : '0.13.2',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',
