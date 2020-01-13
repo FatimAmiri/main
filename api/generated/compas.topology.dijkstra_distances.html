@@ -91,66 +91,7 @@ and maps to a list of neighboring vertex keys.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span> <span class="kn">import</span> <span class="nn">compas</span>
-
- <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Network</span>
- <span class="kn">from</span> <span class="nn">compas.topology</span> <span class="kn">import</span> <span class="n">dijkstra_distances</span>
- <span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="kn">import</span> <span class="n">NetworkPlotter</span>
- <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">i_to_red</span>
-
- <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grid_irregular.obj&#39;</span><span class="p">))</span>
-
- <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_neighbors</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
-
- <span class="n">weight</span> <span class="o">=</span> <span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="n">network</span><span class="o">.</span><span class="n">edge_length</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()}</span>
- <span class="n">weight</span><span class="o">.</span><span class="n">update</span><span class="p">({(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span> <span class="n">weight</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()})</span>
-
- <span class="n">target</span> <span class="o">=</span> <span class="mi">22</span>
-
- <span class="n">distances</span> <span class="o">=</span> <span class="n">dijkstra_distances</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-
- <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-
- <span class="n">dmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-
- <span class="n">facecolor</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">i_to_red</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">/</span> <span class="n">dmax</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
- <span class="n">text</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
-
- <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span>
-     <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
-     <span class="n">facecolor</span><span class="o">=</span><span class="n">facecolor</span><span class="p">,</span>
-     <span class="n">radius</span><span class="o">=</span><span class="mf">0.15</span>
- <span class="p">)</span>
- <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-
- <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-
-
-
-
-
-
-
-<span class="o">..</span> <span class="n">figure</span><span class="p">::</span> <span class="o">../../../</span><span class="n">dist</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">plot_directive</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">generated</span><span class="o">/</span><span class="n">compas</span><span class="o">-</span><span class="n">topology</span><span class="o">-</span><span class="n">dijkstra_distances</span><span class="o">-</span><span class="mf">1.</span><span class="n">png</span>
-   <span class="p">:</span><span class="n">class</span><span class="p">:</span> <span class="n">figure</span><span class="o">-</span><span class="n">img</span> <span class="n">img</span><span class="o">-</span><span class="n">fluid</span>
-
-         
-
-
-
-
-
-<span class="o">..</span> <span class="n">figure</span><span class="p">::</span> <span class="o">../../../</span><span class="n">dist</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">plot_directive</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">generated</span><span class="o">/</span><span class="n">compas</span><span class="o">-</span><span class="n">topology</span><span class="o">-</span><span class="n">dijkstra_distances</span><span class="o">-</span><span class="mf">1.</span><span class="n">pdf</span>
-   
-
-         
-
-
-
-
-
-<span class="o">..</span> <span class="n">image</span><span class="p">::</span> <span class="o">../../../</span><span class="n">dist</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">plot_directive</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">generated</span><span class="o">/</span><span class="n">compas</span><span class="o">-</span><span class="n">topology</span><span class="o">-</span><span class="n">dijkstra_distances</span><span class="o">-</span><span class="mf">1.</span><span class="n">png</span>
+<div class="doctest language-python notranslate"><div class="highlight"><pre><code><span></span><span class="go">&gt;&gt;&gt;</span>
 </code></pre></div>
 </div>
 </dd></dl>
