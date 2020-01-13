@@ -12,7 +12,7 @@ mesh.add_vertex(x=0, y=2)
 
 mesh.add_face([0, 1, 2, 3])
 
-sites = mesh.vertices_attributes('xy')
+sites = mesh.get_vertices_attributes('xy')
 voronoi = voronoi_from_points_numpy(sites)
 
 points = []

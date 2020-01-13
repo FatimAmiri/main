@@ -74,15 +74,12 @@
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.core</span> <span class="kn">import</span> <span class="n">mesh_split_edge</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.bbox</span> <span class="kn">import</span> <span class="n">mesh_bounding_box</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.bbox</span> <span class="kn">import</span> <span class="n">mesh_bounding_box_xy</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.combinatorics</span> <span class="kn">import</span> <span class="n">mesh_is_connected</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.combinatorics</span> <span class="kn">import</span> <span class="n">mesh_connected_components</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.duality</span> <span class="kn">import</span> <span class="n">mesh_dual</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.orientation</span> <span class="kn">import</span> <span class="n">mesh_face_adjacency</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.orientation</span> <span class="kn">import</span> <span class="n">mesh_flip_cycles</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.orientation</span> <span class="kn">import</span> <span class="n">mesh_unify_cycles</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.smoothing</span> <span class="kn">import</span> <span class="n">mesh_smooth_centroid</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures.mesh.smoothing</span> <span class="kn">import</span> <span class="n">mesh_smooth_area</span>
 
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.transformations</span> <span class="kn">import</span> <span class="n">mesh_transform</span>
 <span class="kn">from</span> <span class="nn">compas.datastructures.mesh.transformations</span> <span class="kn">import</span> <span class="n">mesh_transformed</span>
@@ -97,19 +94,12 @@
     <span class="n">split_edge</span> <span class="o">=</span> <span class="n">mesh_split_edge</span>
 
     <span class="n">bounding_box</span> <span class="o">=</span> <span class="n">mesh_bounding_box</span>
-    <span class="n">bounding_box_xy</span> <span class="o">=</span> <span class="n">mesh_bounding_box_xy</span>
-
     <span class="n">is_connected</span> <span class="o">=</span> <span class="n">mesh_is_connected</span>
     <span class="n">connected_components</span> <span class="o">=</span> <span class="n">mesh_connected_components</span>
-
     <span class="n">dual</span> <span class="o">=</span> <span class="n">mesh_dual</span>
-
     <span class="n">face_adjacency</span> <span class="o">=</span> <span class="n">mesh_face_adjacency</span>
     <span class="n">flip_cycles</span> <span class="o">=</span> <span class="n">mesh_flip_cycles</span>
     <span class="n">unify_cycles</span> <span class="o">=</span> <span class="n">mesh_unify_cycles</span>
-
-    <span class="n">smooth_centroid</span> <span class="o">=</span> <span class="n">mesh_smooth_centroid</span>
-    <span class="n">smooth_area</span> <span class="o">=</span> <span class="n">mesh_smooth_area</span>
 
     <span class="n">transform</span> <span class="o">=</span> <span class="n">mesh_transform</span>
     <span class="n">transformed</span> <span class="o">=</span> <span class="n">mesh_transformed</span>
@@ -123,40 +113,7 @@
 <span class="c1"># =============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    
-    <span class="kn">import</span> <span class="nn">os</span>
-    <span class="kn">import</span> <span class="nn">compas</span>
-
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
-
-    <span class="n">mesh</span><span class="o">.</span><span class="n">update_default_face_attributes</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
-
-    <span class="c1"># for key, attr in mesh.vertices(True):</span>
-    <span class="c1">#     print(key, attr)</span>
-
-    <span class="c1"># for key, attr in mesh.faces(True):</span>
-    <span class="c1">#     print(key, attr)</span>
-
-    <span class="c1"># for key, attr in mesh.edges(True):</span>
-    <span class="c1">#     print(key, attr)</span>
-
-    <span class="c1"># xyz = mesh.vertices_attributes(&#39;xyz&#39;)</span>
-    <span class="c1"># print(xyz)</span>
-
-    <span class="c1"># attr = mesh.vertex_attributes(0)</span>
-    <span class="c1"># print(attr)</span>
-
-    <span class="n">attr</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">face_attributes</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">attr</span><span class="o">.</span><span class="n">custom_only</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-
-    <span class="c1"># attr = mesh.edge_attributes((0, 1))</span>
-    <span class="c1"># print(attr)</span>
-
-    <span class="c1"># print(mesh)</span>
-
+    <span class="k">pass</span>
 </code></pre></div>
                     
                 
