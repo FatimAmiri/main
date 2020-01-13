@@ -106,8 +106,8 @@ faces are added.</p>
 </div>
 <div class="section" id="identifiers">
 <h2>Identifiers</h2>
-<p>All vertices of a mesh have a unique ID, the “key” of the vertex. By
-default, keys are integers, and every vertex is assigned a number
+<p>All vertices of a mesh have a unique ID, the “key” of the vertex.
+Keys are integers, and every vertex is assigned a number
 corresponding to the order in which it is added. The number is always
 the highest number used so far, plus one.</p>
 <div class="doctest language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
@@ -118,10 +118,8 @@ the highest number used so far, plus one.</p>
 <span class="go">True</span>
 </code></pre></div>
 </div>
-<p>IDs can also be assigned explicitly, as integers or as any other <em>hashable</em>
-type.</p>
-<p>Faces are also assigned a unique id. As with vertices, keys are integers
-by default, but any other <em>hashable</em> type can be assigned explicitly.</p>
+<p>IDs can also be assigned explicitly.</p>
+<p>Faces are also assigned a unique integer id, and keys be assigned explicitly.</p>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
 <span class="go">0 &lt;class &#39;int&#39;&gt;</span>
 </code></pre></div>
@@ -236,15 +234,15 @@ default attributes.</p>
 </div>
 <div class="section" id="getting-attributes">
 <h3>Getting attributes</h3>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertex_attribute</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">(),</span> <span class="s1">&#39;x&#39;</span><span class="p">)</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_attribute</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_any_vertex</span><span class="p">(),</span> <span class="s1">&#39;x&#39;</span><span class="p">)</span>
 <span class="go">2.0</span>
 </code></pre></div>
 </div>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices_attribute</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
 <span class="go">[0.0, 2.0, 4.0, 6.0, ... 4.0, 6.0, 8.0, 10.0]</span>
 </code></pre></div>
 </div>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
 <span class="go">[[0.0, 0.0, 0.0], [2.0, 0.0, 0.0], [4.0, 0.0, 0.0], [6.0, 0.0, 0.0],</span>
 <span class="gp">...</span>
 <span class="go">[4.0, 10.0, 0.0], [6.0, 10.0, 0.0], [8.0, 10.0, 0.0], [10.0, 10.0, 0.0]]</span>
@@ -253,10 +251,10 @@ default attributes.</p>
 </div>
 <div class="section" id="setting-attributes">
 <h3>Setting attributes</h3>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertex_attribute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertex_attributes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertices_attribute</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">set_vertices_attributes</span><span class="p">((</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_attribute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_attributes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;is_fixed&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices_attribute</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices_attributes</span><span class="p">((</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;is_fixed&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 </code></pre></div>
 </div>
 </div>
@@ -423,6 +421,10 @@ with a CPython subprocess.</p>
 </code></pre></div>
 </div>
 </div>
+<div class="section" id="algorithms">
+<h2>Algorithms</h2>
+<p>…</p>
+</div>
 </div>
 
                     
@@ -513,6 +515,7 @@ with a CPython subprocess.</p>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="#visualisation">Visualisation</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#algorithms">Algorithms</a></li>
 </ul>
 </li>
 </ul>
@@ -534,7 +537,7 @@ with a CPython subprocess.</p>
         
 
         
-            Last updated on Jan 12, 2020.
+            Last updated on Jan 13, 2020.
         
 
         
