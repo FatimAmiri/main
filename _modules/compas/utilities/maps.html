@@ -72,7 +72,12 @@
 <span class="kn">import</span> <span class="nn">compas</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;geometric_key&#39;</span><span class="p">,</span> <span class="s1">&#39;reverse_geometric_key&#39;</span><span class="p">,</span> <span class="s1">&#39;geometric_key_xy&#39;</span><span class="p">,</span> <span class="s1">&#39;normalize_values&#39;</span><span class="p">,</span> <span class="s1">&#39;remap_values&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;geometric_key&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;reverse_geometric_key&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;geometric_key_xy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;normalize_values&#39;</span><span class="p">,</span>
+<span class="p">]</span>
 
 
 <div class="viewcode-block" id="geometric_key"><a class="viewcode-back" href="../../../api/generated/compas.utilities.geometric_key.html#compas.utilities.geometric_key">[docs]</a><span class="k">def</span> <span class="nf">geometric_key</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -98,14 +103,8 @@
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        from math import pi</span>
-<span class="sd">        from compas.utilities import geometric_key</span>
-
-<span class="sd">        print(geometric_key([pi, pi / 2.0, 2.0 * pi]))</span>
-
-<span class="sd">        # 3.142,3.142,3.142</span>
+<span class="sd">    &gt;&gt;&gt; geometric_key([pi, pi, pi])</span>
+<span class="sd">    &#39;3.142,3.142,3.142&#39;</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
@@ -113,63 +112,118 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span>
-
     <span class="k">if</span> <span class="ow">not</span> <span class="n">precision</span><span class="p">:</span>
         <span class="n">precision</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">PRECISION</span>
-
     <span class="k">if</span> <span class="n">precision</span> <span class="o">==</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1">,</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
-
     <span class="k">if</span> <span class="n">sanitize</span><span class="p">:</span>
         <span class="n">minzero</span> <span class="o">=</span> <span class="s2">&quot;-{0:.</span><span class="si">{1}</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="s2">&quot;{0:.</span><span class="si">{1}</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span> <span class="o">==</span> <span class="n">minzero</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">if</span> <span class="s2">&quot;{0:.</span><span class="si">{1}</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span> <span class="o">==</span> <span class="n">minzero</span><span class="p">:</span>
             <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">if</span> <span class="s2">&quot;{0:.</span><span class="si">{1}</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span> <span class="o">==</span> <span class="n">minzero</span><span class="p">:</span>
             <span class="n">z</span> <span class="o">=</span> <span class="mf">0.0</span>
-
     <span class="k">return</span> <span class="s1">&#39;{0:.</span><span class="si">{3}</span><span class="s1">},{1:.</span><span class="si">{3}</span><span class="s1">},{2:.</span><span class="si">{3}</span><span class="s1">}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="reverse_geometric_key"><a class="viewcode-back" href="../../../api/generated/compas.utilities.reverse_geometric_key.html#compas.utilities.reverse_geometric_key">[docs]</a><span class="k">def</span> <span class="nf">reverse_geometric_key</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Reverse a geometric key string into xyz coordinates.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="reverse_geometric_key"><a class="viewcode-back" href="../../../api/generated/compas.utilities.reverse_geometric_key.html#compas.utilities.reverse_geometric_key">[docs]</a><span class="k">def</span> <span class="nf">reverse_geometric_key</span><span class="p">(</span><span class="n">gkey</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reverse a geometric key string into xyz coordinates.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gkey : str</span>
+<span class="sd">        A geometric key.</span>
 
-    <span class="n">xyz</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of float</span>
+<span class="sd">        A list of XYZ coordinates.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; xyz = [pi, pi, pi]</span>
+<span class="sd">    &gt;&gt;&gt; gkey = geometric_key(xyz)</span>
+<span class="sd">    &gt;&gt;&gt; reverse_geometric_key(gkey)</span>
+<span class="sd">    [3.142, 3.142, 3.142]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">gkey</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xyz</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="geometric_key_xy"><a class="viewcode-back" href="../../../api/generated/compas.utilities.geometric_key_xy.html#compas.utilities.geometric_key_xy">[docs]</a><span class="k">def</span> <span class="nf">geometric_key_xy</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert XY coordinates to a string that can be used as a dict key.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xy : list of float</span>
+<span class="sd">        The XY(Z) coordinates.</span>
+<span class="sd">    precision : str, optional</span>
+<span class="sd">        A formatting option that specifies the precision of the</span>
+<span class="sd">        individual numbers in the string.</span>
+<span class="sd">        Supported values are any float precision, or decimal integer (``&#39;d&#39;``).</span>
+<span class="sd">        Default is ``None``, inwhich case the global precision setting will be used (``compas.PRECISION``).</span>
+<span class="sd">    sanitize : {True, False}, optional</span>
+<span class="sd">        Flag that indicates whether or not the input should be cleaned up.</span>
+<span class="sd">        Default is ``True``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        The string representation of the given coordinates.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; geometric_key_xy([pi, pi, pi])</span>
+<span class="sd">    &#39;3.142,3.142&#39;</span>
+
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
 <span class="sd">    geometric_key: Create geometric keys for 3D coordinates</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">xy</span>
-
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">xy</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">precision</span><span class="p">:</span>
         <span class="n">precision</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">PRECISION</span>
-
     <span class="k">if</span> <span class="n">precision</span> <span class="o">==</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-
     <span class="k">if</span> <span class="n">sanitize</span><span class="p">:</span>
         <span class="n">minzero</span> <span class="o">=</span> <span class="s2">&quot;-{0:.</span><span class="si">{1}</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="s2">&quot;{0:.</span><span class="si">{1}</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span> <span class="o">==</span> <span class="n">minzero</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">if</span> <span class="s2">&quot;{0:.</span><span class="si">{1}</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span> <span class="o">==</span> <span class="n">minzero</span><span class="p">:</span>
             <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
-
     <span class="k">return</span> <span class="s1">&#39;{0:.</span><span class="si">{2}</span><span class="s1">},{1:.</span><span class="si">{2}</span><span class="s1">}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="normalize_values"><a class="viewcode-back" href="../../../api/generated/compas.utilities.normalize_values.html#compas.utilities.normalize_values">[docs]</a><span class="k">def</span> <span class="nf">normalize_values</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">new_min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">new_max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Normalize a list of numbers to the range between new_min and new_max.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Normalize a list of numbers to the range between new_min and new_max.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : list of float</span>
+<span class="sd">        The data to be normalized.</span>
+<span class="sd">    new_min : float, optional</span>
+<span class="sd">        The new minimum of the data.</span>
+<span class="sd">        Default is `0.0`.</span>
+<span class="sd">    new_max : float, optional</span>
+<span class="sd">        The new maximum of the data.</span>
+<span class="sd">        Default is `1.0`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of float</span>
+<span class="sd">        A list of floats mapped to the range `new_min`, `new_max`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; data = list(range(5, 15))</span>
+<span class="sd">    &gt;&gt;&gt; data = normalize_values(data)</span>
+<span class="sd">    &gt;&gt;&gt; min(data)</span>
+<span class="sd">    0.0</span>
+<span class="sd">    &gt;&gt;&gt; max(data)</span>
+<span class="sd">    1.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">old_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
     <span class="n">old_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
     <span class="n">old_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">old_max</span> <span class="o">-</span> <span class="n">old_min</span><span class="p">)</span>
@@ -177,44 +231,48 @@
     <span class="k">return</span> <span class="p">[(((</span><span class="n">value</span> <span class="o">-</span> <span class="n">old_min</span><span class="p">)</span> <span class="o">*</span> <span class="n">new_range</span><span class="p">)</span> <span class="o">/</span> <span class="n">old_range</span><span class="p">)</span> <span class="o">+</span> <span class="n">new_min</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span></div>
 
 
-<span class="k">def</span> <span class="nf">remap_values</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">target_min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">target_max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">original_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">original_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Maps a list of numbers from one domain to another.</span>
-<span class="sd">    If you do not specify a target domain 0.0-1.0 will be used.</span>
+<span class="c1"># def remap_values(values, target_min=0.0, target_max=1.0, original_min=None, original_max=None):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Maps a list of numbers from one domain to another.</span>
+<span class="c1">#     If you do not specify a target domain 0.0-1.0 will be used.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    val : list of int, list of long, list of float</span>
-<span class="sd">        The value to remap</span>
-<span class="sd">    original_min : int, long, float</span>
-<span class="sd">        The minimun value of the original domain</span>
-<span class="sd">    original_max : int, long, float</span>
-<span class="sd">        The maximum value of the original domain</span>
-<span class="sd">    target_min : int, long, float</span>
-<span class="sd">        The minimun value of the target domain. Default 0.0</span>
-<span class="sd">    target_max : int, long, float</span>
-<span class="sd">        The maximum value of the target domain. Default 1.0</span>
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     val : list of int, list of long, list of float</span>
+<span class="c1">#         The value to remap</span>
+<span class="c1">#     original_min : int, long, float</span>
+<span class="c1">#         The minimun value of the original domain</span>
+<span class="c1">#     original_max : int, long, float</span>
+<span class="c1">#         The maximum value of the original domain</span>
+<span class="c1">#     target_min : int, long, float</span>
+<span class="c1">#         The minimun value of the target domain. Default 0.0</span>
+<span class="c1">#     target_max : int, long, float</span>
+<span class="c1">#         The maximum value of the target domain. Default 1.0</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    list</span>
-<span class="sd">        The remaped list of values</span>
+<span class="c1">#     Returns</span>
+<span class="c1">#     -------</span>
+<span class="c1">#     list</span>
+<span class="c1">#         The remaped list of values</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-
-        <span class="k">if</span> <span class="n">original_min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">original_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">original_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">original_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-
-        <span class="n">original_range</span> <span class="o">=</span> <span class="n">original_max</span> <span class="o">-</span> <span class="n">original_min</span>
-        <span class="n">target_range</span> <span class="o">=</span> <span class="n">target_max</span> <span class="o">-</span> <span class="n">target_min</span>
-        <span class="n">ratio</span> <span class="o">=</span> <span class="n">target_range</span> <span class="o">/</span> <span class="n">original_range</span>
-
-        <span class="k">return</span> <span class="p">[</span><span class="n">target_min</span> <span class="o">+</span> <span class="p">((</span><span class="n">value</span> <span class="o">-</span> <span class="n">original_min</span><span class="p">)</span> <span class="o">*</span> <span class="n">ratio</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Parameter val should be of type: list of int, list of float, list of long&#39;</span><span class="p">)</span>
+<span class="c1">#     Raises</span>
+<span class="c1">#     ------</span>
+<span class="c1">#     TypeError</span>
+<span class="c1">#         If `values` is not a list.</span>
+    
+<span class="c1">#     Examples</span>
+<span class="c1">#     --------</span>
+<span class="c1">#     &gt;&gt;&gt;</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     if not isinstance(values, list):</span>
+<span class="c1">#         raise TypeError(&#39;Parameter val should be of type: list of int, list of float, list of long&#39;)</span>
+<span class="c1">#     if original_min is None:</span>
+<span class="c1">#         original_min = min(values)</span>
+<span class="c1">#     if original_max is None:</span>
+<span class="c1">#         original_max = max(values)</span>
+<span class="c1">#     original_range = original_max - original_min</span>
+<span class="c1">#     target_range = target_max - target_min</span>
+<span class="c1">#     ratio = target_range / original_range</span>
+<span class="c1">#     return [target_min + ((value - original_min) * ratio) for value in values]</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -225,9 +283,8 @@
 
     <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
 
-    <span class="n">compas</span><span class="o">.</span><span class="n">PRECISION</span> <span class="o">=</span> <span class="s1">&#39;6f&#39;</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">geometric_key</span><span class="p">([</span><span class="mf">1.76000</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">pi</span><span class="p">]))</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 

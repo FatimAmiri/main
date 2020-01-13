@@ -95,93 +95,11 @@
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;take&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;tabulate&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;tail&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;consume&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;nth&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;all_equal&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;quantify&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;padnone&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ncycles&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;dotproduct&#39;</span><span class="p">,</span>
     <span class="s1">&#39;flatten&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;repeatfunc&#39;</span><span class="p">,</span>
     <span class="s1">&#39;pairwise&#39;</span><span class="p">,</span>
     <span class="s1">&#39;window&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;roundrobin&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;powerset&#39;</span><span class="p">,</span>
-    <span class="c1"># &#39;unique_everseen&#39;,</span>
-    <span class="s1">&#39;unique_justseen&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;iter_except&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;first_true&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;random_permutation&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;random_combination&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;random_combination_with_replacement&#39;</span><span class="p">,</span>
     <span class="s1">&#39;iterable_like&#39;</span>
 <span class="p">]</span>
-
-
-<div class="viewcode-block" id="take"><a class="viewcode-back" href="../../../api/generated/compas.utilities.take.html#compas.utilities.take">[docs]</a><span class="k">def</span> <span class="nf">take</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return first n items of the iterable as a list&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="tabulate"><a class="viewcode-back" href="../../../api/generated/compas.utilities.tabulate.html#compas.utilities.tabulate">[docs]</a><span class="k">def</span> <span class="nf">tabulate</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return function(0), function(1), ...&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">count</span><span class="p">(</span><span class="n">start</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="tail"><a class="viewcode-back" href="../../../api/generated/compas.utilities.tail.html#compas.utilities.tail">[docs]</a><span class="k">def</span> <span class="nf">tail</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return an iterator over the last n items&quot;&quot;&quot;</span>
-    <span class="c1"># tail(3, &#39;ABCDEFG&#39;) --&gt; E F G</span>
-    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="n">n</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="consume"><a class="viewcode-back" href="../../../api/generated/compas.utilities.consume.html#compas.utilities.consume">[docs]</a><span class="k">def</span> <span class="nf">consume</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Advance the iterator n-steps ahead. If n is none, consume entirely.&quot;&quot;&quot;</span>
-    <span class="c1"># Use functions that consume iterators at C speed.</span>
-    <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># feed the entire iterator into a zero-length deque</span>
-        <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># advance to the empty slice starting at position n</span>
-        <span class="nb">next</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="nth"><a class="viewcode-back" href="../../../api/generated/compas.utilities.nth.html#compas.utilities.nth">[docs]</a><span class="k">def</span> <span class="nf">nth</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the nth item or a default value&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">default</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="all_equal"><a class="viewcode-back" href="../../../api/generated/compas.utilities.all_equal.html#compas.utilities.all_equal">[docs]</a><span class="k">def</span> <span class="nf">all_equal</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns True if all the elements are equal to each other&quot;&quot;&quot;</span>
-    <span class="n">g</span> <span class="o">=</span> <span class="n">groupby</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">next</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="quantify"><a class="viewcode-back" href="../../../api/generated/compas.utilities.quantify.html#compas.utilities.quantify">[docs]</a><span class="k">def</span> <span class="nf">quantify</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">pred</span><span class="o">=</span><span class="nb">bool</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Count how many times the predicate is true&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">iterable</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="padnone"><a class="viewcode-back" href="../../../api/generated/compas.utilities.padnone.html#compas.utilities.padnone">[docs]</a><span class="k">def</span> <span class="nf">padnone</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the sequence elements and then returns None indefinitely.</span>
-
-<span class="sd">    Useful for emulating the behavior of the built-in map() function.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">chain</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">repeat</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="ncycles"><a class="viewcode-back" href="../../../api/generated/compas.utilities.ncycles.html#compas.utilities.ncycles">[docs]</a><span class="k">def</span> <span class="nf">ncycles</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the sequence elements n times&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">repeat</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">iterable</span><span class="p">),</span> <span class="n">n</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="dotproduct"><a class="viewcode-back" href="../../../api/generated/compas.utilities.dotproduct.html#compas.utilities.dotproduct">[docs]</a><span class="k">def</span> <span class="nf">dotproduct</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the dot product of two vectors of arbitrary but equal length.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../../api/generated/compas.utilities.flatten.html#compas.utilities.flatten">[docs]</a><span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="n">listOfLists</span><span class="p">):</span>
@@ -189,29 +107,64 @@
     <span class="k">return</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">listOfLists</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="repeatfunc"><a class="viewcode-back" href="../../../api/generated/compas.utilities.repeatfunc.html#compas.utilities.repeatfunc">[docs]</a><span class="k">def</span> <span class="nf">repeatfunc</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Repeat calls to func with specified arguments.</span>
+<div class="viewcode-block" id="pairwise"><a class="viewcode-back" href="../../../api/generated/compas.utilities.pairwise.html#compas.utilities.pairwise">[docs]</a><span class="k">def</span> <span class="nf">pairwise</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a sliding window of size 2 over the data of the iterable.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    iterable : iterable</span>
+<span class="sd">        A sequence of items.</span>
 
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        Two items per iteration, if there are at least two items in the iterable.</span>
+<span class="sd">    </span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; repeatfunc(random.random)</span>
+<span class="sd">    &gt;&gt;&gt; for a, b in pairwise(range(5)):</span>
+<span class="sd">    ...     print(a, b)</span>
+<span class="sd">    ...</span>
+<span class="sd">    0 1</span>
+<span class="sd">    1 2</span>
+<span class="sd">    2 3</span>
+<span class="sd">    3 4</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">times</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">starmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">repeat</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">starmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">repeat</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">times</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="pairwise"><a class="viewcode-back" href="../../../api/generated/compas.utilities.pairwise.html#compas.utilities.pairwise">[docs]</a><span class="k">def</span> <span class="nf">pairwise</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;s -&gt; (s0,s1), (s1,s2), (s2, s3), ...&quot;&quot;&quot;</span>
     <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">tee</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
     <span class="nb">next</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="window"><a class="viewcode-back" href="../../../api/generated/compas.utilities.window.html#compas.utilities.window">[docs]</a><span class="k">def</span> <span class="nf">window</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns a sliding window (of width n) over data from the iterable.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a sliding window (of width n) over the data from the iterable.</span>
 
-<span class="sd">    s -&gt; (s0,s1,...s[n-1]), (s1,s2,...,sn), ...</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    seq : iterable</span>
+<span class="sd">        A sequence of items.</span>
+<span class="sd">    n : int, optional</span>
+<span class="sd">        The width of the sliding window.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        A tuple of size `n` at every iteration,</span>
+<span class="sd">        if there are at least `n` items in the sequence.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; for view in window(range(10), 3):</span>
+<span class="sd">    ...     print(view)</span>
+<span class="sd">    ...</span>
+<span class="sd">    (0, 1, 2)</span>
+<span class="sd">    (1, 2, 3)</span>
+<span class="sd">    (2, 3, 4)</span>
+<span class="sd">    (3, 4, 5)</span>
+<span class="sd">    (4, 5, 6)</span>
+<span class="sd">    (5, 6, 7)</span>
+<span class="sd">    (6, 7, 8)</span>
+<span class="sd">    (7, 8, 9)</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
@@ -222,135 +175,8 @@
         <span class="k">yield</span> <span class="n">result</span></div>
 
 
-<span class="c1"># def grouper(iterable, n, fillvalue=None):</span>
-<span class="c1">#     &quot;&quot;&quot;Collect data into fixed-length chunks or blocks&quot;&quot;&quot;</span>
-<span class="c1">#     # grouper(&#39;ABCDEFG&#39;, 3, &#39;x&#39;) --&gt; ABC DEF Gxx&quot;&quot;&quot;</span>
-<span class="c1">#     args = [iter(iterable)] * n</span>
-<span class="c1">#     return zip_longest(*args, fillvalue=fillvalue)</span>
-
-
-<div class="viewcode-block" id="roundrobin"><a class="viewcode-back" href="../../../api/generated/compas.utilities.roundrobin.html#compas.utilities.roundrobin">[docs]</a><span class="k">def</span> <span class="nf">roundrobin</span><span class="p">(</span><span class="o">*</span><span class="n">iterables</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;roundrobin(&#39;ABC&#39;, &#39;D&#39;, &#39;EF&#39;) --&gt; A D E B F C&quot;&quot;&quot;</span>
-    <span class="c1"># Recipe credited to George Sakkis</span>
-    <span class="n">pending</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">iterables</span><span class="p">)</span>
-    <span class="n">nexts</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">.</span><span class="fm">__next__</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">iterables</span><span class="p">)</span>
-    <span class="k">while</span> <span class="n">pending</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="nb">next</span> <span class="ow">in</span> <span class="n">nexts</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="nb">next</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-            <span class="n">pending</span> <span class="o">-=</span> <span class="mi">1</span>
-            <span class="n">nexts</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">nexts</span><span class="p">,</span> <span class="n">pending</span><span class="p">))</span></div>
-
-
-<span class="c1"># def partition(pred, iterable):</span>
-<span class="c1">#     &#39;Use a predicate to partition entries into false entries and true entries&#39;</span>
-<span class="c1">#     # partition(is_odd, range(10)) --&gt; 0 2 4 6 8   and  1 3 5 7 9</span>
-<span class="c1">#     t1, t2 = tee(iterable)</span>
-<span class="c1">#     return filterfalse(pred, t1), filter(pred, t2)</span>
-
-
-<div class="viewcode-block" id="powerset"><a class="viewcode-back" href="../../../api/generated/compas.utilities.powerset.html#compas.utilities.powerset">[docs]</a><span class="k">def</span> <span class="nf">powerset</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;powerset([1,2,3]) --&gt; () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)&quot;&quot;&quot;</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span></div>
-
-
-<span class="c1"># def unique_everseen(iterable, key=None):</span>
-<span class="c1">#     &quot;&quot;&quot;List unique elements, preserving order. Remember all elements ever seen.&quot;&quot;&quot;</span>
-<span class="c1">#     # unique_everseen(&#39;AAAABBBCCDAABBB&#39;) --&gt; A B C D</span>
-<span class="c1">#     # unique_everseen(&#39;ABBCcAD&#39;, str.lower) --&gt; A B C D</span>
-<span class="c1">#     seen = set()</span>
-<span class="c1">#     seen_add = seen.add</span>
-<span class="c1">#     if key is None:</span>
-<span class="c1">#         for element in filterfalse(seen.__contains__, iterable):</span>
-<span class="c1">#             seen_add(element)</span>
-<span class="c1">#             yield element</span>
-<span class="c1">#     else:</span>
-<span class="c1">#         for element in iterable:</span>
-<span class="c1">#             k = key(element)</span>
-<span class="c1">#             if k not in seen:</span>
-<span class="c1">#                 seen_add(k)</span>
-<span class="c1">#                 yield element</span>
-
-
-<div class="viewcode-block" id="unique_justseen"><a class="viewcode-back" href="../../../api/generated/compas.utilities.unique_justseen.html#compas.utilities.unique_justseen">[docs]</a><span class="k">def</span> <span class="nf">unique_justseen</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;List unique elements, preserving order. Remember only the element just seen.&quot;&quot;&quot;</span>
-    <span class="c1"># unique_justseen(&#39;AAAABBBCCDAABBB&#39;) --&gt; A B C D A B</span>
-    <span class="c1"># unique_justseen(&#39;ABBCcAD&#39;, str.lower) --&gt; A B C A D</span>
-    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="nb">next</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">groupby</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">key</span><span class="p">)))</span></div>
-
-
-<div class="viewcode-block" id="iter_except"><a class="viewcode-back" href="../../../api/generated/compas.utilities.iter_except.html#compas.utilities.iter_except">[docs]</a><span class="k">def</span> <span class="nf">iter_except</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">first</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Call a function repeatedly until an exception is raised.</span>
-
-<span class="sd">    Converts a call-until-exception interface to an iterator interface.</span>
-<span class="sd">    Like builtins.iter(func, sentinel) but uses an exception instead</span>
-<span class="sd">    of a sentinel to end the loop.</span>
-
-<span class="sd">    Examples:</span>
-<span class="sd">        iter_except(functools.partial(heappop, h), IndexError)   # priority queue iterator</span>
-<span class="sd">        iter_except(d.popitem, KeyError)                         # non-blocking dict iterator</span>
-<span class="sd">        iter_except(d.popleft, IndexError)                       # non-blocking deque iterator</span>
-<span class="sd">        iter_except(q.get_nowait, Queue.Empty)                   # loop over a producer Queue</span>
-<span class="sd">        iter_except(s.pop, KeyError)                             # non-blocking set iterator</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">first</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">first</span><span class="p">()</span>            <span class="c1"># For database APIs needing an initial cast to db.first()</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">func</span><span class="p">()</span>
-    <span class="k">except</span> <span class="n">exception</span><span class="p">:</span>
-        <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="first_true"><a class="viewcode-back" href="../../../api/generated/compas.utilities.first_true.html#compas.utilities.first_true">[docs]</a><span class="k">def</span> <span class="nf">first_true</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pred</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the first true value in the iterable.</span>
-
-<span class="sd">    If no true value is found, returns *default*</span>
-
-<span class="sd">    If *pred* is not None, returns the first item</span>
-<span class="sd">    for which pred(item) is true.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># first_true([a,b,c], x) --&gt; a or b or c or x</span>
-    <span class="c1"># first_true([a,b], x, f) --&gt; a if f(a) else b if f(b) else x</span>
-    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">iterable</span><span class="p">),</span> <span class="n">default</span><span class="p">)</span></div>
-
-
-<span class="c1"># def random_product(*args, repeat=1):</span>
-<span class="c1">#     &quot;&quot;&quot;Random selection from itertools.product(*args, **kwds)&quot;&quot;&quot;</span>
-<span class="c1">#     pools = [tuple(pool) for pool in args] * repeat</span>
-<span class="c1">#     return tuple(random.choice(pool) for pool in pools)</span>
-
-
-<div class="viewcode-block" id="random_permutation"><a class="viewcode-back" href="../../../api/generated/compas.utilities.random_permutation.html#compas.utilities.random_permutation">[docs]</a><span class="k">def</span> <span class="nf">random_permutation</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Random selection from itertools.permutations(iterable, r)&quot;&quot;&quot;</span>
-    <span class="n">pool</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">r</span>
-    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="random_combination"><a class="viewcode-back" href="../../../api/generated/compas.utilities.random_combination.html#compas.utilities.random_combination">[docs]</a><span class="k">def</span> <span class="nf">random_combination</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Random selection from itertools.combinations(iterable, r)&quot;&quot;&quot;</span>
-    <span class="n">pool</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span>
-    <span class="n">indices</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">r</span><span class="p">))</span>
-    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">pool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="random_combination_with_replacement"><a class="viewcode-back" href="../../../api/generated/compas.utilities.random_combination_with_replacement.html#compas.utilities.random_combination_with_replacement">[docs]</a><span class="k">def</span> <span class="nf">random_combination_with_replacement</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Random selection from itertools.combinations_with_replacement(iterable, r)&quot;&quot;&quot;</span>
-    <span class="n">pool</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span>
-    <span class="n">indices</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
-    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">pool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">)</span></div>
-
-
 <span class="k">def</span> <span class="nf">iterable_like</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Creates an iterator from a reference object with size equivalent to that of a target iterable.</span>
+    <span class="sd">&quot;&quot;&quot;Creates an iterator from a reference object with size equivalent to that of a target iterable.</span>
 
 <span class="sd">    Values will be yielded one at a time until the target iterable is exhausted.</span>
 <span class="sd">    If target and reference are of uneven size, fillvalue will be used to</span>
@@ -384,11 +210,228 @@
 <span class="sd">    &gt;&gt;&gt; list(iterable_like(color, keys))</span>
 <span class="sd">    [0, 1, 2]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">target</span><span class="p">,</span> <span class="n">counter</span> <span class="o">=</span> <span class="n">tee</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
     <span class="n">zipped</span> <span class="o">=</span> <span class="n">zip_longest</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="n">fillvalue</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">counter</span><span class="p">:</span>
         <span class="k">yield</span> <span class="nb">next</span><span class="p">(</span><span class="n">zipped</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Other</span>
+<span class="c1"># ==============================================================================</span>
+
+
+<span class="k">def</span> <span class="nf">take</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the first n items of the iterable as a list.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : int</span>
+<span class="sd">        The number of items.</span>
+<span class="sd">    iterable : iterable</span>
+<span class="sd">        An iterable object.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        A list with the first `n` items of `iterable`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; take(5, range(100))</span>
+<span class="sd">    [0, 1, 2, 3, 4]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">tabulate</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return function(0), function(1), ...&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">count</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">tail</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return an iterator over the last n items&quot;&quot;&quot;</span>
+    <span class="c1"># tail(3, &#39;ABCDEFG&#39;) --&gt; E F G</span>
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="n">n</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">consume</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Advance the iterator n-steps ahead. If n is none, consume entirely.&quot;&quot;&quot;</span>
+    <span class="c1"># Use functions that consume iterators at C speed.</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># feed the entire iterator into a zero-length deque</span>
+        <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># advance to the empty slice starting at position n</span>
+        <span class="nb">next</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">nth</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the nth item or a default value&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">default</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">all_equal</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns True if all the elements are equal to each other&quot;&quot;&quot;</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">groupby</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">next</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">quantify</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">pred</span><span class="o">=</span><span class="nb">bool</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Count how many times the predicate is true&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">iterable</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">padnone</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the sequence elements and then returns None indefinitely.</span>
+
+<span class="sd">    Useful for emulating the behavior of the built-in map() function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">chain</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">repeat</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">ncycles</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the sequence elements n times&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">repeat</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">iterable</span><span class="p">),</span> <span class="n">n</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">dotproduct</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the dot product of two vectors of arbitrary but equal length.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">repeatfunc</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Repeat calls to func with specified arguments.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">times</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">starmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">repeat</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">starmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">repeat</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">times</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">grouper</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Collect data into fixed-length chunks or blocks&quot;&quot;&quot;</span>
+    <span class="c1"># grouper(&#39;ABCDEFG&#39;, 3, &#39;x&#39;) --&gt; ABC DEF Gxx&quot;&quot;&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)]</span> <span class="o">*</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">zip_longest</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="n">fillvalue</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">roundrobin</span><span class="p">(</span><span class="o">*</span><span class="n">iterables</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;roundrobin(&#39;ABC&#39;, &#39;D&#39;, &#39;EF&#39;) --&gt; A D E B F C&quot;&quot;&quot;</span>
+    <span class="c1"># Recipe credited to George Sakkis</span>
+    <span class="n">pending</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">iterables</span><span class="p">)</span>
+    <span class="n">nexts</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">.</span><span class="fm">__next__</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">iterables</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">pending</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="nb">next</span> <span class="ow">in</span> <span class="n">nexts</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="nb">next</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="n">pending</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">nexts</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">nexts</span><span class="p">,</span> <span class="n">pending</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
+    <span class="s1">&#39;Use a predicate to partition entries into false entries and true entries&#39;</span>
+    <span class="c1"># partition(is_odd, range(10)) --&gt; 0 2 4 6 8   and  1 3 5 7 9</span>
+    <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span> <span class="o">=</span> <span class="n">tee</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">filterfalse</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">t1</span><span class="p">),</span> <span class="nb">filter</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">t2</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">powerset</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;powerset([1,2,3]) --&gt; () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)&quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">unique_everseen</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;List unique elements, preserving order. Remember all elements ever seen.&quot;&quot;&quot;</span>
+    <span class="c1"># unique_everseen(&#39;AAAABBBCCDAABBB&#39;) --&gt; A B C D</span>
+    <span class="c1"># unique_everseen(&#39;ABBCcAD&#39;, str.lower) --&gt; A B C D</span>
+    <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">seen_add</span> <span class="o">=</span> <span class="n">seen</span><span class="o">.</span><span class="n">add</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">filterfalse</span><span class="p">(</span><span class="n">seen</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
+            <span class="n">seen_add</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">element</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">key</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                <span class="n">seen_add</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="n">element</span>
+
+
+<span class="k">def</span> <span class="nf">unique_justseen</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;List unique elements, preserving order. Remember only the element just seen.&quot;&quot;&quot;</span>
+    <span class="c1"># unique_justseen(&#39;AAAABBBCCDAABBB&#39;) --&gt; A B C D A B</span>
+    <span class="c1"># unique_justseen(&#39;ABBCcAD&#39;, str.lower) --&gt; A B C A D</span>
+    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="nb">next</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">groupby</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">key</span><span class="p">)))</span>
+
+
+<span class="k">def</span> <span class="nf">iter_except</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">first</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Call a function repeatedly until an exception is raised.</span>
+
+<span class="sd">    Converts a call-until-exception interface to an iterator interface.</span>
+<span class="sd">    Like builtins.iter(func, sentinel) but uses an exception instead</span>
+<span class="sd">    of a sentinel to end the loop.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        iter_except(functools.partial(heappop, h), IndexError)   # priority queue iterator</span>
+<span class="sd">        iter_except(d.popitem, KeyError)                         # non-blocking dict iterator</span>
+<span class="sd">        iter_except(d.popleft, IndexError)                       # non-blocking deque iterator</span>
+<span class="sd">        iter_except(q.get_nowait, Queue.Empty)                   # loop over a producer Queue</span>
+<span class="sd">        iter_except(s.pop, KeyError)                             # non-blocking set iterator</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">first</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">first</span><span class="p">()</span>            <span class="c1"># For database APIs needing an initial cast to db.first()</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">func</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">first_true</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pred</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the first true value in the iterable.</span>
+
+<span class="sd">    If no true value is found, returns *default*</span>
+
+<span class="sd">    If *pred* is not None, returns the first item</span>
+<span class="sd">    for which pred(item) is true.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># first_true([a,b,c], x) --&gt; a or b or c or x</span>
+    <span class="c1"># first_true([a,b], x, f) --&gt; a if f(a) else b if f(b) else x</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">iterable</span><span class="p">),</span> <span class="n">default</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">random_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Random selection from itertools.product(*args, **kwds)&quot;&quot;&quot;</span>
+    <span class="n">pools</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span> <span class="o">*</span> <span class="n">repeat</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">random_permutation</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Random selection from itertools.permutations(iterable, r)&quot;&quot;&quot;</span>
+    <span class="n">pool</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">r</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">random_combination</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Random selection from itertools.combinations(iterable, r)&quot;&quot;&quot;</span>
+    <span class="n">pool</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">r</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">pool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">random_combination_with_replacement</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Random selection from itertools.combinations_with_replacement(iterable, r)&quot;&quot;&quot;</span>
+    <span class="n">pool</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">pool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">)</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -397,14 +440,9 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-    <span class="n">s</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;foo&#39;</span><span class="p">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;baz&#39;</span><span class="p">:</span> <span class="s1">&#39;qux&#39;</span><span class="p">}</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
 
-    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">window</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="mi">3</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">iterable_like</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
