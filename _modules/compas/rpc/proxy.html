@@ -147,13 +147,6 @@
 <span class="sd">        with Proxy(&#39;compas.numerical&#39;) as numerical:</span>
 <span class="sd">            pass</span>
 
-<span class="sd">    Complete example demonstrating use of the force density method in the</span>
-<span class="sd">    numerical package to compute equilibrium of axial force networks.</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        pass</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Proxy.__init__"><a class="viewcode-back" href="../../../api/generated/compas.rpc.Proxy.__init__.html#compas.rpc.Proxy.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">python</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">&#39;http://127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">1753</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -170,7 +163,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span> <span class="o">=</span> <span class="n">package</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_implicitely_started_server</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_reconnect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_reconnect</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_server</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_implicitely_started_server</span> <span class="o">=</span> <span class="kc">True</span></div>
@@ -227,14 +220,13 @@
     <span class="k">def</span> <span class="nf">python</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">python</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_python</span> <span class="o">=</span> <span class="n">python</span>
 
-<div class="viewcode-block" id="Proxy.try_reconnect"><a class="viewcode-back" href="../../../api/generated/compas.rpc.Proxy.try_reconnect.html#compas.rpc.Proxy.try_reconnect">[docs]</a>    <span class="k">def</span> <span class="nf">try_reconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_try_reconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Try and reconnect to an existing proxy server.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ServerProxy</span>
 <span class="sd">            Instance of the proxy if reconnection succeeded, otherwise ``None``.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">server</span> <span class="o">=</span> <span class="n">ServerProxy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -243,7 +235,7 @@
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reconnecting to an existing server proxy.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">server</span></div>
+        <span class="k">return</span> <span class="n">server</span>
 
 <div class="viewcode-block" id="Proxy.start_server"><a class="viewcode-back" href="../../../api/generated/compas.rpc.Proxy.start_server.html#compas.rpc.Proxy.start_server">[docs]</a>    <span class="k">def</span> <span class="nf">start_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Start the remote server.</span>
@@ -259,9 +251,14 @@
 <span class="sd">            If the server providing the requested service cannot be reached after</span>
 <span class="sd">            100 contact attempts (*pings*).</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; p = Proxy()</span>
+<span class="sd">        &gt;&gt;&gt; p.stop_server()</span>
+<span class="sd">        &gt;&gt;&gt; p.start_server()</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">env</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">_os</span><span class="o">.</span><span class="n">prepare_environment</span><span class="p">()</span>
-
         <span class="c1"># this part starts the server side of the RPC setup</span>
         <span class="c1"># it basically launches a subprocess</span>
         <span class="c1"># to start the default service</span>
@@ -277,7 +274,6 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="o">.</span><span class="n">StartInfo</span><span class="o">.</span><span class="n">EnvironmentVariables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">env</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="o">.</span><span class="n">StartInfo</span><span class="o">.</span><span class="n">EnvironmentVariables</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">env</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="o">.</span><span class="n">StartInfo</span><span class="o">.</span><span class="n">UseShellExecute</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="o">.</span><span class="n">StartInfo</span><span class="o">.</span><span class="n">RedirectStandardOutput</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="o">.</span><span class="n">StartInfo</span><span class="o">.</span><span class="n">RedirectStandardError</span> <span class="o">=</span> <span class="kc">True</span>
@@ -287,14 +283,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">python</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">)]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
-
         <span class="c1"># this starts the client side</span>
         <span class="c1"># it creates a proxy for the server</span>
         <span class="c1"># and tries to connect the proxy to the actual server</span>
         <span class="n">server</span> <span class="o">=</span> <span class="n">ServerProxy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
-
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting a new proxy server...&quot;</span><span class="p">)</span>
-
         <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">100</span>
         <span class="k">while</span> <span class="n">count</span><span class="p">:</span>
@@ -311,11 +304,16 @@
             <span class="k">raise</span> <span class="n">RPCServerError</span><span class="p">(</span><span class="s2">&quot;The server is not available.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;New proxy server started.&quot;</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="n">server</span></div>
 
 <div class="viewcode-block" id="Proxy.stop_server"><a class="viewcode-back" href="../../../api/generated/compas.rpc.Proxy.stop_server.html#compas.rpc.Proxy.stop_server">[docs]</a>    <span class="k">def</span> <span class="nf">stop_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Stop the remote server and terminate/kill the python process that was used to start it.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; p = Proxy()</span>
+<span class="sd">        &gt;&gt;&gt; p.stop_server()</span>
+<span class="sd">        &gt;&gt;&gt; p.start_server()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stopping the server proxy.&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -332,7 +330,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="p">:</span>
             <span class="k">return</span>
-
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -349,9 +346,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">RPCServerError</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proxy</span>
 
-<div class="viewcode-block" id="Proxy.proxy"><a class="viewcode-back" href="../../../api/generated/compas.rpc.Proxy.proxy.html#compas.rpc.Proxy.proxy">[docs]</a>    <span class="k">def</span> <span class="nf">proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Callable replacement for the requested functionality.</span>
 
 <span class="sd">        Parameters</span>
@@ -371,11 +368,9 @@
 <span class="sd">        The `args` and `kwargs` have to be JSON-serialisable.</span>
 <span class="sd">        This means that, currently, only native Python objects are supported.</span>
 <span class="sd">        The returned results will also always be in the form of built-in Python objects.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">idict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">,</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">}</span>
         <span class="n">istring</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">idict</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">DataEncoder</span><span class="p">)</span>
-
         <span class="c1"># it makes sense that there is a broken pipe error</span>
         <span class="c1"># because the process is not the one receiving the feedback</span>
         <span class="c1"># when there is a print statement on the server side</span>
@@ -389,18 +384,13 @@
             <span class="c1"># if this goes wrong, it means a Fault error was generated by the server</span>
             <span class="c1"># no need to stop the server for this</span>
             <span class="k">raise</span>
-
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ostring</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">RPCServerError</span><span class="p">(</span><span class="s2">&quot;No output was generated.&quot;</span><span class="p">)</span>
-
         <span class="n">result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">ostring</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="n">RPCServerError</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">])</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
