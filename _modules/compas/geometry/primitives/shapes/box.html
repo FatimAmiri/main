@@ -240,7 +240,6 @@
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; data = {&#39;frame&#39;: Frame.worldXY().data, &#39;xsize&#39;: 1.0, &#39;ysize&#39;: 1.0, &#39;zsize&#39;: 1.0}</span>
 <span class="sd">        &gt;&gt;&gt; box = Box.from_data(data)</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">box</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">Frame</span><span class="o">.</span><span class="n">worldXY</span><span class="p">(),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">box</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
@@ -272,7 +271,6 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; box = Box.from_width_height_depth(1.0, 2.0, 3.0)</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">width</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
         <span class="n">height</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
@@ -291,8 +289,33 @@
 
 <div class="viewcode-block" id="Box.from_bounding_box"><a class="viewcode-back" href="../../../../../api/generated/compas.geometry.Box.from_bounding_box.html#compas.geometry.Box.from_bounding_box">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_bounding_box</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-        <span class="c1"># this should put the frame at the centroid of the box</span>
-        <span class="c1"># not at the bottom left corner</span>
+        <span class="sd">&quot;&quot;&quot;Construct a box from the result of a bounding box calculation.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bbox : list</span>
+<span class="sd">            A list of 8 point locations, representing the corners of the bounding box.</span>
+<span class="sd">            Positions 0, 1, 2, 3 are the bottom corners.</span>
+<span class="sd">            Positions 4, 5, 6, 7 are the top corners.</span>
+<span class="sd">            Both the top and bottom face are oriented in CCW direction, starting at the bottom, left-most point.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Box</span>
+<span class="sd">            The box shape.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from compas.geometry import bounding_box</span>
+<span class="sd">        &gt;&gt;&gt; bbox = bounding_box([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0]])</span>
+<span class="sd">        &gt;&gt;&gt; box = Box.from_bounding_box(bbox)</span>
+<span class="sd">        &gt;&gt;&gt; box.width</span>
+<span class="sd">        1.0</span>
+<span class="sd">        &gt;&gt;&gt; box.height</span>
+<span class="sd">        1.0</span>
+<span class="sd">        &gt;&gt;&gt; box.depth</span>
+<span class="sd">        1.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
