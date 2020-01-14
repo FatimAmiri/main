@@ -136,11 +136,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import compas</span>
-<span class="sd">    &gt;&gt;&gt; from compas.datastructures import Network</span>
-<span class="sd">    &gt;&gt;&gt; from compas.topology import depth_first_search as dfs</span>
-<span class="sd">    &gt;&gt;&gt; network = Network.from_obj(compas.get(&#39;lines.obj&#39;))</span>
-<span class="sd">    &gt;&gt;&gt; print(dfs(network, network.get_any_vertex()))</span>
+<span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span><span class="n">nbrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">adjacency</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
     <span class="n">tovisit</span> <span class="o">=</span> <span class="p">[</span><span class="n">root</span><span class="p">]</span>
@@ -150,14 +146,12 @@
     <span class="k">while</span> <span class="n">tovisit</span><span class="p">:</span>
         <span class="c1"># pop the last added element from the stack</span>
         <span class="n">node</span> <span class="o">=</span> <span class="n">tovisit</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-
         <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
             <span class="c1"># mark the node as visited</span>
             <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
             <span class="n">ordering</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
             <span class="c1"># add the unvisited nbrs to the stack</span>
             <span class="n">tovisit</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">adjacency</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">-</span> <span class="n">visited</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">ordering</span></div>
 
 
@@ -194,28 +188,21 @@
 <span class="c1">#     while tovisit:</span>
 <span class="c1">#         # pop the last added element from the stack</span>
 <span class="c1">#         node = tovisit.pop()</span>
-
 <span class="c1">#         if node not in visited:</span>
 <span class="c1">#             paths[-1].append(node)</span>
-
 <span class="c1">#             # mark the node as visited</span>
 <span class="c1">#             visited.add(node)</span>
 <span class="c1">#             ordering.append(node)</span>
-
 <span class="c1">#             # add the unvisited nbrs to the stack</span>
 <span class="c1">#             nodes = adjacency[node] - visited</span>
-
 <span class="c1">#             if nodes:</span>
 <span class="c1">#                 for child in nodes:</span>
 <span class="c1">#                     predecessors[child] = node</span>
 <span class="c1">#             else:</span>
 <span class="c1">#                 paths.append([])</span>
-
 <span class="c1">#             tovisit.extend(nodes)</span>
-
 <span class="c1">#     if not len(paths[-1]):</span>
 <span class="c1">#         del paths[-1]</span>
-
 <span class="c1">#     return ordering, predecessors, paths</span>
 
 
@@ -258,7 +245,6 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt;</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">tovisit</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([</span><span class="n">root</span><span class="p">])</span>
     <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">root</span><span class="p">])</span>
@@ -328,6 +314,9 @@
 <span class="sd">    -----</span>
 <span class="sd">    Due to the nature of the search, the first path returned is the shortest.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span><span class="n">nbrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">adjacency</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
     <span class="n">tovisit</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">root</span><span class="p">,</span> <span class="p">[</span><span class="n">root</span><span class="p">])])</span>
@@ -402,10 +391,13 @@
 <span class="sd">    list, None</span>
 <span class="sd">        The path from root to goal, or None, if no path exists between the vertices.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    https://en.wikipedia.org/wiki/A*_search_algorithm</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">root_coords</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
     <span class="n">goal_coords</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">goal</span><span class="p">)</span>
@@ -505,13 +497,10 @@
         <span class="n">u</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tovisit</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">distance</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
         <span class="n">tovisit</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
         <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
-
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">adjacency</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">-</span> <span class="n">visited</span><span class="p">:</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">distance</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="n">weight</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span>
-
             <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">distance</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
                 <span class="n">distance</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
-
     <span class="k">return</span> <span class="n">distance</span></div>
 
 
@@ -563,7 +552,6 @@
 <span class="c1"># ==============================================================================</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-
     <span class="k">pass</span>
 </code></pre></div>
                     
@@ -638,7 +626,7 @@
         
 
         
-            Last updated on Jan 13, 2020.
+            Last updated on Jan 14, 2020.
         
 
         
