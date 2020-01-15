@@ -86,12 +86,6 @@
 <span class="sd">    normal : vector</span>
 <span class="sd">        The normal vector of the plane.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt;</span>
-<span class="sd">        from compas.geometry import Plane</span>
-<span class="sd">        plane = Plane([0,0,0], [0,0,1])</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    For more info on lines and linear equations, see [1]_.</span>
@@ -100,6 +94,14 @@
 <span class="sd">    ----------</span>
 <span class="sd">    .. [1] `Wikipedia: Plane (geometry) &lt;https://en.wikipedia.org/wiki/Plane_%28geometry%29&gt;`_</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import Plane</span>
+<span class="sd">    &gt;&gt;&gt; plane = Plane([0, 0, 0], [0, 0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; plane.point</span>
+<span class="sd">    Point(0.000, 0.000, 0.000)</span>
+<span class="sd">    &gt;&gt;&gt; plane.normal</span>
+<span class="sd">    Vector(0.000, 0.000, 1.000)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_point&#39;</span><span class="p">,</span> <span class="s1">&#39;_normal&#39;</span><span class="p">]</span>
@@ -133,6 +135,13 @@
 <span class="sd">            A plane with base point ``a`` and normal vector defined as the unitized</span>
 <span class="sd">            cross product of the vectors ``ab`` and ``ac``.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; plane = Plane.from_three_points([0.0, 0.0, 0.0], [2.0, 1.0, 0.0], [0.0, 3.0, 0.0])</span>
+<span class="sd">        &gt;&gt;&gt; plane.point</span>
+<span class="sd">        Point(0.000, 0.000, 0.000)</span>
+<span class="sd">        &gt;&gt;&gt; plane.normal</span>
+<span class="sd">        Vector(0.000, 0.000, 1.000)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">)</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">)</span>
@@ -159,26 +168,16 @@
 <span class="sd">            A plane with base point ``point`` and normal vector defined as the unitized</span>
 <span class="sd">            cross product of vectors ``u`` and ``v``.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; plane = Plane.from_three_points([0.0, 0.0, 0.0], [2.0, 1.0, 0.0], [0.0, 3.0, 0.0])</span>
+<span class="sd">        &gt;&gt;&gt; plane.point</span>
+<span class="sd">        Point(0.000, 0.000, 0.000)</span>
+<span class="sd">        &gt;&gt;&gt; plane.normal</span>
+<span class="sd">        Vector(0.000, 0.000, 1.000)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">normal</span> <span class="o">=</span> <span class="n">Vector</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Plane.from_points"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Plane.from_points.html#compas.geometry.Plane.from_points">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_points</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct the *best-fit* plane through more than three (non-coplanar) points.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        points : list of point</span>
-<span class="sd">            List of points.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Plane</span>
-<span class="sd">            A plane that minimizes the distance to each point in the list.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="Plane.worldXY"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Plane.worldXY.html#compas.geometry.Plane.worldXY">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">worldXY</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
@@ -208,8 +207,11 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt;</span>
-
+<span class="sd">        &gt;&gt;&gt; plane = Plane.from_data({&#39;point&#39;: [0.0, 0.0, 0.0], &#39;normal&#39;: [0.0, 0.0, 1.0]})</span>
+<span class="sd">        &gt;&gt;&gt; plane.point</span>
+<span class="sd">        Point(0.000, 0.000, 0.000)</span>
+<span class="sd">        &gt;&gt;&gt; plane.normal</span>
+<span class="sd">        Vector(0.000, 0.000, 1.000)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;normal&#39;</span><span class="p">])</span></div>
 
@@ -299,7 +301,7 @@
     <span class="c1"># ==========================================================================</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">==</span> <span class="n">other</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span> <span class="o">==</span> <span class="n">other</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># operators</span>
@@ -321,6 +323,13 @@
 <span class="sd">        Plane</span>
 <span class="sd">            The copy.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; p1 = Plane.worldXY()</span>
+<span class="sd">        &gt;&gt;&gt; p2 = p1.copy()</span>
+<span class="sd">        &gt;&gt;&gt; p2.point.x += 1.0</span>
+<span class="sd">        &gt;&gt;&gt; p2 == p1</span>
+<span class="sd">        False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
@@ -350,7 +359,6 @@
 <span class="sd">        &gt;&gt;&gt; T = Transformation.from_frame(f)</span>
 <span class="sd">        &gt;&gt;&gt; plane = Plane.worldXY()</span>
 <span class="sd">        &gt;&gt;&gt; plane.transform(T)</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
@@ -375,9 +383,8 @@
 <span class="sd">        &gt;&gt;&gt; from compas.geometry import Plane</span>
 <span class="sd">        &gt;&gt;&gt; f = Frame([1, 1, 1], [0.68, 0.68, 0.27], [-0.67, 0.73, -0.15])</span>
 <span class="sd">        &gt;&gt;&gt; T = Transformation.from_frame(f)</span>
-<span class="sd">        &gt;&gt;&gt; plane = Plane.worldXY()</span>
-<span class="sd">        &gt;&gt;&gt; plane_transformed = plane.transformed(T)</span>
-
+<span class="sd">        &gt;&gt;&gt; p1 = Plane.worldXY()</span>
+<span class="sd">        &gt;&gt;&gt; p2 = p1.transformed(T)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">plane</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">plane</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
@@ -390,38 +397,8 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Frame</span>
-    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Transformation</span>
-
-    <span class="n">base</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-    <span class="n">normal</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-
-    <span class="n">plane</span> <span class="o">=</span> <span class="n">Plane</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">plane</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
-
-    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">normal</span>
-
-    <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-
-    <span class="n">d</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">c</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">d</span> <span class="o">&lt;=</span> <span class="n">plane</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
-
-    <span class="n">f</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.68</span><span class="p">,</span> <span class="mf">0.68</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.67</span><span class="p">,</span> <span class="mf">0.73</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.15</span><span class="p">])</span>
-    <span class="n">T</span> <span class="o">=</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_frame</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    <span class="n">plane</span> <span class="o">=</span> <span class="n">Plane</span><span class="o">.</span><span class="n">worldXY</span><span class="p">()</span>
-    <span class="n">plane</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">plane</span><span class="p">)</span>
-
-    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;point&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]}</span>
-    <span class="n">plane</span> <span class="o">=</span> <span class="n">Plane</span><span class="o">.</span><span class="n">from_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">plane</span><span class="p">)</span>
-
     <span class="kn">import</span> <span class="nn">doctest</span>
-    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 

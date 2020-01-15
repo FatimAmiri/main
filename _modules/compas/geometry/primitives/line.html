@@ -112,7 +112,6 @@
 <span class="sd">    ----------</span>
 <span class="sd">    .. [1] Wikipedia. *Linear equation*.</span>
 <span class="sd">           Available at: https://en.wikipedia.org/wiki/Linear_equation.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_start&#39;</span><span class="p">,</span> <span class="s1">&#39;_end&#39;</span><span class="p">]</span>
@@ -148,7 +147,6 @@
 <span class="sd">        Point(0.000, 1.000, 0.000)</span>
 <span class="sd">        &gt;&gt;&gt; a is b</span>
 <span class="sd">        True</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">start</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">end</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">]</span>
         <span class="n">Point</span><span class="o">.</span><span class="n">transform_collection</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span></div>
@@ -178,7 +176,6 @@
 <span class="sd">        Point(0.000, 1.000, 0.000)</span>
 <span class="sd">        &gt;&gt;&gt; a is b</span>
 <span class="sd">        False</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">]</span>
         <span class="n">Line</span><span class="o">.</span><span class="n">transform_collection</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
@@ -190,6 +187,19 @@
 
 <div class="viewcode-block" id="Line.from_data"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Line.from_data.html#compas.geometry.Line.from_data">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a frame from a data dict.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : dict</span>
+<span class="sd">            The data dictionary.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; line = Line.from_data({&#39;start&#39;: [0.0, 0.0, 0.0], &#39;end&#39;: [1.0, 0.0, 0.0]})</span>
+<span class="sd">        &gt;&gt;&gt; line.end</span>
+<span class="sd">        Point(1.000, 0.000, 0.000)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">])</span></div>
 
     <span class="c1"># ==========================================================================</span>
@@ -259,7 +269,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
 <span class="sd">            The line data.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">),</span>
                 <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)}</span>
@@ -309,17 +318,28 @@
     <span class="c1"># ==========================================================================</span>
 
 <div class="viewcode-block" id="Line.point"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Line.point.html#compas.geometry.Line.point">[docs]</a>    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Point: The point from the start to the end at a specific normalized parameter.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;The point from the start to the end at a specific normalized parameter.</span>
 
-        <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float</span>
+<span class="sd">            The line parameter.</span>
 
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Point</span>
+<span class="sd">            A point on the line.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; line = Line([0.0, 0.0, 0.0], [1.0, 0.0, 0.0])</span>
+<span class="sd">        &gt;&gt;&gt; line.point(0.5)</span>
+<span class="sd">        Point(0.500, 0.000, 0.000)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
-
         <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span>
-
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">v</span></div>
 
@@ -343,6 +363,11 @@
 <span class="sd">        Line</span>
 <span class="sd">            The copy.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; line = Line([0.0, 0.0, 0.0], [1.0, 0.0, 0.0])</span>
+<span class="sd">        &gt;&gt;&gt; line.copy()</span>
+<span class="sd">        Line(Point(0.000, 0.000, 0.000), Point(1.000, 0.000, 0.000))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
@@ -362,6 +387,16 @@
 <span class="sd">        ----------</span>
 <span class="sd">        transformation : :class:`Transformation`</span>
 <span class="sd">            The transformation used to transform the line.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from math import radians</span>
+<span class="sd">        &gt;&gt;&gt; from compas.geometry import Rotation</span>
+<span class="sd">        &gt;&gt;&gt; line = Line([0.0, 0.0, 0.0], [1.0, 0.0, 0.0])</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_and_angle([0.0, 0.0, 1.0], radians(90))</span>
+<span class="sd">        &gt;&gt;&gt; line.transform(R)</span>
+<span class="sd">        &gt;&gt;&gt; line.end</span>
+<span class="sd">        Point(0.000, 1.000, 0.000)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></div>
@@ -379,6 +414,17 @@
 <span class="sd">        :class: `Line`</span>
 <span class="sd">            The transformed line.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from math import radians</span>
+<span class="sd">        &gt;&gt;&gt; from compas.geometry import Rotation</span>
+<span class="sd">        &gt;&gt;&gt; l1 = Line([0.0, 0.0, 0.0], [1.0, 0.0, 0.0])</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_and_angle([0.0, 0.0, 1.0], radians(90))</span>
+<span class="sd">        &gt;&gt;&gt; l2 = l1.transformed(R)</span>
+<span class="sd">        &gt;&gt;&gt; l1.end</span>
+<span class="sd">        Point(1.000, 0.000, 0.000)</span>
+<span class="sd">        &gt;&gt;&gt; l2.end</span>
+<span class="sd">        Point(0.000, 1.000, 0.000)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">line</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>

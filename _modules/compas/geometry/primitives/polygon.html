@@ -103,14 +103,6 @@
 <span class="sd">    points : list of point</span>
 <span class="sd">        An ordered list of points.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; polygon = Polygon([[0,0,0], [1,0,0], [1,1,0], [0,1,0]])</span>
-<span class="sd">    &gt;&gt;&gt; polygon.centroid</span>
-<span class="sd">    Point(0.500, 0.500, 0.000)</span>
-<span class="sd">    &gt;&gt;&gt; polygon.area</span>
-<span class="sd">    1.0</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    All ``Polygon`` objects are considered closed. Therefore the first and</span>
@@ -119,6 +111,13 @@
 
 <span class="sd">    Polygons are not necessarily planar by construction; they can be warped.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; polygon = Polygon([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; polygon.centroid</span>
+<span class="sd">    Point(0.500, 0.500, 0.000)</span>
+<span class="sd">    &gt;&gt;&gt; polygon.area</span>
+<span class="sd">    1.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Polygon.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polygon.__init__.html#compas.geometry.Polygon.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
@@ -146,8 +145,9 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt;</span>
-
+<span class="sd">        &gt;&gt;&gt; polygon = Polygon.from_data({&#39;points&#39;: [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [1.0, 1.0, 0.0], [0.0, 1.0, 1.0]]})</span>
+<span class="sd">        &gt;&gt;&gt; polygon.points[0]</span>
+<span class="sd">        Point(0.000, 0.000, 0.000)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">])</span></div>
 
@@ -189,7 +189,6 @@
 <span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Supplied number of sides must be at least 3!&quot;</span>
-
         <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">side</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">n</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
@@ -211,7 +210,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
 <span class="sd">            The polygon data.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;points&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">]}</span>
 
@@ -244,7 +242,8 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;int: The centroid of the polygon.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span> <span class="n">centroid_points</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">))</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">centroid_polygon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">point</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -303,7 +302,7 @@
     <span class="c1"># ==========================================================================</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">))</span>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># operators</span>
@@ -325,6 +324,14 @@
 <span class="sd">        Polygon</span>
 <span class="sd">            The copy.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; p1 = Polygon.from_sides_and_radius_xy(4, 1.0)</span>
+<span class="sd">        &gt;&gt;&gt; p2 = p1.copy()</span>
+<span class="sd">        &gt;&gt;&gt; p1 == p2</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; p1 is p2</span>
+<span class="sd">        False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">point</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">])</span></div>
@@ -342,6 +349,11 @@
 <span class="sd">            True if the polygon is convex.</span>
 <span class="sd">            False otherwise.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; polygon = Polygon([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.4, 0.4, 0.0], [0.0, 1.0, 0.0]])</span>
+<span class="sd">        &gt;&gt;&gt; polygon.is_convex()</span>
+<span class="sd">        False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">is_polygon_convex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span></div>
 
@@ -354,6 +366,11 @@
 <span class="sd">            True if all points of the polygon lie in one plane.</span>
 <span class="sd">            False otherwise.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; polygon = Polygon([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [1.0, 1.0, 0.0], [0.0, 1.0, 0.1]])</span>
+<span class="sd">        &gt;&gt;&gt; polygon.is_planar()</span>
+<span class="sd">        False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">is_coplanar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span></div>
 
@@ -369,6 +386,15 @@
 <span class="sd">        matrix : list of list</span>
 <span class="sd">            The transformation matrix.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from math import radians</span>
+<span class="sd">        &gt;&gt;&gt; from compas.geometry import Rotation</span>
+<span class="sd">        &gt;&gt;&gt; polygon = Polygon.from_sides_and_radius_xy(4, 1.0)</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_and_angle([0.0, 0.0, 1.0], radians(45))</span>
+<span class="sd">        &gt;&gt;&gt; polygon.transform(R)</span>
+<span class="sd">        &gt;&gt;&gt; polygon.points[0]</span>
+<span class="sd">        Point(-0.707, 0.707, 0.000)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">transform_points</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">matrix</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -388,6 +414,15 @@
 <span class="sd">        Polygon</span>
 <span class="sd">            The transformed copy.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from math import radians</span>
+<span class="sd">        &gt;&gt;&gt; from compas.geometry import Rotation</span>
+<span class="sd">        &gt;&gt;&gt; poly1 = Polygon.from_sides_and_radius_xy(4, 1.0)</span>
+<span class="sd">        &gt;&gt;&gt; R = Rotation.from_axis_and_angle([0.0, 0.0, 1.0], radians(45))</span>
+<span class="sd">        &gt;&gt;&gt; poly2 = poly1.transformed(R)</span>
+<span class="sd">        &gt;&gt;&gt; poly2.points[0] == poly1.points[0]</span>
+<span class="sd">        False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">polygon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">polygon</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
@@ -401,9 +436,6 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
     <span class="kn">import</span> <span class="nn">doctest</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">Polygon</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]]))</span>
-
     <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
