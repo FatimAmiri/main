@@ -89,14 +89,13 @@
 <span class="sd">    x, y, z : float</span>
 <span class="sd">        Components of the vector (complex, imaginary) part of a quaternion.</span>
 
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; Q = Quaternion(1.0, 1.0, 1.0, 1.0).unitized()</span>
-<span class="sd">    &gt;&gt;&gt; R = Quaternion(0.0,-0.1, 0.2,-0.3).unitized()</span>
-<span class="sd">    &gt;&gt;&gt; P = R*Q</span>
-<span class="sd">    &gt;&gt;&gt; P.is_unit</span>
-<span class="sd">    True</span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data</span>
+<span class="sd">    wxyz</span>
+<span class="sd">    xyzw</span>
+<span class="sd">    norm</span>
+<span class="sd">    is_unit</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -150,6 +149,13 @@
 <span class="sd">    .. [2] http://mathworld.wolfram.com/HamiltonsRules.html</span>
 <span class="sd">    .. [3] https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; Q = Quaternion(1.0, 1.0, 1.0, 1.0).unitized()</span>
+<span class="sd">    &gt;&gt;&gt; R = Quaternion(0.0,-0.1, 0.2,-0.3).unitized()</span>
+<span class="sd">    &gt;&gt;&gt; P = R*Q</span>
+<span class="sd">    &gt;&gt;&gt; P.is_unit</span>
+<span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Quaternion.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Quaternion.__init__.html#compas.geometry.Quaternion.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
@@ -162,7 +168,7 @@
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wxyz</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;Quaternion({:.</span><span class="si">{prec}</span><span class="s1">f}, {:.</span><span class="si">{prec}</span><span class="s1">f}, {:.</span><span class="si">{prec}</span><span class="s1">f}, {:.</span><span class="si">{prec}</span><span class="s1">f})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;Quaternion({:.</span><span class="si">{prec}</span><span class="s1">f}, {:.</span><span class="si">{prec}</span><span class="s1">f}, {:.</span><span class="si">{prec}</span><span class="s1">f}, {:.</span><span class="si">{prec}</span><span class="s1">f})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Multiply operator for two quaternions.</span>
@@ -177,6 +183,13 @@
 <span class="sd">        Quaternion</span>
 <span class="sd">            The product P = R * Q of this quaternion (R) multiplied by other quaternion (Q).</span>
 
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Multiplication of two quaternions R*Q can be interpreted as applying rotation R to an orientation Q,</span>
+<span class="sd">        provided that both R and Q are unit-length.</span>
+<span class="sd">        The result is also unit-length.</span>
+<span class="sd">        Multiplication of quaternions is not commutative!</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; Q = Quaternion(1.0, 1.0, 1.0, 1.0).unitized()</span>
@@ -184,15 +197,7 @@
 <span class="sd">        &gt;&gt;&gt; P = R*Q</span>
 <span class="sd">        &gt;&gt;&gt; P.is_unit</span>
 <span class="sd">        True</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        Multiplication of two quaternions R*Q can be interpreted as applying rotation R to an orientation Q,</span>
-<span class="sd">        provided that both R and Q are unit-length.</span>
-<span class="sd">        The result is also unit-length.</span>
-<span class="sd">        Multiplication of quaternions is not commutative!</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">p</span> <span class="o">=</span> <span class="n">quaternion_multiply</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
 
@@ -218,7 +223,6 @@
 <span class="sd">        &gt;&gt;&gt; allclose(list(Q.canonized()), quaternion_canonize(quaternion_unitize(q)))</span>
 <span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">quaternion</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
 
@@ -248,36 +252,100 @@
 
 <div class="viewcode-block" id="Quaternion.unitize"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Quaternion.unitize.html#compas.geometry.Quaternion.unitize">[docs]</a>    <span class="k">def</span> <span class="nf">unitize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scales the quaternion to make it unit-length.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; q = Quaternion(1.0, 1.0, 1.0, 1.0)</span>
+<span class="sd">        &gt;&gt;&gt; q.is_unit</span>
+<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; q.unitize()</span>
+<span class="sd">        &gt;&gt;&gt; q.is_unit</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qu</span> <span class="o">=</span> <span class="n">quaternion_unitize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">qu</span></div>
 
 <div class="viewcode-block" id="Quaternion.unitized"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Quaternion.unitized.html#compas.geometry.Quaternion.unitized">[docs]</a>    <span class="k">def</span> <span class="nf">unitized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a :obj:`Quaternion` with a unit-length.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; q = Quaternion(1.0, 1.0, 1.0, 1.0)</span>
+<span class="sd">        &gt;&gt;&gt; q.is_unit</span>
+<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; p = q.unitized()</span>
+<span class="sd">        &gt;&gt;&gt; p.is_unit</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qu</span> <span class="o">=</span> <span class="n">quaternion_unitize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="o">*</span><span class="n">qu</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Quaternion.canonize"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Quaternion.canonize.html#compas.geometry.Quaternion.canonize">[docs]</a>    <span class="k">def</span> <span class="nf">canonize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Makes the quaternion canonic.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from compas.geometry import Frame</span>
+<span class="sd">        &gt;&gt;&gt; q = Quaternion.from_frame(Frame.worldZX())</span>
+<span class="sd">        &gt;&gt;&gt; q</span>
+<span class="sd">        Quaternion(-0.500, 0.500, 0.500, 0.500)</span>
+<span class="sd">        &gt;&gt;&gt; q.canonize()</span>
+<span class="sd">        &gt;&gt;&gt; q</span>
+<span class="sd">        Quaternion(0.500, -0.500, -0.500, -0.500)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qc</span> <span class="o">=</span> <span class="n">quaternion_canonize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">qc</span></div>
 
 <div class="viewcode-block" id="Quaternion.canonized"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Quaternion.canonized.html#compas.geometry.Quaternion.canonized">[docs]</a>    <span class="k">def</span> <span class="nf">canonized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns a :obj:`Quaternion` in a canonic form.</span>
+        <span class="sd">&quot;&quot;&quot;Returns a :obj:`Quaternion` in canonic form.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Quaternion</span>
+<span class="sd">            A quaternion in canonic form.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from compas.geometry import Frame</span>
+<span class="sd">        &gt;&gt;&gt; q = Quaternion.from_frame(Frame.worldZX())</span>
+<span class="sd">        &gt;&gt;&gt; q</span>
+<span class="sd">        Quaternion(-0.500, 0.500, 0.500, 0.500)</span>
+<span class="sd">        &gt;&gt;&gt; p = q.canonized()</span>
+<span class="sd">        &gt;&gt;&gt; p</span>
+<span class="sd">        Quaternion(0.500, -0.500, -0.500, -0.500)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qc</span> <span class="o">=</span> <span class="n">quaternion_canonize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="o">*</span><span class="n">qc</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Quaternion.conjugate"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Quaternion.conjugate.html#compas.geometry.Quaternion.conjugate">[docs]</a>    <span class="k">def</span> <span class="nf">conjugate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Conjugate the quaternion.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; q = Quaternion(1.0, 1.0, 1.0, 1.0)</span>
+<span class="sd">        &gt;&gt;&gt; q.conjugate()</span>
+<span class="sd">        &gt;&gt;&gt; q</span>
+<span class="sd">        Quaternion(1.000, -1.000, -1.000, -1.000)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qc</span> <span class="o">=</span> <span class="n">quaternion_conjugate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">qc</span></div>
 
 <div class="viewcode-block" id="Quaternion.conjugated"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Quaternion.conjugated.html#compas.geometry.Quaternion.conjugated">[docs]</a>    <span class="k">def</span> <span class="nf">conjugated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a conjugate :obj:`Quaternion`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Quaternion</span>
+<span class="sd">            The conjugated quaternion.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; q = Quaternion(1.0, 1.0, 1.0, 1.0)</span>
+<span class="sd">        &gt;&gt;&gt; p = q.conjugated()</span>
+<span class="sd">        &gt;&gt;&gt; q</span>
+<span class="sd">        Quaternion(1.000, 1.000, 1.000, 1.000)</span>
+<span class="sd">        &gt;&gt;&gt; p</span>
+<span class="sd">        Quaternion(1.000, -1.000, -1.000, -1.000)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qc</span> <span class="o">=</span> <span class="n">quaternion_conjugate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="o">*</span><span class="n">qc</span><span class="p">)</span></div>
@@ -405,7 +473,7 @@
         
 
         
-            Last updated on Jan 15, 2020.
+            Last updated on Jan 16, 2020.
         
 
         
