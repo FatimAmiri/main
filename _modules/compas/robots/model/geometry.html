@@ -111,7 +111,26 @@
 
 
 <div class="viewcode-block" id="Origin"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Origin.html#compas.robots.Origin">[docs]</a><span class="k">class</span> <span class="nc">Origin</span><span class="p">(</span><span class="n">Frame</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Reference frame represented by an instance of :class:`Frame`.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Reference frame represented by an instance of :class:`Frame`.</span>
+
+<span class="sd">    An origin is defined by a base point and two orthonormal base vectors.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    point : point</span>
+<span class="sd">        The origin of the origin.</span>
+<span class="sd">    xaxis : vector</span>
+<span class="sd">        The x-axis of the origin.</span>
+<span class="sd">    yaxis : vector</span>
+<span class="sd">        The y-axis of the origin.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import Point</span>
+<span class="sd">    &gt;&gt;&gt; from compas.geometry import Vector</span>
+<span class="sd">    &gt;&gt;&gt; o = Origin([0, 0, 0], [1, 0, 0], [0, 1, 0])</span>
+<span class="sd">    &gt;&gt;&gt; o = Origin(Point(0, 0, 0), Vector(1, 0, 0), Point(0, 1, 0))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Origin.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Origin.__init__.html#compas.robots.Origin.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Origin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span></div>
@@ -122,17 +141,23 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        attributes</span>
+<span class="sd">        attributes : dict</span>
 <span class="sd">            Attributes of the URDF element.</span>
-<span class="sd">        elements</span>
+<span class="sd">        elements: list of obj</span>
 <span class="sd">            Children elements of the URDF element.</span>
-<span class="sd">        text</span>
+<span class="sd">        text: str or None</span>
 <span class="sd">            Text content of the URDF element.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        :class:`Origin`</span>
 <span class="sd">            Origin instance.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; attributes = {&#39;rpy&#39;: &#39;0.0 1.57 0.0&#39;, &#39;xyz&#39;: &#39;0.0 0.13 0.0&#39;}</span>
+<span class="sd">        &gt;&gt;&gt; Origin.from_urdf(attributes, [], None)</span>
+<span class="sd">        Frame(Point(0.000, 0.130, 0.000), Vector(0.001, 0.000, -1.000), Vector(0.000, 1.000, 0.000))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="s1">&#39;0 0 0&#39;</span><span class="p">))</span>
         <span class="n">rpy</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rpy&#39;</span><span class="p">,</span> <span class="s1">&#39;0 0 0&#39;</span><span class="p">))</span>
@@ -145,36 +170,116 @@
 <span class="sd">        ----------</span>
 <span class="sd">        factor : :obj:`float`</span>
 <span class="sd">            Scale factor.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; o = Origin([0, 0, 0], [1, 0, 0], [0, 1, 0])</span>
+<span class="sd">        &gt;&gt;&gt; o.scale(10)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">*</span> <span class="n">factor</span></div></div>
 
 
 <span class="k">class</span> <span class="nc">BaseShape</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for all 3D shapes.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Base class for all 3D shapes.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    geometry : :class:`compas.geometry.Shape`</span>
+<span class="sd">        The COMPAS geometry of this shape.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="Box"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Box.html#compas.robots.Box">[docs]</a><span class="k">class</span> <span class="nc">Box</span><span class="p">(</span><span class="n">BaseShape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;3D shape primitive representing a box.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;3D shape primitive representing a box.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    size : str</span>
+<span class="sd">        The dimensions of the box in x-, y-, and z-axis, like &#39;1 1 1&#39;.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    size : list of 3 float</span>
+<span class="sd">        The dimensions of the box.</span>
+<span class="sd">    geometry : :class:`compas.geometry.Box`</span>
+<span class="sd">        The COMPAS geometry of this box.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; box = Box(&#39;1 1 1&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; box.geometry</span>
+<span class="sd">    Box(Frame(Point(0.000, 0.000, 0.000), Vector(1.000, 0.000, 0.000), Vector(0.000, 1.000, 0.000)), 1.0, 1.0, 1.0)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Box.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Box.__init__.html#compas.robots.Box.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Box</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">Frame</span><span class="o">.</span><span class="n">worldXY</span><span class="p">(),</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Cylinder"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Cylinder.html#compas.robots.Cylinder">[docs]</a><span class="k">class</span> <span class="nc">Cylinder</span><span class="p">(</span><span class="n">BaseShape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;3D shape primitive representing a cylinder.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;3D shape primitive representing a cylinder.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radius : str or float</span>
+<span class="sd">        The cylinder&#39;s radius.</span>
+<span class="sd">    length : str or float</span>
+<span class="sd">        The cylinder&#39;s length.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radius : float</span>
+<span class="sd">        The cylinder&#39;s radius.</span>
+<span class="sd">    length : float</span>
+<span class="sd">        The cylinder&#39;s length.</span>
+<span class="sd">    geometry : :class:`compas.geometry.Cylinder`</span>
+<span class="sd">        The COMPAS geometry of this cylinder.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; c = Cylinder(1, 4)</span>
+<span class="sd">    &gt;&gt;&gt; c.geometry</span>
+<span class="sd">    Cylinder(Circle(Plane(Point(0.000, 0.000, 0.000), Vector(0.000, 0.000, 1.000)), 1.0), 4.0)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Cylinder.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Cylinder.__init__.html#compas.robots.Cylinder.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Cylinder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">length</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+        <span class="n">plane</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Plane</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">circle</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Circle</span><span class="p">(</span><span class="n">plane</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">compas</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Cylinder</span><span class="p">(</span><span class="n">circle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Sphere"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Sphere.html#compas.robots.Sphere">[docs]</a><span class="k">class</span> <span class="nc">Sphere</span><span class="p">(</span><span class="n">BaseShape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;3D shape primitive representing a sphere.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;3D shape primitive representing a sphere.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radius : str or float</span>
+<span class="sd">        The sphere&#39;s radius.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radius : float</span>
+<span class="sd">        The sphere&#39;s radius.</span>
+<span class="sd">    geometry : :class:`compas.geometry.Sphere`</span>
+<span class="sd">        The COMPAS geometry of this sphere.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; s = Sphere(1)</span>
+<span class="sd">    &gt;&gt;&gt; s.geometry</span>
+<span class="sd">    Sphere(Point(0.000, 0.000, 0.000), 1.0)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Sphere.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Sphere.__init__.html#compas.robots.Sphere.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Sphere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -183,7 +288,26 @@
 
 
 <div class="viewcode-block" id="Capsule"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Capsule.html#compas.robots.Capsule">[docs]</a><span class="k">class</span> <span class="nc">Capsule</span><span class="p">(</span><span class="n">BaseShape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;3D shape primitive representing a capsule.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;3D shape primitive representing a capsule.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radius : str or float</span>
+<span class="sd">        The sphere&#39;s radius.</span>
+<span class="sd">    length : str or float</span>
+<span class="sd">        The sphere&#39;s length.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radius : float</span>
+<span class="sd">        The sphere&#39;s radius.</span>
+<span class="sd">    length : float</span>
+<span class="sd">        The sphere&#39;s length.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; c = Capsule(1, 4)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Capsule.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Capsule.__init__.html#compas.robots.Capsule.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Capsule</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -192,7 +316,28 @@
 
 
 <div class="viewcode-block" id="MeshDescriptor"><a class="viewcode-back" href="../../../../api/generated/compas.robots.MeshDescriptor.html#compas.robots.MeshDescriptor">[docs]</a><span class="k">class</span> <span class="nc">MeshDescriptor</span><span class="p">(</span><span class="n">BaseShape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Description of a mesh.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Description of a mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        The mesh&#39; filename.</span>
+<span class="sd">    scale : str, optional</span>
+<span class="sd">        The scale factors of the mesh in the x-, y-, and z-direction.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        The mesh&#39; filename.</span>
+<span class="sd">    scale : list of 3 float</span>
+<span class="sd">        The scale factors of the mesh in the x-, y-, and z-direction.</span>
+<span class="sd">    geometry : :class:`compas.datastructures.Mesh`</span>
+<span class="sd">        The COMPAS geometry of this mesh.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; m = MeshDescriptor(&#39;link.stl&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="MeshDescriptor.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.MeshDescriptor.__init__.html#compas.robots.MeshDescriptor.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;1.0 1.0 1.0&#39;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">MeshDescriptor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -201,21 +346,72 @@
 
 
 <div class="viewcode-block" id="Color"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Color.html#compas.robots.Color">[docs]</a><span class="k">class</span> <span class="nc">Color</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Color represented in RGBA.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Color represented in RGBA.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rgba : str</span>
+<span class="sd">        Color values as string.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rgba : list of float</span>
+<span class="sd">        Color values as list of float</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; c = Color(&#39;1 0 0&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; c.rgba</span>
+<span class="sd">    [1.0, 0.0, 0.0]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Color.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Color.__init__.html#compas.robots.Color.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rgba</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgba</span> <span class="o">=</span> <span class="n">_parse_floats</span><span class="p">(</span><span class="n">rgba</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Texture"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Texture.html#compas.robots.Texture">[docs]</a><span class="k">class</span> <span class="nc">Texture</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Texture description.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Texture description.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        The filename of the texture.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        The filename of the texture.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; t = Texture(&#39;wood.jpg&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Texture.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Texture.__init__.html#compas.robots.Texture.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span></div></div>
 
 
 <div class="viewcode-block" id="Material"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Material.html#compas.robots.Material">[docs]</a><span class="k">class</span> <span class="nc">Material</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Material description.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Material description.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        The name of the material.</span>
+<span class="sd">    color : :class:`compas.robots.Color` or None</span>
+<span class="sd">        The color of the material.</span>
+<span class="sd">    texture : :class:`compas.robots.Texture` or None</span>
+<span class="sd">        The filename of the texture.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; c = Color(&#39;1 0 0&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; material = Material(&#39;wood&#39;, c)</span>
+
+<span class="sd">    &gt;&gt;&gt; material = Material(&#39;aqua&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; material.get_color()</span>
+<span class="sd">    [0.0, 1.0, 1.0, 1.0]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Material.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Material.__init__.html#compas.robots.Material.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">texture</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -229,6 +425,12 @@
 <span class="sd">        -------</span>
 <span class="sd">        :obj:`list` of :obj:`float`</span>
 <span class="sd">            List of 4 floats (``0.0-1.0``) indicating RGB colors and Alpha channel of the material.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; material = Material(&#39;aqua&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; material.get_color()</span>
+<span class="sd">        [0.0, 1.0, 1.0, 1.0]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">HTML4_NAMES_TO_HEX</span><span class="p">:</span>
@@ -240,7 +442,37 @@
 
 
 <div class="viewcode-block" id="Geometry"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Geometry.html#compas.robots.Geometry">[docs]</a><span class="k">class</span> <span class="nc">Geometry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Geometrical description of the shape of a link.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Geometrical description of the shape of a link.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    box : :class:`compas.robots.Box` or None</span>
+<span class="sd">        A box shape primitive.</span>
+<span class="sd">    cylinder : :class:`compas.robots.Cylinder` or None</span>
+<span class="sd">        A cylinder shape primitive.</span>
+<span class="sd">    sphere : :class:`compas.robots.Sphere` or None</span>
+<span class="sd">        A sphere shape primitive.</span>
+<span class="sd">    capsule : :class:`compas.robots.Capsule` or None</span>
+<span class="sd">        A capsule shape primitive.</span>
+<span class="sd">    mesh : :class:`compas.robots.MeshDescriptor` or None</span>
+<span class="sd">        A descriptor of a mesh.</span>
+<span class="sd">    **kwargs : keyword arguments</span>
+<span class="sd">        Additional attributes</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shape : :class:`BaseShape`</span>
+<span class="sd">        The shape of the geometry</span>
+<span class="sd">    attr : keyword arguments</span>
+<span class="sd">        Additional attributes</span>
+<span class="sd">    geo : :class:`compas.datastructures.Mesh` or :class:`compas.geometry.Shape` or None</span>
+<span class="sd">        The native geometry object.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; box = Box(&#39;1 1 1&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; geo = Geometry(box=box)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Geometry.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.robots.Geometry.__init__.html#compas.robots.Geometry.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cylinder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sphere</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">capsule</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">box</span> <span class="ow">or</span> <span class="n">cylinder</span> <span class="ow">or</span> <span class="n">sphere</span> <span class="ow">or</span> <span class="n">capsule</span> <span class="ow">or</span> <span class="n">mesh</span>
@@ -264,12 +496,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">geometry</span></div>
 
 
-<span class="c1"># ==============================================================================</span>
-<span class="c1"># Main</span>
-<span class="c1"># ==============================================================================</span>
-
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
