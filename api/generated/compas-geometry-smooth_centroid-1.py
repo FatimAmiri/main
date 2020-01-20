@@ -5,7 +5,7 @@ from compas_plotters import MeshPlotter
 
 mesh = Mesh.from_obj(compas.get('faces.obj'))
 
-vertices   = mesh.get_vertices_attributes('xyz')
+vertices   = mesh.vertices_attributes('xyz')
 neighbors = [mesh.vertex_neighbors(key) for key in mesh.vertices()]
 fixed      = [key for key in mesh.vertices() if mesh.vertex_degree(key) == 2]
 

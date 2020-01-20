@@ -6,7 +6,7 @@ from compas.geometry import smooth_area
 
 mesh = Mesh.from_obj(compas.get('faces.obj'))
 
-vertices  = mesh.get_vertices_attributes('xyz')
+vertices  = mesh.vertices_attributes('xyz')
 faces     = [mesh.face_vertices(fkey) for fkey in mesh.faces()]
 adjacency = [mesh.vertex_faces(key, ordered=True) for key in mesh.vertices()]
 fixed     = [key for key in mesh.vertices() if mesh.vertex_degree(key) == 2]

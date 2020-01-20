@@ -96,6 +96,14 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import compas</span>
+<span class="sd">    &gt;&gt;&gt; from compas.datastructures import Mesh</span>
+<span class="sd">    &gt;&gt;&gt; mesh = Mesh.from_obj(compas.get(&#39;faces.obj&#39;))</span>
+<span class="sd">    &gt;&gt;&gt; mesh.number_of_vertices()</span>
+<span class="sd">    36</span>
+<span class="sd">    &gt;&gt;&gt; for x, y, z in mesh.vertices_attributes(&#39;xyz&#39;, keys=list(mesh.vertices())[:5]):</span>
+<span class="sd">    ...     mesh.add_vertex(x=x, y=y, z=z)</span>
+<span class="sd">    ...</span>
 <span class="sd">    &gt;&gt;&gt; mesh.number_of_vertices()</span>
 <span class="sd">    41</span>
 <span class="sd">    &gt;&gt;&gt; mesh_delete_duplicate_vertices(mesh)</span>
@@ -103,7 +111,7 @@
 <span class="sd">    36</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">key_gkey</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">geometric_key</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
+    <span class="n">key_gkey</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">geometric_key</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertex_attributes</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">),</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
     <span class="n">gkey_key</span> <span class="o">=</span> <span class="p">{</span><span class="n">gkey</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">gkey</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">key_gkey</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
 
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">()):</span>
@@ -138,11 +146,6 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
     <span class="kn">import</span> <span class="nn">doctest</span>
-    <span class="kn">import</span> <span class="nn">compas</span>
-    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_vertices_attributes</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]:</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
     <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
 </code></pre></div>
                     
@@ -229,7 +232,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.13.3',
+    VERSION           : '0.14.0',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',
