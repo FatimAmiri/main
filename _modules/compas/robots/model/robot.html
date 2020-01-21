@@ -165,6 +165,11 @@
 <span class="sd">        -------</span>
 <span class="sd">        A robot model instance.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; model = RobotModel.from_urdf_file(ur5_urdf_file)</span>
+<span class="sd">        &gt;&gt;&gt; print(model)</span>
+<span class="sd">        Robot name=ur5, Links=11, Joints=10 (6 configurable)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">urdf</span> <span class="o">=</span> <span class="n">URDF</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">urdf</span><span class="o">.</span><span class="n">robot</span></div>
@@ -181,6 +186,11 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        A robot model instance.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; urdf_string = &#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;robot xmlns:xacro=&quot;http://www.ros.org/wiki/xacro&quot; name=&quot;panda&quot;&gt;&lt;/robot&gt;&#39;</span>
+<span class="sd">        &gt;&gt;&gt; model = RobotModel.from_urdf_string(urdf_string)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">urdf</span> <span class="o">=</span> <span class="n">URDF</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">urdf</span><span class="o">.</span><span class="n">robot</span></div>
@@ -196,6 +206,22 @@
 
 <div class="viewcode-block" id="RobotModel.find_parent_joint"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.find_parent_joint.html#compas.robots.RobotModel.find_parent_joint">[docs]</a>    <span class="k">def</span> <span class="nf">find_parent_joint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the parent joint of the link or None if not found.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        link : :class:`compas.robots.Link`</span>
+<span class="sd">            The link of which we want to know the parent joint.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`compas.robots.Joint`</span>
+<span class="sd">            The parent joint of the link.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; j = robot.find_parent_joint(link1)</span>
+<span class="sd">        &gt;&gt;&gt; j.name</span>
+<span class="sd">        &#39;joint1&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="o">.</span><span class="n">child</span><span class="p">)</span> <span class="o">==</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
@@ -213,6 +239,12 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        A link instance.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; l = robot.get_link_by_name(&#39;world&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; l.name</span>
+<span class="sd">        &#39;world&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_links</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
@@ -227,6 +259,12 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        A joint instance.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; j = robot.get_joint_by_name(&#39;joint1&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; j.name</span>
+<span class="sd">        &#39;joint1&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
@@ -236,6 +274,11 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Iterator of all links starting at root.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; [l.name for l in robot.iter_links()]</span>
+<span class="sd">        [&#39;world&#39;, &#39;link1&#39;, &#39;link2&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">cjoints</span><span class="p">,</span> <span class="n">links</span><span class="p">):</span>
@@ -248,12 +291,16 @@
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">joints</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">]))</span></div>
 
 <div class="viewcode-block" id="RobotModel.iter_joints"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.iter_joints.html#compas.robots.RobotModel.iter_joints">[docs]</a>    <span class="k">def</span> <span class="nf">iter_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Iterator over the joints that starts with the root link&#39;s</span>
-<span class="sd">            children joints.</span>
+        <span class="sd">&quot;&quot;&quot;Iterator over the joints that starts with the root link&#39;s children joints.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Iterator of all joints starting at root.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; [j.name for j in robot.iter_joints()]</span>
+<span class="sd">        [&#39;joint1&#39;, &#39;joint2&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">clink</span><span class="p">,</span> <span class="n">joints</span><span class="p">):</span>
@@ -270,10 +317,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            link_start_name: Name of the starting link of the chain,</span>
-<span class="sd">                or ``None`` to start at root.</span>
-<span class="sd">            link_end_name: Name of the final link of the chain,</span>
-<span class="sd">                or ``None`` to try to identify the last link.</span>
+<span class="sd">        link_start_name: str or ``None``</span>
+<span class="sd">            Name of the starting link of the chain. Defaults to the root link name.</span>
+<span class="sd">        link_end_name: str or ``None``</span>
+<span class="sd">            Name of the final link of the chain. Defaults to the last link&#39;s name.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -284,6 +331,11 @@
 <span class="sd">        This method differs from :meth:`iter_links` in that it returns the chain respecting</span>
 <span class="sd">        the tree structure, hence if one link branches into two or more joints, only the</span>
 <span class="sd">        branch matching the end link will be returned.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; [l.name for l in robot.iter_link_chain(&#39;world&#39;, &#39;link2&#39;)]</span>
+<span class="sd">        [&#39;world&#39;, &#39;link1&#39;, &#39;link2&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_chain</span><span class="p">(</span><span class="n">link_start_name</span><span class="p">,</span> <span class="n">link_end_name</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_link_by_name</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
@@ -296,10 +348,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            link_start_name: Name of the starting link of the chain,</span>
-<span class="sd">                or ``None`` to start at root.</span>
-<span class="sd">            link_end_name: Name of the final link of the chain,</span>
-<span class="sd">                or ``None`` to try to identify the last link.</span>
+<span class="sd">        link_start_name: str or ``None``</span>
+<span class="sd">            Name of the starting link of the chain. Defaults to the root link name.</span>
+<span class="sd">        link_end_name: str or ``None``</span>
+<span class="sd">            Name of the final link of the chain. Defaults to the last link&#39;s name.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -311,6 +363,11 @@
 <span class="sd">        chain respecting the tree structure, hence if one link branches into</span>
 <span class="sd">        two or more joints, only the branch matching the end link will be</span>
 <span class="sd">        returned.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; [j.name for j in robot.iter_joint_chain(&#39;world&#39;, &#39;link2&#39;)]</span>
+<span class="sd">        [&#39;joint1&#39;, &#39;joint2&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_chain</span><span class="p">(</span><span class="n">link_start_name</span><span class="p">,</span> <span class="n">link_end_name</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_joint_by_name</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
@@ -323,19 +380,23 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            start: Name of the starting element of the chain,</span>
-<span class="sd">                or ``None`` to start at the root link.</span>
-<span class="sd">            end: Name of the final element of the chain,</span>
-<span class="sd">                or ``None`` to try to identify the last element.</span>
+<span class="sd">        start: str or ``None``</span>
+<span class="sd">            Name of the starting element of the chain. Defaults to the root link name.</span>
+<span class="sd">        end: str or ``None``</span>
+<span class="sd">            Name of the final element of the chain. Defaults to the name of the last element.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Iterator of the chain of links and joints.</span>
+<span class="sd">        Iterator of the chain of links and joints (names).</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; list(robot.iter_chain(&#39;world&#39;, &#39;link2&#39;))</span>
+<span class="sd">        [&#39;world&#39;, &#39;joint1&#39;, &#39;link1&#39;, &#39;joint2&#39;, &#39;link2&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">start</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;No root link found&#39;</span><span class="p">)</span>
-
             <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">name</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">end</span><span class="p">:</span>
@@ -360,6 +421,12 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list of :class: `compas.robots.Joint`</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; joints = robot.get_configurable_joints()</span>
+<span class="sd">        &gt;&gt;&gt; [j.name for j in joints]</span>
+<span class="sd">        [&#39;joint1&#39;, &#39;joint2&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_joints</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">joint</span> <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">joints</span> <span class="k">if</span> <span class="n">joint</span><span class="o">.</span><span class="n">is_configurable</span><span class="p">()]</span></div>
@@ -370,6 +437,11 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list of int</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; robot.get_joint_types() == [Joint.CONTINUOUS, Joint.CONTINUOUS]</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">]</span></div>
@@ -380,6 +452,11 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list of str</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; robot.get_configurable_joint_names()</span>
+<span class="sd">        [&#39;joint1&#39;, &#39;joint2&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">]</span></div>
@@ -390,6 +467,12 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        :class: `compas.robots.Link`</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; ee_link = robot.get_end_effector_link()</span>
+<span class="sd">        &gt;&gt;&gt; ee_link.name</span>
+<span class="sd">        &#39;link2&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
         <span class="n">clink</span> <span class="o">=</span> <span class="n">joints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">child_link</span>
@@ -404,6 +487,11 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; robot.get_end_effector_link_name()</span>
+<span class="sd">        &#39;link2&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_end_effector_link</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span></div>
@@ -414,6 +502,11 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; robot.get_base_link_name()</span>
+<span class="sd">        &#39;world&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configurable_joints</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">link</span></div>
@@ -423,13 +516,21 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        resource_loaders:</span>
+<span class="sd">        resource_loaders: :class:`compas.robots.AbstractMeshLoader`</span>
 <span class="sd">            List of objects that implement the</span>
 <span class="sd">            resource loading interface (:class:`compas.robots.AbstractMeshLoader`)</span>
 <span class="sd">            and can retrieve external geometry.</span>
-<span class="sd">        force:</span>
+<span class="sd">        force: boolean</span>
 <span class="sd">            True if it should force reloading even if the geometry</span>
 <span class="sd">            has been loaded already, otherwise False.</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; loader = GithubPackageMeshLoader(&#39;ros-industrial/abb&#39;, &#39;abb_irb6600_support&#39;, &#39;kinetic-devel&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; urdf = loader.load_urdf(&#39;irb6640.urdf&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; model = RobotModel.from_urdf_file(urdf)</span>
+<span class="sd">        &gt;&gt;&gt; model.load_geometry(loader)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">force</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
@@ -520,6 +621,10 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; robot.scale(100)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">link</span> <span class="ow">or</span> <span class="n">link</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
             <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
@@ -590,6 +695,15 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list of :class:`Frame`</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; joint_names = robot.get_configurable_joint_names()</span>
+<span class="sd">        &gt;&gt;&gt; values = [1.2, 0.5]</span>
+<span class="sd">        &gt;&gt;&gt; joint_state = dict(zip(joint_names, values))</span>
+<span class="sd">        &gt;&gt;&gt; frames_transformed = robot.transformed_frames(joint_state)</span>
+<span class="sd">        &gt;&gt;&gt; frames_transformed[0]</span>
+<span class="sd">        Frame(Point(0.000, 0.000, 0.000), Vector(0.362, 0.932, 0.000), Vector(-0.932, 0.362, 0.000))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">transformations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_transformations</span><span class="p">(</span><span class="n">joint_state</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">transformations</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_joints</span><span class="p">()]</span></div>
@@ -606,6 +720,14 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list of :class:`Vector`</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; joint_names = robot.get_configurable_joint_names()</span>
+<span class="sd">        &gt;&gt;&gt; values = [1.2, 0.5]</span>
+<span class="sd">        &gt;&gt;&gt; joint_state = dict(zip(joint_names, values))</span>
+<span class="sd">        &gt;&gt;&gt; robot.transformed_axes(joint_state)</span>
+<span class="sd">        [Vector(0.000, 0.000, 1.000), Vector(0.000, 0.000, 1.000)]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">transformations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_transformations</span><span class="p">(</span><span class="n">joint_state</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">transformations</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_joints</span><span class="p">()</span> <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">vector</span><span class="o">.</span><span class="n">length</span><span class="p">]</span></div>
@@ -674,7 +796,7 @@
 <span class="sd">        &gt;&gt;&gt; sphere = Sphere((0, 0, 0), 1)</span>
 <span class="sd">        &gt;&gt;&gt; mesh = Mesh.from_shape(sphere)</span>
 <span class="sd">        &gt;&gt;&gt; robot = RobotModel(&#39;robot&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; robot.add_link(&#39;link0&#39;, visual_mesh=mesh)</span>
+<span class="sd">        &gt;&gt;&gt; link = robot.add_link(&#39;link0&#39;, visual_mesh=mesh)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">all_link_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">]</span>
@@ -740,7 +862,7 @@
 <span class="sd">        &gt;&gt;&gt; child_link = robot.add_link(&#39;link1&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; origin = Frame.worldXY()</span>
 <span class="sd">        &gt;&gt;&gt; axis = (1, 0, 0)</span>
-<span class="sd">        &gt;&gt;&gt; robot.add_joint(&quot;joint1&quot;, Joint.CONTINUOUS, parent_link, child_link, origin, axis)</span>
+<span class="sd">        &gt;&gt;&gt; j = robot.add_joint(&quot;joint1&quot;, Joint.CONTINUOUS, parent_link, child_link, origin, axis)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">all_joint_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">]</span>
@@ -798,12 +920,24 @@
 <span class="n">URDFParser</span><span class="o">.</span><span class="n">install_parser</span><span class="p">(</span><span class="n">Texture</span><span class="p">,</span> <span class="s1">&#39;robot/material/texture&#39;</span><span class="p">)</span>
 
 
-<span class="c1"># ==============================================================================</span>
-<span class="c1"># Main</span>
-<span class="c1"># ==============================================================================</span>
-
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="kn">from</span> <span class="nn">compas</span> <span class="kn">import</span> <span class="n">HERE</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Frame</span>
+    <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Sphere</span>
+    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+    <span class="kn">from</span> <span class="nn">compas.robots</span> <span class="kn">import</span> <span class="n">GithubPackageMeshLoader</span>
+
+    <span class="n">ur5_urdf_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;compas&#39;</span><span class="p">,</span> <span class="s1">&#39;robots&#39;</span><span class="p">,</span> <span class="s1">&#39;fixtures&#39;</span><span class="p">,</span> <span class="s1">&#39;ur5.xacro&#39;</span><span class="p">)</span>
+
+    <span class="n">robot</span> <span class="o">=</span> <span class="n">RobotModel</span><span class="p">(</span><span class="s2">&quot;robot&quot;</span><span class="p">,</span> <span class="n">links</span><span class="o">=</span><span class="p">[],</span> <span class="n">joints</span><span class="o">=</span><span class="p">[])</span>
+    <span class="n">link0</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="s2">&quot;world&quot;</span><span class="p">)</span>
+    <span class="n">link1</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="s2">&quot;link1&quot;</span><span class="p">)</span>
+    <span class="n">link2</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="s2">&quot;link2&quot;</span><span class="p">)</span>
+    <span class="n">robot</span><span class="o">.</span><span class="n">add_joint</span><span class="p">(</span><span class="s2">&quot;joint1&quot;</span><span class="p">,</span> <span class="n">Joint</span><span class="o">.</span><span class="n">CONTINUOUS</span><span class="p">,</span> <span class="n">link0</span><span class="p">,</span> <span class="n">link1</span><span class="p">,</span> <span class="n">Frame</span><span class="o">.</span><span class="n">worldXY</span><span class="p">(),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">robot</span><span class="o">.</span><span class="n">add_joint</span><span class="p">(</span><span class="s2">&quot;joint2&quot;</span><span class="p">,</span> <span class="n">Joint</span><span class="o">.</span><span class="n">CONTINUOUS</span><span class="p">,</span> <span class="n">link1</span><span class="p">,</span> <span class="n">link2</span><span class="p">,</span> <span class="n">Frame</span><span class="o">.</span><span class="n">worldXY</span><span class="p">(),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
@@ -877,7 +1011,7 @@
         
 
         
-            Last updated on Jan 20, 2020.
+            Last updated on Jan 21, 2020.
         
 
         
