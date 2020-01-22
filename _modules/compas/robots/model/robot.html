@@ -603,7 +603,12 @@
             <span class="k">return</span>
 
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">visual</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">collision</span><span class="p">):</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">init_transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
+                <span class="c1"># transform visual or collison geometry with the transformation specified in origin</span>
+                <span class="n">transformation</span> <span class="o">=</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_frame</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">init_transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span> <span class="o">*</span> <span class="n">transformation</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">init_transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span>
 
         <span class="k">for</span> <span class="n">child_joint</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
             <span class="n">child_joint</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="n">parent_transformation</span><span class="p">)</span>
