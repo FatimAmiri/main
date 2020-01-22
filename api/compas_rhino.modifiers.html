@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>COMPAS - compas_rhino.modifiers</title>
+    <title>COMPAS - &lt;no title&gt;</title>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -19,11 +19,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/compas-reference.css" />
 
     
-        <link rel="next" title="EdgeModifier" href="generated/compas_rhino.modifiers.EdgeModifier.html" />
     
-    
-    
-        <link rel="prev" title="volmesh_select_faces" href="generated/compas_rhino.helpers.volmesh_select_faces.html" />
     
 
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -67,90 +63,7 @@
 
                     
 
-                    <span class="target" id="module-compas_rhino.modifiers"></span><div class="section" id="compas-rhino-modifiers">
-<h1>compas_rhino.modifiers</h1>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas_rhino.modifiers.EdgeModifier.html#compas_rhino.modifiers.EdgeModifier" title="compas_rhino.modifiers.EdgeModifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EdgeModifier</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas_rhino.modifiers.FaceModifier.html#compas_rhino.modifiers.FaceModifier" title="compas_rhino.modifiers.FaceModifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FaceModifier</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas_rhino.modifiers.VertexModifier.html#compas_rhino.modifiers.VertexModifier" title="compas_rhino.modifiers.VertexModifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VertexModifier</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-<p><cite>Modifiers</cite> define static methods for modifying the geometry or data attributes of
-elements of COMPAS data structures and of the data structures themselves.</p>
-<p>All static methods take as first parameter a data structure instance.
-As a consequence the methods can be used directly from the class (without making an instance)
-or they can be added to (sub-classes of) the data structures themselves to extend
-their functionality in Rhino.</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
-
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
-
-<span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="kn">import</span> <span class="n">MeshArtist</span>
-
-<span class="kn">from</span> <span class="nn">compas_rhino.modifiers</span> <span class="kn">import</span> <span class="n">VertexModifier</span>
-<span class="kn">from</span> <span class="nn">compas_rhino.selectors</span> <span class="kn">import</span> <span class="n">VertexSelector</span>
-
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
-
-<span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;Mesh&#39;</span><span class="p">)</span>
-<span class="n">artist</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">()</span>
-<span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">()</span>
-<span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-<span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
-
-<span class="n">keys</span> <span class="o">=</span> <span class="n">VertexSelector</span><span class="o">.</span><span class="n">select_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="n">keys</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">VertexModifier</span><span class="o">.</span><span class="n">update_vertex_attributes</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
-        <span class="n">artist</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">()</span>
-        <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">()</span>
-        <span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-        <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
-</code></pre></div>
-</div>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">compas</span>
-
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
-
-<span class="kn">from</span> <span class="nn">compas_rhino.artists</span> <span class="kn">import</span> <span class="n">MeshArtist</span>
-
-<span class="kn">from</span> <span class="nn">compas_rhino.modifiers</span> <span class="kn">import</span> <span class="n">VertexModifier</span>
-<span class="kn">from</span> <span class="nn">compas_rhino.selectors</span> <span class="kn">import</span> <span class="n">VertexSelector</span>
-
-
-<span class="k">class</span> <span class="nc">CustomMesh</span><span class="p">(</span><span class="n">VertexSelector</span><span class="p">,</span> <span class="n">VertexModifier</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">artist</span> <span class="o">=</span> <span class="n">MeshArtist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;Mesh&#39;</span><span class="p">)</span>
-        <span class="n">artist</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">()</span>
-        <span class="n">artist</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">()</span>
-        <span class="n">artist</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-        <span class="n">artist</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
-
-
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">CustomMesh</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces.obj&#39;</span><span class="p">))</span>
-<span class="n">mesh</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
-
-<span class="n">keys</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">select_vertices</span><span class="p">()</span>
-
-<span class="k">if</span> <span class="n">keys</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">mesh</span><span class="o">.</span><span class="n">update_vertex_attributes</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
-</code></pre></div>
-</div>
-</div>
-
+                    
                     
                 
                 </div>
@@ -177,31 +90,11 @@ their functionality in Rhino.</p>
                         <div class="navbar-expand-md">
                             <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
 
-                            <ul class="nav flex-column active">
+                            <ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="../overview.html">Overview</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../gettingstarted.html">Getting started</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../tutorial.html">Tutorial</a></li>
-<li class="nav-item active"><a class="nav-link reference internal" href="../api.html">API Reference</a><ul class="nav active">
-<li class="nav-item"><a class="nav-link reference internal" href="compas.html">compas</a></li>
-<li class="nav-item active"><a class="nav-link reference internal" href="compas_rhino.html">compas_rhino</a><ul class="nav active">
-<li class="nav-item"><a class="nav-link reference internal" href="compas_rhino.artists.html">compas_rhino.artists</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_rhino.conduits.html">compas_rhino.conduits</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_rhino.constructors.html">compas_rhino.constructors</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_rhino.etoforms.html">compas_rhino.etoforms</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_rhino.forms.html">compas_rhino.forms</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_rhino.geometry.html">compas_rhino.geometry</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_rhino.helpers.html">compas_rhino.helpers</a></li>
-<li class="nav-item active"><a class="nav-link active current reference internal" href="#">compas_rhino.modifiers</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_rhino.selectors.html">compas_rhino.selectors</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_rhino.ui.html">compas_rhino.ui</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_rhino.utilities.html">compas_rhino.utilities</a></li>
-</ul>
-</li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_blender.html">compas_blender</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_ghpython.html">compas_ghpython</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_plotters.html">compas_plotters</a></li>
-</ul>
-</li>
+<li class="nav-item"><a class="nav-link reference internal" href="../api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../contributing.html">Contributing</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../license.html">License</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../changelog.html">Changelog</a></li>
@@ -225,8 +118,7 @@ their functionality in Rhino.</p>
 
                 
 
-                <ul class="nav flex-column" id="compas-localnav">
-<li class="nav-item"><a class="nav-link reference internal" href="#">compas_rhino.modifiers</a></li>
+                <ul class="simple">
 </ul>
 
 
@@ -246,7 +138,7 @@ their functionality in Rhino.</p>
         
 
         
-            Last updated on Jan 21, 2020.
+            Last updated on Jan 22, 2020.
         
 
         
