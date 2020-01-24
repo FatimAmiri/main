@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>COMPAS - compas_rhino.ui.rui</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <meta name="author" content="Tom Van Mele" />
+    <meta name="description" content="compas is a computational framework for research in architecture and structures." />
+
+    <link rel="shortcut icon" href="../../../_static/images/compas.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.9/styles/default.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="../../../_static/css/prism.css" /> -->
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/compas.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/compas-reference.css" />
+
+    
+    
+    
+
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</head>
+
+<body data-spy="scroll" data-target="#compas-localnav">
+
+    <nav class="navbar navbar-expand compas-navbar">
+        <a class="navbar-brand" href="/">
+            <img src="../../../_static/images/compas_icon_white.png" width="36px" height="36px" alt="compas" />
+        </a>
+
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+            <li class="nav-item active"><a class="nav-link active" href="/main/index.html">Documentation</a></li>
+            <li class="nav-item"><a class="nav-link" href="/packages.html">Packages</a></li>
+            <li class="nav-item"><a class="nav-link" href="/examples/index.html">Examples</a></li>
+            <li class="nav-item"><a class="nav-link" href="/devguide.html">Developer&nbsp;Guide</a></li>
+            <!-- <li class="nav-item"><a class="nav-link" href="/workshops.html">Workshops</a></li> -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Community
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" target="_blank" href="http://forum.compas-framework.org">Forum</a>
+                    <a class="dropdown-item" target="_blank" href="http://github.com/compas-dev">Github</a>
+                    <a class="dropdown-item" target="_blank" href="https://pypi.org/project/COMPAS/">PyPI</a>
+                    <a class="dropdown-item" target="_blank" href="https://anaconda.org/conda-forge/compas">Anaconda</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+
+            <main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+                <div class="container">
+                
+
+                    
+
+                    <h1>Source code for compas_rhino.ui.rui</h1><div class="highlight"><pre><code>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+
+<span class="kn">import</span> <span class="nn">compas</span>
+
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">compas</span><span class="o">.</span><span class="n">IPY</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">xml.etree</span> <span class="kn">import</span> <span class="n">ElementTree</span> <span class="k">as</span> <span class="n">ET</span>
+    <span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">minidom</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Rui&#39;</span><span class="p">]</span>
+
+
+<span class="n">TPL_RUI</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="s1">&lt;RhinoUI major_ver=&quot;2&quot;</span>
+<span class="s1">         minor_ver=&quot;0&quot;</span>
+<span class="s1">         guid=&quot;</span><span class="si">{0}</span><span class="s1">&quot;</span>
+<span class="s1">         localize=&quot;False&quot;</span>
+<span class="s1">         default_language_id=&quot;1033&quot;&gt;</span>
+<span class="s1">    &lt;extend_rhino_menus&gt;</span>
+<span class="s1">        &lt;menu guid=&quot;</span><span class="si">{1}</span><span class="s1">&quot;&gt;</span>
+<span class="s1">          &lt;text&gt;</span>
+<span class="s1">            &lt;locale_1033&gt;Extend Rhino Menus&lt;/locale_1033&gt;</span>
+<span class="s1">          &lt;/text&gt;</span>
+<span class="s1">        &lt;/menu&gt;</span>
+<span class="s1">    &lt;/extend_rhino_menus&gt;</span>
+<span class="s1">    &lt;menus /&gt;</span>
+<span class="s1">    &lt;tool_bar_groups /&gt;</span>
+<span class="s1">    &lt;tool_bars /&gt;</span>
+<span class="s1">    &lt;macros /&gt;</span>
+<span class="s1">    &lt;bitmaps&gt;</span>
+<span class="s1">        &lt;small_bitmap item_width=&quot;16&quot; item_height=&quot;16&quot;&gt;</span>
+<span class="s1">          &lt;bitmap&gt;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6Q</span>
+<span class="s1">AAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAATSURBVDhPYxgFo2AUjAIwYGAAAA</span>
+<span class="s1">QQAAGnRHxjAAAAAElFTkSuQmCCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==&lt;/bitmap&gt;</span>
+<span class="s1">        &lt;/small_bitmap&gt;</span>
+<span class="s1">        &lt;normal_bitmap item_width=&quot;24&quot; item_height=&quot;24&quot;&gt;</span>
+<span class="s1">          &lt;bitmap&gt;iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6Q</span>
+<span class="s1">AAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYSURBVEhL7cEBAQAAAIIg/6+uIU</span>
+<span class="s1">AAAFwNCRgAAdACW14AAAAASUVORK5CYIIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==&lt;/bitmap&gt;</span>
+<span class="s1">        &lt;/normal_bitmap&gt;</span>
+<span class="s1">        &lt;large_bitmap item_width=&quot;32&quot; item_height=&quot;32&quot;&gt;</span>
+<span class="s1">          &lt;bitmap&gt;iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6Q</span>
+<span class="s1">AAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAaSURBVFhH7cEBAQAAAIIg/69uSE</span>
+<span class="s1">AAAADAuRoQIAABnXhJQwAAAABJRU5ErkJgggAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==&lt;/bitmap&gt;</span>
+<span class="s1">        &lt;/large_bitmap&gt;</span>
+<span class="s1">    &lt;/bitmaps&gt;</span>
+<span class="s1">    &lt;scripts /&gt;</span>
+<span class="s1">&lt;/RhinoUI&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="n">TPL_MACRO</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">&lt;macro_item guid=&quot;</span><span class="si">{0}</span><span class="s1">&quot;&gt;</span>
+<span class="s1">    &lt;text&gt;</span>
+<span class="s1">        &lt;locale_1033&gt;</span><span class="si">{1}</span><span class="s1">&lt;/locale_1033&gt;</span>
+<span class="s1">    &lt;/text&gt;</span>
+<span class="s1">    &lt;script&gt;</span><span class="si">{2}</span><span class="s1">&lt;/script&gt;</span>
+<span class="s1">    &lt;tooltip&gt;</span>
+<span class="s1">        &lt;locale_1033&gt;</span><span class="si">{3}</span><span class="s1">&lt;/locale_1033&gt;</span>
+<span class="s1">    &lt;/tooltip&gt;</span>
+<span class="s1">    &lt;help_text&gt;</span>
+<span class="s1">        &lt;locale_1033&gt;</span><span class="si">{4}</span><span class="s1">&lt;/locale_1033&gt;</span>
+<span class="s1">    &lt;/help_text&gt;</span>
+<span class="s1">    &lt;button_text&gt;</span>
+<span class="s1">        &lt;locale_1033&gt;</span><span class="si">{5}</span><span class="s1">&lt;/locale_1033&gt;</span>
+<span class="s1">    &lt;/button_text&gt;</span>
+<span class="s1">    &lt;menu_text&gt;</span>
+<span class="s1">        &lt;locale_1033&gt;</span><span class="si">{6}</span><span class="s1">&lt;/locale_1033&gt;</span>
+<span class="s1">    &lt;/menu_text&gt;</span>
+<span class="s1">&lt;/macro_item&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="n">TPL_MENUITEM</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">&lt;menu_item guid=&quot;</span><span class="si">{0}</span><span class="s1">&quot; item_type=&quot;normal&quot;&gt;</span>
+<span class="s1">    &lt;macro_id&gt;</span><span class="si">{1}</span><span class="s1">&lt;/macro_id&gt;</span>
+<span class="s1">&lt;/menu_item&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="n">TPL_MENUSEPARATOR</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">&lt;menu_item guid=&quot;</span><span class="si">{0}</span><span class="s1">&quot; item_type=&quot;separator&quot;&gt;&lt;/menu_item&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="n">TPL_TOOLBARITEM</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">&lt;tool_bar_item guid=&quot;</span><span class="si">{0}</span><span class="s1">&quot; button_display_mode=&quot;control_only&quot; button_style=&quot;normal&quot;&gt;</span>
+<span class="s1">    &lt;left_macro_id&gt;</span><span class="si">{1}</span><span class="s1">&lt;/left_macro_id&gt;</span>
+<span class="s1">    &lt;right_macro_id&gt;</span><span class="si">{2}</span><span class="s1">&lt;/right_macro_id&gt;</span>
+<span class="s1">&lt;/tool_bar_item&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="n">TPL_TOOLBARSEPARATOR</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">&lt;tool_bar_item guid=&quot;</span><span class="si">{0}</span><span class="s1">&quot; button_display_mode=&quot;control_only&quot; button_style=&quot;spacer&quot;&gt;</span>
+<span class="s1">&lt;/tool_bar_item&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="n">TPL_TOOLBAR</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">&lt;tool_bar guid=&quot;</span><span class="si">{0}</span><span class="s1">&quot; item_display_style=&quot;</span><span class="si">{2[item_display_style]}</span><span class="s1">&quot;&gt;</span>
+<span class="s1">    &lt;text&gt;</span>
+<span class="s1">        &lt;locale_1033&gt;</span><span class="si">{1}</span><span class="s1">&lt;/locale_1033&gt;</span>
+<span class="s1">    &lt;/text&gt;</span>
+<span class="s1">&lt;/tool_bar&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="n">TPL_TOOLBARGROUP</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">&lt;tool_bar_group guid=&quot;</span><span class="si">{0}</span><span class="s1">&quot;</span>
+<span class="s1">                dock_bar_guid32=&quot;&quot;</span>
+<span class="s1">                dock_bar_guid64=&quot;&quot;</span>
+<span class="s1">                active_tool_bar_group=&quot;&quot;</span>
+<span class="s1">                single_file=&quot;</span><span class="si">{2[single_file]}</span><span class="s1">&quot;</span>
+<span class="s1">                hide_single_tab=&quot;</span><span class="si">{2[hide_single_tab]}</span><span class="s1">&quot;</span>
+<span class="s1">                point_floating=&quot;0,0&quot;&gt;</span>
+<span class="s1">    &lt;text&gt;</span>
+<span class="s1">        &lt;locale_1033&gt;</span><span class="si">{1}</span><span class="s1">&lt;/locale_1033&gt;</span>
+<span class="s1">    &lt;/text&gt;</span>
+<span class="s1">&lt;/tool_bar_group&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="n">TPL_TOOLBARGROUPITEM</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">&lt;tool_bar_group_item guid=&quot;</span><span class="si">{0}</span><span class="s1">&quot; major_version=&quot;1&quot; minor_version=&quot;1&quot;&gt;</span>
+<span class="s1">    &lt;text&gt;</span>
+<span class="s1">        &lt;locale_1033&gt;</span><span class="si">{1}</span><span class="s1">&lt;/locale_1033&gt;</span>
+<span class="s1">    &lt;/text&gt;</span>
+<span class="s1">    &lt;tool_bar_id&gt;</span><span class="si">{2}</span><span class="s1">&lt;/tool_bar_id&gt;</span>
+<span class="s1">&lt;/tool_bar_group_item&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+
+<span class="k">def</span> <span class="nf">get_method_comments</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">get_parsed_object_comments</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_object_comments</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getcomments</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_parsed_object_comments</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;=&gt;&#39;</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">defaults</span><span class="p">:</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">defaults</span><span class="p">)</span>
+    <span class="n">comments</span> <span class="o">=</span> <span class="n">get_object_comments</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">comments</span><span class="p">:</span>
+        <span class="n">comments</span> <span class="o">=</span> <span class="p">[</span><span class="n">comment</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">comment</span> <span class="ow">in</span> <span class="n">comments</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)]</span>
+        <span class="n">comments</span> <span class="o">=</span> <span class="p">[</span><span class="n">comment</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span> <span class="k">for</span> <span class="n">comment</span> <span class="ow">in</span> <span class="n">comments</span><span class="p">]</span>
+        <span class="n">comments</span> <span class="o">=</span> <span class="p">[</span><span class="n">comment</span> <span class="k">for</span> <span class="n">comment</span> <span class="ow">in</span> <span class="n">comments</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="n">comments</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">comments</span><span class="p">)</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">comments</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">options</span>
+
+
+<span class="k">def</span> <span class="nf">get_method_lineno</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getsourcelines</span><span class="p">(</span><span class="n">obj</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">get_method_docstring</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getdoc</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_method_oneliner</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="n">docstring</span> <span class="o">=</span> <span class="n">get_method_docstring</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">docstring</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">docstring</span><span class="o">.</span><span class="n">trim</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">get_methods</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">bysource</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">compas</span><span class="o">.</span><span class="n">PY3</span><span class="p">:</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">bysource</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">methods</span>
+    <span class="n">linenumbers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">method</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">get_method_lineno</span><span class="p">(</span><span class="n">method</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">methods</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">method</span><span class="p">:</span> <span class="n">linenumbers</span><span class="p">[</span><span class="n">method</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+
+<span class="k">def</span> <span class="nf">get_public_methods</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="n">methods</span> <span class="o">=</span> <span class="n">get_methods</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">method</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)]</span>
+
+
+<span class="c1"># def get_macros(controller, instance_name):</span>
+<span class="c1">#     methods = get_public_methods(controller)</span>
+<span class="c1">#     macros = []</span>
+<span class="c1">#     for n, o in methods:</span>
+<span class="c1">#         annotations = get_parsed_object_comments(o, separator=&#39;=&gt;&#39;)</span>
+<span class="c1">#         name = annotations.get(&#39;name&#39;) or n</span>
+<span class="c1">#         script = annotations.get(&#39;script&#39;) or &#39;-_RunPythonScript ({0}.{1}())&#39;.format(instance_name, name)</span>
+<span class="c1">#         tooltip = annotations.get(&#39;tooltip&#39;)</span>
+<span class="c1">#         help_text = annotations.get(&#39;help_text&#39;) or tooltip</span>
+<span class="c1">#         text = annotations.get(&#39;text&#39;) or name</span>
+<span class="c1">#         button_text = annotations.get(&#39;button_text&#39;) or text</span>
+<span class="c1">#         menu_text = annotations.get(&#39;menu_text&#39;) or &#39; &#39;.join(text.split(&#39;_&#39;))</span>
+<span class="c1">#         macros.append({</span>
+<span class="c1">#             &#39;name&#39;: instance_name + &#39;.&#39; + name,</span>
+<span class="c1">#             &#39;script&#39;: script,</span>
+<span class="c1">#             &#39;tooltip&#39;: tooltip,</span>
+<span class="c1">#             &#39;help_text&#39;: help_text,</span>
+<span class="c1">#             &#39;button_text&#39;: button_text,</span>
+<span class="c1">#             &#39;menu_text&#39;: menu_text,</span>
+<span class="c1">#         })</span>
+<span class="c1">#     return macros</span>
+
+
+<span class="c1"># def find_macro(name, macros):</span>
+<span class="c1">#     for i, macro in enumerate(macros):</span>
+<span class="c1">#         if macro[&#39;name&#39;] == name:</span>
+<span class="c1">#             return i, macro</span>
+<span class="c1">#     return None, None</span>
+
+
+<span class="c1"># def update_macro(macros, name, key, value):</span>
+<span class="c1">#     i, macro = find_macro(name, macros)</span>
+<span class="c1">#     if macro:</span>
+<span class="c1">#         macro[key] = value</span>
+<span class="c1">#     macros[i] = macro</span>
+
+
+<div class="viewcode-block" id="Rui"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.html#compas_rhino.ui.Rui">[docs]</a><span class="k">class</span> <span class="nc">Rui</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for generating *.rui files.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filepath : str</span>
+<span class="sd">        Path to the *.rui file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Rui.__init__"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.__init__.html#compas_rhino.ui.Rui.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">macros</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbars</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_macros</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_menus</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_toolbargroups</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_toolbars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Rui.check"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.check.html#compas_rhino.ui.Rui.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">)):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">os</span><span class="o">.</span><span class="n">errno</span><span class="o">.</span><span class="n">EEXIST</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">):</span>
+                <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Rui.init"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.init.html#compas_rhino.ui.Rui.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">TPL_RUI</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">(),</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_macros</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;macros&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_menus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;menus&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_toolbargroups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;tool_bar_groups&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_toolbars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;tool_bars&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rui.parse"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.parse.html#compas_rhino.ui.Rui.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="Rui.write"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.write.html#compas_rhino.ui.Rui.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
+        <span class="n">xml</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">toprettyxml</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">)</span>
+        <span class="n">xml</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">xml</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()])</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">xml</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span></div>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># add macros</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Rui.add_macros"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_macros.html#compas_rhino.ui.Rui.add_macros">[docs]</a>    <span class="k">def</span> <span class="nf">add_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">macros</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">macro</span> <span class="ow">in</span> <span class="n">macros</span><span class="p">:</span>
+            <span class="n">guid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">macro</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">script</span> <span class="o">=</span> <span class="n">macro</span><span class="p">[</span><span class="s1">&#39;script&#39;</span><span class="p">]</span>
+            <span class="n">tooltip</span> <span class="o">=</span> <span class="n">macro</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tooltip&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">help_text</span> <span class="o">=</span> <span class="n">macro</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;help_text&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">button_text</span> <span class="o">=</span> <span class="n">macro</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;button_text&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">menu_text</span> <span class="o">=</span> <span class="n">macro</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;menu_text&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_macro</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">guid</span><span class="p">,</span> <span class="n">script</span><span class="p">,</span> <span class="n">tooltip</span><span class="p">,</span> <span class="n">help_text</span><span class="p">,</span> <span class="n">button_text</span><span class="p">,</span> <span class="n">menu_text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rui.add_macro"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_macro.html#compas_rhino.ui.Rui.add_macro">[docs]</a>    <span class="k">def</span> <span class="nf">add_macro</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">guid</span><span class="p">,</span> <span class="n">script</span><span class="p">,</span> <span class="n">tooltip</span><span class="p">,</span> <span class="n">help_text</span><span class="p">,</span> <span class="n">button_text</span><span class="p">,</span> <span class="n">menu_text</span><span class="p">):</span>
+        <span class="n">s_macro</span> <span class="o">=</span> <span class="n">TPL_MACRO</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">script</span><span class="p">,</span> <span class="n">tooltip</span><span class="p">,</span> <span class="n">help_text</span><span class="p">,</span> <span class="n">button_text</span><span class="p">,</span> <span class="n">menu_text</span><span class="p">)</span>
+        <span class="n">e_macro</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">s_macro</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_macros</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_macro</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">macros</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">e_macro</span></div>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># add menus</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Rui.add_menus"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_menus.html#compas_rhino.ui.Rui.add_menus">[docs]</a>    <span class="k">def</span> <span class="nf">add_menus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menus</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">menu</span> <span class="ow">in</span> <span class="n">menus</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_menu</span><span class="p">(</span><span class="n">menu</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rui.add_menu"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_menu.html#compas_rhino.ui.Rui.add_menu">[docs]</a>    <span class="k">def</span> <span class="nf">add_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_menus</span>
+        <span class="n">e_menu</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;menu&#39;</span><span class="p">)</span>
+        <span class="n">e_menu</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;guid&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
+        <span class="n">e_text</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">e_menu</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">)</span>
+        <span class="n">e_locale</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">e_text</span><span class="p">,</span> <span class="s1">&#39;locale_1033&#39;</span><span class="p">)</span>
+        <span class="n">e_locale</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">menu</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">menu</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span>
+                <span class="n">e_macro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">macros</span><span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;macro&#39;</span><span class="p">]]</span>
+                <span class="n">macro_guid</span> <span class="o">=</span> <span class="n">e_macro</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;guid&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_menuitem</span><span class="p">(</span><span class="n">e_menu</span><span class="p">,</span> <span class="n">macro_guid</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;separator&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_menuseparator</span><span class="p">(</span><span class="n">e_menu</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;submenu&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_menu</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">e_menu</span><span class="p">)</span>
+                <span class="k">continue</span></div>
+
+<div class="viewcode-block" id="Rui.add_menuitem"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_menuitem.html#compas_rhino.ui.Rui.add_menuitem">[docs]</a>    <span class="k">def</span> <span class="nf">add_menuitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">macro_id</span><span class="p">):</span>
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+        <span class="n">s_item</span> <span class="o">=</span> <span class="n">TPL_MENUITEM</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">macro_id</span><span class="p">)</span>
+        <span class="n">e_item</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">s_item</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_item</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rui.add_menuseparator"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_menuseparator.html#compas_rhino.ui.Rui.add_menuseparator">[docs]</a>    <span class="k">def</span> <span class="nf">add_menuseparator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+        <span class="n">s_sep</span> <span class="o">=</span> <span class="n">TPL_MENUSEPARATOR</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
+        <span class="n">e_sep</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">s_sep</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_sep</span><span class="p">)</span></div>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># add toolbars</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Rui.add_toolbars"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_toolbars.html#compas_rhino.ui.Rui.add_toolbars">[docs]</a>    <span class="k">def</span> <span class="nf">add_toolbars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toolbars</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">toolbar</span> <span class="ow">in</span> <span class="n">toolbars</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_toolbar</span><span class="p">(</span><span class="n">toolbar</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rui.add_toolbar"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_toolbar.html#compas_rhino.ui.Rui.add_toolbar">[docs]</a>    <span class="k">def</span> <span class="nf">add_toolbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toolbar</span><span class="p">):</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;item_display_style&#39;</span><span class="p">:</span> <span class="s1">&#39;text_only&#39;</span>
+        <span class="p">}</span>
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+        <span class="n">s_tb</span> <span class="o">=</span> <span class="n">TPL_TOOLBAR</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">toolbar</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">options</span><span class="p">)</span>
+        <span class="n">e_tb</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">s_tb</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_toolbars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_tb</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbars</span><span class="p">[</span><span class="n">toolbar</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">e_tb</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">toolbar</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;normal&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span>
+                <span class="n">left_guid</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">left_macro</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;left_macro&#39;</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;left&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">left_macro</span><span class="p">:</span>
+                    <span class="n">e_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">macros</span><span class="p">[</span><span class="n">left_macro</span><span class="p">]</span>
+                    <span class="n">left_guid</span> <span class="o">=</span> <span class="n">e_left</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;guid&#39;</span><span class="p">]</span>
+                <span class="n">right_guid</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">right_macro</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;right_macro&#39;</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;right&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">right_macro</span><span class="p">:</span>
+                    <span class="n">e_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">macros</span><span class="p">[</span><span class="n">right_macro</span><span class="p">]</span>
+                    <span class="n">right_guid</span> <span class="o">=</span> <span class="n">e_right</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;guid&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_toolbaritem</span><span class="p">(</span><span class="n">e_tb</span><span class="p">,</span> <span class="n">left_guid</span><span class="p">,</span> <span class="n">right_guid</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;separator&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_toolbarseparator</span><span class="p">(</span><span class="n">e_tb</span><span class="p">)</span>
+                <span class="k">continue</span></div>
+
+<div class="viewcode-block" id="Rui.add_toolbaritem"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_toolbaritem.html#compas_rhino.ui.Rui.add_toolbaritem">[docs]</a>    <span class="k">def</span> <span class="nf">add_toolbaritem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">left_macro_id</span><span class="p">,</span> <span class="n">right_macro_id</span><span class="p">):</span>
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+        <span class="n">s_item</span> <span class="o">=</span> <span class="n">TPL_TOOLBARITEM</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">left_macro_id</span><span class="p">,</span> <span class="n">right_macro_id</span><span class="p">)</span>
+        <span class="n">e_item</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">s_item</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_item</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rui.add_toolbarseparator"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_toolbarseparator.html#compas_rhino.ui.Rui.add_toolbarseparator">[docs]</a>    <span class="k">def</span> <span class="nf">add_toolbarseparator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+        <span class="n">s_sep</span> <span class="o">=</span> <span class="n">TPL_TOOLBARSEPARATOR</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
+        <span class="n">e_sep</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">s_sep</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_sep</span><span class="p">)</span></div>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># add toolbargroups</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Rui.add_toolbargroups"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_toolbargroups.html#compas_rhino.ui.Rui.add_toolbargroups">[docs]</a>    <span class="k">def</span> <span class="nf">add_toolbargroups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toolbargroups</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">tbg</span> <span class="ow">in</span> <span class="n">toolbargroups</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_toolbargroup</span><span class="p">(</span><span class="n">tbg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rui.add_toolbargroup"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_toolbargroup.html#compas_rhino.ui.Rui.add_toolbargroup">[docs]</a>    <span class="k">def</span> <span class="nf">add_toolbargroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tbg</span><span class="p">):</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;single_file&#39;</span><span class="p">:</span> <span class="s1">&#39;False&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;hide_single_tab&#39;</span><span class="p">:</span> <span class="s1">&#39;False&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+        <span class="n">s_tbg</span> <span class="o">=</span> <span class="n">TPL_TOOLBARGROUP</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">tbg</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">options</span><span class="p">)</span>
+        <span class="n">e_tbg</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">s_tbg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_toolbargroups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_tbg</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tb_name</span> <span class="ow">in</span> <span class="n">tbg</span><span class="p">[</span><span class="s1">&#39;toolbars&#39;</span><span class="p">]:</span>
+            <span class="n">e_tb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbars</span><span class="p">[</span><span class="n">tb_name</span><span class="p">]</span>
+            <span class="n">tb_guid</span> <span class="o">=</span> <span class="n">e_tb</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;guid&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_toolbargroupitem</span><span class="p">(</span><span class="n">e_tbg</span><span class="p">,</span> <span class="n">tb_name</span><span class="p">,</span> <span class="n">tb_guid</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rui.add_toolbargroupitem"><a class="viewcode-back" href="../../../api/generated/compas_rhino.ui.Rui.add_toolbargroupitem.html#compas_rhino.ui.Rui.add_toolbargroupitem">[docs]</a>    <span class="k">def</span> <span class="nf">add_toolbargroupitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">tb_name</span><span class="p">,</span> <span class="n">tb_guid</span><span class="p">):</span>
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+        <span class="n">s_item</span> <span class="o">=</span> <span class="n">TPL_TOOLBARGROUPITEM</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">tb_name</span><span class="p">,</span> <span class="n">tb_guid</span><span class="p">)</span>
+        <span class="n">e_item</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">s_item</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_item</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># def compile_rui(oclass, opath, rui_config=&#39;rui_config.json&#39;):</span>
+<span class="c1">#     &quot;&quot;&quot;Compile an RUI file from a MacroController class.</span>
+
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     oclass : MacroController</span>
+<span class="c1">#         The controller class.</span>
+<span class="c1">#     opath : str</span>
+<span class="c1">#         The module path of the controller class.</span>
+<span class="c1">#     rui_config : str, optional</span>
+<span class="c1">#         The path of the configuration file.</span>
+<span class="c1">#         Default is ``&#39;rui_config.json&#39;``</span>
+
+<span class="c1">#     Returns</span>
+<span class="c1">#     -------</span>
+<span class="c1">#     None</span>
+
+<span class="c1">#     Examples</span>
+<span class="c1">#     --------</span>
+<span class="c1">#     .. code-block:: python</span>
+
+<span class="c1">#         #</span>
+
+<span class="c1">#     &quot;&quot;&quot;</span>
+
+<span class="c1">#     if not oclass.instancename:</span>
+<span class="c1">#         raise Exception(&#39;MacroController instance name not set.&#39;)</span>
+
+<span class="c1">#     with open(os.path.join(rui_config), &#39;r&#39;) as fp:</span>
+<span class="c1">#         config = json.load(fp)</span>
+
+<span class="c1">#     macros = get_macros(oclass, oclass.instancename)</span>
+
+<span class="c1">#     init_script = [</span>
+<span class="c1">#         &#39;-_RunPythonScript ResetEngine (&#39;,</span>
+<span class="c1">#         &#39;import rhinoscriptsyntax as rs;&#39;,</span>
+<span class="c1">#         &#39;import sys;&#39;,</span>
+<span class="c1">#         &#39;import os;&#39;,</span>
+<span class="c1">#         &#39;path = rs.ToolbarCollectionPath(\&#39;{}\&#39;);&#39;.format(oclass.instancename),</span>
+<span class="c1">#         &#39;path = os.path.dirname(path);&#39;,</span>
+<span class="c1">#         &#39;sys.path.insert(0, path);&#39;,</span>
+<span class="c1">#         &#39;from {} import {};&#39;.format(opath, oclass.__name__),</span>
+<span class="c1">#         &#39;{} = {}();&#39;.format(oclass.instancename, oclass.__name__),</span>
+<span class="c1">#         &#39;{}.init();&#39;.format(oclass.instancename),</span>
+<span class="c1">#         &#39;)&#39;</span>
+<span class="c1">#     ]</span>
+
+<span class="c1">#     update_macro(macros, &#39;{}.init&#39;.format(oclass.instancename), &#39;script&#39;, &#39;&#39;.join(init_script))</span>
+
+<span class="c1">#     rui = Rui(&#39;./{}.rui&#39;.format(oclass.instancename))</span>
+
+<span class="c1">#     rui.init()</span>
+<span class="c1">#     rui.add_macros(macros)</span>
+<span class="c1">#     rui.add_menus(config[&#39;menus&#39;])</span>
+<span class="c1">#     rui.add_toolbars(config[&#39;toolbars&#39;])</span>
+<span class="c1">#     rui.add_toolbargroups(config[&#39;toolbargroups&#39;])</span>
+<span class="c1">#     rui.write()</span>
+
+
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="k">pass</span>
+</code></pre></div>
+                    
+                
+                </div>
+            </main>
+
+            <!-- site navigation sidebar -->
+
+            <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation"> 
+                <div class="navbar-light">
+
+                    <form id="" class="d-flex compas-searchbox" action="../../../search.html" method="get">
+                        <input class="form-control" type="text" name="q" placeholder="Search docs" />
+                        <input type="hidden" name="check_keywords" value="yes" />
+                        <input type="hidden" name="area" value="default" />
+
+                        <button class="navbar-toggler d-md-none compas-navigation-toggler" type="button" data-toggle="collapse" data-target="#compas-navigation" aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </form>
+
+                    
+                    
+
+                        <div class="navbar-expand-md">
+                            <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
+
+                            <ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="../../../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../../citing.html">Citing</a></li>
+</ul>
+
+
+                            </div>
+                        </div>
+
+                    
+
+                </div>
+            </div>
+
+            <!-- table of contents of main content -->
+
+            
+
+            <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+
+                
+
+                
+
+            </div>
+
+            
+
+        </div>
+    </div>
+
+ <footer class="bg-dark pb-5">
+    <div class="container text-center pt-5 pb-5 text-muted">
+        
+            
+                &#169; Copyright Block Research Group - ETH Zurich.
+            
+        
+
+        
+            Last updated on Jan 24, 2020.
+        
+
+        
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.
+        
+    </div>
+</footer>
+
+<script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT          : '',
+    VERSION           : '0.14.0',
+    COLLAPSE_INDEX    : false,
+    FILE_SUFFIX       : '.html',
+    HAS_SOURCE        : 'false',
+    SOURCELINK_SUFFIX : '.txt'
+};
+</script>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.9/highlight.min.js"></script>
+
+<script src="../../../_static/underscore.js"></script>
+<script src="../../../_static/doctools.js"></script>
+<script src="../../../_static/js/searchtools_.js"></script>
+<!-- <script src="../../../_static/js/prism.js"></script> -->
+
+<script>
+$(document).ready(function() {
+$(".language-default code").addClass("python");
+$(".language-python code").addClass("python");
+$(".language-bash code").addClass("bash");
+$(".language-cpp code").addClass("cpp");
+$(".language-json code").addClass("json");
+$(".language-none code").addClass("plaintext");
+
+hljs.initHighlighting();
+anchors.add();
+});
+</script> 
+
+</body>
+</html>
