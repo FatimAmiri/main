@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>COMPAS - compas.geometry</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <meta name="author" content="Tom Van Mele" />
+    <meta name="description" content="compas is a computational framework for research in architecture and structures." />
+
+    <link rel="shortcut icon" href="../../_static/images/compas.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.9/styles/default.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="../../_static/css/prism.css" /> -->
+    <link rel="stylesheet" type="text/css" href="../../_static/css/compas.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/compas-reference.css" />
+
+    
+    
+    
+
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</head>
+
+<body data-spy="scroll" data-target="#compas-localnav">
+
+    <nav class="navbar navbar-expand compas-navbar">
+        <a class="navbar-brand" href="/">
+            <img src="../../_static/images/compas_icon_white.png" width="36px" height="36px" alt="compas" />
+        </a>
+
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+            <li class="nav-item active"><a class="nav-link active" href="/main/index.html">Documentation</a></li>
+            <li class="nav-item"><a class="nav-link" href="/packages.html">Packages</a></li>
+            <li class="nav-item"><a class="nav-link" href="/examples/index.html">Examples</a></li>
+            <li class="nav-item"><a class="nav-link" href="/devguide.html">Developer&nbsp;Guide</a></li>
+            <!-- <li class="nav-item"><a class="nav-link" href="/workshops.html">Workshops</a></li> -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Community
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" target="_blank" href="http://forum.compas-framework.org">Forum</a>
+                    <a class="dropdown-item" target="_blank" href="http://github.com/compas-dev">Github</a>
+                    <a class="dropdown-item" target="_blank" href="https://pypi.org/project/COMPAS/">PyPI</a>
+                    <a class="dropdown-item" target="_blank" href="https://anaconda.org/conda-forge/compas">Anaconda</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+
+            <main class="col-12 col-md-9 col-xl-8 compas-content" role="main">
+                <div class="container">
+                
+
+                    
+
+                    <h1>Source code for compas.geometry</h1><div class="highlight"><pre><code>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">********************************************************************************</span>
+<span class="sd">geometry</span>
+<span class="sd">********************************************************************************</span>
+
+<span class="sd">.. currentmodule:: compas.geometry</span>
+
+
+<span class="sd">Primitives</span>
+<span class="sd">==========</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    Circle</span>
+<span class="sd">    Frame</span>
+<span class="sd">    Line</span>
+<span class="sd">    Plane</span>
+<span class="sd">    Point</span>
+<span class="sd">    Polygon</span>
+<span class="sd">    Polyline</span>
+<span class="sd">    Quaternion</span>
+
+
+<span class="sd">Shapes</span>
+<span class="sd">======</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    Box</span>
+<span class="sd">    Cone</span>
+<span class="sd">    Cylinder</span>
+<span class="sd">    Polyhedron</span>
+<span class="sd">    Sphere</span>
+<span class="sd">    Torus</span>
+
+
+<span class="sd">Collections</span>
+<span class="sd">===========</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    PointCollection</span>
+<span class="sd">    PointCollectionNumpy</span>
+
+
+<span class="sd">Transformations</span>
+<span class="sd">===============</span>
+
+<span class="sd">**XForms**</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    Transformation</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    Projection</span>
+<span class="sd">    Reflection</span>
+<span class="sd">    Rotation</span>
+<span class="sd">    Scale</span>
+<span class="sd">    Shear</span>
+<span class="sd">    Translation</span>
+
+<span class="sd">**Functions**</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    mirror_points_line</span>
+<span class="sd">    mirror_points_line_xy</span>
+<span class="sd">    mirror_points_plane</span>
+<span class="sd">    mirror_points_point</span>
+<span class="sd">    mirror_points_point_xy</span>
+<span class="sd">    project_points_line</span>
+<span class="sd">    project_points_line_xy</span>
+<span class="sd">    project_points_plane</span>
+<span class="sd">    reflect_line_plane</span>
+<span class="sd">    reflect_line_triangle</span>
+<span class="sd">    rotate_points</span>
+<span class="sd">    rotate_points_xy</span>
+<span class="sd">    scale_points</span>
+<span class="sd">    translate_points</span>
+<span class="sd">    translate_points_xy</span>
+
+<span class="sd">**Conversions**</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    axis_and_angle_from_matrix</span>
+<span class="sd">    axis_angle_vector_from_matrix</span>
+<span class="sd">    axis_angle_from_quaternion</span>
+<span class="sd">    basis_vectors_from_matrix</span>
+<span class="sd">    euler_angles_from_matrix</span>
+<span class="sd">    euler_angles_from_quaternion</span>
+<span class="sd">    matrix_from_frame</span>
+<span class="sd">    matrix_from_euler_angles</span>
+<span class="sd">    matrix_from_axis_and_angle</span>
+<span class="sd">    matrix_from_axis_angle_vector</span>
+<span class="sd">    matrix_from_basis_vectors</span>
+<span class="sd">    matrix_from_translation</span>
+<span class="sd">    matrix_from_orthogonal_projection</span>
+<span class="sd">    matrix_from_parallel_projection</span>
+<span class="sd">    matrix_from_perspective_projection</span>
+<span class="sd">    matrix_from_perspective_entries</span>
+<span class="sd">    matrix_from_shear_entries</span>
+<span class="sd">    matrix_from_shear</span>
+<span class="sd">    matrix_from_scale_factors</span>
+<span class="sd">    matrix_from_quaternion</span>
+<span class="sd">    quaternion_from_matrix</span>
+<span class="sd">    quaternion_from_euler_angles</span>
+<span class="sd">    quaternion_from_axis_angle</span>
+
+<span class="sd">**Quaternion math**</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    quaternion_norm</span>
+<span class="sd">    quaternion_unitize</span>
+<span class="sd">    quaternion_is_unit</span>
+<span class="sd">    quaternion_multiply</span>
+<span class="sd">    quaternion_canonize</span>
+<span class="sd">    quaternion_conjugate</span>
+
+<span class="sd">Linear algebra</span>
+<span class="sd">==============</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    add_vectors</span>
+<span class="sd">    add_vectors_xy</span>
+<span class="sd">    cross_vectors</span>
+<span class="sd">    cross_vectors_xy</span>
+<span class="sd">    divide_vectors</span>
+<span class="sd">    divide_vectors_xy</span>
+<span class="sd">    dot_vectors</span>
+<span class="sd">    dot_vectors_xy</span>
+<span class="sd">    length_vector</span>
+<span class="sd">    length_vector_xy</span>
+<span class="sd">    length_vector_sqrd</span>
+<span class="sd">    length_vector_sqrd_xy</span>
+<span class="sd">    multiply_matrices</span>
+<span class="sd">    multiply_matrix_vector</span>
+<span class="sd">    multiply_vectors</span>
+<span class="sd">    multiply_vectors_xy</span>
+<span class="sd">    norm_vector</span>
+<span class="sd">    norm_vectors</span>
+<span class="sd">    normalize_vector</span>
+<span class="sd">    normalize_vector_xy</span>
+<span class="sd">    normalize_vectors</span>
+<span class="sd">    normalize_vectors_xy</span>
+<span class="sd">    orthonormalize_vectors</span>
+<span class="sd">    power_vector</span>
+<span class="sd">    power_vectors</span>
+<span class="sd">    scale_vector</span>
+<span class="sd">    scale_vector_xy</span>
+<span class="sd">    scale_vectors</span>
+<span class="sd">    scale_vectors_xy</span>
+<span class="sd">    square_vector</span>
+<span class="sd">    square_vectors</span>
+<span class="sd">    subtract_vectors</span>
+<span class="sd">    subtract_vectors_xy</span>
+<span class="sd">    sum_vectors</span>
+<span class="sd">    transpose_matrix</span>
+<span class="sd">    vector_component</span>
+<span class="sd">    vector_component_xy</span>
+
+<span class="sd">Points, Vectors, Lines, Planes</span>
+<span class="sd">==============================</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    angle_points</span>
+<span class="sd">    angle_points_xy</span>
+<span class="sd">    angle_vectors</span>
+<span class="sd">    angle_vectors_xy</span>
+<span class="sd">    angles_points</span>
+<span class="sd">    angles_points_xy</span>
+<span class="sd">    angles_vectors</span>
+<span class="sd">    angles_vectors_xy</span>
+<span class="sd">    centroid_points</span>
+<span class="sd">    centroid_points_xy</span>
+<span class="sd">    distance_line_line</span>
+<span class="sd">    distance_point_line</span>
+<span class="sd">    distance_point_line_xy</span>
+<span class="sd">    distance_point_line_sqrd</span>
+<span class="sd">    distance_point_line_sqrd_xy</span>
+<span class="sd">    distance_point_plane</span>
+<span class="sd">    distance_point_point</span>
+<span class="sd">    distance_point_point_xy</span>
+<span class="sd">    distance_point_point_sqrd</span>
+<span class="sd">    distance_point_point_sqrd_xy</span>
+<span class="sd">    midpoint_point_point</span>
+<span class="sd">    midpoint_point_point_xy</span>
+<span class="sd">    midpoint_line</span>
+<span class="sd">    midpoint_line_xy</span>
+<span class="sd">    weighted_centroid_points</span>
+
+<span class="sd">Polygons &amp; Polyhedrons</span>
+<span class="sd">======================</span>
+
+<span class="sd">.. rename functions?</span>
+<span class="sd">   type of object first</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    area_polygon</span>
+<span class="sd">    area_polygon_xy</span>
+<span class="sd">    area_triangle</span>
+<span class="sd">    area_triangle_xy</span>
+<span class="sd">    centroid_polygon</span>
+<span class="sd">    centroid_polygon_xy</span>
+<span class="sd">    centroid_polygon_vertices</span>
+<span class="sd">    centroid_polygon_vertices_xy</span>
+<span class="sd">    centroid_polygon_edges</span>
+<span class="sd">    centroid_polygon_edges_xy</span>
+<span class="sd">    centroid_polyhedron</span>
+<span class="sd">    normal_polygon</span>
+<span class="sd">    normal_triangle</span>
+<span class="sd">    normal_triangle_xy</span>
+<span class="sd">    volume_polyhedron</span>
+
+<span class="sd">Pointclouds</span>
+<span class="sd">===========</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    bounding_box</span>
+<span class="sd">    bounding_box_xy</span>
+<span class="sd">    convex_hull</span>
+<span class="sd">    convex_hull_numpy</span>
+<span class="sd">    convex_hull_xy</span>
+<span class="sd">    convex_hull_xy_numpy</span>
+<span class="sd">    delaunay_from_points</span>
+<span class="sd">    delaunay_from_points_numpy</span>
+<span class="sd">    icp_numpy</span>
+<span class="sd">    oriented_bounding_box_numpy</span>
+<span class="sd">    oriented_bounding_box_xy_numpy</span>
+<span class="sd">    voronoi_from_points_numpy</span>
+
+<span class="sd">Queries</span>
+<span class="sd">=======</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    is_ccw_xy</span>
+<span class="sd">    is_colinear</span>
+<span class="sd">    is_colinear_xy</span>
+<span class="sd">    is_coplanar</span>
+<span class="sd">    is_intersection_line_line</span>
+<span class="sd">    is_intersection_line_line_xy</span>
+<span class="sd">    is_intersection_line_plane</span>
+<span class="sd">    is_intersection_line_triangle</span>
+<span class="sd">    is_intersection_plane_plane</span>
+<span class="sd">    is_intersection_segment_plane</span>
+<span class="sd">    is_intersection_segment_segment</span>
+<span class="sd">    is_intersection_segment_segment_xy</span>
+<span class="sd">    is_polygon_convex</span>
+<span class="sd">    is_polygon_convex_xy</span>
+<span class="sd">    is_point_in_circle</span>
+<span class="sd">    is_point_in_circle_xy</span>
+<span class="sd">    is_point_in_convex_polygon_xy</span>
+<span class="sd">    is_point_on_line</span>
+<span class="sd">    is_point_on_line_xy</span>
+<span class="sd">    is_point_on_plane</span>
+<span class="sd">    is_point_infront_plane</span>
+<span class="sd">    is_point_in_polygon_xy</span>
+<span class="sd">    is_point_on_polyline</span>
+<span class="sd">    is_point_on_segment</span>
+<span class="sd">    is_point_on_segment_xy</span>
+<span class="sd">    is_point_in_triangle</span>
+<span class="sd">    is_point_in_triangle_xy</span>
+
+<span class="sd">Proximity</span>
+<span class="sd">=========</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    closest_point_in_cloud</span>
+<span class="sd">    closest_point_in_cloud_xy</span>
+<span class="sd">    closest_point_on_line</span>
+<span class="sd">    closest_point_on_line_xy</span>
+<span class="sd">    closest_point_on_plane</span>
+<span class="sd">    closest_point_on_polyline</span>
+<span class="sd">    closest_point_on_polyline_xy</span>
+<span class="sd">    closest_point_on_segment</span>
+<span class="sd">    closest_point_on_segment_xy</span>
+
+<span class="sd">Intersections</span>
+<span class="sd">=============</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    intersection_circle_circle_xy</span>
+<span class="sd">    intersection_line_line</span>
+<span class="sd">    intersection_line_line_xy</span>
+<span class="sd">    intersection_line_plane</span>
+<span class="sd">    intersection_line_triangle</span>
+<span class="sd">    intersection_plane_plane</span>
+<span class="sd">    intersection_plane_plane_plane</span>
+<span class="sd">    intersection_segment_segment_xy</span>
+<span class="sd">    intersection_segment_plane</span>
+
+<span class="sd">Offsets</span>
+<span class="sd">=======</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    offset_line</span>
+<span class="sd">    offset_polyline</span>
+<span class="sd">    offset_polygon</span>
+
+<span class="sd">Other functions</span>
+<span class="sd">===============</span>
+
+<span class="sd">**Smoothing**</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    smooth_centroid</span>
+<span class="sd">    smooth_centerofmass</span>
+<span class="sd">    smooth_area</span>
+
+<span class="sd">**Planarisation**</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    flatness</span>
+<span class="sd">    planarize_faces</span>
+
+<span class="sd">**Interpolation**</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    discrete_coons_patch</span>
+<span class="sd">    tween_points</span>
+<span class="sd">    tween_points_distance</span>
+
+<span class="sd">**Bestfit**</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    bestfit_circle_numpy</span>
+<span class="sd">    bestfit_plane</span>
+<span class="sd">    bestfit_plane_numpy</span>
+
+<span class="sd">**Isolines**</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :nosignatures:</span>
+
+<span class="sd">    scalarfield_contours_numpy</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">._core</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">._transformations</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">._primitives</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">._shapes</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">._collections</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+
+<span class="kn">from</span> <span class="nn">.bbox</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">.bestfit</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">.hull</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">.icp</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">.interpolation</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">.isolines</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">.offset</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">.planarisation</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">.smoothing</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">.spatial</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+<span class="kn">from</span> <span class="nn">.triangulation</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F401 F403</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)]</span>
+</code></pre></div>
+                    
+                
+                </div>
+            </main>
+
+            <!-- site navigation sidebar -->
+
+            <div class="col-12 col-md-3 col-xl-2 compas-sidebar" role="navigation"> 
+                <div class="navbar-light">
+
+                    <form id="" class="d-flex compas-searchbox" action="../../search.html" method="get">
+                        <input class="form-control" type="text" name="q" placeholder="Search docs" />
+                        <input type="hidden" name="check_keywords" value="yes" />
+                        <input type="hidden" name="area" value="default" />
+
+                        <button class="navbar-toggler d-md-none compas-navigation-toggler" type="button" data-toggle="collapse" data-target="#compas-navigation" aria-controls="compas-navigation" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </form>
+
+                    
+                    
+
+                        <div class="navbar-expand-md">
+                            <div id="compas-navigation" class="collapse navbar-collapse compas-navigation">
+
+                            <ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="../../overview.html">Overview</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../gettingstarted.html">Getting started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../api.html">API Reference</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../citing.html">Citing</a></li>
+</ul>
+
+
+                            </div>
+                        </div>
+
+                    
+
+                </div>
+            </div>
+
+            <!-- table of contents of main content -->
+
+            
+
+            <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
+
+                
+
+                
+
+            </div>
+
+            
+
+        </div>
+    </div>
+
+ <footer class="bg-dark pb-5">
+    <div class="container text-center pt-5 pb-5 text-muted">
+        
+            
+                &#169; Copyright Block Research Group - ETH Zurich.
+            
+        
+
+        
+            Last updated on Jan 25, 2020.
+        
+
+        
+            Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.
+        
+    </div>
+</footer>
+
+<script type="text/javascript">
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT          : '',
+    VERSION           : '0.15.0',
+    COLLAPSE_INDEX    : false,
+    FILE_SUFFIX       : '.html',
+    HAS_SOURCE        : 'false',
+    SOURCELINK_SUFFIX : '.txt'
+};
+</script>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.9/highlight.min.js"></script>
+
+<script src="../../_static/underscore.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script src="../../_static/js/searchtools_.js"></script>
+<!-- <script src="../../_static/js/prism.js"></script> -->
+
+<script>
+$(document).ready(function() {
+$(".language-default code").addClass("python");
+$(".language-python code").addClass("python");
+$(".language-bash code").addClass("bash");
+$(".language-cpp code").addClass("cpp");
+$(".language-json code").addClass("json");
+$(".language-none code").addClass("plaintext");
+
+hljs.initHighlighting();
+anchors.add();
+});
+</script> 
+
+</body>
+</html>

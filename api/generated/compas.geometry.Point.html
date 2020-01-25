@@ -72,7 +72,7 @@
 <dl class="class">
 <dt id="compas.geometry.Point">
 <em class="property">class </em><code class="sig-prename descclassname">compas.geometry.</code><code class="sig-name descname">Point</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas/geometry/_primitives/point.html#Point"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">compas.geometry._primitives._primitive.Primitive</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">compas.geometry.Primitive</span></code></p>
 <p>A point is defined by XYZ coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -85,21 +85,12 @@ Default is <code class="docutils literal notranslate"><span class="pre">0.0</spa
 Default is <code class="docutils literal notranslate"><span class="pre">3</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Attributes</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>data</strong></p></li>
-<li><p><strong>x</strong></p></li>
-<li><p><strong>y</strong></p></li>
-<li><p><strong>z</strong></p></li>
-</ul>
-</dd>
 </dl>
 <p class="rubric">Notes</p>
 <p>A <code class="docutils literal notranslate"><span class="pre">Point</span></code> object supports direct access to its xyz coordinates through
 the dot notation, as well list-style access using indices. Indexed
 access is implemented such that the <code class="docutils literal notranslate"><span class="pre">Point</span></code> behaves like a circular
-list.</p>
-<p>For more info, see <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.</p>
+list <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
 <dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
@@ -112,21 +103,23 @@ Available at: <a class="reference external" href="https://stackoverflow.com/ques
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 </code></pre></div>
 </div>
+<p>The XYZ coordinates of point objects can be accessed as object attributes or by trating the points as lists.</p>
 <div class="doctest language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">x</span>
 <span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">y</span>
+<span class="go">2.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">z</span>
+<span class="go">3.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">1.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">2.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 <span class="go">3.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
-<span class="go">1.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="p">[</span><span class="o">-</span><span class="mi">6</span><span class="p">]</span>
-<span class="go">1.0</span>
 </code></pre></div>
 </div>
+<p>Point objects support basic arithmetic operations.</p>
 <div class="doctest language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">+</span> <span class="n">p2</span>
-<span class="go">Point(5.000, 7.000, 9.000)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
 <span class="go">Point(5.000, 7.000, 9.000)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">*</span> <span class="mi">2</span>
 <span class="go">Point(2.000, 4.000, 6.000)</span>
@@ -136,6 +129,12 @@ Available at: <a class="reference external" href="https://stackoverflow.com/ques
 <span class="go">Point(1.000, 2.000, 3.000)</span>
 </code></pre></div>
 </div>
+<p>Points and lists can be used interchangeably.</p>
+<div class="doctest language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="go">Point(5.000, 7.000, 9.000)</span>
+</code></pre></div>
+</div>
+<p>Arithmetic operations can also be applied to modify a point object in-place.</p>
 <div class="doctest language-python notranslate"><div class="highlight"><pre><code><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">+=</span> <span class="n">p2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">*=</span> <span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">**=</span> <span class="mi">2</span>
@@ -143,27 +142,6 @@ Available at: <a class="reference external" href="https://stackoverflow.com/ques
 <span class="go">Point(100.000, 196.000, 324.000)</span>
 </code></pre></div>
 </div>
-<p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">data</span></code></p></td>
-<td><p>Returns the data dictionary that represents the point.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></p></td>
-<td><p>The X coordinate of the point.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></p></td>
-<td><p>The Y coordinate of the point.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">z</span></code></p></td>
-<td><p>The Z coordinate of the point.</p></td>
-</tr>
-</tbody>
-</table>
 <p class="rubric">Methods</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -175,7 +153,7 @@ Available at: <a class="reference external" href="https://stackoverflow.com/ques
 <td><p>Initialize self.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="compas.geometry.Point.copy.html#compas.geometry.Point.copy" title="compas.geometry.Point.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
-<td><p>Make a copy of this <code class="docutils literal notranslate"><span class="pre">Point</span></code>.</p></td>
+<td><p>Make a copy of this point.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas.geometry.Point.distance_to_line.html#compas.geometry.Point.distance_to_line" title="compas.geometry.Point.distance_to_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance_to_line</span></code></a>(line)</p></td>
 <td><p>Compute the distance to a line.</p></td>
@@ -190,16 +168,16 @@ Available at: <a class="reference external" href="https://stackoverflow.com/ques
 <td><p>Construct a point from a data dict.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas.geometry.Point.in_circle.html#compas.geometry.Point.in_circle" title="compas.geometry.Point.in_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_circle</span></code></a>(circle)</p></td>
-<td><p>Determine if the point lies on the given polyline.</p></td>
+<td><p>Determine if the point lies inside the given circle.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="compas.geometry.Point.in_polygon.html#compas.geometry.Point.in_polygon" title="compas.geometry.Point.in_polygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_polygon</span></code></a>(polygon)</p></td>
-<td><p>Determine if the point lies in the given polygon.</p></td>
+<td><p>Determine if the point lies inside the given polygon.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas.geometry.Point.in_polyhedron.html#compas.geometry.Point.in_polyhedron" title="compas.geometry.Point.in_polyhedron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_polyhedron</span></code></a>(polyhedron)</p></td>
-<td><p>Determine if the point lies on the given polyline.</p></td>
+<td><p>Determine if the point lies inside the given polyhedron.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="compas.geometry.Point.in_triangle.html#compas.geometry.Point.in_triangle" title="compas.geometry.Point.in_triangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_triangle</span></code></a>(triangle)</p></td>
-<td><p>Determine if the point lies in the given triangle.</p></td>
+<td><p>Determine if the point lies inside the given triangle.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas.geometry.Point.on_circle.html#compas.geometry.Point.on_circle" title="compas.geometry.Point.on_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_circle</span></code></a>(circle)</p></td>
 <td><p>Determine if the point lies on the given circle.</p></td>
@@ -217,19 +195,19 @@ Available at: <a class="reference external" href="https://stackoverflow.com/ques
 <td><p>Returns the data dictionary that represents the primitive.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="compas.geometry.Point.transform.html#compas.geometry.Point.transform" title="compas.geometry.Point.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a>(T)</p></td>
-<td><p>Transform this <code class="docutils literal notranslate"><span class="pre">Point</span></code> using a given transformation matrix.</p></td>
+<td><p>Transform this point.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas.geometry.Point.transform_collection.html#compas.geometry.Point.transform_collection" title="compas.geometry.Point.transform_collection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform_collection</span></code></a>(collection, X)</p></td>
-<td><p>Transform a collection of <code class="docutils literal notranslate"><span class="pre">Point</span></code> objects.</p></td>
+<td><p>Transform a collection of points.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas.geometry.Point.transformed.html#compas.geometry.Point.transformed" title="compas.geometry.Point.transformed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transformed</span></code></a>(matrix)</p></td>
-<td><p>Return a transformed copy of this <code class="docutils literal notranslate"><span class="pre">Point</span></code> using a given transformation matrix.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas.geometry.Point.transformed.html#compas.geometry.Point.transformed" title="compas.geometry.Point.transformed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transformed</span></code></a>(T)</p></td>
+<td><p>Return a transformed copy of this point.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas.geometry.Point.transformed_collection.html#compas.geometry.Point.transformed_collection" title="compas.geometry.Point.transformed_collection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transformed_collection</span></code></a>(collection, X)</p></td>
-<td><p>Create a collection of transformed <code class="docutils literal notranslate"><span class="pre">Point</span></code> objects.</p></td>
+<td><p>Create a collection of transformed points.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="compas.geometry.Point.update.html#compas.geometry.Point.update" title="compas.geometry.Point.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(data)</p></td>
-<td><p>Update the coordinates of this <code class="docutils literal notranslate"><span class="pre">Point</span></code>.</p></td>
+<td><p>Update the coordinates of this point.</p></td>
 </tr>
 </tbody>
 </table>
