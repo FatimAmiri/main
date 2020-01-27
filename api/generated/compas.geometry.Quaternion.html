@@ -71,7 +71,7 @@
 <h1>Quaternion</h1>
 <dl class="class">
 <dt id="compas.geometry.Quaternion">
-<em class="property">class </em><code class="sig-prename descclassname">compas.geometry.</code><code class="sig-name descname">Quaternion</code><span class="sig-paren">(</span><em class="sig-param">w</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas/geometry/_primitives/quaternion.html#Quaternion"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">compas.geometry.</code><code class="sig-name descname">Quaternion</code><span class="sig-paren">(</span><em class="sig-param">w</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">compas.geometry.Primitive</span></code></p>
 <p>Creates a <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> object.</p>
 <dl class="field-list simple">
@@ -81,10 +81,20 @@
 <li><p><strong>x, y, z</strong> (<em>float</em>) – Components of the vector (complex, imaginary) part of a quaternion.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>wxyz</strong> (<em>list of float, read-only</em>) – Quaternion data listing the real part first.</p></li>
+<li><p><strong>xyzw</strong> (<em>list of float, read-only</em>) – Quaternion data listing the real part last.</p></li>
+<li><p><strong>norm</strong> (<em>float, read-only</em>) – The length of the quaternion.</p></li>
+<li><p><strong>is_unit</strong> (<em>bool, read-only</em>) – True if the quaternion has unit length.</p></li>
+</ul>
+</dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>The default convention to represent a quaternion <span class="math notranslate nohighlight">\(q\)</span> in this module is by four real values <span class="math notranslate nohighlight">\(w\)</span>, <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, <span class="math notranslate nohighlight">\(z\)</span>.
-The first value <span class="math notranslate nohighlight">\(w\)</span> is the scalar (real) part, and <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, <span class="math notranslate nohighlight">\(z\)</span> form the vector (complex, imaginary) part <a class="footnote-reference brackets" href="#id3" id="id1">1</a>, so that:</p>
+<p>The default convention to represent a quaternion <span class="math notranslate nohighlight">\(q\)</span> in this module
+is by four real values <span class="math notranslate nohighlight">\(w\)</span>, <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, <span class="math notranslate nohighlight">\(z\)</span>.
+The first value <span class="math notranslate nohighlight">\(w\)</span> is the scalar (real) part,
+and <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, <span class="math notranslate nohighlight">\(z\)</span> form the vector (complex, imaginary) part <a class="footnote-reference brackets" href="#id3" id="id1">1</a>, so that:</p>
 <div class="math notranslate nohighlight">
 \[q = w + xi + yj + zk\]</div>
 <p>where <span class="math notranslate nohighlight">\(i, j, k\)</span> are basis components with following multiplication rules <a class="footnote-reference brackets" href="#id4" id="id2">2</a>:</p>
@@ -97,7 +107,8 @@ ki &amp;= j, \quad ik = -j
 \end{align}\end{split}\]</div>
 <p>Quaternions are associative but not commutative.</p>
 <p><strong>Quaternion as rotation.</strong></p>
-<p>A rotation through an angle <span class="math notranslate nohighlight">\(\theta\)</span> around an axis defined by a euclidean unit vector <span class="math notranslate nohighlight">\(u = u_{x}i + u_{y}j + u_{z}k\)</span>
+<p>A rotation through an angle <span class="math notranslate nohighlight">\(\theta\)</span> around an axis
+defined by a euclidean unit vector <span class="math notranslate nohighlight">\(u = u_{x}i + u_{y}j + u_{z}k\)</span>
 can be represented as a quaternion:</p>
 <div class="math notranslate nohighlight">
 \[q = cos(\frac{\theta}{2}) + sin(\frac{\theta}{2}) [u_{x}i + u_{y}j + u_{z}k]\]</div>
@@ -109,8 +120,8 @@ x = sin(\frac{\theta}{2}) u_{x}
 y = sin(\frac{\theta}{2}) u_{y}
 z = sin(\frac{\theta}{2}) u_{z}\]</div>
 <p>For a quaternion to represent a rotation or orientation, it must be unit-length.
-A quaternion representing a rotation <span class="math notranslate nohighlight">\(p\)</span> resulting from applying a rotation <span class="math notranslate nohighlight">\(r\)</span> to a rotation <span class="math notranslate nohighlight">\(q\)</span>, i.e.:
-<span class="math notranslate nohighlight">\(p = rq\)</span>,
+A quaternion representing a rotation <span class="math notranslate nohighlight">\(p\)</span> resulting from applying a rotation
+<span class="math notranslate nohighlight">\(r\)</span> to a rotation <span class="math notranslate nohighlight">\(q\)</span>, i.e.: <span class="math notranslate nohighlight">\(p = rq\)</span>,
 is also unit-length.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
@@ -276,7 +287,7 @@ is also unit-length.</p>
         
 
         
-            Last updated on Jan 25, 2020.
+            Last updated on Jan 27, 2020.
         
 
         

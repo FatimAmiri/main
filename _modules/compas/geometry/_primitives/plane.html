@@ -76,7 +76,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Plane&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="Plane"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Plane.html#compas.geometry.Plane">[docs]</a><span class="k">class</span> <span class="nc">Plane</span><span class="p">(</span><span class="n">Primitive</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Plane</span><span class="p">(</span><span class="n">Primitive</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A plane is defined by a base point and a normal vector.</span>
 
 <span class="sd">    Parameters</span>
@@ -86,13 +86,16 @@
 <span class="sd">    normal : vector</span>
 <span class="sd">        The normal vector of the plane.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    For more info on lines and linear equations, see [1]_.</span>
-
-<span class="sd">    References</span>
+<span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    .. [1] `Wikipedia: Plane (geometry) &lt;https://en.wikipedia.org/wiki/Plane_%28geometry%29&gt;`_</span>
+<span class="sd">    data : dict</span>
+<span class="sd">        The data representation of the plane.</span>
+<span class="sd">    point : :class:`compas.geometry.Point`</span>
+<span class="sd">        The base point of the plane.</span>
+<span class="sd">    normal : :class:`compas.geometry.Vector`</span>
+<span class="sd">        The normal of the plane.</span>
+<span class="sd">    d : float, read-only</span>
+<span class="sd">        The *d* parameter of the equation describing the plane.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -103,6 +106,8 @@
 <span class="sd">    Vector(0.000, 0.000, 1.000)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="vm">__module__</span> <span class="o">=</span> <span class="s2">&quot;compas.geometry&quot;</span>
+
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_point&#39;</span><span class="p">,</span> <span class="s1">&#39;_normal&#39;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Plane.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Plane.__init__.html#compas.geometry.Plane.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">):</span>
@@ -111,8 +116,77 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">point</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">normal</span></div>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;dict : The data dictionary that represents the plane.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;point&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">),</span>
+                <span class="s1">&#39;normal&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="p">)}</span>
+
+    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;normal&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Plane` : The base point of the plane.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point</span>
+
+    <span class="nd">@point</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">point</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The normal vector of the plane.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span>
+
+    <span class="nd">@normal</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">vector</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span><span class="o">.</span><span class="n">unitize</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">d</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;float: The *d* parameter of the linear equation describing the plane.&quot;&quot;&quot;</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span>
+        <span class="k">return</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">z</span>
+
     <span class="c1"># ==========================================================================</span>
-    <span class="c1"># factory</span>
+    <span class="c1"># customization</span>
+    <span class="c1"># ==========================================================================</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Plane(</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">2</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">==</span> <span class="n">other</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span> <span class="o">==</span> <span class="n">other</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># constructors</span>
     <span class="c1"># ==========================================================================</span>
 
 <div class="viewcode-block" id="Plane.from_three_points"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Plane.from_three_points.html#compas.geometry.Plane.from_three_points">[docs]</a>    <span class="nd">@classmethod</span>
@@ -215,95 +289,6 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;normal&#39;</span><span class="p">])</span></div>
 
     <span class="c1"># ==========================================================================</span>
-    <span class="c1"># descriptors</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;dict : The data dictionary that represents the plane.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;point&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">),</span>
-                <span class="s1">&#39;normal&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="p">)}</span>
-
-    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;normal&#39;</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Plane` : The base point of the plane.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point</span>
-
-    <span class="nd">@point</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">point</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The normal vector of the plane.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span>
-
-    <span class="nd">@normal</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">vector</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_normal</span><span class="o">.</span><span class="n">unitize</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">d</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;float: The *d* parameter of the linear equation describing the plane.&quot;&quot;&quot;</span>
-        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span>
-        <span class="k">return</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">z</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># representation</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;Plane(</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mi">2</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># access</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span>
-
-    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="k">return</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span>
-
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span><span class="p">])</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># comparison</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">==</span> <span class="n">other</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span> <span class="o">==</span> <span class="n">other</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># operators</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># inplace operators</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="c1"># ==========================================================================</span>
     <span class="c1"># helpers</span>
     <span class="c1"># ==========================================================================</span>
 
@@ -328,10 +313,6 @@
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># methods</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># transformations</span>
     <span class="c1"># ==========================================================================</span>
 
 <div class="viewcode-block" id="Plane.transform"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Plane.transform.html#compas.geometry.Plane.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
@@ -380,7 +361,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">plane</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">plane</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">plane</span></div></div>
+        <span class="k">return</span> <span class="n">plane</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -464,7 +445,7 @@
         
 
         
-            Last updated on Jan 25, 2020.
+            Last updated on Jan 27, 2020.
         
 
         

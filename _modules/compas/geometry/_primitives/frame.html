@@ -89,7 +89,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Frame&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="Frame"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Frame.html#compas.geometry.Frame">[docs]</a><span class="k">class</span> <span class="nc">Frame</span><span class="p">(</span><span class="n">Primitive</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Frame</span><span class="p">(</span><span class="n">Primitive</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A frame is defined by a base point and two orthonormal base vectors.</span>
 
 <span class="sd">    Parameters</span>
@@ -100,6 +100,25 @@
 <span class="sd">        The x-axis of the frame.</span>
 <span class="sd">    yaxis : vector</span>
 <span class="sd">        The y-axis of the frame.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : dict</span>
+<span class="sd">        The data representation of the frame.</span>
+<span class="sd">    point : :class:`compas.geometry.Point`</span>
+<span class="sd">        The base point of the frame.</span>
+<span class="sd">    xaxis : :class:`compas.geometry.Vector`</span>
+<span class="sd">        The local X axis of the frame.</span>
+<span class="sd">    yaxis : :class:`compas.geometry.Vector`</span>
+<span class="sd">        The local Y axis of the frame.</span>
+<span class="sd">    zaxis : :class:`compas.geometry.Vector`</span>
+<span class="sd">        The local Z axis of the frame.</span>
+<span class="sd">    normal : :class:`compas.geometry.Vector`</span>
+<span class="sd">        The normal vector of the base plane of the frame.</span>
+<span class="sd">    quaternion : :class:`compas.geometry.Quaternion`</span>
+<span class="sd">        The quaternion representing the rotation of the frame.</span>
+<span class="sd">    axis_angle_vector : :class:`compas.geometry.Vector`</span>
+<span class="sd">        The rotation vector of the frame.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -114,6 +133,8 @@
 <span class="sd">    &gt;&gt;&gt; f = Frame(Point(0, 0, 0), Vector(1, 0, 0), Point(0, 1, 0))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="vm">__module__</span> <span class="o">=</span> <span class="s2">&quot;compas.geometry&quot;</span>
+
 <div class="viewcode-block" id="Frame.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Frame.__init__.html#compas.geometry.Frame.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_point</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xaxis</span> <span class="o">=</span> <span class="kc">None</span>
@@ -122,8 +143,117 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span> <span class="o">=</span> <span class="n">xaxis</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">=</span> <span class="n">yaxis</span></div>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Point` : The base point of the frame.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point</span>
+
+    <span class="nd">@point</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">point</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">xaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The local X axis of the frame.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xaxis</span>
+
+    <span class="nd">@xaxis</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">xaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="n">xaxis</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">vector</span><span class="p">)</span>
+        <span class="n">xaxis</span><span class="o">.</span><span class="n">unitize</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xaxis</span> <span class="o">=</span> <span class="n">xaxis</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">yaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The local Y axis of the frame.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yaxis</span>
+
+    <span class="nd">@yaxis</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">yaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="n">yaxis</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">vector</span><span class="p">)</span>
+        <span class="n">yaxis</span><span class="o">.</span><span class="n">unitize</span><span class="p">()</span>
+        <span class="n">zaxis</span> <span class="o">=</span> <span class="n">Vector</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span>
+        <span class="n">zaxis</span><span class="o">.</span><span class="n">unitize</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_yaxis</span> <span class="o">=</span> <span class="n">Vector</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">zaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;dict : The data dictionary that represents the frame.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;point&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">),</span>
+                <span class="s1">&#39;xaxis&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">),</span>
+                <span class="s1">&#39;yaxis&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">)}</span>
+
+    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;xaxis&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;yaxis&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The normal of the base plane of the frame.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">cross_vectors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">zaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The Z axis of the frame.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">quaternion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Quaternion` : The quaternion from the rotation given by the frame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rotation</span> <span class="o">=</span> <span class="n">matrix_from_basis_vectors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="o">*</span><span class="n">quaternion_from_matrix</span><span class="p">(</span><span class="n">rotation</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">axis_angle_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The axis-angle vector representing the rotation of the frame.&quot;&quot;&quot;</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">matrix_from_basis_vectors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">axis_angle_vector_from_matrix</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+
     <span class="c1"># ==========================================================================</span>
-    <span class="c1"># factory</span>
+    <span class="c1"># customization</span>
+    <span class="c1"># ==========================================================================</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;Frame(</span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">, </span><span class="si">{2}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">3</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># constructors</span>
     <span class="c1"># ==========================================================================</span>
 
 <div class="viewcode-block" id="Frame.worldXY"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Frame.worldXY.html#compas.geometry.Frame.worldXY">[docs]</a>    <span class="nd">@classmethod</span>
@@ -525,135 +655,6 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span></div>
 
     <span class="c1"># ==========================================================================</span>
-    <span class="c1"># descriptors</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Point` : The base point of the frame.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point</span>
-
-    <span class="nd">@point</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">point</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">xaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The local X axis of the frame.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xaxis</span>
-
-    <span class="nd">@xaxis</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">xaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
-        <span class="n">xaxis</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">vector</span><span class="p">)</span>
-        <span class="n">xaxis</span><span class="o">.</span><span class="n">unitize</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xaxis</span> <span class="o">=</span> <span class="n">xaxis</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">yaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The local Y axis of the frame.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yaxis</span>
-
-    <span class="nd">@yaxis</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">yaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
-        <span class="n">yaxis</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">vector</span><span class="p">)</span>
-        <span class="n">yaxis</span><span class="o">.</span><span class="n">unitize</span><span class="p">()</span>
-        <span class="n">zaxis</span> <span class="o">=</span> <span class="n">Vector</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span>
-        <span class="n">zaxis</span><span class="o">.</span><span class="n">unitize</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_yaxis</span> <span class="o">=</span> <span class="n">Vector</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">zaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;dict : The data dictionary that represents the frame.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;point&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">),</span>
-                <span class="s1">&#39;xaxis&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">),</span>
-                <span class="s1">&#39;yaxis&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">)}</span>
-
-    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;xaxis&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;yaxis&#39;</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The normal of the base plane of the frame.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">cross_vectors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">))</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">zaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The Z axis of the frame.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">quaternion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Quaternion` : The quaternion from the rotation given by the frame.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rotation</span> <span class="o">=</span> <span class="n">matrix_from_basis_vectors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="o">*</span><span class="n">quaternion_from_matrix</span><span class="p">(</span><span class="n">rotation</span><span class="p">))</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">axis_angle_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;:class:`compas.geometry.Vector` : The axis-angle vector representing the rotation of the frame.&quot;&quot;&quot;</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">matrix_from_basis_vectors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">axis_angle_vector_from_matrix</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># representation</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;Frame(</span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">, </span><span class="si">{2}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mi">3</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># access</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span>
-
-    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span>
-
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">])</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># comparison</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># operators</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># inplace operators</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="c1"># ==========================================================================</span>
     <span class="c1"># helpers</span>
     <span class="c1"># ==========================================================================</span>
 
@@ -707,10 +708,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">matrix_from_basis_vectors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">euler_angles_from_matrix</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">static</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span></div>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># coordinate frames</span>
-    <span class="c1"># ==========================================================================</span>
 
 <div class="viewcode-block" id="Frame.to_local_coords"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Frame.to_local_coords.html#compas.geometry.Frame.to_local_coords">[docs]</a>    <span class="k">def</span> <span class="nf">to_local_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_in_wcf</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the object&#39;s coordinates in the local coordinate system of the frame.</span>
@@ -810,10 +807,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">object_in_frame1</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">T</span><span class="p">)</span></div>
 
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># transformations</span>
-    <span class="c1"># ==========================================================================</span>
-
 <div class="viewcode-block" id="Frame.transform"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Frame.transform.html#compas.geometry.Frame.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Transform the frame.</span>
 
@@ -864,7 +857,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">frame</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">frame</span></div></div>
+        <span class="k">return</span> <span class="n">frame</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -949,7 +942,7 @@
         
 
         
-            Last updated on Jan 25, 2020.
+            Last updated on Jan 27, 2020.
         
 
         

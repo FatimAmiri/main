@@ -64,7 +64,11 @@
                     
 
                     <h1>Source code for compas.geometry._primitives.quaternion</h1><div class="highlight"><pre><code>
-<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">quaternion_multiply</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">quaternion_conjugate</span>
@@ -79,7 +83,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Quaternion&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="Quaternion"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Quaternion.html#compas.geometry.Quaternion">[docs]</a><span class="k">class</span> <span class="nc">Quaternion</span><span class="p">(</span><span class="n">Primitive</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Quaternion</span><span class="p">(</span><span class="n">Primitive</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Creates a ``Quaternion`` object.</span>
 
 <span class="sd">    Parameters</span>
@@ -89,10 +93,23 @@
 <span class="sd">    x, y, z : float</span>
 <span class="sd">        Components of the vector (complex, imaginary) part of a quaternion.</span>
 
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    wxyz : list of float, read-only</span>
+<span class="sd">        Quaternion data listing the real part first.</span>
+<span class="sd">    xyzw : list of float, read-only</span>
+<span class="sd">        Quaternion data listing the real part last.</span>
+<span class="sd">    norm : float, read-only</span>
+<span class="sd">        The length of the quaternion.</span>
+<span class="sd">    is_unit : bool, read-only</span>
+<span class="sd">        True if the quaternion has unit length.</span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    The default convention to represent a quaternion :math:`q` in this module is by four real values :math:`w`, :math:`x`, :math:`y`, :math:`z`.</span>
-<span class="sd">    The first value :math:`w` is the scalar (real) part, and :math:`x`, :math:`y`, :math:`z` form the vector (complex, imaginary) part [1]_, so that:</span>
+<span class="sd">    The default convention to represent a quaternion :math:`q` in this module</span>
+<span class="sd">    is by four real values :math:`w`, :math:`x`, :math:`y`, :math:`z`.</span>
+<span class="sd">    The first value :math:`w` is the scalar (real) part,</span>
+<span class="sd">    and :math:`x`, :math:`y`, :math:`z` form the vector (complex, imaginary) part [1]_, so that:</span>
 
 <span class="sd">    .. math::</span>
 
@@ -113,7 +130,8 @@
 
 <span class="sd">    **Quaternion as rotation.**</span>
 
-<span class="sd">    A rotation through an angle :math:`\theta` around an axis defined by a euclidean unit vector :math:`u = u_{x}i + u_{y}j + u_{z}k`</span>
+<span class="sd">    A rotation through an angle :math:`\theta` around an axis</span>
+<span class="sd">    defined by a euclidean unit vector :math:`u = u_{x}i + u_{y}j + u_{z}k`</span>
 <span class="sd">    can be represented as a quaternion:</span>
 
 <span class="sd">    .. math::</span>
@@ -131,8 +149,8 @@
 <span class="sd">        z = sin(\frac{\theta}{2}) u_{z}</span>
 
 <span class="sd">    For a quaternion to represent a rotation or orientation, it must be unit-length.</span>
-<span class="sd">    A quaternion representing a rotation :math:`p` resulting from applying a rotation :math:`r` to a rotation :math:`q`, i.e.:</span>
-<span class="sd">    :math:`p = rq`,</span>
+<span class="sd">    A quaternion representing a rotation :math:`p` resulting from applying a rotation</span>
+<span class="sd">    :math:`r` to a rotation :math:`q`, i.e.: :math:`p = rq`,</span>
 <span class="sd">    is also unit-length.</span>
 
 <span class="sd">    References</span>
@@ -150,6 +168,8 @@
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="vm">__module__</span> <span class="o">=</span> <span class="s2">&quot;compas.geometry&quot;</span>
+
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Quaternion.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Quaternion.__init__.html#compas.geometry.Quaternion.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
@@ -157,6 +177,64 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">wxyz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;list of float : Quaternion as a list of float in the &quot;wxyz&quot; convention.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">xyzw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;list of float : Quaternion as a list of float in the &quot;xyzw&quot; convention.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;float : The length (euclidean norm) of the quaternion.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">quaternion_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;bool : ``True`` if the quaternion is unit-length or ``False`` if otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">quaternion_is_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># customization</span>
+    <span class="c1"># ==========================================================================</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">v1</span> <span class="o">-</span> <span class="n">v2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wxyz</span><span class="p">)</span>
@@ -195,6 +273,10 @@
         <span class="n">p</span> <span class="o">=</span> <span class="n">quaternion_multiply</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
 
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># constructors</span>
+    <span class="c1"># ==========================================================================</span>
+
 <div class="viewcode-block" id="Quaternion.from_frame"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Quaternion.from_frame.html#compas.geometry.Quaternion.from_frame">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_frame</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates a quaternion object from a frame.</span>
@@ -220,29 +302,9 @@
         <span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">quaternion</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">wxyz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;list of float : Quaternion as a list of float in the &quot;wxyz&quot; convention.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">xyzw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;list of float : Quaternion as a list of float in the &quot;xyzw&quot; convention.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;float : The length (euclidean norm) of the quaternion.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">quaternion_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;bool : ``True`` if the quaternion is unit-length or ``False`` if otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">quaternion_is_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># methods</span>
+    <span class="c1"># ==========================================================================</span>
 
 <div class="viewcode-block" id="Quaternion.unitize"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Quaternion.unitize.html#compas.geometry.Quaternion.unitize">[docs]</a>    <span class="k">def</span> <span class="nf">unitize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scales the quaternion to make it unit-length.</span>
@@ -344,44 +406,6 @@
         <span class="n">qc</span> <span class="o">=</span> <span class="n">quaternion_conjugate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="o">*</span><span class="n">qc</span><span class="p">)</span></div>
 
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># access</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span>
-
-    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># comparison</span>
-    <span class="c1"># ==========================================================================</span>
-
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">v1</span> <span class="o">-</span> <span class="n">v2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
-
 
 <span class="c1"># ==============================================================================</span>
 <span class="c1"># Main</span>
@@ -467,7 +491,7 @@
         
 
         
-            Last updated on Jan 25, 2020.
+            Last updated on Jan 27, 2020.
         
 
         

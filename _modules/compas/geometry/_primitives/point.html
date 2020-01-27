@@ -90,7 +90,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Point&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="Point"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Point.html#compas.geometry.Point">[docs]</a><span class="k">class</span> <span class="nc">Point</span><span class="p">(</span><span class="n">Primitive</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Point</span><span class="p">(</span><span class="n">Primitive</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A point is defined by XYZ coordinates.</span>
 
 <span class="sd">    Parameters</span>
@@ -102,9 +102,17 @@
 <span class="sd">    z : float, optional</span>
 <span class="sd">        The Z coordinate of the point.</span>
 <span class="sd">        Default is ``0.0``.</span>
-<span class="sd">    precision : integer, optional</span>
-<span class="sd">        The number of fractional digits used in the representation of the coordinates of the point.</span>
-<span class="sd">        Default is ``3``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : dict</span>
+<span class="sd">        The data representation of the point.</span>
+<span class="sd">    x : float</span>
+<span class="sd">        The X coordinate of the point.</span>
+<span class="sd">    y : float</span>
+<span class="sd">        The Y coordinate of the point.</span>
+<span class="sd">    z : float</span>
+<span class="sd">        The Z coordinate of the point.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -163,6 +171,8 @@
 <span class="sd">    Point(100.000, 196.000, 324.000)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="vm">__module__</span> <span class="o">=</span> <span class="s2">&quot;compas.geometry&quot;</span>
+
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_x&#39;</span><span class="p">,</span> <span class="s1">&#39;_y&#39;</span><span class="p">,</span> <span class="s1">&#39;_z&#39;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Point.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Point.__init__.html#compas.geometry.Point.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
@@ -172,98 +182,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span></div>
-
-<div class="viewcode-block" id="Point.transform_collection"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Point.transform_collection.html#compas.geometry.Point.transform_collection">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">transform_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Transform a collection of points.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        collection : list of :class:`compas.geometry.Point`</span>
-<span class="sd">            The collection of points.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
-<span class="sd">            The points are modified in-place.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; T = Translation([1.0, 2.0, 3.0])</span>
-<span class="sd">        &gt;&gt;&gt; a = Point(0.0, 0.0, 0.0)</span>
-<span class="sd">        &gt;&gt;&gt; points = [a]</span>
-<span class="sd">        &gt;&gt;&gt; Point.transform_collection(points, T)</span>
-<span class="sd">        &gt;&gt;&gt; b = points[0]</span>
-<span class="sd">        &gt;&gt;&gt; b</span>
-<span class="sd">        Point(1.000, 2.000, 3.000)</span>
-<span class="sd">        &gt;&gt;&gt; a is b</span>
-<span class="sd">        True</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">transform_points</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">point</span><span class="p">,</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-            <span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">point</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="Point.transformed_collection"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Point.transformed_collection.html#compas.geometry.Point.transformed_collection">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">transformed_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a collection of transformed points.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        collection : list of :class:`compas.geometry.Point`</span>
-<span class="sd">            The collection of points.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        list of :class:`compas.geometry.Point`</span>
-<span class="sd">            The transformed points.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; T = Translation([1.0, 2.0, 3.0])</span>
-<span class="sd">        &gt;&gt;&gt; a = Point(0.0, 0.0, 0.0)</span>
-<span class="sd">        &gt;&gt;&gt; points = [a]</span>
-<span class="sd">        &gt;&gt;&gt; points = Point.transformed_collection(points, T)</span>
-<span class="sd">        &gt;&gt;&gt; b = points[0]</span>
-<span class="sd">        &gt;&gt;&gt; b</span>
-<span class="sd">        Point(1.000, 2.000, 3.000)</span>
-<span class="sd">        &gt;&gt;&gt; a is b</span>
-<span class="sd">        False</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">point</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">]</span>
-        <span class="n">Point</span><span class="o">.</span><span class="n">transform_collection</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">points</span></div>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># factory</span>
-    <span class="c1"># ==========================================================================</span>
-
-<div class="viewcode-block" id="Point.from_data"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Point.from_data.html#compas.geometry.Point.from_data">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct a point from a data dict.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        data : dict</span>
-<span class="sd">            The data dictionary.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`compas.geometry.Point`</span>
-<span class="sd">            The constructed point.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; point = Point.from_data([0.0, 0.0, 0.0])</span>
-<span class="sd">        &gt;&gt;&gt; point</span>
-<span class="sd">        Point(0.000, 0.000, 0.000)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span></div>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># descriptors</span>
-    <span class="c1"># ==========================================================================</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -304,7 +222,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 
     <span class="c1"># ==========================================================================</span>
-    <span class="c1"># representation</span>
+    <span class="c1"># customization</span>
     <span class="c1"># ==========================================================================</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -312,10 +230,6 @@
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="mi">3</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># access</span>
-    <span class="c1"># ==========================================================================</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
@@ -345,10 +259,6 @@
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">])</span>
 
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># comparison</span>
-    <span class="c1"># ==========================================================================</span>
-
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Is this point equal to the other point?</span>
 
@@ -366,10 +276,6 @@
 <span class="sd">            False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">other</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">==</span> <span class="n">other</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># operators</span>
-    <span class="c1"># ==========================================================================</span>
 
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a point that is the sum of this point and another point.</span>
@@ -453,10 +359,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Point</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">**</span> <span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">**</span> <span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">**</span> <span class="n">n</span><span class="p">)</span>
 
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># in-place operators</span>
-    <span class="c1"># ==========================================================================</span>
-
     <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add the coordinates of the other point to this point.</span>
 
@@ -521,6 +423,94 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">**=</span> <span class="n">n</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">**=</span> <span class="n">n</span>
         <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># static</span>
+    <span class="c1"># ==========================================================================</span>
+
+<div class="viewcode-block" id="Point.from_data"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Point.from_data.html#compas.geometry.Point.from_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a point from a data dict.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : dict</span>
+<span class="sd">            The data dictionary.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`compas.geometry.Point`</span>
+<span class="sd">            The constructed point.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; point = Point.from_data([0.0, 0.0, 0.0])</span>
+<span class="sd">        &gt;&gt;&gt; point</span>
+<span class="sd">        Point(0.000, 0.000, 0.000)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Point.transform_collection"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Point.transform_collection.html#compas.geometry.Point.transform_collection">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">transform_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform a collection of points.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        collection : list of :class:`compas.geometry.Point`</span>
+<span class="sd">            The collection of points.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            The points are modified in-place.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; T = Translation([1.0, 2.0, 3.0])</span>
+<span class="sd">        &gt;&gt;&gt; a = Point(0.0, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; points = [a]</span>
+<span class="sd">        &gt;&gt;&gt; Point.transform_collection(points, T)</span>
+<span class="sd">        &gt;&gt;&gt; b = points[0]</span>
+<span class="sd">        &gt;&gt;&gt; b</span>
+<span class="sd">        Point(1.000, 2.000, 3.000)</span>
+<span class="sd">        &gt;&gt;&gt; a is b</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">transform_points</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">point</span><span class="p">,</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+            <span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">point</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Point.transformed_collection"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Point.transformed_collection.html#compas.geometry.Point.transformed_collection">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">transformed_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a collection of transformed points.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        collection : list of :class:`compas.geometry.Point`</span>
+<span class="sd">            The collection of points.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of :class:`compas.geometry.Point`</span>
+<span class="sd">            The transformed points.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; T = Translation([1.0, 2.0, 3.0])</span>
+<span class="sd">        &gt;&gt;&gt; a = Point(0.0, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; points = [a]</span>
+<span class="sd">        &gt;&gt;&gt; points = Point.transformed_collection(points, T)</span>
+<span class="sd">        &gt;&gt;&gt; b = points[0]</span>
+<span class="sd">        &gt;&gt;&gt; b</span>
+<span class="sd">        Point(1.000, 2.000, 3.000)</span>
+<span class="sd">        &gt;&gt;&gt; a is b</span>
+<span class="sd">        False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">point</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">]</span>
+        <span class="n">Point</span><span class="o">.</span><span class="n">transform_collection</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">points</span></div>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># helpers</span>
@@ -817,10 +807,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-    <span class="c1"># ==========================================================================</span>
-    <span class="c1"># tranformations</span>
-    <span class="c1"># ==========================================================================</span>
-
 <div class="viewcode-block" id="Point.transform"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Point.transform.html#compas.geometry.Point.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Transform this point.</span>
 
@@ -867,7 +853,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">point</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">point</span></div></div>
+        <span class="k">return</span> <span class="n">point</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -954,7 +940,7 @@
         
 
         
-            Last updated on Jan 25, 2020.
+            Last updated on Jan 27, 2020.
         
 
         
