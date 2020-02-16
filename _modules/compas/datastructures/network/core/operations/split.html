@@ -75,21 +75,21 @@
 
 
 <span class="k">def</span> <span class="nf">network_split_edge</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Split and edge by inserting a vertex along its length.</span>
+    <span class="sd">&quot;&quot;&quot;Split and edge by inserting a node along its length.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    u : str</span>
-<span class="sd">        The key of the first vertex of the edge.</span>
+<span class="sd">        The key of the first node of the edge.</span>
 <span class="sd">    v : str</span>
-<span class="sd">        The key of the second vertex of the edge.</span>
+<span class="sd">        The key of the second node of the edge.</span>
 <span class="sd">    t : float</span>
-<span class="sd">        The position of the inserted vertex.</span>
+<span class="sd">        The position of the inserted node.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    str</span>
-<span class="sd">        The key of the inserted vertex.</span>
+<span class="sd">        The key of the inserted node.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -100,51 +100,19 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    .. plot::</span>
-<span class="sd">        :include-source:</span>
-
-<span class="sd">        import compas</span>
-<span class="sd">        from compas.datastructures import Network</span>
-<span class="sd">        from compas_plotters import NetworkPlotter</span>
-
-<span class="sd">        network = Network.from_obj(compas.get(&#39;lines.obj&#39;))</span>
-
-<span class="sd">        u, v = network.get_any_edge()</span>
-
-<span class="sd">        a = network.split_edge(u, v)</span>
-
-<span class="sd">        lines = []</span>
-<span class="sd">        for u, v in network.edges():</span>
-<span class="sd">            lines.append({</span>
-<span class="sd">                &#39;start&#39;: network.vertex_coordinates(u, &#39;xy&#39;),</span>
-<span class="sd">                &#39;end&#39;  : network.vertex_coordinates(v, &#39;xy&#39;),</span>
-<span class="sd">                &#39;arrow&#39;: &#39;end&#39;,</span>
-<span class="sd">                &#39;width&#39;: 4.0,</span>
-<span class="sd">                &#39;color&#39;: &#39;#00ff00&#39;</span>
-<span class="sd">            })</span>
-
-<span class="sd">        plotter = NetworkPlotter(network)</span>
-
-<span class="sd">        plotter.draw_lines(lines)</span>
-
-<span class="sd">        plotter.draw_vertices(</span>
-<span class="sd">            radius=0.2,</span>
-<span class="sd">            text={key: key for key in network.vertices()},</span>
-<span class="sd">            facecolor={key: &#39;#ff0000&#39; for key in (a,)}</span>
-<span class="sd">        )</span>
-<span class="sd">        plotter.draw_edges()</span>
-
-<span class="sd">        plotter.show()</span>
-
+<span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">network</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span>
+
     <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;t should be greater than 0.0.&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="mf">1.0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;t should be smaller than 1.0.&#39;</span><span class="p">)</span>
 
-    <span class="c1"># the split vertex</span>
+    <span class="c1"># the split node</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">edge_point</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
 
     <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
@@ -157,16 +125,16 @@
         <span class="k">raise</span> <span class="ne">Exception</span>
 
     <span class="c1"># split half-edge UV</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">del</span> <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">del</span> <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
 
     <span class="c1"># split half-edge VU</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">del</span> <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">del</span> <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
 
-    <span class="c1"># return the key of the split vertex</span>
+    <span class="c1"># return the key of the split node</span>
     <span class="k">return</span> <span class="n">w</span>
 
 
@@ -182,31 +150,17 @@
 
     <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lines.obj&#39;</span><span class="p">))</span>
 
-    <span class="n">a</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">21</span><span class="p">)</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_any_edges</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-            <span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span><span class="p">),</span>
-            <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span><span class="p">),</span>
-            <span class="s1">&#39;arrow&#39;</span><span class="p">:</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span>
-            <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;#00ff00&#39;</span>
-        <span class="p">})</span>
+    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">split_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
 
-    <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
-    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-                          <span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)},</span>
-                          <span class="n">text</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()})</span>
-
-    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">{(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span> <span class="s1">&#39;#cccccc&#39;</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">()})</span>
-
-    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_nodes</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">})</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
     <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
                     
@@ -281,7 +235,7 @@
         
 
         
-            Last updated on Feb 15, 2020.
+            Last updated on Feb 16, 2020.
         
 
         
@@ -293,7 +247,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.15.0',
+    VERSION           : '0.15.1',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

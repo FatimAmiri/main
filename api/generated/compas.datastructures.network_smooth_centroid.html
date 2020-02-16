@@ -72,12 +72,12 @@
 <dl class="function">
 <dt id="compas.datastructures.network_smooth_centroid">
 <code class="sig-prename descclassname">compas.datastructures.</code><code class="sig-name descname">network_smooth_centroid</code><span class="sig-paren">(</span><em class="sig-param">network</em>, <em class="sig-param">fixed=None</em>, <em class="sig-param">kmax=100</em>, <em class="sig-param">damping=1.0</em>, <em class="sig-param">callback=None</em>, <em class="sig-param">callback_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/compas/datastructures/network/smoothing.html#network_smooth_centroid"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Smooth a network by moving each vertex to the centroid of its neighbors.</p>
+<dd><p>Smooth a network by moving each node to the centroid of its neighbors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>network</strong> (<em>Mesh</em>) – A network object.</p></li>
-<li><p><strong>fixed</strong> (<em>list, optional</em>) – The fixed vertices of the mesh.</p></li>
+<li><p><strong>fixed</strong> (<em>list, optional</em>) – The fixed nodes of the mesh.</p></li>
 <li><p><strong>kmax</strong> (<em>int, optional</em>) – The maximum number of iterations.</p></li>
 <li><p><strong>damping</strong> (<em>float, optional</em>) – The damping factor.</p></li>
 <li><p><strong>callback</strong> (<em>callable, optional</em>) – A user-defined callback function to be executed after every iteration.</p></li>
@@ -89,50 +89,7 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span> <span class="kn">import</span> <span class="nn">compas</span>
-
- <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Network</span>
- <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">network_smooth_centroid</span>
- <span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="kn">import</span> <span class="n">NetworkPlotter</span>
-
- <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grid_irregular.obj&#39;</span><span class="p">))</span>
- <span class="n">fixed</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span> <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_degree</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
-
- <span class="n">network_smooth_centroid</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="n">fixed</span><span class="p">)</span>
-
- <span class="n">plotter</span> <span class="o">=</span> <span class="n">NetworkPlotter</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-
- <span class="n">plotter</span><span class="o">.</span><span class="n">draw_vertices</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;#ff0000&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">fixed</span><span class="p">})</span>
- <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-
- <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-
-
-
-
-
-
-
-<span class="o">..</span> <span class="n">figure</span><span class="p">::</span> <span class="o">../../../</span><span class="n">dist</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">plot_directive</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">generated</span><span class="o">/</span><span class="n">compas</span><span class="o">-</span><span class="n">datastructures</span><span class="o">-</span><span class="n">network_smooth_centroid</span><span class="o">-</span><span class="mf">1.</span><span class="n">png</span>
-   <span class="p">:</span><span class="n">class</span><span class="p">:</span> <span class="n">figure</span><span class="o">-</span><span class="n">img</span> <span class="n">img</span><span class="o">-</span><span class="n">fluid</span>
-
-         
-
-
-
-
-
-<span class="o">..</span> <span class="n">figure</span><span class="p">::</span> <span class="o">../../../</span><span class="n">dist</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">plot_directive</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">generated</span><span class="o">/</span><span class="n">compas</span><span class="o">-</span><span class="n">datastructures</span><span class="o">-</span><span class="n">network_smooth_centroid</span><span class="o">-</span><span class="mf">1.</span><span class="n">pdf</span>
-   
-
-         
-
-
-
-
-
-<span class="o">..</span> <span class="n">image</span><span class="p">::</span> <span class="o">../../../</span><span class="n">dist</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">plot_directive</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">generated</span><span class="o">/</span><span class="n">compas</span><span class="o">-</span><span class="n">datastructures</span><span class="o">-</span><span class="n">network_smooth_centroid</span><span class="o">-</span><span class="mf">1.</span><span class="n">png</span>
+<div class="doctest language-python notranslate"><div class="highlight"><pre><code><span></span><span class="go">&gt;&gt;&gt;</span>
 </code></pre></div>
 </div>
 </dd></dl>
@@ -231,7 +188,7 @@
         
 
         
-            Last updated on Feb 15, 2020.
+            Last updated on Feb 16, 2020.
         
 
         
@@ -243,7 +200,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.15.0',
+    VERSION           : '0.15.1',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

@@ -92,19 +92,28 @@
 <span class="sd">    Network</span>
 <span class="sd">        The complement network.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import compas</span>
+<span class="sd">    &gt;&gt;&gt; from compas.datastructures import Network</span>
+<span class="sd">    &gt;&gt;&gt; from compas.datastructures import network_complement</span>
+<span class="sd">    &gt;&gt;&gt; network = Network.from_obj(compas.get(&#39;lines.obj&#39;))</span>
+<span class="sd">    &gt;&gt;&gt; complement = network_complement(network)</span>
+<span class="sd">    &gt;&gt;&gt; any(complement.is_edge(u, v, directed=False) for u, v in network.edges())</span>
+<span class="sd">    False</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    .. [1] Wolfram MathWorld. *Graph complement*.</span>
 <span class="sd">           Available at: http://mathworld.wolfram.com/GraphComplement.html.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="p">:</span>
         <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
-    <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">vkey</span><span class="p">)</span> <span class="k">for</span> <span class="n">vkey</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()]</span>
-    <span class="n">edges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">network</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">network</span><span class="o">.</span><span class="n">node_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">nodes</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">network</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
 
-    <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_vertices_and_edges</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">edges</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_nodes_and_edges</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">edges</span><span class="p">)</span></div>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -113,7 +122,8 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
-    <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
@@ -187,7 +197,7 @@
         
 
         
-            Last updated on Feb 15, 2020.
+            Last updated on Feb 16, 2020.
         
 
         
@@ -199,7 +209,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.15.0',
+    VERSION           : '0.15.1',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',

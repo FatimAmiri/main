@@ -70,71 +70,20 @@
 
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
 
+<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">pairwise</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">angle_vectors</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">is_ccw_xy</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;network_dual&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;network_find_faces&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;network_find_cycles&#39;</span><span class="p">,</span>
 <span class="p">]</span>
 
 
 <span class="n">PI2</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">pi</span>
 
 
-<div class="viewcode-block" id="network_dual"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.network_dual.html#compas.datastructures.network_dual">[docs]</a><span class="k">def</span> <span class="nf">network_dual</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Construct the dual of a network.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    network : compas.datastructures.Network</span>
-<span class="sd">        The network object.</span>
-<span class="sd">    cls : compas.datastructures.Network, optional</span>
-<span class="sd">        The class of the dual.</span>
-<span class="sd">        Default is ``None``.</span>
-<span class="sd">        If ``None``, the cls is inferred from the type of the provided network object.</span>
-
-<span class="sd">    Warning</span>
-<span class="sd">    -------</span>
-<span class="sd">    A network (or a graph) has a dual if, and only if, it is planar.</span>
-<span class="sd">    Constructing the dual relies on the information about the faces of the</span>
-<span class="sd">    network, or, in other words, about the ordering of neighboring vertices</span>
-<span class="sd">    around a vertex. To determine the faces of the network (using :func:`find_network_faces`)</span>
-<span class="sd">    the network should be embedded in the plane, i.e drawn such that it is a</span>
-<span class="sd">    proper cell decomposition of the plane (it divides the plane in non-overlapping</span>
-<span class="sd">    spaces).</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        pass</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="p">:</span>
-        <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-
-    <span class="n">dual</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-
-    <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">faces</span><span class="p">():</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">face_center</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
-        <span class="n">dual</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">fkey</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
-
-    <span class="c1"># for fkey, vertices in faces.items():</span>
-    <span class="c1">#     dual.add_face(vertices, fkey=fkey)</span>
-
-    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
-        <span class="n">f1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span>
-        <span class="n">f2</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">f1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">f2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dual</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">dual</span></div>
-
-
-<div class="viewcode-block" id="network_find_faces"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.network_find_faces.html#compas.datastructures.network_find_faces">[docs]</a><span class="k">def</span> <span class="nf">network_find_faces</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">breakpoints</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="network_find_cycles"><a class="viewcode-back" href="../../../../api/generated/compas.datastructures.network_find_cycles.html#compas.datastructures.network_find_cycles">[docs]</a><span class="k">def</span> <span class="nf">network_find_cycles</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">breakpoints</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Find the faces of a network.</span>
 
 <span class="sd">    Parameters</span>
@@ -162,77 +111,71 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    .. plot::</span>
-<span class="sd">        :include-source:</span>
-
-<span class="sd">        import compas</span>
-
-<span class="sd">        from compas.datastructures import Network</span>
-<span class="sd">        from compas.datastructures import Mesh</span>
-<span class="sd">        from compas.datastructures import network_find_faces</span>
-<span class="sd">        from compas_plotters import MeshPlotter</span>
-
-<span class="sd">        network = Network.from_obj(compas.get(&#39;lines.obj&#39;))</span>
-
-<span class="sd">        mesh = Mesh()</span>
-
-<span class="sd">        for key, attr in network.vertices(True):</span>
-<span class="sd">            mesh.add_vertex(key, x=attr[&#39;x&#39;], y=attr[&#39;y&#39;], z=attr[&#39;z&#39;])</span>
-
-<span class="sd">        mesh.halfedge = network.halfedge</span>
-
-<span class="sd">        network_find_faces(mesh)</span>
-
-<span class="sd">        plotter = MeshPlotter(mesh)</span>
-
-<span class="sd">        plotter.draw_vertices()</span>
-<span class="sd">        plotter.draw_edges()</span>
-<span class="sd">        plotter.draw_faces()</span>
-
-<span class="sd">        plotter.show()</span>
+<span class="sd">    &gt;&gt;&gt;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">breakpoints</span><span class="p">:</span>
         <span class="n">breakpoints</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">_sort_neighbors</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">network_sort_neighbors</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
-    <span class="n">leaves</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
-
+    <span class="n">leaves</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">leaves</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">leaves</span><span class="p">:</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([(</span><span class="n">key</span><span class="p">,</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">leaves</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">]))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([(</span><span class="n">key</span><span class="p">,</span> <span class="n">network</span><span class="o">.</span><span class="n">node_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">leaves</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">]))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="n">v</span> <span class="o">=</span> <span class="n">_find_first_neighbor</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">network</span><span class="p">)</span>
+    <span class="n">cycles</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">found</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">ckey</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="n">_find_edge_face</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">network</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">network_node_find_first_neighbor</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+    <span class="n">cycle</span> <span class="o">=</span> <span class="n">network_find_edge_cycle</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="n">frozen</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">cycle</span><span class="p">)</span>
+    <span class="n">found</span><span class="p">[</span><span class="n">frozen</span><span class="p">]</span> <span class="o">=</span> <span class="n">ckey</span>
+    <span class="n">cycles</span><span class="p">[</span><span class="n">ckey</span><span class="p">]</span> <span class="o">=</span> <span class="n">cycle</span>
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">cycle</span> <span class="o">+</span> <span class="n">cycle</span><span class="p">[:</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">ckey</span>
+    <span class="n">ckey</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">_find_edge_face</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">network</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">_find_edge_face</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">network</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cycle</span> <span class="o">=</span> <span class="n">network_find_edge_cycle</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="n">frozen</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">cycle</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">frozen</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
+                <span class="n">found</span><span class="p">[</span><span class="n">frozen</span><span class="p">]</span> <span class="o">=</span> <span class="n">ckey</span>
+                <span class="n">cycles</span><span class="p">[</span><span class="n">ckey</span><span class="p">]</span> <span class="o">=</span> <span class="n">cycle</span>
+                <span class="n">ckey</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">cycle</span> <span class="o">+</span> <span class="n">cycle</span><span class="p">[:</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">found</span><span class="p">[</span><span class="n">frozen</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">u</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cycle</span> <span class="o">=</span> <span class="n">network_find_edge_cycle</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+            <span class="n">frozen</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">cycle</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">frozen</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
+                <span class="n">found</span><span class="p">[</span><span class="n">frozen</span><span class="p">]</span> <span class="o">=</span> <span class="n">ckey</span>
+                <span class="n">cycles</span><span class="p">[</span><span class="n">ckey</span><span class="p">]</span> <span class="o">=</span> <span class="n">cycle</span>
+                <span class="n">ckey</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">cycle</span> <span class="o">+</span> <span class="n">cycle</span><span class="p">[:</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">network</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">found</span><span class="p">[</span><span class="n">frozen</span><span class="p">]</span>
 
-    <span class="n">_break_faces</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">breakpoints</span><span class="p">)</span>
+    <span class="n">cycles</span> <span class="o">=</span> <span class="n">_break_cycles</span><span class="p">(</span><span class="n">cycles</span><span class="p">,</span> <span class="n">breakpoints</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cycles</span></div>
 
-    <span class="k">return</span> <span class="n">network</span><span class="o">.</span><span class="n">face</span></div>
 
-
-<span class="k">def</span> <span class="nf">_find_first_neighbor</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">network</span><span class="p">):</span>
-    <span class="n">nbrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">halfedge</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="k">def</span> <span class="nf">network_node_find_first_neighbor</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">nbrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nbrs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">nbrs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">ab</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">node_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
     <span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ab</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ab</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">nbrs</span><span class="p">:</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">nbr</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">node_coordinates</span><span class="p">(</span><span class="n">nbr</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
         <span class="n">ac</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">]</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">angle_vectors</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">ac</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">is_ccw_xy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
@@ -241,18 +184,18 @@
     <span class="k">return</span> <span class="n">nbrs</span><span class="p">[</span><span class="n">angles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">angles</span><span class="p">))]</span>
 
 
-<span class="k">def</span> <span class="nf">_sort_neighbors</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">ccw</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">network_sort_neighbors</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">ccw</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">sorted_neighbors</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">xyz</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">vertices</span><span class="p">():</span>
-        <span class="n">nbrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex_neighbors</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="n">sorted_neighbors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_sort_vertex_neighbors</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">ccw</span><span class="o">=</span><span class="n">ccw</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">node_coordinates</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">nodes</span><span class="p">()}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+        <span class="n">nbrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">sorted_neighbors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">node_sort_neighbors</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">ccw</span><span class="o">=</span><span class="n">ccw</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span> <span class="ow">in</span> <span class="n">sorted_neighbors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sorted_neighbors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nbrs</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">node_attribute</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;neighbors&#39;</span><span class="p">,</span> <span class="n">nbrs</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">sorted_neighbors</span>
 
 
-<span class="k">def</span> <span class="nf">_sort_vertex_neighbors</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">ccw</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">node_sort_neighbors</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">nbrs</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">ccw</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nbrs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">nbrs</span>
     <span class="n">ordered</span> <span class="o">=</span> <span class="n">nbrs</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span>
@@ -281,25 +224,24 @@
     <span class="k">return</span> <span class="n">ordered</span>
 
 
-<span class="k">def</span> <span class="nf">_find_edge_face</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">network</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">network_find_edge_cycle</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
     <span class="n">cycle</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="p">]</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">cycle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="n">nbrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">vertex</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;sorted_neighbors&#39;</span><span class="p">]</span>
+        <span class="n">nbrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">node_attribute</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;neighbors&#39;</span><span class="p">)</span>
         <span class="n">nbr</span> <span class="o">=</span> <span class="n">nbrs</span><span class="p">[</span><span class="n">nbrs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">,</span> <span class="n">nbr</span>
         <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">cycle</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="c1"># cycle.append(v)</span>
             <span class="k">break</span>
-    <span class="n">fkey</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">cycle</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">fkey</span>
+    <span class="k">return</span> <span class="n">cycle</span>
 
 
-<span class="k">def</span> <span class="nf">_break_faces</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">breakpoints</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_break_cycles</span><span class="p">(</span><span class="n">cycles</span><span class="p">,</span> <span class="n">breakpoints</span><span class="p">):</span>
     <span class="n">breakpoints</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">breakpoints</span><span class="p">)</span>
+    <span class="n">broken</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">faces</span><span class="p">()):</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">face_vertices</span><span class="p">(</span><span class="n">fkey</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">cycles</span><span class="p">:</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">cycles</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span>
 
         <span class="n">faces</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
@@ -313,6 +255,7 @@
         <span class="n">faces</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">broken</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">faces</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">continue</span>
 
         <span class="k">if</span> <span class="n">faces</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">breakpoints</span> <span class="ow">and</span> <span class="n">faces</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">breakpoints</span><span class="p">:</span>
@@ -320,15 +263,13 @@
                 <span class="n">faces</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">faces</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">faces</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]]</span> <span class="o">+</span> <span class="n">faces</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">broken</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">faces</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">continue</span>
 
-        <span class="k">del</span> <span class="n">network</span><span class="o">.</span><span class="n">face</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">fkey</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">facedata</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">network</span><span class="o">.</span><span class="n">facedata</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span>
-
         <span class="k">for</span> <span class="n">vertices</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
-            <span class="n">network</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+            <span class="n">broken</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">broken</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -337,7 +278,17 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
-    <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">compas</span>
+    <span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Network</span>
+
+    <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_obj</span><span class="p">(</span><span class="n">compas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lines.obj&#39;</span><span class="p">))</span>
+    <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_lines</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">to_lines</span><span class="p">())</span>
+
+    <span class="n">network</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+
+    <span class="n">cycles</span> <span class="o">=</span> <span class="n">network_find_cycles</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">network</span><span class="o">.</span><span class="n">leaves</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">cycle</span> <span class="ow">in</span> <span class="n">cycles</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">cycle</span><span class="p">)</span>
 </code></pre></div>
                     
                 
@@ -411,7 +362,7 @@
         
 
         
-            Last updated on Feb 15, 2020.
+            Last updated on Feb 16, 2020.
         
 
         
@@ -423,7 +374,7 @@
 <script type="text/javascript">
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT          : '',
-    VERSION           : '0.15.0',
+    VERSION           : '0.15.1',
     COLLAPSE_INDEX    : false,
     FILE_SUFFIX       : '.html',
     HAS_SOURCE        : 'false',
