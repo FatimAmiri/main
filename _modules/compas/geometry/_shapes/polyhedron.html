@@ -93,62 +93,23 @@
 
     <span class="vm">__module__</span> <span class="o">=</span> <span class="s2">&quot;compas.geometry&quot;</span>
 
-<div class="viewcode-block" id="Polyhedron.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polyhedron.__init__.html#compas.geometry.Polyhedron.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Polyhedron.__init__"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polyhedron.__init__.html#compas.geometry.Polyhedron.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fcount</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="kc">None</span></div>
-
-<div class="viewcode-block" id="Polyhedron.generate"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polyhedron.generate.html#compas.geometry.Polyhedron.generate">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">fcount</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">fcount</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Tetrahedron</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">fcount</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Hexahedron</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">fcount</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Octahedron</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">fcount</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Dodecahedron</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">fcount</span> <span class="o">==</span> <span class="mi">20</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Icosahedron</span><span class="p">()</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unsupported solid type. Supported face count values: 4, 6, 8, 12, 20&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Polyhedron.from_platonicsolid"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polyhedron.from_platonicsolid.html#compas.geometry.Polyhedron.from_platonicsolid">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_platonicsolid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">fcount</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate a polyhedron from one of the Platonic solids.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        fcount : {4, 6, 8, 12, 20}</span>
-<span class="sd">            The number of faces of the Platonic solid.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Polyhedron</span>
-<span class="sd">            The resulting polyhedron.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">fcount</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Polyhedron.from_vertices_and_faces"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polyhedron.from_vertices_and_faces.html#compas.geometry.Polyhedron.from_vertices_and_faces">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_vertices_and_faces</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct a polyhedron from a given set of vertices and faces.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        vertices : list</span>
-<span class="sd">            The vertices of the polyhedron.</span>
-<span class="sd">        faces : list</span>
-<span class="sd">            The faces of the polyhedron.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Polyhedron</span>
-<span class="sd">            The resulting polyhedron.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">))</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="n">faces</span>
-        <span class="k">return</span> <span class="n">p</span></div>
+            <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">tetrahedron</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">fcount</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">hexahedron</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">fcount</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">octahedron</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">fcount</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
+            <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">dodecahedron</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">fcount</span> <span class="o">==</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">icosahedron</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unsupported solid type. Supported face count values: 4, 6, 8, 12, 20&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="n">faces</span></div>
 
 <div class="viewcode-block" id="Polyhedron.from_data"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polyhedron.from_data.html#compas.geometry.Polyhedron.from_data">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
@@ -167,7 +128,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; from compas.geometry import Polyhedron</span>
-<span class="sd">        &gt;&gt;&gt; p = Polyhedron.from_platonicsolid(4)</span>
+<span class="sd">        &gt;&gt;&gt; p = Polyhedron(4)</span>
 <span class="sd">        &gt;&gt;&gt; q = Polyhedron.from_data(p.data)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">p</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;faces&#39;</span><span class="p">)))</span>
@@ -183,6 +144,13 @@
 <span class="sd">            The polyhedron data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
+
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># customisation</span>
+    <span class="c1"># ==========================================================================</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">])</span>
 
     <span class="c1"># ==========================================================================</span>
     <span class="c1"># descriptors</span>
@@ -205,237 +173,129 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;vertices&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;faces&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">])</span>
-
-<div class="viewcode-block" id="Polyhedron.is_convex"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polyhedron.is_convex.html#compas.geometry.Polyhedron.is_convex">[docs]</a>    <span class="k">def</span> <span class="nf">is_convex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
-
-<div class="viewcode-block" id="Polyhedron.is_positive"><a class="viewcode-back" href="../../../../api/generated/compas.geometry.Polyhedron.is_positive.html#compas.geometry.Polyhedron.is_positive">[docs]</a>    <span class="k">def</span> <span class="nf">is_positive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># Methods</span>
+    <span class="c1"># ==========================================================================</span>
 
 
 <span class="c1"># ==============================================================================</span>
 <span class="c1"># Platonic solids</span>
 <span class="c1"># ==============================================================================</span>
 
-<span class="k">class</span> <span class="nc">Tetrahedron</span><span class="p">(</span><span class="n">Polyhedron</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    V = 4</span>
-<span class="sd">    F = 4</span>
-<span class="sd">    E = 6</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Tetrahedron</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-
-    <span class="c1">#     1</span>
-    <span class="c1">#   / | \</span>
-    <span class="c1">#  /  |  \</span>
-    <span class="c1"># 0 ----- 2</span>
-    <span class="c1">#  \  |  /</span>
-    <span class="c1">#   \ | /</span>
-    <span class="c1">#     3</span>
-    <span class="c1">#</span>
-    <span class="c1"># (+/-1, 0, -0.5**0.5)</span>
-    <span class="c1"># (0, +/-1, +0.5**0.5)</span>
-    <span class="c1">#</span>
-    <span class="c1"># 13 = 2 * sqrt(2)</span>
-    <span class="c1"># r = sqrt((0.5 * 13)**2 + (1/sqrt(2))**2)</span>
-    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">L</span> <span class="o">=</span> <span class="mf">2.</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">L</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">r</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">*=</span> <span class="n">c</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">c</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+<span class="k">def</span> <span class="nf">tetrahedron</span><span class="p">():</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="mf">2.0</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">L</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">r</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">*=</span> <span class="n">c</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">c</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span>
 
 
-<span class="k">class</span> <span class="nc">Hexahedron</span><span class="p">(</span><span class="n">Polyhedron</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    V = 8</span>
-<span class="sd">    F = 6</span>
-<span class="sd">    E = 12</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Hexahedron</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-
-    <span class="c1">#   5------4</span>
-    <span class="c1"># 6------7 |</span>
-    <span class="c1"># | |    | |</span>
-    <span class="c1"># | 3    | 2</span>
-    <span class="c1"># 0------1</span>
-    <span class="c1">#</span>
-    <span class="c1"># (+-1, +-1, +-1)</span>
-    <span class="c1">#</span>
-    <span class="c1"># 04 = 2 * sqrt(3)</span>
-    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">L</span> <span class="o">=</span> <span class="mf">1.</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">L</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">r</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">*=</span> <span class="n">c</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">hexahedron</span><span class="p">():</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]]</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">L</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">r</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">*=</span> <span class="n">c</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="o">+</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span>
 
 
-<span class="k">class</span> <span class="nc">Octahedron</span><span class="p">(</span><span class="n">Polyhedron</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    V = 6</span>
-<span class="sd">    F = 8</span>
-<span class="sd">    E = 12</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Octahedron</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-
-    <span class="c1">#      5</span>
-    <span class="c1">#      |</span>
-    <span class="c1">#   4--|---3</span>
-    <span class="c1"># 0----------1</span>
-    <span class="c1">#      |</span>
-    <span class="c1">#      2</span>
-    <span class="c1">#</span>
-    <span class="c1">#      4</span>
-    <span class="c1">#    /   \</span>
-    <span class="c1">#   /     \</span>
-    <span class="c1">#  0  5/2  3</span>
-    <span class="c1">#   \     /</span>
-    <span class="c1">#    \   /</span>
-    <span class="c1">#      1</span>
-    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-                      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">L</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">L</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">r</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">*=</span> <span class="n">c</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">octahedron</span><span class="p">():</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">L</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">r</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">+</span><span class="mf">1.</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">*=</span> <span class="n">c</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span>
 
 
-<span class="k">class</span> <span class="nc">Dodecahedron</span><span class="p">(</span><span class="n">Polyhedron</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    V = 20</span>
-<span class="sd">    F = 12</span>
-<span class="sd">    E = 30</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Dodecahedron</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-
-    <span class="c1"># (      0, +-1/phi,   +-phi)</span>
-    <span class="c1"># (+-1/phi,   +-phi,       0)</span>
-    <span class="c1"># (  +-phi,       0, +-1/phi)</span>
-    <span class="c1"># (    +-1,     +-1,     +-1)</span>
-    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
-        <span class="n">phi</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">13</span><span class="p">,</span>  <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="mi">3</span><span class="p">],</span>
-                 <span class="p">[</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">3</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                 <span class="p">[</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">10</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
-                 <span class="p">[</span><span class="mi">1</span><span class="p">,</span>   <span class="mi">4</span><span class="p">,</span>  <span class="mi">7</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">3</span><span class="p">],</span>
-                 <span class="p">[</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">4</span><span class="p">],</span>
-                 <span class="p">[</span><span class="mi">2</span><span class="p">,</span>   <span class="mi">7</span><span class="p">,</span>  <span class="mi">9</span><span class="p">,</span>  <span class="mi">6</span><span class="p">,</span>  <span class="mi">8</span><span class="p">],</span>
-                 <span class="p">[</span><span class="mi">5</span><span class="p">,</span>  <span class="mi">15</span><span class="p">,</span>  <span class="mi">9</span><span class="p">,</span>  <span class="mi">7</span><span class="p">,</span>  <span class="mi">4</span><span class="p">],</span>
-                 <span class="p">[</span><span class="mi">5</span><span class="p">,</span>  <span class="mi">14</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span>
-                 <span class="p">[</span><span class="mi">6</span><span class="p">,</span>  <span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>  <span class="mi">8</span><span class="p">],</span>
-                 <span class="p">[</span><span class="mi">6</span><span class="p">,</span>   <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
-                 <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
-                 <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">17</span><span class="p">]]</span>
-        <span class="n">L</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">phi</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">L</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">r</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">*=</span> <span class="n">c</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">j</span> <span class="o">*=</span> <span class="n">c</span>
-                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">/</span> <span class="n">phi</span><span class="p">,</span> <span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">])</span>
-                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span> <span class="o">/</span> <span class="n">phi</span><span class="p">,</span> <span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span> <span class="o">*</span> <span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">/</span> <span class="n">phi</span><span class="p">])</span>
-                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">:</span>
-                    <span class="n">k</span> <span class="o">*=</span> <span class="n">c</span>
-                    <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span> <span class="o">*</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">j</span> <span class="o">*</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">k</span> <span class="o">*</span> <span class="mf">1.</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="n">faces</span>
+<span class="k">def</span> <span class="nf">dodecahedron</span><span class="p">():</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">13</span><span class="p">,</span>  <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="mi">3</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">3</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">10</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">1</span><span class="p">,</span>   <span class="mi">4</span><span class="p">,</span>  <span class="mi">7</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">3</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">4</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">2</span><span class="p">,</span>   <span class="mi">7</span><span class="p">,</span>  <span class="mi">9</span><span class="p">,</span>  <span class="mi">6</span><span class="p">,</span>  <span class="mi">8</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">5</span><span class="p">,</span>  <span class="mi">15</span><span class="p">,</span>  <span class="mi">9</span><span class="p">,</span>  <span class="mi">7</span><span class="p">,</span>  <span class="mi">4</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">5</span><span class="p">,</span>  <span class="mi">14</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">6</span><span class="p">,</span>  <span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>  <span class="mi">8</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">6</span><span class="p">,</span>   <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">17</span><span class="p">]]</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">phi</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">L</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">r</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">*=</span> <span class="n">c</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">*=</span> <span class="n">c</span>
+            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">/</span> <span class="n">phi</span><span class="p">,</span> <span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">])</span>
+            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span> <span class="o">/</span> <span class="n">phi</span><span class="p">,</span> <span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span> <span class="o">*</span> <span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">/</span> <span class="n">phi</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">k</span> <span class="o">*=</span> <span class="n">c</span>
+                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span> <span class="o">*</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">j</span> <span class="o">*</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">k</span> <span class="o">*</span> <span class="mf">1.</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span>
 
 
-<span class="k">class</span> <span class="nc">Icosahedron</span><span class="p">(</span><span class="n">Polyhedron</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    V = 12</span>
-<span class="sd">    F = 20</span>
-<span class="sd">    E = 30</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">icosahedron</span><span class="p">():</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Icosahedron</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">),</span>
 
-    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
-        <span class="n">phi</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-
-            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">phi</span><span class="p">),</span>
-
-            <span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-            <span class="p">(</span><span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
-            <span class="p">(</span><span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="n">faces</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="c1"># 5 faces around point 0</span>
-            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
-            <span class="c1"># Adjacent faces</span>
-            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
-            <span class="c1"># 5 faces around 3</span>
-            <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
-            <span class="c1"># Adjacent faces</span>
-            <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-        <span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="n">faces</span>
+        <span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">(</span><span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+        <span class="p">(</span><span class="o">-</span><span class="n">phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="c1"># 5 faces around point 0</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
+        <span class="c1"># Adjacent faces</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+        <span class="c1"># 5 faces around 3</span>
+        <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
+        <span class="c1"># Adjacent faces</span>
+        <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span>
 
 
 <span class="c1"># ==============================================================================</span>
@@ -444,7 +304,8 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
-    <span class="k">pass</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">globs</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
 </code></pre></div>
                     
                 
