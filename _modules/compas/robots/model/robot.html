@@ -677,8 +677,12 @@
         <span class="n">transformations</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">child_joint</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">joint_state</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">joint_state</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>  <span class="c1"># if passive/mimicking joint is in the joint_state, the transformation will be calculated according to this value</span>
                 <span class="n">position</span> <span class="o">=</span> <span class="n">joint_state</span><span class="p">[</span><span class="n">child_joint</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span> <span class="o">*</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">calculate_transformation</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">mimic</span> <span class="ow">and</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">mimic</span><span class="o">.</span><span class="n">joint</span> <span class="ow">in</span> <span class="n">joint_state</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">mimicked_joint_position</span> <span class="o">=</span> <span class="n">joint_state</span><span class="p">[</span><span class="n">child_joint</span><span class="o">.</span><span class="n">mimic</span><span class="o">.</span><span class="n">joint</span><span class="p">]</span>
+                <span class="n">position</span> <span class="o">=</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">mimic</span><span class="o">.</span><span class="n">calculate_position</span><span class="p">(</span><span class="n">mimicked_joint_position</span><span class="p">)</span>
                 <span class="n">transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span> <span class="o">*</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">calculate_transformation</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">transformation</span> <span class="o">=</span> <span class="n">parent_transformation</span>
@@ -766,9 +770,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ee_link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_link_by_name</span><span class="p">(</span><span class="n">link_name</span><span class="p">)</span>
         <span class="n">joint</span> <span class="o">=</span> <span class="n">ee_link</span><span class="o">.</span><span class="n">parent_joint</span>
-
-        <span class="n">transformations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_transformations</span><span class="p">(</span><span class="n">joint_state</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">joint</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">transformations</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span><span class="p">])</span></div>
+        <span class="k">if</span> <span class="n">joint</span><span class="p">:</span>
+            <span class="n">transformations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_transformations</span><span class="p">(</span><span class="n">joint_state</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">joint</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">transformations</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Frame</span><span class="o">.</span><span class="n">worldXY</span><span class="p">()</span>  <span class="c1"># if we ask forward from base link</span></div>
 
 <div class="viewcode-block" id="RobotModel.add_link"><a class="viewcode-back" href="../../../../api/generated/compas.robots.RobotModel.add_link.html#compas.robots.RobotModel.add_link">[docs]</a>    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">visual_mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">collision_mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Adds a link to the robot model.</span>
@@ -1016,7 +1022,7 @@
         
 
         
-            Last updated on Mar 11, 2020.
+            Last updated on Mar 16, 2020.
         
 
         
