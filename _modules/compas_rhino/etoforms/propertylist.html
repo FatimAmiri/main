@@ -105,7 +105,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">table</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">GridView</span><span class="p">()</span>
         <span class="n">table</span><span class="o">.</span><span class="n">ShowHeader</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">table</span><span class="o">.</span><span class="n">DataStore</span> <span class="o">=</span> <span class="p">[[</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)]</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">Height</span> <span class="o">=</span> <span class="mi">300</span>
 
         <span class="n">c1</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">GridColumn</span><span class="p">()</span>
         <span class="n">c1</span><span class="o">.</span><span class="n">HeaderText</span> <span class="o">=</span> <span class="s1">&#39;Name&#39;</span>
@@ -119,18 +118,17 @@
         <span class="n">c2</span><span class="o">.</span><span class="n">DataCell</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextBoxCell</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">table</span><span class="o">.</span><span class="n">Columns</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span>
 
-        <span class="n">layout</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">DynamicLayout</span><span class="p">()</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">AddRow</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">BeginVertical</span><span class="p">()</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">BeginHorizontal</span><span class="p">()</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">AddRow</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ok</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancel</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">EndHorizontal</span><span class="p">()</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">EndVertical</span><span class="p">()</span>
+        <span class="n">tab_items</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">StackLayoutItem</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">StackLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">Items</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">tab_items</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">HorizontalContentAlignment</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">HorizontalAlignment</span><span class="o">.</span><span class="n">Stretch</span>
+        <span class="n">sub_layout</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">DynamicLayout</span><span class="p">()</span>
+        <span class="n">sub_layout</span><span class="o">.</span><span class="n">AddRow</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ok</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancel</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">Items</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">StackLayoutItem</span><span class="p">(</span><span class="n">sub_layout</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">Title</span> <span class="o">=</span> <span class="s1">&#39;RBE: update a list of properties&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Padding</span> <span class="o">=</span> <span class="n">drawing</span><span class="o">.</span><span class="n">Padding</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Resizable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Resizable</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Content</span> <span class="o">=</span> <span class="n">layout</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ClientSize</span> <span class="o">=</span> <span class="n">drawing</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span></div>
 
@@ -242,7 +240,7 @@
         
 
         
-            Last updated on Mar 17, 2020.
+            Last updated on Mar 20, 2020.
         
 
         
