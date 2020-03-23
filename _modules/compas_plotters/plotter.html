@@ -89,7 +89,37 @@
 <span class="kn">from</span> <span class="nn">compas_plotters.core.drawing</span> <span class="kn">import</span> <span class="n">draw_xarrows_xy</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Plotter&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Plotter&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;valuedict&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">valuedict</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">default</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Build value dictionary from a list of keys and a value.</span>
+
+<span class="sd">     Parameters</span>
+<span class="sd">     ----------</span>
+<span class="sd">     keys: list</span>
+<span class="sd">         The list of keys</span>
+<span class="sd">     value: {dict, int, float, str, None}</span>
+<span class="sd">         A value or the already formed dictionary</span>
+<span class="sd">     default: {int, float, str}</span>
+<span class="sd">         A default value to set if no value</span>
+
+<span class="sd">     Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">     dict</span>
+<span class="sd">         A dictionary</span>
+
+<span class="sd">     Note</span>
+<span class="sd">     ----</span>
+<span class="sd">     This standalone and generic function is only required by plotters.</span>
+
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">value</span> <span class="ow">or</span> <span class="n">default</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">Plotter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -790,6 +820,8 @@
                     <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">)</span>
 
     <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
 </code></pre></div>
                     
                 
@@ -863,7 +895,7 @@
         
 
         
-            Last updated on Mar 20, 2020.
+            Last updated on Mar 23, 2020.
         
 
         
