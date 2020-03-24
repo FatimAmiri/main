@@ -68,7 +68,10 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">collections</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">MutableMapping</span>  <span class="c1"># python &gt; 3.3</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">MutableMapping</span>      <span class="c1"># python 2.7</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
@@ -98,7 +101,7 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">VertexAttributeView</span><span class="p">(</span><span class="n">AttributeView</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">VertexAttributeView</span><span class="p">(</span><span class="n">AttributeView</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Mutable Mapping that provides a read/write view of the custom attributes of a vertex</span>
 <span class="sd">    combined with the default attributes of all vertices.&quot;&quot;&quot;</span>
 
@@ -126,7 +129,7 @@
             <span class="k">yield</span> <span class="n">key</span>
 
 
-<span class="k">class</span> <span class="nc">FaceAttributeView</span><span class="p">(</span><span class="n">AttributeView</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">FaceAttributeView</span><span class="p">(</span><span class="n">AttributeView</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Mutable Mapping that provides a read/write view of the custom attributes of a face</span>
 <span class="sd">    combined with the default attributes of all faces.&quot;&quot;&quot;</span>
 
@@ -155,7 +158,7 @@
                 <span class="k">yield</span> <span class="n">name</span>
 
 
-<span class="k">class</span> <span class="nc">EdgeAttributeView</span><span class="p">(</span><span class="n">AttributeView</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">EdgeAttributeView</span><span class="p">(</span><span class="n">AttributeView</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Mutable Mapping that provides a read/write view of the custom attributes of an edge</span>
 <span class="sd">    combined with the default attributes of all edges.&quot;&quot;&quot;</span>
 
@@ -2779,7 +2782,7 @@
         
 
         
-            Last updated on Mar 23, 2020.
+            Last updated on Mar 24, 2020.
         
 
         
